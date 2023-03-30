@@ -1,6 +1,11 @@
 // import type { UserWallet } from '@prisma/client';
-import { isAddress } from 'ethers';
+import { isAddress, randomBytes, SigningKey, Wallet } from 'ethers';
 import { validate } from 'uuid';
+
+export function randomETHWalletAddress() {
+  const key = new SigningKey(randomBytes(32));
+  return new Wallet(key).address.toLowerCase();
+}
 
 export function fancyTrim(_text = '', maxLength = 40) {
   const text = _text || '';

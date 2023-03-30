@@ -4,6 +4,17 @@
   "sourceRoot": "packages/utilities-string/src",
   "projectType": "library",
   "targets": {
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "main": "packages/utilities-string/src/index.ts",
+        "tsConfig": "./tsconfig.json",
+        "outputPath": "dist/utilities-string",
+        "rootDir": "packages/utilities-string/src",
+        "clean": true
+      }
+    },
     "lint": {
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],

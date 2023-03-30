@@ -1,7 +1,7 @@
-import { randomETHWalletAddress } from '@common.charmverse.io/testing';
 import { Wallet, getAddress, SigningKey, randomBytes } from 'ethers';
 
 import {
+  randomETHWalletAddress,
   conditionalPlural,
   matchWalletAddress,
   sanitizeForRegex,
