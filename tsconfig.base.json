@@ -15,10 +15,10 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@common.charmverse.io/testing": ["packages/testing/src/index.ts"],
-      "@common.charmverse.io/utilities-string": [
-        "packages/utilities-string/src/index.ts"
-      ]
+      "@common.charmverse.io/charmverse-utilities": [
+        "packages/charmverse-utilities/src/index.ts"
+      ],
+      "@common.charmverse.io/testing": ["packages/testing/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

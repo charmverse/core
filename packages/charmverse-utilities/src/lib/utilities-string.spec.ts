@@ -8,7 +8,7 @@ import {
   shortenHex,
   shortWalletAddress,
   isUrl,
-  isValidEmail
+  isValidEmail,
 } from './utilities-string';
 
 describe('strings', () => {
@@ -28,7 +28,9 @@ describe('conditionalPlural', () => {
   });
 
   it('should return plural if provided and the number is not 1', () => {
-    expect(conditionalPlural({ word: 'Identity', count: 2, plural: 'Identities' })).toBe('Identities');
+    expect(
+      conditionalPlural({ word: 'Identity', count: 2, plural: 'Identities' })
+    ).toBe('Identities');
   });
 });
 
@@ -77,7 +79,7 @@ describe('matchShortAddress', () => {
 
     const wallet = {
       address,
-      ensname
+      ensname,
     };
 
     const shortAddress = shortWalletAddress(address);
@@ -131,7 +133,7 @@ describe('isUrl()', () => {
     'https://www.loom.com/share/d0e3f7b3abb6448eb0c7a00bdd6dcd90',
     'https://en.m.wikipedia.org/wiki/C_Sharp_(programming_language)',
     'https://zh.wikipedia.org/wiki/Wikipedia:维基百科:关于中文维基百科/en',
-    'https://odysee.com/@Coldfusion:f/google-panics-over-chatgpt-the-ai-wars:a'
+    'https://odysee.com/@Coldfusion:f/google-panics-over-chatgpt-the-ai-wars:a',
   ];
 
   validUrls.forEach((url) => {
@@ -140,7 +142,12 @@ describe('isUrl()', () => {
     });
   });
 
-  const invalidUrls = ['', 'hippo!', 'https://www', 'mailto://mail@freecodecamp.org'];
+  const invalidUrls = [
+    '',
+    'hippo!',
+    'https://www',
+    'mailto://mail@freecodecamp.org',
+  ];
   invalidUrls.forEach((url) => {
     it(`should return false for ${url}`, () => {
       expect(isUrl(url)).toBe(false);

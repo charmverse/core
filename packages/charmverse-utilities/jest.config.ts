@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: 'utilities-string',
+  displayName: 'charmverse-utilities',
   preset: '../../jest.preset.js',
   globals: {
     'ts-jest': {
@@ -11,5 +11,5 @@ export default {
     '^.+\\.[tj]sx?$': 'ts-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/packages/utilities-string',
+  coverageDirectory: '../../coverage/packages/charmverse-utilities',
 };

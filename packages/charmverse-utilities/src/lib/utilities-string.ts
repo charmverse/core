@@ -97,7 +97,9 @@ export function stringToValidPath(input: string, maxLength?: number): string {
 }
 
 export const shortenHex = (hex = '', length = 4): string => {
-  return `${hex.substring(0, length + 2)}…${hex.substring(hex.length - length)}`;
+  return `${hex.substring(0, length + 2)}…${hex.substring(
+    hex.length - length
+  )}`;
 };
 
 /**
@@ -128,7 +130,7 @@ export function uid() {
 export function humaniseList({
   content,
   conjunction,
-  capitaliseFirstCharacter
+  capitaliseFirstCharacter,
 }: {
   content: string[];
   conjunction: 'and' | 'or';
@@ -169,14 +171,21 @@ type ConditionalPlural = { word: string; count: number; plural?: string };
  * Append an 's' to a value's descriptor if it is not equal to 1
  * Default values will return an empty string
  */
-export function conditionalPlural({ word = '', count = 1, plural }: ConditionalPlural): string {
+export function conditionalPlural({
+  word = '',
+  count = 1,
+  plural,
+}: ConditionalPlural): string {
   if (count !== 1) {
     return plural ?? `${word}s`;
   }
   return word;
 }
 
-export function lowerCaseEqual(firstString?: string | null, secondString?: string | null): boolean {
+export function lowerCaseEqual(
+  firstString?: string | null,
+  secondString?: string | null
+): boolean {
   return firstString?.toLowerCase() === secondString?.toLowerCase();
 }
 
@@ -203,7 +212,10 @@ export function shortWalletAddress(string?: string): string {
 /**
  * Tie a wallet address to a short address, or its mixed case format
  */
-export function matchWalletAddress(address1: string, address2: string | { address: string; ensname: string }): boolean {
+export function matchWalletAddress(
+  address1: string,
+  address2: string | { address: string; ensname: string }
+): boolean {
   if (!address1 || !address2) {
     return false;
   }
@@ -213,7 +225,8 @@ export function matchWalletAddress(address1: string, address2: string | { addres
     return true;
   }
 
-  const baseAddress = typeof address2 === 'string' ? address2 : address2.address;
+  const baseAddress =
+    typeof address2 === 'string' ? address2 : address2.address;
 
   return shortWalletAddress(address1) === shortWalletAddress(baseAddress);
 }

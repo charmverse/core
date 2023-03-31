@@ -1,17 +1,17 @@
 {
-  "name": "utilities-string",
+  "name": "charmverse-utilities",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "packages/utilities-string/src",
+  "sourceRoot": "packages/charmverse-utilities/src",
   "projectType": "library",
   "targets": {
     "build": {
       "executor": "@nrwl/js:tsc",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "main": "packages/utilities-string/src/index.ts",
-        "tsConfig": "./tsconfig.json",
-        "outputPath": "dist/utilities-string",
-        "rootDir": "packages/utilities-string/src",
+        "main": "packages/charmverse-utilities/src/index.ts",
+        "tsConfig": "packages/charmverse-utilities/tsconfig.lib.json",
+        "outputPath": "dist/charmverse-utilities",
+        "rootDir": "packages/charmverse-utilities/src",
         "clean": true
       }
     },
@@ -19,14 +19,14 @@
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/utilities-string/**/*.ts"]
+        "lintFilePatterns": ["packages/charmverse-utilities/**/*.ts"]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "packages/utilities-string/jest.config.ts",
+        "jestConfig": "packages/charmverse-utilities/jest.config.ts",
         "passWithNoTests": true
       }
     }
