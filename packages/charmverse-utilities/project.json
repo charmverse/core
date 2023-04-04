@@ -6,13 +6,15 @@
   "targets": {
     "build": {
       "executor": "@nrwl/js:tsc",
-      "outputs": ["{options.outputFile}"],
       "options": {
+
         "main": "packages/charmverse-utilities/src/index.ts",
         "tsConfig": "packages/charmverse-utilities/tsconfig.lib.json",
-        "outputPath": "dist/charmverse-utilities",
+        "outputPath": "dist/packages/charmverse-utilities",
         "rootDir": "packages/charmverse-utilities/src",
-        "clean": true
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "updateBuildableProjectDepsInPackageJson": true,
+
       }
     },
     "lint": {
