@@ -1,0 +1,24 @@
+{
+  "name": "common.charmverse.io",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/charmverse/common.git"
+  },
+  "keywords": [
+    "charmverse"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/charmverse/common/issues"
+  },
+  "homepage": "https://github.com/charmverse/common#readme"
+}
