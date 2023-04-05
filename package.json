@@ -25,10 +25,16 @@
   "homepage": "https://github.com/charmverse/common#readme",
   "devDependencies": {
     "@types/lodash": "^4.14.192",
+    "@types/nanoid-dictionary": "^4.2.0",
+    "@types/uuid": "^9.0.1",
     "prisma": "^4.12.0"
   },
   "dependencies": {
     "@prisma/client": "^4.12.0",
-    "lodash": "^4.17.21"
+    "ethers": "^6.2.3",
+    "lodash": "^4.17.21",
+    "nanoid": "^4.0.2",
+    "nanoid-dictionary": "^4.3.0",
+    "uuid": "^9.0.0"
   }
 }
