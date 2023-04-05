@@ -6,9 +6,9 @@
   "types": "./dist/index.d.ts",
   "type": "module",
   "scripts": {
-    "test": "test",
+    "build": "npm run prisma:generate && tsc",
     "prisma:generate": "npx prisma generate --schema=./src/prisma/schema.prisma",
-    "postinstall": "npm run prisma:generate && tsc"
+    "postinstall": "npm run build"
   },
   "repository": {
     "type": "git",

@@ -1,4 +1,3 @@
-export { CharmversePrismaClient } from './prisma/interfaces'
 
 
 export function randomiser() {
