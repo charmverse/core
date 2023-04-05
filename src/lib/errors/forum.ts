@@ -1,4 +1,4 @@
-import { SystemError } from './';
+import { SystemError } from '.';
 
 export class PostCategoryNotDeleteableError extends SystemError {
   constructor() {
