@@ -1,6 +1,7 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import * as  CharmversePrismaClient from "@prisma/client";
 
-export type TransactionClient = PrismaClient | Prisma.TransactionClient;
+export * as CharmversePrismaClient from '@prisma/client';
+export type TransactionClient = CharmversePrismaClient.PrismaClient | CharmversePrismaClient.Prisma.TransactionClient;
 
 // Pass a transaction from outer scope of function calling this
 export type Transaction = { tx: TransactionClient };
