@@ -1,4 +1,7 @@
 
+export * from './lib/user'
+export * from './lib/session/config';
+export * from './lib/permissions';
 
 export function randomiser() {
     const items = ['Plane', 'Bike', 'Car', 'Truck'];
@@ -7,4 +10,4 @@ export function randomiser() {
 
     return items[usedIndex];
 }
-
+console.log('Hello world')

@@ -1,8 +1,8 @@
 import { User } from "@prisma/client";
 import { prisma } from "db";
-import { sessionUserRelations } from "lib/session/config";
-import { LoggedInUser } from "lib/user/interfaces";
-import { uid,  } from "lib/utilities/strings";
+import { sessionUserRelations } from "../../lib/session/config";
+import { LoggedInUser } from "../../lib/user/interfaces";
+import { uid,  } from "../../lib/utilities/strings";
 import { v4 } from "uuid";
 import { randomETHWalletAddress } from "./random";
 

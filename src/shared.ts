@@ -1,3 +1,3 @@
-export * from './lib/errors'
+export * from 'lib/errors'
 
-export * from './lib/utilities';
+export * from 'lib/utilities';
