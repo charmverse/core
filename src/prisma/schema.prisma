@@ -127,7 +127,6 @@ enum PageOperations {
 enum SpaceOperation {
   createPage
   createBounty
-  createVote
   createForumCategory
   moderateForums
   reviewProposals
@@ -477,7 +476,7 @@ model User {
   avatarChain               Int?
   username                  String
   isBot                     Boolean?                        @default(false)
-  path                      String?                         @unique
+  path                      String                          @unique
   identityType              IdentityType?
   email                     String?
   emailNotifications        Boolean?                        @default(true)
