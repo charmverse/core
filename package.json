@@ -6,7 +6,7 @@
   "types": "./dist/index.d.ts",
   "type": "module",
   "scripts": {
-    "build": "npm run prisma:generate && tsc",
+    "build": "npm run prisma:generate && echo -e\"-- Building output\" tsc",
     "prisma:generate": "npx prisma generate --schema=./src/prisma/schema.prisma",
     "postinstall": "npm run build"
   },
