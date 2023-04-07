@@ -1,7 +1,7 @@
 import type { UserWallet } from '@prisma/client';
 import { isAddress } from 'ethers';
 import { customAlphabet } from 'nanoid';
-import {lowercase, numbers} from 'nanoid-dictionary';
+import * as dictionaries from 'nanoid-dictionary';
 import { validate } from 'uuid';
 
 export function fancyTrim(_text: string = '', maxLength: number = 40) {
@@ -114,7 +114,7 @@ export function isUUID(uuid: string) {
   return validate(uuid);
 }
 
-const uidGenerator = customAlphabet(lowercase + numbers, 8);
+const uidGenerator = customAlphabet(dictionaries.lowercase + dictionaries.numbers, 8);
 
 // use this to generate smaller unique ids than uuid for storage
 export function uid(): string {
