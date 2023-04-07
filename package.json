@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/charmverse/common.git"
+    "url": "git+https://github.com/charmverse/core.git"
   },
   "keywords": [
     "charmverse"
@@ -20,9 +20,9 @@
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/charmverse/common/issues"
+    "url": "https://github.com/charmverse/core/issues"
   },
-  "homepage": "https://github.com/charmverse/common#readme",
+  "homepage": "https://github.com/charmverse/core#readme",
   "devDependencies": {
     "@types/jest": "^29.5.0",
     "@types/lodash": "^4.14.192",
