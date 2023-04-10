@@ -4,7 +4,7 @@ export type PermissionsClient = {
   forum: ForumPermissionsClient;
 };
 
-export type HttpClientConstructor = {
+export type PermissionsApiClientConstructor = {
   baseUrl: string;
   authKey: string;
 };

@@ -1,18 +1,15 @@
 import type { PermissionCompute } from 'lib/permissions/interfaces';
 
 import fetch from '../../../../adapters/http/fetch.server';
-import type { HttpClientConstructor } from '../interfaces';
+import { AbstractPermissionsApiClient } from '../apiClient.class';
+import type { PermissionsApiClientConstructor } from '../interfaces';
 
 import type { ForumPermissionsClient, PostCategoryPermissionFlags, PostPermissionFlags } from './forumInterfaces';
 
-export class ForumPermissionsHttpClient implements ForumPermissionsClient {
-  private baseUrl: string;
-
-  private authKey: string;
-
-  constructor({ baseUrl, authKey }: HttpClientConstructor) {
-    this.baseUrl = baseUrl;
-    this.authKey = authKey;
+export class ForumPermissionsHttpClient extends AbstractPermissionsApiClient implements ForumPermissionsClient {
+  // eslint-disable-next-line no-useless-constructor
+  constructor(params: PermissionsApiClientConstructor) {
+    super(params);
   }
 
   computePostPermissions(request: PermissionCompute): Promise<PostPermissionFlags> {
