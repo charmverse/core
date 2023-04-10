@@ -226,6 +226,7 @@ model Space {
   updatedBy                   String                            @db.Uuid
   name                        String
   domain                      String                            @unique
+  premiumOptin                Boolean                           @default(true)
   discordServerId             String?
   defaultVotingDuration       Int?
   snapshotDomain              String?

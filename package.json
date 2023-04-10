@@ -9,7 +9,8 @@
     "build": "npm run prisma:generate && tsc",
     "prisma:generate": "npx prisma generate --schema=./src/prisma/schema.prisma",
     "postinstall": "npm run build",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "migrate:dev": "npx prisma migrate dev --schema=./src/prisma/schema.prisma"
   },
   "repository": {
     "type": "git",
