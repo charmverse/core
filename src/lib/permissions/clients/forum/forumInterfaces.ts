@@ -7,6 +7,6 @@ export type PostCategoryPermissionFlags = UserPermissionFlags<PostOperation>;
 
 
 export type ForumPermissionsClient = {
-    conputePostPermissions: (request: PermissionCompute) => Promise<PostPermissionFlags>;
-    conputePostCategoryPermissions: (request: PermissionCompute) => Promise<PostCategoryPermissionFlags>;
+    computePostPermissions: (request: PermissionCompute) => Promise<PostPermissionFlags>;
+    computePostCategoryPermissions: (request: PermissionCompute) => Promise<PostCategoryPermissionFlags>;
 }
