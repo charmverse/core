@@ -15,7 +15,7 @@ export class ForumPermissionsHttpClient implements ForumPermissionsClient {
         this.authKey = authKey;
     }
 
-    conputePostPermissions (request: PermissionCompute): Promise<PostPermissionFlags> {
+    computePostPermissions (request: PermissionCompute): Promise<PostPermissionFlags> {
         return fetch(`${this.baseUrl}/permissions/forum/conpute-post-permissions`, {
             method: 'POST',
             body: JSON.stringify(request),
@@ -24,7 +24,7 @@ export class ForumPermissionsHttpClient implements ForumPermissionsClient {
             }
         })
     } ;
-    conputePostCategoryPermissions (request: PermissionCompute): Promise<PostCategoryPermissionFlags> {
+    computePostCategoryPermissions (request: PermissionCompute): Promise<PostCategoryPermissionFlags> {
         return fetch(`${this.baseUrl}/permissions/forum/conpute-post-category-permissions`, {
             method: 'POST',
             body: JSON.stringify(request),
