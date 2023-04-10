@@ -1,7 +1,5 @@
-import { Wallet } from "ethers";
-
-
+import { Wallet } from 'ethers';
 
 export function randomETHWalletAddress() {
-    return Wallet.createRandom().address.toLowerCase();
-  }
+  return Wallet.createRandom().address.toLowerCase();
+}

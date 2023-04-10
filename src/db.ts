@@ -1,4 +1,4 @@
-import {PrismaClient} from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 
 // @ts-expect-error - dont mutate global for Node.js
 export const prisma: PrismaClient = global.prisma || new PrismaClient({});
@@ -8,4 +8,3 @@ if (process.env.NODE_ENV === 'development') {
   // @ts-expect-error
   global.prisma = prisma;
 }
-

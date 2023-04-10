@@ -2,9 +2,12 @@ import type { SpaceRole } from '@prisma/client';
 
 import { prisma } from '../../db';
 import type { SystemError } from '../../lib/errors';
-import { InvalidInputError } from '../../lib/errors';
-
-import { AdministratorOnlyError, UserIsGuestError, UserIsNotSpaceMemberError } from '../../lib/errors';
+import {
+  InvalidInputError,
+  AdministratorOnlyError,
+  UserIsGuestError,
+  UserIsNotSpaceMemberError
+} from '../../lib/errors';
 
 /**
  * @param userId - The ID of the user to check. If empty, the hasAccess should always return an error

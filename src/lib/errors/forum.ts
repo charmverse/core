@@ -20,7 +20,6 @@ export class PostCategoryNotFoundError extends SystemError {
   }
 }
 
-
 export class PostNotFoundError extends SystemError {
   constructor(postId: string) {
     super({

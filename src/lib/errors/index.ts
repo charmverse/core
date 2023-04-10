@@ -3,4 +3,4 @@ export * from './numbers';
 export * from './invalidData';
 
 export * from './forum';
-export * from './users'
+export * from './users';

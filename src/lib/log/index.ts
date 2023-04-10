@@ -1,2 +1,1 @@
 export { log } from './log';
-

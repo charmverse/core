@@ -1,13 +1,11 @@
 import type { Space, User } from '@prisma/client';
 import { SpaceRole } from '@prisma/client';
+import { prisma } from 'db';
+import { InvalidInputError, AdministratorOnlyError, UserIsGuestError, UserIsNotSpaceMemberError } from 'lib/errors';
+import { generateUserAndSpace, generateSpaceUser } from 'lib/testing/user';
+import { uid } from 'lib/utilities/strings';
 import { v4 } from 'uuid';
 
-import { prisma } from 'db';
-import { InvalidInputError } from 'lib/errors';
-import { uid } from 'lib/utilities/strings';
-import { generateUserAndSpace, generateSpaceUser } from 'lib/testing/user';
-
-import { AdministratorOnlyError, UserIsGuestError, UserIsNotSpaceMemberError } from 'lib/errors';
 import { hasAccessToSpace } from '../hasAccessToSpace';
 
 let space: Space;
