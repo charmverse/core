@@ -1,6 +1,5 @@
-import type { PermissionCompute } from 'lib/permissions/interfaces';
-
 import fetch from '../../../../adapters/http/fetch.server';
+import type { PermissionCompute } from '../../interfaces';
 import { AbstractPermissionsApiClient } from '../abstractApiClient.class';
 import type { PermissionsApiClientConstructor } from '../interfaces';
 
