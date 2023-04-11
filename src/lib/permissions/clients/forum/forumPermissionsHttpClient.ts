@@ -12,7 +12,7 @@ export class ForumPermissionsHttpClient extends AbstractPermissionsApiClient imp
   }
 
   computePostPermissions(request: PermissionCompute): Promise<PostPermissionFlags> {
-    return fetch(`${this.baseUrl}/permissions/forum/conpute-post-permissions`, {
+    return fetch(`${this.baseUrl}/api/permissions/forum/compute-post-permissions`, {
       method: 'POST',
       body: JSON.stringify(request),
       headers: {
@@ -22,7 +22,7 @@ export class ForumPermissionsHttpClient extends AbstractPermissionsApiClient imp
   }
 
   computePostCategoryPermissions(request: PermissionCompute): Promise<PostCategoryPermissionFlags> {
-    return fetch(`${this.baseUrl}/permissions/forum/conpute-post-category-permissions`, {
+    return fetch(`${this.baseUrl}/api/permissions/forum/compute-post-category-permissions`, {
       method: 'POST',
       body: JSON.stringify(request),
       headers: {
