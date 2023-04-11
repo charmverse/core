@@ -1,7 +1,7 @@
 import type { PermissionCompute } from 'lib/permissions/interfaces';
 
 import fetch from '../../../../adapters/http/fetch.server';
-import { AbstractPermissionsApiClient } from '../apiClient.class';
+import { AbstractPermissionsApiClient } from '../abstractApiClient.class';
 import type { PermissionsApiClientConstructor } from '../interfaces';
 
 import type { ForumPermissionsClient, PostCategoryPermissionFlags, PostPermissionFlags } from './forumInterfaces';
