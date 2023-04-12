@@ -1,7 +1,7 @@
 import type { User } from '@prisma/client';
-import { prisma } from 'db';
 import { v4 } from 'uuid';
 
+import { prisma } from '../../db';
 import { sessionUserRelations } from '../../lib/session/config';
 import type { LoggedInUser } from '../../lib/user/interfaces';
 import { uid } from '../../lib/utilities/strings';
