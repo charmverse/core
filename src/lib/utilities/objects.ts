@@ -1,4 +1,5 @@
-import { pick, omit } from 'lodash';
+import omit from 'lodash/omit';
+import pick from 'lodash/pick';
 
 export type FilterMode = 'include' | 'exclude';
 
