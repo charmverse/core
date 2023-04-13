@@ -1,4 +1,4 @@
-import type { Page, ProposalCategory, ProposalStatus } from '@prisma/client';
+import type { Page, Post, ProposalCategory, ProposalStatus } from '@prisma/client';
 import { prisma } from 'db';
 import { v4 } from 'uuid';
 
@@ -111,4 +111,55 @@ export async function generateProposal({
   });
 
   return { ...result.proposal, page: { title: result.title, path: result.path } };
+}
+export async function convertPostToProposal({
+  post,
+  userId,
+  categoryId
+}: {
+  post: Post;
+  userId: string;
+  categoryId: string;
+}) {
+  await prisma.post.update({
+    where: { id: post.id },
+    data: {
+      proposal: {
+        create: {
+          createdBy: userId,
+          status: 'draft',
+          category: {
+            connect: {
+              id: categoryId
+            }
+          },
+          space: {
+            connect: {
+              id: post.spaceId
+            }
+          },
+          page: {
+            create: {
+              author: {
+                connect: {
+                  id: userId
+                }
+              },
+              space: {
+                connect: {
+                  id: post.spaceId
+                }
+              },
+              contentText: post.contentText,
+              content: post.content as any,
+              path: `post-${v4()}`,
+              title: post.title,
+              type: 'proposal',
+              updatedBy: userId
+            }
+          }
+        }
+      }
+    }
+  });
 }
