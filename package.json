@@ -59,6 +59,7 @@
     "@types/nanoid-dictionary": "^4.2.0",
     "@types/uuid": "^9.0.1",
     "bufferutil": "^4.0.7",
+    "dotenv": "^16.0.3",
     "ethers": "^6.2.3",
     "lodash": "^4.17.21",
     "loglevel": "^1.8.1",
