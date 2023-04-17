@@ -5,23 +5,38 @@ import type {
   AssignedPostCategoryPermission,
   MutatedPostSearch,
   PermissionCompute,
+  PermissionToDelete,
   PostCategoryPermissionFlags,
   PostPermissionFlags,
-  PostSearchToMutate
+  PostSearchToMutate,
+  Resource
 } from '../../interfaces';
+import type { CategoriesToFilter, PostCategoryPermissionAssignment, PostCategoryWithPermissions } from '../interfaces';
 
 import type { PremiumForumPermissionsClient } from './interfaces';
 
 export class ForumPermissionsHttpClient extends AbstractPermissionsApiClient implements PremiumForumPermissionsClient {
-  private prefix = `/api/forum`;
+  private get prefix() {
+    return `${this.baseUrl}/api/forum`;
+  }
 
   // eslint-disable-next-line no-useless-constructor
   constructor(params: PermissionsApiClientConstructor) {
     super(params);
   }
 
+  filterAccessiblePostCategories(userAndCategories: CategoriesToFilter): Promise<PostCategoryWithPermissions[]> {
+    return fetch(`${this.prefix}/filter-categories`, {
+      method: 'POST',
+      body: JSON.stringify(userAndCategories),
+      headers: {
+        Authorization: `Bearer ${this.authKey}`
+      }
+    });
+  }
+
   computePostPermissions(request: PermissionCompute): Promise<PostPermissionFlags> {
-    return fetch(`${this.baseUrl}${this.prefix}/compute-post-permissions`, {
+    return fetch(`${this.prefix}/compute-post-permissions`, {
       method: 'POST',
       body: JSON.stringify(request),
       headers: {
@@ -31,7 +46,7 @@ export class ForumPermissionsHttpClient extends AbstractPermissionsApiClient imp
   }
 
   computePostCategoryPermissions(request: PermissionCompute): Promise<PostCategoryPermissionFlags> {
-    return fetch(`${this.baseUrl}/api/forum/compute-post-category-permissions`, {
+    return fetch(`${this.prefix}/compute-post-category-permissions`, {
       method: 'POST',
       body: JSON.stringify(request),
       headers: {
@@ -40,19 +55,43 @@ export class ForumPermissionsHttpClient extends AbstractPermissionsApiClient imp
     });
   }
 
-  assignDefaultPostCategoryPermissions(): Promise<void> {
-    throw new Error();
+  assignDefaultPostCategoryPermissions(postCategory: Resource): Promise<void> {
+    return fetch(`${this.prefix}assign-default-post-category-permissions`, {
+      method: 'POST',
+      body: JSON.stringify(postCategory),
+      headers: {
+        Authorization: `Bearer ${this.authKey}`
+      }
+    });
   }
 
-  upsertPostCategoryPermission(): Promise<AssignedPostCategoryPermission> {
-    throw new Error();
+  upsertPostCategoryPermission(request: PostCategoryPermissionAssignment): Promise<AssignedPostCategoryPermission> {
+    return fetch(`${this.prefix}/upsert-post-category-permission`, {
+      method: 'POST',
+      body: JSON.stringify(request),
+      headers: {
+        Authorization: `Bearer ${this.authKey}`
+      }
+    });
   }
 
-  deletePostCategoryPermission(): Promise<void> {
-    throw new Error();
+  deletePostCategoryPermission(request: PermissionToDelete): Promise<void> {
+    return fetch(`${this.prefix}/delete-post-category-permission`, {
+      method: 'POST',
+      body: JSON.stringify(request),
+      headers: {
+        Authorization: `Bearer ${this.authKey}`
+      }
+    });
   }
 
-  mutatePostCategorySearch(search: PostSearchToMutate): Promise<MutatedPostSearch> {
-    throw new Error();
+  mutatePostCategorySearch(request: PostSearchToMutate): Promise<MutatedPostSearch> {
+    return fetch(`${this.prefix}/mutate-post-category-search`, {
+      method: 'POST',
+      body: JSON.stringify(request),
+      headers: {
+        Authorization: `Bearer ${this.authKey}`
+      }
+    });
   }
 }

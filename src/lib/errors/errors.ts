@@ -6,6 +6,7 @@ const ErrorCodes = {
   'Invalid input': 400,
   'Undesirable operation': 400,
   'Maximum size exceeded': 400,
+  'Subscription required': 402,
   'Disabled account': 409,
   'Access denied': 401,
   'Insecure operation': 401,
@@ -188,6 +189,16 @@ export class ExpectedAnError extends SystemError {
       errorType: 'Unexpected result',
       message: 'Expected an error to be thrown',
       severity: 'error'
+    });
+  }
+}
+
+export class SubscriptionRequiredError extends SystemError {
+  constructor() {
+    super({
+      errorType: 'Subscription required',
+      message: 'A paid subscription is required for your space to access this feature',
+      severity: 'warning'
     });
   }
 }

@@ -34,3 +34,11 @@ export type MutatedPostSearch = {
  * When returning post categories, also pre-compute if a user can add a post to that category
  */
 export type PostCategoryWithPermissions = PostCategory & { permissions: PostCategoryPermissionFlags };
+
+/**
+ * Used for returning a subset of post categories
+ */
+export type CategoriesToFilter = {
+  postCategories: PostCategory[];
+  userId?: string;
+};
