@@ -2,7 +2,6 @@ import type { PostCategory, PostComment } from '@prisma/client';
 import { v4 } from 'uuid';
 
 import { prisma } from '../../db';
-import type { CreatePostCommentInput } from '../forums/interfaces';
 import { stringToValidPath } from '../utilities/strings';
 
 export async function generatePostCategory({
@@ -20,6 +19,13 @@ export async function generatePostCategory({
     }
   });
 }
+
+export type CreatePostCommentInput = {
+  content: any;
+  contentText: string;
+  parentId?: string;
+};
+
 export async function generatePostWithComment({
   userId,
   spaceId,
