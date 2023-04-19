@@ -63,12 +63,13 @@ export function buildComputePermissionsWithPermissionFilteringPolicies<R, F>({
     for (const policy of policies) {
       let hasTrueFlag = false;
 
-      const newFlags = await policy({
+      const newFlags = (await policy({
         flags: applicableFlags,
         resource,
         userId: request.userId,
         isAdmin: isAdminStatus
-      } as PermissionFilteringPolicyFnInput<R & ResourceWithSpaceId, F>);
+        // Any statement fixes the build error
+      } as any as PermissionFilteringPolicyFnInput<R & ResourceWithSpaceId, F>)) as Awaited<F>;
       // Check the policy did not add any new flags as true
       // eslint-disable-next-line no-loop-func
       typedKeys(newFlags).forEach((key) => {

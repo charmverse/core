@@ -3,7 +3,7 @@ export * from './lib/errors';
 export * from './lib/utilities';
 
 export { log } from './lib/log';
-export * from './lib/permissions/clients/interfaces';
+export * from './lib/permissions/clients';
 export * from './lib/permissions/interfaces';
 
 // Sample utility function to check imports work
