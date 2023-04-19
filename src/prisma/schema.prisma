@@ -1347,6 +1347,7 @@ enum PostCategoryPermissionLevel {
   category_admin
   moderator
   full_access
+  comment_vote
   view
   custom
 }
