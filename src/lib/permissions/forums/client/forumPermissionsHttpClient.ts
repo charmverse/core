@@ -25,7 +25,7 @@ export class ForumPermissionsHttpClient extends AbstractPermissionsApiClient imp
     super(params);
   }
 
-  filterAccessiblePostCategories(userAndCategories: CategoriesToFilter): Promise<PostCategoryWithPermissions[]> {
+  getPermissionedCategories(userAndCategories: CategoriesToFilter): Promise<PostCategoryWithPermissions[]> {
     return fetch(`${this.prefix}/filter-categories`, {
       method: 'POST',
       body: JSON.stringify(userAndCategories),
