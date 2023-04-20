@@ -56,6 +56,7 @@ export class ForumPermissionsHttpClient extends AbstractPermissionsApiClient imp
   }
 
   assignDefaultPostCategoryPermissions(postCategory: Resource): Promise<void> {
+    console.log('Logging CLIENT', this.prefix);
     return fetch(`${this.prefix}/assign-default-post-category-permissions`, {
       method: 'POST',
       body: JSON.stringify(postCategory),
