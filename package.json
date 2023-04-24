@@ -3,9 +3,18 @@
   "version": "1.0.0",
   "description": "",
   "exports": {
-    ".": "./dist/index.js",
-    "./dist/shared": "./dist/shared.js",
-    "./dist/prisma": "./dist/prisma.js"
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./dist/shared": {
+      "import": "./dist/shared.js",
+      "types": "./dist/shared.d.ts"
+    },
+    "./dist/prisma": {
+      "import": "./dist/prisma.js",
+      "types": "./dist/prisma.d.ts"
+    }
   },
   "types": "./dist/index.d.ts",
   "type": "module",
