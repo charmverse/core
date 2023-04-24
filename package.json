@@ -4,21 +4,22 @@
   "description": "",
   "exports": {
     ".": "./dist/index.js",
-    "./dist/shared": "./dist/shared.js"
+    "./dist/shared": "./dist/shared.js",
+    "./dist/prisma": "./dist/prisma.js"
   },
-  "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "type": "module",
   "scripts": {
     "test": "NODE_OPTIONS=\"--max_old_space_size=4096 --experimental-vm-modules=true\"  dotenv -e .env.test.local -- npx jest --config='./jest.config.ts' --maxWorkers=2 --watch --verbose",
     "test:ci": "NODE_OPTIONS=\"--max_old_space_size=4096 --experimental-vm-modules=true\"  dotenv -e .env.test.local -- npx jest --config='./jest.config.ts' --maxWorkers=2",
-    "build": "npm run prisma:generate && tsc",
-    "prisma:generate": "npx prisma generate --schema=./src/prisma/schema.prisma",
+    "build:cjs": "tsc --module commonjs --outDir dist/cjs",
+    "build": "npm run prisma:generate && tsc --module esnext --outDir dist/esm",
     "postinstall": "npm run build",
     "prepare": "husky install",
-    "migrate:reset": "npx prisma migrate reset --schema=./src/prisma/schema.prisma --force",
-    "migrate:dev": "npx prisma migrate dev --schema=./src/prisma/schema.prisma",
-    "migrate:deploy": "npx prisma migrate deploy --schema=./src/prisma/schema.prisma"
+    "prisma:generate": "npx prisma generate --schema=./src/prisma/schema.prisma",
+    "prisma:reset": "npx prisma migrate reset --schema=./src/prisma/schema.prisma --force",
+    "prisma:migrate": "npx prisma migrate dev --schema=./src/prisma/schema.prisma",
+    "prisma:deploy": "npx prisma migrate deploy --schema=./src/prisma/schema.prisma"
   },
   "repository": {
     "type": "git",
