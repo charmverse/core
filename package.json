@@ -5,14 +5,17 @@
   "exports": {
     ".": {
       "import": "./dist/index.js",
+      "require": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
     "./dist/shared": {
       "import": "./dist/shared.js",
+      "require": "./dist/shared.js",
       "types": "./dist/shared.d.ts"
     },
     "./dist/prisma": {
       "import": "./dist/prisma.js",
+      "require": "./dist/prisma.js",
       "types": "./dist/prisma.d.ts"
     }
   },
