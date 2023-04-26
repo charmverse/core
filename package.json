@@ -6,6 +6,7 @@
   "types": "./dist/index.d.ts",
   "type": "module",
   "scripts": {
+    "typecheck": "tsc --noEmit",
     "test": "NODE_OPTIONS=\"--max_old_space_size=4096 --experimental-vm-modules=true\"  dotenv -e .env.test.local -- npx jest --config='./jest.config.ts' --maxWorkers=2 --watch --verbose",
     "test:ci": "NODE_OPTIONS=\"--max_old_space_size=4096 --experimental-vm-modules=true\"  dotenv -e .env.test.local -- npx jest --config='./jest.config.ts' --maxWorkers=2",
     "build": "npm run prisma:generate && tsc",
@@ -56,7 +57,7 @@
     "@types/nanoid-dictionary": "^4.2.0",
     "@types/uuid": "^9.0.1",
     "bufferutil": "^4.0.7",
-    "dotenv": "^16.0.3",
+    "dotenv-cli": "^7.2.1",
     "ethers": "^6.2.3",
     "lodash": "^4.17.21",
     "loglevel": "^1.8.1",
