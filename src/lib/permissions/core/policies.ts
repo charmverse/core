@@ -1,7 +1,7 @@
 import { DataNotFoundError } from '../../errors';
 import { objectUtils } from '../../utilities';
 import { hasAccessToSpace } from '../hasAccessToSpace';
-import type { PermissionCompute } from '../interfaces';
+import type { PermissionCompute, UserPermissionFlags } from '../interfaces';
 
 /**
  * In these types, we use the following naming convention:
@@ -34,7 +34,7 @@ type PolicyBuilderInput<R, F> = {
  * This allows us to build a compute function that will apply permission filtering policies to the result, and keep the inner computation clean of nested if / else patterns
  * @type R - If the resource contains a spaceId, we can auto resolve admin status. In this case, your Permission Filtering Policies can make use of isAdmin
  */
-export function buildComputePermissionsWithPermissionFilteringPolicies<R, F>({
+export function buildComputePermissionsWithPermissionFilteringPolicies<R, F extends UserPermissionFlags<any>>({
   computeFn,
   resolver,
   policies
