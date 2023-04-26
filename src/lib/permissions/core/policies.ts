@@ -69,7 +69,7 @@ export function buildComputePermissionsWithPermissionFilteringPolicies<R, F exte
         resource,
         userId: request.userId,
         isAdmin: isAdminStatus
-      } as PermissionFilteringPolicyFnInput<R & ResourceWithSpaceId, F>);
+      } as any as PermissionFilteringPolicyFnInput<R & ResourceWithSpaceId, F>);
       // Check the policy did not add any new flags as true
       // eslint-disable-next-line no-loop-func
       objectUtils.typedKeys(newFlags).forEach((key) => {
