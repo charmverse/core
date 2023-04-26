@@ -227,6 +227,12 @@ enum ApiPageKeyType {
   typeform
 }
 
+enum SubscriptionTier {
+  free
+  pro
+  enterprise
+}
+
 model Space {
   id                          String                            @id @default(uuid()) @db.Uuid
   deletedAt                   DateTime?
@@ -236,7 +242,7 @@ model Space {
   updatedBy                   String                            @db.Uuid
   name                        String
   domain                      String                            @unique
-  premiumOptin                Boolean                           @default(true)
+  paidTier                    SubscriptionTier                  @default(pro)
   discordServerId             String?
   defaultVotingDuration       Int?
   snapshotDomain              String?

@@ -1,7 +1,8 @@
 import { DataNotFoundError } from '../../errors';
-import { typedKeys } from '../../utilities/objects';
+import { objectUtils } from '../../utilities';
 import { hasAccessToSpace } from '../hasAccessToSpace';
-import type { PermissionCompute, UserPermissionFlags } from '../interfaces';
+import type { PermissionCompute } from '../interfaces';
+
 /**
  * In these types, we use the following naming convention:
  * R - resource type such as a Post
@@ -33,7 +34,7 @@ type PolicyBuilderInput<R, F> = {
  * This allows us to build a compute function that will apply permission filtering policies to the result, and keep the inner computation clean of nested if / else patterns
  * @type R - If the resource contains a spaceId, we can auto resolve admin status. In this case, your Permission Filtering Policies can make use of isAdmin
  */
-export function buildComputePermissionsWithPermissionFilteringPolicies<R, F extends UserPermissionFlags<any, boolean>>({
+export function buildComputePermissionsWithPermissionFilteringPolicies<R, F>({
   computeFn,
   resolver,
   policies
@@ -68,12 +69,11 @@ export function buildComputePermissionsWithPermissionFilteringPolicies<R, F exte
         resource,
         userId: request.userId,
         isAdmin: isAdminStatus
-        // Any statement fixes the build error
-      } as any as PermissionFilteringPolicyFnInput<R & ResourceWithSpaceId, F>);
+      } as PermissionFilteringPolicyFnInput<R & ResourceWithSpaceId, F>);
       // Check the policy did not add any new flags as true
       // eslint-disable-next-line no-loop-func
-      typedKeys(newFlags).forEach((key) => {
-        const flagValue = newFlags[key] as any as boolean;
+      objectUtils.typedKeys(newFlags).forEach((key) => {
+        const flagValue = newFlags[key];
 
         // Adding true and not true just in case a policy returns a nullish value instead of false
         if (flagValue === true && applicableFlags[key] !== true) {
