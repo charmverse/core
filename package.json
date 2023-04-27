@@ -25,7 +25,7 @@
     "build:all": "npm run build && npm run build:esm",
     "build": "npm run prisma:generate && tsc",
     "build:esm": "npm run prisma:generate && tsc --project tsconfig.esm.json && tsx createpackagejson.ts",
-    "postinstall": "npm run build",
+    "postinstall": "npm run build:all",
     "prepare": "husky install",
     "prisma:generate": "npx prisma generate --schema=./src/prisma/schema.prisma",
     "prisma:reset": "npx prisma migrate reset --schema=./src/prisma/schema.prisma --force",
