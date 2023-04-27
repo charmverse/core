@@ -2,14 +2,29 @@
   "name": "@charmverse/core",
   "version": "1.0.0",
   "description": "",
-  "main":  "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "type": "module",
+  "type": "commonjs",
+  "types": "./dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    },
+    "./dist/shared": {
+      "import": "./dist/esm/shared.js",
+      "require": "./dist/cjs/shared.js"
+    },
+    "./dist/prisma": {
+      "import": "./dist/esm/prisma.js",
+      "require": "./dist/cjs/prisma.js"
+    }
+  },
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test": "NODE_OPTIONS=\"--max_old_space_size=4096 --experimental-vm-modules=true\"  dotenv -e .env.test.local -- npx jest --config='./jest.config.ts' --maxWorkers=2 --watch --verbose",
     "test:ci": "NODE_OPTIONS=\"--max_old_space_size=4096 --experimental-vm-modules=true\"  dotenv -e .env.test.local -- npx jest --config='./jest.config.ts' --maxWorkers=2",
+    "build:all": "npm run build && npm run build:esm",
     "build": "npm run prisma:generate && tsc",
+    "build:esm": "npm run prisma:generate && tsc --project tsconfig.esm.json && tsx createpackagejson.ts",
     "postinstall": "npm run build",
     "prepare": "husky install",
     "prisma:generate": "npx prisma generate --schema=./src/prisma/schema.prisma",
@@ -58,12 +73,15 @@
     "@types/uuid": "^9.0.1",
     "bufferutil": "^4.0.7",
     "dotenv-cli": "^7.2.1",
+    "esbuild": "^0.17.18",
+    "esbuild-node-externals": "^1.7.0",
     "ethers": "^6.2.3",
     "lodash": "^4.17.21",
     "loglevel": "^1.8.1",
     "luxon": "^3.3.0",
-    "nanoid": "^4.0.2",
-    "nanoid-dictionary": "^4.3.0",
+    "nanoid": "^3.3.6",
+    "nanoid-dictionary": "^3.0.0",
+    "tsx": "^3.12.6",
     "utf-8-validate": "^5.0.10",
     "uuid": "^9.0.0"
   }
