@@ -5,7 +5,6 @@
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
   "main": "./dist/cjs/index.js",
-  "files": [],
   "exports": {
     ".": {
       "import": "./dist/esm/index.js",
