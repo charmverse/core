@@ -2,7 +2,7 @@ export * from './lib/errors/index';
 
 export * from './lib/utilities/index';
 
-export { log } from './lib/log';
+export { log } from './lib/log/index';
 export * from './lib/permissions/clients/index';
 export * from './lib/permissions/interfaces';
 
