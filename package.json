@@ -25,6 +25,7 @@
     "test:ci": "NODE_OPTIONS=\"--max_old_space_size=4096 --experimental-vm-modules=true\"  dotenv -e .env.test.local -- npx jest --config='./jest.config.ts' --maxWorkers=2",
     "build": "tsc",
     "build:esm": "tsc --project tsconfig.esm.json && tsx createpackagejson.ts",
+    "build:esm:watch": "tsx createpackagejson.ts && tsc --project tsconfig.esm.json --watch",
     "build:all": "rm -rf ./dist && npm run build:esm && npm run build",
     "postinstall": "npm run prisma:generate && npm run build:all",
     "prepare": "husky install",
