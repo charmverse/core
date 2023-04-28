@@ -73,59 +73,8 @@ jobs:
         uses: ./.github/actions/install
 
       - name: Setup test database
-        run: npx dotenv -e .env.test.local -- npm run migrate:reset
+        run: npx dotenv -e .env.test.local -- npm run prisma:reset
 
       - name: Run ${{matrix.test_name}}
         run: ${{matrix.test_command}}
 
-  # deploy:
-  #   name: Deploy to production
-  #   runs-on: ubuntu-latest
-  #   if: github.ref == 'refs/heads/main'
-  #   needs: [test, integration-test]
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - name: Inject slug/short variables
-  #       uses: rlespinasse/github-slug-action@v4.x
-
-  #     - name: Install dependencies
-  #       uses: ./.github/actions/install
-
-  #     - name: Build app
-  #       uses: ./.github/actions/build
-  #       # Pass environment variables
-  #       # with:
-  #         # NEXT_PUBLIC_APP_ENV: 'production'
-
-  #     - name: Build and Push Docker image
-  #       uses: ./.github/actions/build_docker_image
-  #       env:
-  #         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  #         AWS_REGION: us-east-1
-
-  #     - name: Set the docker compose env variables
-  #       uses: mikefarah/yq@master
-  #       with:
-  #         cmd: |
-  #           yq -I 4 -i '
-  #             with(.option_settings."aws:elasticbeanstalk:application:environment";
-  #                   .NODE_ENV = "production" |
-  #                   .IMGTAG = "${{ github.run_id }}-${{ env.GITHUB_SHA_SHORT }}")
-  #             ' .ebextensions/00_env_vars.config
-
-  #     - name: Package Webapp
-  #       run: cat files_to_zip.txt | zip --symlinks -r@ deploy.zip
-
-  #     - name: Deploy to Beanstalk
-  #       uses: einaregilsson/beanstalk-deploy@v21
-  #       with:
-  #         aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #         aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  #         application_name: permissions-engine
-  #         environment_name: prd-charmverse-permissions
-  #         version_label: ${{ github.sha }}
-  #         region: us-east-1
-  #         deployment_package: deploy.zip
-  #         use_existing_version_if_available: true # allows triggering re-deploys with same version
-  #         wait_for_deployment: false # set to false to save sweet Github minutes

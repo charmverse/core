@@ -1,9 +1,9 @@
-export * from './lib/errors';
+export * from './lib/errors/index';
 
-export * from './lib/utilities';
+export * from './lib/utilities/index';
 
-export { log } from './lib/log';
-export * from './lib/permissions/clients/interfaces';
+export { log } from './lib/log/index';
+export * from './lib/permissions/clients/index';
 export * from './lib/permissions/interfaces';
 
 // Sample utility function to check imports work

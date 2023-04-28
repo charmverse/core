@@ -2,7 +2,6 @@ import type { PostCategory, PostComment } from '@prisma/client';
 import { v4 } from 'uuid';
 
 import { prisma } from '../../db';
-import type { CreatePostCommentInput } from '../forums/interfaces';
 import { stringToValidPath } from '../utilities/strings';
 
 export async function generatePostCategory({
@@ -20,6 +19,13 @@ export async function generatePostCategory({
     }
   });
 }
+
+export type CreatePostCommentInput = {
+  content: any;
+  contentText: string;
+  parentId?: string;
+};
+
 export async function generatePostWithComment({
   userId,
   spaceId,
@@ -62,7 +68,8 @@ export async function generateForumPost({
   path = `post-${v4()}`,
   title = 'Test post',
   content,
-  contentText
+  contentText,
+  isDraft
 }: {
   categoryId?: string;
   userId: string;
@@ -71,6 +78,7 @@ export async function generateForumPost({
   title?: string;
   content?: any;
   contentText?: string;
+  isDraft?: boolean;
 }) {
   if (!categoryId) {
     const category = await generatePostCategory({ spaceId });
@@ -78,6 +86,7 @@ export async function generateForumPost({
   }
   return prisma.post.create({
     data: {
+      isDraft,
       title,
       path,
       contentText: contentText ?? '',

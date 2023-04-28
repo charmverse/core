@@ -1,9 +1,10 @@
-import type { ForumPermissionsClient } from './forum/forumInterfaces';
-import { ForumPermissionsHttpClient } from './forum/forumPermissionsHttpClient';
-import type { PermissionsApiClientConstructor, PermissionsClient } from './interfaces';
+import { ForumPermissionsHttpClient } from '../forums/client/forumPermissionsHttpClient';
+import type { PremiumForumPermissionsClient } from '../forums/client/interfaces';
 
-export class PermissionsApiClient implements PermissionsClient {
-  forum: ForumPermissionsClient;
+import type { PermissionsApiClientConstructor, PremiumPermissionsClient } from './interfaces';
+
+export class PermissionsApiClient implements PremiumPermissionsClient {
+  forum: PremiumForumPermissionsClient;
 
   constructor(params: PermissionsApiClientConstructor) {
     this.forum = new ForumPermissionsHttpClient(params);
