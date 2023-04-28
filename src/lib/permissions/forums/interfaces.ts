@@ -1,5 +1,7 @@
-import type { PostCategory, PostCategoryOperation, PostCategoryPermissionLevel, PostOperation } from '@prisma/client';
+import { PostCategoryOperation, PostOperation } from '@prisma/client';
+import type { PostCategory, PostCategoryPermissionLevel } from '@prisma/client';
 
+import { typedKeys } from '../../utilities/objects';
 import type { AssignablePermissionGroups, TargetPermissionGroup, UserPermissionFlags } from '../interfaces';
 
 export type PostPermissionFlags = UserPermissionFlags<PostOperation>;
@@ -42,3 +44,10 @@ export type CategoriesToFilter = {
   postCategories: PostCategory[];
   userId?: string;
 };
+
+export const postCategoryPermissionGroups: AssignablePostCategoryPermissionGroups[] = ['role', 'space', 'public'];
+
+export const postOperations = [...typedKeys(PostOperation)] as const;
+export const postCategoryOperations = [...typedKeys(PostCategoryOperation)] as const;
+// Used in most cases, as only an author should be able to edit their post
+export const postOperationsWithoutEdit = postOperations.filter((operation) => operation !== 'edit_post');
