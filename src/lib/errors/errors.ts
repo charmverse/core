@@ -1,7 +1,7 @@
 // Subset of error types from @mui/material/Alert
 export type ErrorSeverity = 'warning' | 'error';
 
-const ErrorCodes = {
+export const ErrorCodes = {
   'Duplicate data': 400,
   'Invalid input': 400,
   'Undesirable operation': 400,
