@@ -6,6 +6,12 @@ declare global {
   var prisma: PrismaClient;
 }
 
+// @ts-ignore - add support for JSON for BigInt (used in telegramuser) - https://github.com/GoogleChromeLabs/jsbi/issues/30
+// eslint-disable-next-line no-extend-native
+BigInt.prototype.toJSON = function () {
+  return this.toString();
+};
+
 export const prisma: PrismaClient = global.prisma || new PrismaClient();
 
 // remember this instance of prisma in development to avoid too many clients
