@@ -29,6 +29,7 @@
     "build:all": "rm -rf ./dist && npm run build:esm && npm run build",
     "postinstall": "npm run prisma:generate && npm run build:all",
     "prepare": "husky install",
+    "prisma:studio": "npx prisma studio --schema=./src/prisma/schema.prisma",
     "prisma:generate": "npx prisma generate --schema=./src/prisma/schema.prisma",
     "prisma:reset": "npx prisma migrate reset --schema=./src/prisma/schema.prisma --force",
     "prisma:migrate": "npx prisma migrate dev --schema=./src/prisma/schema.prisma",
