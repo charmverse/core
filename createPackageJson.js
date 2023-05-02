@@ -1,4 +1,4 @@
-import fs from 'node:fs/promises';
+const fs = require('node:fs/promises');
 
 const packageJson = {
   type: 'module'
