@@ -933,6 +933,7 @@ model PagePermission {
   @@unique([spaceId, pageId], name: "spaceId_pageId")
   @@unique([public, pageId], name: "public_pageId")
   @@index([id])
+  @@index([inheritedFromPermission])
   @@index([pageId])
   @@index([roleId])
   @@index([userId])
