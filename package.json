@@ -10,11 +10,15 @@
       "import": "./dist/esm/index.js",
       "require": "./dist/cjs/index.js"
     },
-    "./dist/shared": {
+    "./log": {
+      "import": "./dist/esm/lib/log/index.js",
+      "require": "./dist/cjs/lib/log/index.js"
+    },
+    "./shared": {
       "import": "./dist/esm/shared.js",
       "require": "./dist/cjs/shared.js"
     },
-    "./dist/prisma": {
+    "./prisma": {
       "import": "./dist/esm/prisma.js",
       "require": "./dist/cjs/prisma.js"
     }
