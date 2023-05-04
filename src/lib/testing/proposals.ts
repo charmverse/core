@@ -2,7 +2,7 @@ import type { Page, Post, ProposalCategory, ProposalStatus } from '@prisma/clien
 import { v4 } from 'uuid';
 
 import { prisma } from '../../db';
-import type { ProposalReviewerInput, ProposalWithUsers } from '../proposals/interfaces';
+import type { ProposalReviewerInput, ProposalWithUsers } from '../proposals/interface';
 import { stringToColor } from '../utilities/strings';
 
 import { generatePage } from './pages';
