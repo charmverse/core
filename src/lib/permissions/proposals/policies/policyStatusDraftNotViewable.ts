@@ -1,6 +1,6 @@
 import type { ProposalOperation } from '@prisma/client';
-import { typedKeys } from 'lib/utilities/objects';
 
+import { typedKeys } from '../../../utilities/objects';
 import { AvailableProposalPermissions } from '../availableProposalPermissions.class';
 import type { ProposalPermissionFlags } from '../interfaces';
 import { isProposalAuthor } from '../isProposalAuthor';

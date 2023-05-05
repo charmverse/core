@@ -1,4 +1,4 @@
-import type { ProposalWithUsers } from '../../../proposals/interface';
+import type { ProposalWithUsers } from '../../../proposals/interfaces';
 import type { PermissionFilteringPolicyFnInput } from '../../core/policies';
 import type { IsProposalReviewerFn, ProposalPermissionFlags } from '../interfaces';
 

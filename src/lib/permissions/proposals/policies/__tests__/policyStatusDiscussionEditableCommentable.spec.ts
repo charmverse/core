@@ -1,6 +1,6 @@
 import type { ProposalCategory, Space, User } from '@prisma/client';
 
-import type { ProposalWithUsers } from '../../../../proposals/interface';
+import type { ProposalWithUsers } from '../../../../proposals/interfaces';
 import { generateProposal, generateProposalCategory } from '../../../../testing/proposals';
 import { generateSpaceUser, generateUserAndSpace } from '../../../../testing/user';
 import { AvailableProposalPermissions } from '../../availableProposalPermissions.class';

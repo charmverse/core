@@ -17,6 +17,10 @@
     "./dist/prisma": {
       "import": "./dist/esm/prisma.js",
       "require": "./dist/cjs/prisma.js"
+    },
+    "./test": {
+      "import": "./dist/esm/lib/testing/index.js",
+      "require": "./dist/cjs/lib/testing/index.js"
     }
   },
   "scripts": {

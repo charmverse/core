@@ -28,14 +28,18 @@ export class ForumPermissionsHttpClient extends AbstractPermissionsApiClient imp
   getPermissionedCategories(userAndCategories: CategoriesToFilter): Promise<PostCategoryWithPermissions[]> {
     return fetch(`${this.prefix}/get-permissioned-categories`, {
       method: 'POST',
-      body: JSON.stringify(userAndCategories)
+      body: JSON.stringify(userAndCategories),
+      headers: this.jsonHeaders
     });
   }
 
   computePostPermissions(request: PermissionCompute): Promise<PostPermissionFlags> {
-    return fetch(`${this.prefix}/compute-post-permissions?resourceId=${request.resourceId}&userId=${request.userId}`, {
-      method: 'GET'
-    });
+    return fetch(
+      `${this.prefix}/compute-proposal-permissions?resourceId=${request.resourceId}&userId=${request.userId}`,
+      {
+        method: 'GET'
+      }
+    );
   }
 
   computePostCategoryPermissions(request: PermissionCompute): Promise<PostCategoryPermissionFlags> {

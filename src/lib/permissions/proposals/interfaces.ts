@@ -5,8 +5,9 @@ import type {
   ProposalAuthor,
   ProposalReviewer
 } from '@prisma/client';
-import { typedKeys } from 'lib/utilities/objects';
 
+import type { ProposalWithUsers } from '../../proposals/interfaces';
+import { typedKeys } from '../../utilities/objects';
 import type { AssignablePermissionGroups, TargetPermissionGroup, UserPermissionFlags } from '../interfaces';
 
 export type ProposalActors = {
@@ -31,13 +32,18 @@ export const proposalCategoryOperations = [...typedKeys(ProposalCategoryOperatio
 export type ProposalPermissionFlags = UserPermissionFlags<ProposalOperation>;
 export type ProposalCategoryPermissionFlags = UserPermissionFlags<ProposalCategoryOperation>;
 
-export type AssignedProposalCategoryPermission<
+export type ProposalCategoryPermissionAssignment<
   T extends AssignableProposalCategoryPermissionGroups = AssignableProposalCategoryPermissionGroups
 > = {
-  id: string;
   proposalCategoryId: string;
   permissionLevel: ProposalCategoryPermissionLevel;
   assignee: TargetPermissionGroup<T>;
+};
+
+export type AssignedProposalCategoryPermission<
+  T extends AssignableProposalCategoryPermissionGroups = AssignableProposalCategoryPermissionGroups
+> = ProposalCategoryPermissionAssignment<T> & {
+  id: string;
 };
 /**
  * When returning proposal categories, also pre-compute if a user can add a proposal to that category
@@ -45,5 +51,8 @@ export type AssignedProposalCategoryPermission<
 export type ProposalCategoryWithPermissions = ProposalCategory & {
   permissions: ProposalCategoryPermissionFlags;
 };
-export type IsProposalReviewerFnInput = { proposal: ProposalActors; userId?: string };
+export type IsProposalReviewerFnInput = {
+  proposal: Pick<ProposalWithUsers, 'id' | 'spaceId' | 'reviewers'>;
+  userId?: string;
+};
 export type IsProposalReviewerFn = (args: IsProposalReviewerFnInput) => Promise<boolean> | boolean;
