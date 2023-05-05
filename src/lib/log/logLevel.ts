@@ -1,3 +1,4 @@
+import { RateLimit } from 'async-sema';
 import type { Logger, LogLevelDesc } from 'loglevel';
 import _log from 'loglevel';
 
@@ -8,6 +9,9 @@ import { formatLog } from './logUtils';
 
 const ERRORS_WEBHOOK = process.env.NEXT_PUBLIC_DISCORD_WEBHOOK_ERRORS;
 const originalFactory = _log.methodFactory;
+
+// requests per second = 35, timeUnit = 1sec
+const discordRateLimiter = RateLimit(30);
 
 /**
  * Enable formatting special logs for Datadog in production
@@ -40,9 +44,8 @@ export function apply(log: Logger, logPrefix: string = '') {
 
         // post errors to Discord
         if (isProdEnv && methodName === 'error' && ERRORS_WEBHOOK) {
-          sendErrorToDiscord(ERRORS_WEBHOOK, message, opt).catch((err) => {
-            // eslint-disable-next-line no-console
-            console.error('Error posting to discord', err);
+          sendErrorToDiscord(ERRORS_WEBHOOK, message, opt).catch((error) => {
+            logErrorPlain('Error posting to discord', { originalMessage: message, error });
           });
         }
       };
@@ -54,7 +57,19 @@ export function apply(log: Logger, logPrefix: string = '') {
   return log;
 }
 
-function sendErrorToDiscord(webhook: string, message: any, opt: any) {
+// log an error without calling Discord
+function logErrorPlain(message: string, opts: any) {
+  // eslint-disable-next-line no-console
+  console.error(
+    ...formatLog(message, opts, {
+      formatLogsForDocker,
+      isNodeEnv,
+      methodName: 'error'
+    })
+  );
+}
+
+async function sendErrorToDiscord(webhook: string, message: any, opt: any) {
   let fields: { name: string; value?: string }[] = [];
   if (opt instanceof Error) {
     fields = [
@@ -69,6 +84,7 @@ function sendErrorToDiscord(webhook: string, message: any, opt: any) {
       })
       .slice(0, 5); // add a sane max # of fields just in case
   }
+  await discordRateLimiter();
   return http.POST(webhook, {
     embeds: [
       {
