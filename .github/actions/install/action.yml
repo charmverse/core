@@ -1,7 +1,7 @@
-name: 'Install dependencies'
+name: "Install dependencies"
 
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - uses: actions/checkout@v3
 
@@ -23,4 +23,4 @@ runs:
     - name: Install npm dependencies
       shell: bash
       if: steps.cache_node_modules.outputs.cache-hit != 'true'
-      run: npm ci --no-audit --no-fund
+      run: npm i --no-audit --no-fund
