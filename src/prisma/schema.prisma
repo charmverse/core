@@ -792,6 +792,7 @@ model Transaction {
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @default(now())
   transactionId String
+  safeTxHash    String?
   chainId       String
   applicationId String      @db.Uuid
   application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
