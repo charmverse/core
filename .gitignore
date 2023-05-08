@@ -4,3 +4,6 @@ dist
 .env.test.local
 .env.production
 src/.env.production
+
+# ignore package-lock - it is not used in downstream projects
+package-lock.json
