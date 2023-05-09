@@ -1,6 +1,4 @@
-import type { JestConfigWithTsJest } from 'ts-jest';
-
-const jestConfig: JestConfigWithTsJest = {
+module.exports = {
   preset: 'ts-jest/presets/default-esm',
   runtime: 'jest-runtime',
   globals: {},
@@ -27,5 +25,3 @@ const jestConfig: JestConfigWithTsJest = {
   testTimeout: 30000,
   testMatch: ['**/*.spec.ts']
 };
-
-export default jestConfig;
