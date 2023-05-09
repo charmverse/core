@@ -1,9 +1,10 @@
+import type { ListProposalsRequest, ProposalWithCommentsAndUsers, ProposalWithUsers } from 'shared';
+
 import fetch from '../../../../adapters/http/fetch.server';
 import { AbstractPermissionsApiClient } from '../../clients/abstractApiClient.class';
 import type { PermissionsApiClientConstructor } from '../../clients/interfaces';
 import type { PermissionCompute, PermissionToDelete, Resource, SpaceResourcesRequest } from '../../interfaces';
 import type {
-  AssignableProposalCategoryPermissionGroups,
   AssignedProposalCategoryPermission,
   ProposalCategoryPermissionAssignment,
   ProposalCategoryPermissionFlags,
@@ -26,7 +27,14 @@ export class ProposalPermissionsHttpClient
     super(params);
   }
 
-  getProposalCategories(request: SpaceResourcesRequest): Promise<ProposalCategoryWithPermissions[]> {
+  getAccessibleProposalCategories(request: SpaceResourcesRequest): Promise<ProposalCategoryWithPermissions[]> {
+    return fetch(`${this.prefix}/categories?spaceId=${request.spaceId}&userId=${request.userId}`, {
+      method: 'GET',
+      body: JSON.stringify(request)
+    });
+  }
+
+  getAccessibleProposals(request: ListProposalsRequest): Promise<(ProposalWithUsers | ProposalWithCommentsAndUsers)[]> {
     return fetch(`${this.prefix}/categories?spaceId=${request.spaceId}&userId=${request.userId}`, {
       method: 'GET',
       body: JSON.stringify(request)
@@ -51,19 +59,17 @@ export class ProposalPermissionsHttpClient
     );
   }
 
-  getProposalCategoryPermissions(
-    request: PermissionCompute
-  ): Promise<AssignedProposalCategoryPermission<AssignableProposalCategoryPermissionGroups>[]> {
-    return fetch(`${this.prefix}/category-permissions-list`, {
-      method: 'POST',
+  getProposalCategoryPermissions(request: PermissionCompute): Promise<AssignedProposalCategoryPermission[]> {
+    return fetch(`${this.prefix}/category-permissions-list?resourceId=${request.resourceId}&userId=${request.userId}`, {
+      method: 'GET',
       body: JSON.stringify(request)
     });
   }
 
-  assignDefaultProposalCategoryPermissions(proposalCategory: Resource): Promise<void> {
+  assignDefaultProposalCategoryPermissions(request: Resource): Promise<void> {
     return fetch(`${this.prefix}/assign-default-proposal-category-permissions`, {
       method: 'POST',
-      body: JSON.stringify(proposalCategory),
+      body: JSON.stringify(request),
       headers: this.jsonHeaders
     });
   }

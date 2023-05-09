@@ -1,3 +1,8 @@
+import type {
+  ListProposalsRequest,
+  ProposalWithCommentsAndUsers,
+  ProposalWithUsers
+} from '../../../proposals/interfaces';
 import type { PermissionCompute, PermissionToDelete, Resource, SpaceResourcesRequest } from '../../interfaces';
 import type {
   AssignedProposalCategoryPermission,
@@ -10,7 +15,10 @@ import type {
 export type BaseProposalPermissionsClient = {
   computeProposalPermissions: (request: PermissionCompute) => Promise<ProposalPermissionFlags>;
   computeProposalCategoryPermissions: (request: PermissionCompute) => Promise<ProposalCategoryPermissionFlags>;
-  getProposalCategories: (request: SpaceResourcesRequest) => Promise<ProposalCategoryWithPermissions[]>;
+  getAccessibleProposalCategories: (request: SpaceResourcesRequest) => Promise<ProposalCategoryWithPermissions[]>;
+  getAccessibleProposals: (
+    request: ListProposalsRequest
+  ) => Promise<(ProposalWithUsers | ProposalWithCommentsAndUsers)[]>;
 };
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type PremiumProposalPermissionsClient = BaseProposalPermissionsClient & {

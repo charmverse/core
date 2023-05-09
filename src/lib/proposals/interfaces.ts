@@ -29,3 +29,12 @@ export interface ProposalWithUsers extends Proposal, ProposalWithCategory {
 export interface ProposalWithCommentsAndUsers extends ProposalWithUsers {
   page: Page & { comments: PageComment[] };
 }
+
+export type ProposalCategoryQuery = string | string[] | undefined;
+
+export type ListProposalsRequest = {
+  includePage?: boolean;
+  userId?: string;
+  spaceId: string;
+  categoryIds?: ProposalCategoryQuery;
+};
