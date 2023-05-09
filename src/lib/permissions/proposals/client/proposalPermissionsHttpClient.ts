@@ -1,6 +1,7 @@
 import type { ListProposalsRequest, ProposalWithCommentsAndUsers, ProposalWithUsers } from 'shared';
 
 import fetch from '../../../../adapters/http/fetch.server';
+import { GET } from '../../../../adapters/http/index';
 import { AbstractPermissionsApiClient } from '../../clients/abstractApiClient.class';
 import type { PermissionsApiClientConstructor } from '../../clients/interfaces';
 import type { PermissionCompute, PermissionToDelete, Resource, SpaceResourcesRequest } from '../../interfaces';
@@ -35,10 +36,7 @@ export class ProposalPermissionsHttpClient
   }
 
   getAccessibleProposals(request: ListProposalsRequest): Promise<(ProposalWithUsers | ProposalWithCommentsAndUsers)[]> {
-    return fetch(`${this.prefix}/categories?spaceId=${request.spaceId}&userId=${request.userId}`, {
-      method: 'GET',
-      body: JSON.stringify(request)
-    });
+    return GET(`${this.prefix}/list`, request);
   }
 
   computeProposalPermissions(request: PermissionCompute): Promise<ProposalPermissionFlags> {
