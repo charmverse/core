@@ -1,4 +1,4 @@
-import type { User } from '@prisma/client';
+import type { SubscriptionTier, User } from '@prisma/client';
 import { v4 } from 'uuid';
 
 import { prisma } from '../../db';
@@ -43,6 +43,9 @@ export async function generateSpaceUser({
   });
 }
 
+/**
+ * By default, all spaces are created as paid spaces in the pro tier
+ */
 type CreateUserAndSpaceInput = {
   user?: Partial<User>;
   isAdmin?: boolean;
@@ -50,6 +53,7 @@ type CreateUserAndSpaceInput = {
   onboarded?: boolean;
   spaceName?: string;
   publicBountyBoard?: boolean;
+  spacePaidTier?: SubscriptionTier;
 };
 
 export async function generateUserAndSpace({
@@ -58,7 +62,8 @@ export async function generateUserAndSpace({
   isGuest,
   onboarded = true,
   spaceName = 'Example Space',
-  publicBountyBoard
+  publicBountyBoard,
+  spacePaidTier = 'pro'
 }: CreateUserAndSpaceInput = {}) {
   const userId = v4();
   const newUser = await prisma.user.create({
@@ -78,6 +83,7 @@ export async function generateUserAndSpace({
                   id: userId
                 }
               },
+              paidTier: spacePaidTier,
               updatedBy: userId,
               name: spaceName,
               // Adding prefix avoids this being evaluated as uuid
