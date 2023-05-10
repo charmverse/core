@@ -1,7 +1,10 @@
-import type { ListProposalsRequest, ProposalWithCommentsAndUsers, ProposalWithUsers } from 'shared';
-
 import fetch from '../../../../adapters/http/fetch.server';
 import { GET } from '../../../../adapters/http/index';
+import type {
+  ListProposalsRequest,
+  ProposalWithCommentsAndUsers,
+  ProposalWithUsers
+} from '../../../proposals/interfaces';
 import { AbstractPermissionsApiClient } from '../../clients/abstractApiClient.class';
 import type { PermissionsApiClientConstructor } from '../../clients/interfaces';
 import type { PermissionCompute, PermissionToDelete, Resource, SpaceResourcesRequest } from '../../interfaces';
