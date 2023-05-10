@@ -1,4 +1,4 @@
-import type { Proposal } from 'prisma';
+import type { Proposal } from '@prisma/client';
 
 import type { ProposalActors } from './interfaces';
 
