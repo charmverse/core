@@ -11,10 +11,12 @@ import type {
   ProposalCategoryWithPermissions,
   ProposalPermissionFlags
 } from '../interfaces';
+import type { ProposalFlowPermissionFlags } from '../proposalFlowFlags';
 
 export type BaseProposalPermissionsClient = {
   computeProposalPermissions: (request: PermissionCompute) => Promise<ProposalPermissionFlags>;
   computeProposalCategoryPermissions: (request: PermissionCompute) => Promise<ProposalCategoryPermissionFlags>;
+  computeProposalFlowPermissions: (request: PermissionCompute) => Promise<ProposalFlowPermissionFlags>;
   getAccessibleProposalCategories: (request: SpaceResourcesRequest) => Promise<ProposalCategoryWithPermissions[]>;
   getAccessibleProposals: (
     request: ListProposalsRequest

@@ -5,3 +5,5 @@ export * from './availableProposalCategoryPermissions.class';
 
 export * from './isProposalAuthor';
 export * from './isProposalReviewer';
+
+export * from './proposalFlowFlags';

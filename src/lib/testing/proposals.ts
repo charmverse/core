@@ -46,12 +46,13 @@ export type ProposalWithUsersAndPageMeta = ProposalWithUsers & { page: Pick<Page
 
 export type GenerateProposalInput = {
   deletedAt?: Page['deletedAt'];
-  categoryId: string;
+  categoryId?: string;
   userId: string;
   spaceId: string;
   authors?: string[];
   reviewers?: ProposalReviewerInput[];
   proposalStatus?: ProposalStatus;
+  title?: string;
 };
 
 /**
@@ -62,6 +63,7 @@ export async function generateProposal({
   userId,
   spaceId,
   proposalStatus = 'draft',
+  title = 'Proposal',
   authors = [],
   reviewers = [],
   deletedAt = null
@@ -89,7 +91,9 @@ export async function generateProposal({
       deletedAt,
       proposal: {
         create: {
-          category: { connect: { id: categoryId } },
+          category: !categoryId
+            ? { create: { color: stringToColor(title), title: `Category ${Math.random()}`, spaceId } }
+            : { connect: { id: categoryId } },
           id: proposalId,
           createdBy: userId,
           status: proposalStatus,

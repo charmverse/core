@@ -12,6 +12,7 @@ import type {
   ProposalCategoryWithPermissions,
   ProposalPermissionFlags
 } from '../interfaces';
+import type { ProposalFlowPermissionFlags } from '../proposalFlowFlags';
 
 import type { PremiumProposalPermissionsClient } from './interfaces';
 
@@ -29,10 +30,7 @@ export class ProposalPermissionsHttpClient
   }
 
   getAccessibleProposalCategories(request: SpaceResourcesRequest): Promise<ProposalCategoryWithPermissions[]> {
-    return fetch(`${this.prefix}/categories?spaceId=${request.spaceId}&userId=${request.userId}`, {
-      method: 'GET',
-      body: JSON.stringify(request)
-    });
+    return GET(`${this.prefix}/categories`, request);
   }
 
   getAccessibleProposals(request: ListProposalsRequest): Promise<(ProposalWithUsers | ProposalWithCommentsAndUsers)[]> {
@@ -40,28 +38,19 @@ export class ProposalPermissionsHttpClient
   }
 
   computeProposalPermissions(request: PermissionCompute): Promise<ProposalPermissionFlags> {
-    return fetch(
-      `${this.prefix}/compute-proposal-permissions?resourceId=${request.resourceId}&userId=${request.userId}`,
-      {
-        method: 'GET'
-      }
-    );
+    return GET(`${this.prefix}/compute-proposal-permissions`, request);
+  }
+
+  computeProposalFlowPermissions(request: PermissionCompute): Promise<ProposalFlowPermissionFlags> {
+    return GET(`${this.prefix}/compute-proposal-flow-permissions`, request);
   }
 
   computeProposalCategoryPermissions(request: PermissionCompute): Promise<ProposalCategoryPermissionFlags> {
-    return fetch(
-      `${this.prefix}/compute-proposal-category-permissions?resourceId=${request.resourceId}&userId=${request.userId}`,
-      {
-        method: 'GET'
-      }
-    );
+    return GET(`${this.prefix}/compute-proposal-category-permissions`, request);
   }
 
   getProposalCategoryPermissions(request: PermissionCompute): Promise<AssignedProposalCategoryPermission[]> {
-    return fetch(`${this.prefix}/category-permissions-list?resourceId=${request.resourceId}&userId=${request.userId}`, {
-      method: 'GET',
-      body: JSON.stringify(request)
-    });
+    return GET(`${this.prefix}/category-permissions-list`, request);
   }
 
   assignDefaultProposalCategoryPermissions(request: Resource): Promise<void> {
