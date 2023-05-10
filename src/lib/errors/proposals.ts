@@ -1,4 +1,4 @@
-import { SystemError } from './errors';
+import { DataNotFoundError, SystemError } from './errors';
 
 export class ProposalNotFoundError extends SystemError {
   constructor(proposalid: string) {
@@ -26,5 +26,10 @@ export class ProposalCategoryNotFoundError extends SystemError {
       errorType: 'Data not found',
       severity: 'warning'
     });
+  }
+}
+export class ProposalCategoryPermissionNotFoundError extends DataNotFoundError {
+  constructor(categoryId: string) {
+    super(`Proposal category with ID ${categoryId} not found`);
   }
 }
