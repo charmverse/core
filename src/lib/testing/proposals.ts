@@ -2,7 +2,7 @@ import type { Page, Post, Prisma, ProposalCategory, ProposalStatus } from '@pris
 import { v4 } from 'uuid';
 
 import { prisma } from '../../db';
-import { randomThemeColour } from '../branding/colors';
+import { randomThemeColor } from '../branding/colors';
 import { InvalidInputError } from '../errors';
 import type { ProposalCategoryPermissionAssignment } from '../permissions/proposals/interfaces';
 import type { ProposalReviewerInput, ProposalWithUsers } from '../proposals/interfaces';
@@ -22,7 +22,7 @@ export async function generateProposalCategory({
     data: {
       title,
       space: { connect: { id: spaceId } },
-      color: randomThemeColour(),
+      color: randomThemeColor(),
       proposalCategoryPermissions:
         proposalCategoryPermissions && proposalCategoryPermissions.length > 0
           ? {
@@ -92,7 +92,7 @@ export async function generateProposal({
       proposal: {
         create: {
           category: !categoryId
-            ? { create: { color: randomThemeColour(), title: `Category ${Math.random()}`, spaceId } }
+            ? { create: { color: randomThemeColor(), title: `Category ${Math.random()}`, spaceId } }
             : { connect: { id: categoryId } },
           id: proposalId,
           createdBy: userId,

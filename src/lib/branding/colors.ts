@@ -1,4 +1,4 @@
-export const brandColours = [
+export const brandColors = [
   'default',
   'gray',
   'turquoise',
@@ -11,6 +11,6 @@ export const brandColours = [
   'pink'
 ];
 
-export function randomThemeColour() {
-  return brandColours[Math.floor(Math.random() * brandColours.length)];
+export function randomThemeColor() {
+  return brandColors[Math.floor(Math.random() * brandColors.length)];
 }
