@@ -34,12 +34,9 @@ export class ForumPermissionsHttpClient extends AbstractPermissionsApiClient imp
   }
 
   computePostPermissions(request: PermissionCompute): Promise<PostPermissionFlags> {
-    return fetch(
-      `${this.prefix}/compute-proposal-permissions?resourceId=${request.resourceId}&userId=${request.userId}`,
-      {
-        method: 'GET'
-      }
-    );
+    return fetch(`${this.prefix}/compute-post-permissions?resourceId=${request.resourceId}&userId=${request.userId}`, {
+      method: 'GET'
+    });
   }
 
   computePostCategoryPermissions(request: PermissionCompute): Promise<PostCategoryPermissionFlags> {
