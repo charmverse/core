@@ -843,6 +843,7 @@ model UserGnosisSafe {
   chainId   Int
   address   String
   name      String?
+  isHidden    Boolean  @default(false)
   threshold Int
   owners    String[]
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
