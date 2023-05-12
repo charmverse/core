@@ -792,6 +792,7 @@ model Transaction {
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @default(now())
   transactionId String
+  safeTxHash    String?
   chainId       String
   applicationId String      @db.Uuid
   application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
@@ -842,6 +843,7 @@ model UserGnosisSafe {
   chainId   Int
   address   String
   name      String?
+  isHidden    Boolean  @default(false)
   threshold Int
   owners    String[]
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)

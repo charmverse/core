@@ -1,4 +1,4 @@
-import type { PostCategory, PostComment } from '@prisma/client';
+import type { Post, PostCategory, PostComment, Prisma } from '@prisma/client';
 import { v4 } from 'uuid';
 
 import { prisma } from '../../db';
@@ -148,4 +148,76 @@ export async function generatePostComment({
   });
 
   return comment;
+}
+export async function generateForumPosts({
+  categoryId,
+  count,
+  spaceId,
+  createdBy,
+  content = { type: 'doc', content: [] },
+  contentText = '',
+  title,
+  isDraft,
+  withImageRatio = 30
+}: {
+  isDraft?: boolean;
+  spaceId: string;
+  categoryId?: string;
+  createdBy: string;
+  count: number;
+  content?: any;
+  contentText?: string;
+  title?: string;
+  withImageRatio?: number;
+}): Promise<Post[]> {
+  const postCreateInputs: Prisma.PostCreateManyInput[] = [];
+
+  if (!categoryId) {
+    const category = await prisma.postCategory.findFirst({
+      where: {
+        spaceId
+      }
+    });
+    if (!category) {
+      const newCategory = await generatePostCategory({ spaceId });
+      categoryId = newCategory.id;
+    } else {
+      categoryId = category.id;
+    }
+  }
+
+  // Start creating the posts 3 days ago
+  let createdAt = Date.now() - 1000 * 60 * 60 * 24 * 30;
+
+  for (let i = 0; i < count; i++) {
+    const postDate = new Date(createdAt);
+
+    postCreateInputs.push({
+      id: v4(),
+      spaceId,
+      categoryId,
+      contentText,
+      content,
+      title: `${title ?? 'Post'} ${i}`,
+      createdBy,
+      path: `path-${v4()}`,
+      createdAt: postDate,
+      updatedAt: postDate,
+      isDraft
+    });
+
+    // Space posts apart by 30 minutes
+    createdAt += 1000 * 60 * 30;
+  }
+
+  await prisma.post.createMany({ data: postCreateInputs });
+
+  const posts = await prisma.post.findMany({
+    where: {
+      id: {
+        in: postCreateInputs.map((post) => post.id as string)
+      }
+    }
+  });
+  return posts;
 }

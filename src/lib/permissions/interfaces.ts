@@ -25,15 +25,17 @@ export type PermissionCompute = {
   resourceId: string;
   userId?: string;
 };
+export type SpaceResourcesRequest = {
+  spaceId: string;
+  userId?: string;
+};
 
 /**
  * @publicOnly If true, ensures that authenticated requests will be treated as unauthenticated requests, only returning publicly available resources
  */
-export interface AvailableResourcesRequest {
-  spaceId: string;
-  userId?: string;
+export type AvailableResourcesRequest = SpaceResourcesRequest & {
   publicOnly?: boolean;
-}
+};
 
 export interface AbstractPermissions<O extends string> {
   get empty(): UserPermissionFlags<O, false>;
@@ -52,3 +54,4 @@ export type PermissionToDelete = {
 // --- Domain specific interfaces
 export * from './spaces/interfaces';
 export * from './forums/interfaces';
+export * from './proposals/interfaces';

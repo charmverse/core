@@ -1,29 +1,59 @@
-import type { Page, Post, ProposalCategory, ProposalStatus } from '@prisma/client';
+import type { Page, Post, Prisma, ProposalCategory, ProposalStatus } from '@prisma/client';
 import { v4 } from 'uuid';
 
 import { prisma } from '../../db';
+import { randomThemeColor } from '../branding/colors';
+import { InvalidInputError } from '../errors';
+import type { ProposalCategoryPermissionAssignment } from '../permissions/proposals/interfaces';
 import type { ProposalReviewerInput, ProposalWithUsers } from '../proposals/interfaces';
-import { stringToColor } from '../utilities/strings';
 
 import { generatePage } from './pages';
 
 export async function generateProposalCategory({
   spaceId,
-  title = `Category-${Math.random()}`
+  title = `Category-${Math.random()}`,
+  proposalCategoryPermissions
 }: {
   spaceId: string;
   title?: string;
+  proposalCategoryPermissions?: Pick<ProposalCategoryPermissionAssignment, 'assignee' | 'permissionLevel'>[];
 }): Promise<Required<ProposalCategory>> {
   return prisma.proposalCategory.create({
     data: {
       title,
       space: { connect: { id: spaceId } },
-      color: stringToColor(title)
+      color: randomThemeColor(),
+      proposalCategoryPermissions:
+        proposalCategoryPermissions && proposalCategoryPermissions.length > 0
+          ? {
+              createMany: {
+                data: proposalCategoryPermissions.map((p) => {
+                  return {
+                    permissionLevel: p.permissionLevel,
+                    public: p.assignee.group === 'public' ? true : undefined,
+                    roleId: p.assignee.group === 'role' ? p.assignee.id : undefined,
+                    spaceId: p.assignee.group === 'space' ? p.assignee.id : undefined
+                  } as Omit<Prisma.ProposalCategoryPermissionCreateManyInput, 'proposalCategoryId'>;
+                })
+              }
+            }
+          : undefined
     }
   });
 }
 
 export type ProposalWithUsersAndPageMeta = ProposalWithUsers & { page: Pick<Page, 'title' | 'path'> };
+
+export type GenerateProposalInput = {
+  deletedAt?: Page['deletedAt'];
+  categoryId?: string;
+  userId: string;
+  spaceId: string;
+  authors?: string[];
+  reviewers?: ProposalReviewerInput[];
+  proposalStatus?: ProposalStatus;
+  title?: string;
+};
 
 /**
  * Creates a proposal with the linked authors and reviewers
@@ -33,18 +63,11 @@ export async function generateProposal({
   userId,
   spaceId,
   proposalStatus = 'draft',
+  title = 'Proposal',
   authors = [],
   reviewers = [],
   deletedAt = null
-}: {
-  deletedAt?: Page['deletedAt'];
-  categoryId: string;
-  userId: string;
-  spaceId: string;
-  authors?: string[];
-  reviewers?: ProposalReviewerInput[];
-  proposalStatus?: ProposalStatus;
-}): Promise<ProposalWithUsersAndPageMeta> {
+}: GenerateProposalInput): Promise<ProposalWithUsers & { page: Page }> {
   const proposalId = v4();
 
   const result = await generatePage<{ proposal: ProposalWithUsers }>({
@@ -68,7 +91,9 @@ export async function generateProposal({
       deletedAt,
       proposal: {
         create: {
-          category: { connect: { id: categoryId } },
+          category: !categoryId
+            ? { create: { color: randomThemeColor(), title: `Category ${Math.random()}`, spaceId } }
+            : { connect: { id: categoryId } },
           id: proposalId,
           createdBy: userId,
           status: proposalStatus,
@@ -110,7 +135,9 @@ export async function generateProposal({
     }
   });
 
-  return { ...result.proposal, page: { title: result.title, path: result.path } };
+  const { proposal, ...page } = result;
+
+  return { ...proposal, page };
 }
 export async function convertPostToProposal({
   post,
@@ -162,4 +189,48 @@ export async function convertPostToProposal({
       }
     }
   });
+}
+
+export async function generateProposalTemplate({
+  spaceId,
+  userId,
+  authors,
+  deletedAt,
+  proposalStatus,
+  reviewers,
+  categoryId
+}: GenerateProposalInput): Promise<ProposalWithUsers> {
+  if (!categoryId) {
+    throw new InvalidInputError('Proposal category is required');
+  }
+
+  const proposal = await generateProposal({
+    categoryId,
+    spaceId,
+    userId,
+    authors,
+    deletedAt,
+    proposalStatus,
+    reviewers
+  });
+
+  const convertedToTemplate = await prisma.page.update({
+    data: {
+      type: 'page_template'
+    },
+    where: {
+      id: proposal.id
+    },
+    include: {
+      proposal: {
+        include: {
+          authors: true,
+          reviewers: true,
+          category: true
+        }
+      }
+    }
+  });
+
+  return convertedToTemplate.proposal as ProposalWithUsers;
 }
