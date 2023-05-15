@@ -1,6 +1,9 @@
 -- CreateEnum
 CREATE TYPE "PageActionType" AS ENUM ('view');
 
+-- CreateEnum
+CREATE TYPE "PostActionType" AS ENUM ('view');
+
 -- CreateTable
 CREATE TABLE "UserPageAction" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -15,7 +18,7 @@ CREATE TABLE "UserPostAction" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "createdBy" UUID NOT NULL,
     "postId" UUID NOT NULL,
-    "type" "PageActionType" NOT NULL,
+    "type" "PostActionType" NOT NULL,
     "spaceId" UUID NOT NULL
 );
 
@@ -23,10 +26,16 @@ CREATE TABLE "UserPostAction" (
 CREATE INDEX "UserPageAction_createdBy_type_idx" ON "UserPageAction"("createdBy", "type");
 
 -- CreateIndex
+CREATE INDEX "UserPageAction_spaceId_type_idx" ON "UserPageAction"("spaceId", "type");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "UserPageAction_createdBy_createdAt_key" ON "UserPageAction"("createdBy", "createdAt");
 
 -- CreateIndex
 CREATE INDEX "UserPostAction_createdBy_type_idx" ON "UserPostAction"("createdBy", "type");
+
+-- CreateIndex
+CREATE INDEX "UserPostAction_spaceId_type_idx" ON "UserPostAction"("spaceId", "type");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "UserPostAction_createdBy_createdAt_key" ON "UserPostAction"("createdBy", "createdAt");

@@ -130,6 +130,10 @@ enum PageActionType {
   view
 }
 
+enum PostActionType {
+  view
+}
+
 enum SpaceOperation {
   createPage
   createBounty
@@ -395,6 +399,7 @@ model UserPageAction {
 
   @@unique([createdBy, createdAt])
   @@index([createdBy, type])
+  @@index([spaceId, type])
 }
 
 model PageComment {
@@ -1322,13 +1327,14 @@ model UserPostAction {
   createdBy String         @db.Uuid
   postId    String         @db.Uuid
   post      Post           @relation(fields: [postId], references: [id], onDelete: Cascade)
-  type      PageActionType
+  type      PostActionType
   user      User           @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   spaceId   String         @db.Uuid
   space     Space          @relation(fields: [spaceId], references: [id], onDelete: Cascade)
 
   @@unique([createdBy, createdAt])
   @@index([createdBy, type])
+  @@index([spaceId, type])
 }
 
 model UnstoppableDomain {
