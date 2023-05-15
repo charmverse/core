@@ -126,6 +126,10 @@ enum PageOperations {
   create_poll
 }
 
+enum PageActionType {
+  view
+}
+
 enum SpaceOperation {
   createPage
   createBounty
@@ -291,7 +295,9 @@ model Space {
   webhookSigningSecret        String?
   origin                      String?
 
-  hiddenFeatures Feature[]
+  hiddenFeatures  Feature[]
+  userPageActions UserPageAction[]
+  userPostActions UserPostAction[]
 
   @@index([createdBy])
 }
@@ -366,6 +372,7 @@ model Page {
   convertedProposal   Proposal?        @relation(fields: [convertedProposalId], references: [id], onDelete: SetNull, onUpdate: Cascade, name: "convertedProposal")
   comments            PageComment[]
   apiPageKeys         ApiPageKey[]
+  userActions         UserPageAction[]
 
   @@index([bountyId])
   @@index([cardId])
@@ -374,6 +381,20 @@ model Page {
   @@index([proposalId])
   @@index([spaceId])
   @@index([title])
+}
+
+model UserPageAction {
+  createdAt DateTime       @default(now())
+  createdBy String         @db.Uuid
+  pageId    String         @db.Uuid
+  page      Page           @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  type      PageActionType
+  user      User           @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  spaceId   String         @db.Uuid
+  space     Space          @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+
+  @@unique([createdBy, createdAt])
+  @@index([createdBy, type])
 }
 
 model PageComment {
@@ -547,6 +568,8 @@ model User {
   PageComment               PageComment[]
   verifiedEmails            VerifiedEmail[]
   apiPageKeys               ApiPageKey[]
+  pageActions               UserPageAction[]
+  postActions               UserPostAction[]
 }
 
 model VerifiedEmail {
@@ -843,7 +866,7 @@ model UserGnosisSafe {
   chainId   Int
   address   String
   name      String?
-  isHidden    Boolean  @default(false)
+  isHidden  Boolean  @default(false)
   threshold Int
   owners    String[]
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -1241,6 +1264,7 @@ model Post {
   proposal           Proposal?               @relation(fields: [proposalId], references: [id], onDelete: SetNull)
   votes              Vote[]
   isDraft            Boolean?                @default(false)
+  userActions        UserPostAction[]
 
   @@index([categoryId])
   @@index([path])
@@ -1291,6 +1315,20 @@ model PostCommentUpDownVote {
   @@unique([createdBy, commentId])
   @@index([commentId])
   @@index([postId])
+}
+
+model UserPostAction {
+  createdAt DateTime       @default(now())
+  createdBy String         @db.Uuid
+  postId    String         @db.Uuid
+  post      Post           @relation(fields: [postId], references: [id], onDelete: Cascade)
+  type      PageActionType
+  user      User           @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  spaceId   String         @db.Uuid
+  space     Space          @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+
+  @@unique([createdBy, createdAt])
+  @@index([createdBy, type])
 }
 
 model UnstoppableDomain {
