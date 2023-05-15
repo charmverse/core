@@ -1,7 +1,7 @@
 import type { Page, Post, Prisma, ProposalCategory, ProposalStatus } from '@prisma/client';
+import { prisma } from 'prisma';
 import { v4 } from 'uuid';
 
-import { prisma } from '../../db';
 import { randomThemeColor } from '../branding/colors';
 import { InvalidInputError } from '../errors';
 import type { ProposalCategoryPermissionAssignment } from '../permissions/proposals/interfaces';

@@ -1,6 +1,6 @@
 import type { SpaceRole } from '@prisma/client';
+import { prisma } from 'prisma';
 
-import { prisma } from '../../db';
 import type { SystemError } from '../../lib/errors';
 import {
   InvalidInputError,

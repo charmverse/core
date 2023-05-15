@@ -1,6 +1,5 @@
 import type { Page, Prisma, PrismaPromise } from '@prisma/client';
-
-import { prisma } from '../../db';
+import { prisma } from 'prisma';
 
 export function generatePage<T>({ data, include }: Prisma.PageCreateArgs): PrismaPromise<Page & T> {
   const createArgs: Prisma.PageCreateArgs = {

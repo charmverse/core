@@ -1,7 +1,7 @@
 import type { Prisma, Role, RoleSource } from '@prisma/client';
+import { prisma } from 'prisma';
 import { v4 } from 'uuid';
 
-import { prisma } from '../../db';
 import { InvalidInputError } from '../errors';
 import { uniqueValues } from '../utilities/array';
 
