@@ -20,6 +20,9 @@ module.exports = {
   },
   extensionsToTreatAsEsm: ['.ts'],
   testEnvironment: 'jest-environment-node',
+  moduleNameMapper: {
+    '^prisma': '<rootDir>/src/prisma.ts'
+  },
   // An array of directory names to be searched recursively up from the requiring module's location
   moduleDirectories: ['node_modules', 'src'],
   testTimeout: 30000,
