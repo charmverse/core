@@ -1,5 +1,5 @@
 import type { SpaceRole } from '@prisma/client';
-import { prisma } from 'prisma';
+import { prisma } from 'prisma-client';
 
 import type { SystemError } from '../../lib/errors';
 import {

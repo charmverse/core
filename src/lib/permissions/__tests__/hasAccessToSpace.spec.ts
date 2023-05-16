@@ -2,7 +2,7 @@ import type { Space, User } from '@prisma/client';
 import { InvalidInputError, AdministratorOnlyError, UserIsGuestError, UserIsNotSpaceMemberError } from 'lib/errors';
 import { generateUserAndSpace, generateSpaceUser } from 'lib/testing/user';
 import { uid } from 'lib/utilities/strings';
-import { prisma } from 'prisma';
+import { prisma } from 'prisma-client';
 
 import { hasAccessToSpace } from '../hasAccessToSpace';
 

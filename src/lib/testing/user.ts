@@ -1,5 +1,5 @@
 import type { SubscriptionTier, User } from '@prisma/client';
-import { prisma } from 'prisma';
+import { prisma } from 'prisma-client';
 import { v4 } from 'uuid';
 
 import { sessionUserRelations } from '../../lib/session/config';

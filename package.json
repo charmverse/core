@@ -22,6 +22,10 @@
       "import": "./dist/esm/prisma.js",
       "require": "./dist/cjs/prisma.js"
     },
+    "./prisma-client": {
+      "import": "./dist/esm/prisma-client.js",
+      "require": "./dist/cjs/prisma-client.js"
+    },
     "./test": {
       "import": "./dist/esm/lib/testing/index.js",
       "require": "./dist/cjs/lib/testing/index.js"

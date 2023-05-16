@@ -1,6 +1,6 @@
 import type { Prisma, SpacePermission } from '@prisma/client';
 import { SpaceOperation } from '@prisma/client';
-import { prisma } from 'prisma';
+import { prisma } from 'prisma-client';
 
 import { InsecureOperationError, InvalidInputError, InvalidPermissionGranteeError } from '../errors';
 

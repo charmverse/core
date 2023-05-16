@@ -1,5 +1,5 @@
 import type { Post, PostCategory, PostComment, Prisma } from '@prisma/client';
-import { prisma } from 'prisma';
+import { prisma } from 'prisma-client';
 import { v4 } from 'uuid';
 
 import { stringToValidPath } from '../utilities/strings';
