@@ -235,6 +235,11 @@ enum SubscriptionTier {
   enterprise
 }
 
+enum SubscriptionPeriod {
+  monthly
+  annual
+}
+
 model Space {
   id                          String                            @id @default(uuid()) @db.Uuid
   deletedAt                   DateTime?
@@ -291,9 +296,24 @@ model Space {
   webhookSigningSecret        String?
   origin                      String?
   hiddenFeatures              Feature[]
-  subscriptionId              String?
+  spaceSubscription           SpaceSubscription[]
 
   @@index([createdBy])
+}
+
+model SpaceSubscription {
+  id             String             @id @default(uuid()) @db.Uuid
+  createdAt      DateTime           @default(now())
+  spaceId        String             @db.Uuid
+  space          Space              @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  active         Boolean
+  period         SubscriptionPeriod
+  customerId     String
+  productId      String
+  subscriptionId String
+  usage          Int
+
+  @@index([spaceId])
 }
 
 model SpaceApiToken {
@@ -843,7 +863,7 @@ model UserGnosisSafe {
   chainId   Int
   address   String
   name      String?
-  isHidden    Boolean  @default(false)
+  isHidden  Boolean  @default(false)
   threshold Int
   owners    String[]
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
