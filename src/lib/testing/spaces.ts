@@ -1,7 +1,7 @@
 import type { Prisma, SpacePermission } from '@prisma/client';
 import { SpaceOperation } from '@prisma/client';
+import { prisma } from 'prisma-client';
 
-import { prisma } from '../../db';
 import { InsecureOperationError, InvalidInputError, InvalidPermissionGranteeError } from '../errors';
 
 export async function addSpaceOperations({

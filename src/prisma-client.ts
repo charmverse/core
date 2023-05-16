@@ -1,10 +1,7 @@
 import type { Prisma } from '@prisma/client';
 import { PrismaClient } from '@prisma/client';
 
-declare global {
-  // eslint-disable-next-line no-var, vars-on-top
-  var prisma: PrismaClient;
-}
+export * from '@prisma/client';
 
 // @ts-ignore - add support for JSON for BigInt (used in telegramuser) - https://github.com/GoogleChromeLabs/jsbi/issues/30
 // eslint-disable-next-line no-extend-native
@@ -12,14 +9,16 @@ BigInt.prototype.toJSON = function () {
   return this.toString();
 };
 
-export const prisma: PrismaClient = global.prisma || new PrismaClient();
+// @ts-expect-error
+export const prisma: PrismaClient = globalThis.prisma || new PrismaClient();
 
 // remember this instance of prisma in development to avoid too many clients
 if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
+  // @ts-expect-error
   global.prisma = prisma;
 }
-export type TransactionClient = PrismaClient | Prisma.TransactionClient;
+export type PrismaTransactionClient = PrismaClient | Prisma.TransactionClient;
 
 // Pass a transaction from outer scope of function calling this
-export type Transaction = { tx: TransactionClient };
-export type OptionalTransaction = Partial<Transaction>;
+export type PrismaTransaction = { tx: PrismaTransactionClient };
+export type OptionalPrismaTransaction = Partial<PrismaTransaction>;

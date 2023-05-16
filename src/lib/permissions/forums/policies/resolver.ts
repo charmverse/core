@@ -1,4 +1,4 @@
-import { prisma } from '../../../../db';
+import { prisma } from 'prisma-client';
 
 import type { PostResource } from './interfaces';
 
