@@ -1,7 +1,7 @@
 import type { Post, PostCategory, PostComment, Prisma } from '@prisma/client';
-import { prisma } from 'prisma-client';
 import { v4 } from 'uuid';
 
+import { prisma } from '../../prisma-client';
 import { stringToValidPath } from '../utilities/strings';
 
 export async function generatePostCategory({
