@@ -2,8 +2,8 @@ import type { Page, Prisma } from '@prisma/client';
 import { v4 } from 'uuid';
 
 import { prisma } from '../../db';
-import type { PageNode } from '../pages/interfaces';
-import type { PagePermissionAssignment } from '../permissions/pages/interfaces';
+import type { PageNode, PageWithPermissions } from '../pages/interfaces';
+import type { PagePermissionAssignmentByValues } from '../permissions/pages/interfaces';
 
 type PageGenerateArgs = Pick<Page, 'createdBy' | 'spaceId'> &
   Partial<
@@ -22,7 +22,7 @@ type PageGenerateArgs = Pick<Page, 'createdBy' | 'spaceId'> &
       | 'index'
     >
   > & {
-    pagePermissions?: PagePermissionAssignment[];
+    pagePermissions?: (PagePermissionAssignmentByValues & { inheritedFromPermission?: string })[];
   };
 
 const emptyDocument = {
@@ -130,4 +130,19 @@ export function generatePageNode({
     title,
     spaceId
   };
+}
+
+export async function getPageWithPermissions(pageId: string): Promise<PageWithPermissions> {
+  return prisma.page.findUniqueOrThrow({
+    where: {
+      id: pageId
+    },
+    include: {
+      permissions: {
+        include: {
+          sourcePermission: true
+        }
+      }
+    }
+  });
 }

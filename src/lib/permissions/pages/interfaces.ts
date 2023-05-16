@@ -8,15 +8,24 @@ export type AssignablePagePermissionGroups = Extract<AssignablePermissionGroups,
 
 export const pagePermissionGroups: AssignablePagePermissionGroups[] = ['role', 'space', 'user', 'public'];
 
-export type PagePermissionAssignment<T extends AssignablePagePermissionGroups = AssignablePagePermissionGroups> = {
-  inheritedFromPermission?: string;
+export type PagePermissionAssignmentByValues<
+  T extends AssignablePagePermissionGroups = AssignablePagePermissionGroups
+> = {
   permissionLevel: PagePermissionLevel;
   assignee: TargetPermissionGroup<T>;
 };
 
+export type PagePermissionAssignment<T extends AssignablePagePermissionGroups = AssignablePagePermissionGroups> = {
+  pageId: string;
+  permission: PagePermissionAssignmentByValues<T> | string;
+};
+
 export type AssignedPagePermission<T extends AssignablePagePermissionGroups = AssignablePagePermissionGroups> =
-  PagePermissionAssignment<T> & {
+  PagePermissionAssignmentByValues<T> & {
     id: string;
+    pageId: string;
+    assignee: TargetPermissionGroup<T>;
+    sourcePermission?: PagePermission;
   };
 
 export type PagePermissionUpdate = Pick<PagePermission, 'permissionLevel'> &

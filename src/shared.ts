@@ -16,3 +16,5 @@ export function randomiser() {
 
   return items[usedIndex];
 }
+
+export * as pageTree from './lib/pages/mapPageTree';

@@ -5,3 +5,5 @@ export * from './lib/user/index';
 export * from './lib/testing/index';
 export * from './db';
 export * from './shared';
+
+export * from './lib/pages/index';

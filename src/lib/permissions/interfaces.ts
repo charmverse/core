@@ -55,3 +55,4 @@ export type PermissionToDelete = {
 export * from './spaces/interfaces';
 export * from './forums/interfaces';
 export * from './proposals/interfaces';
+export * from './pages/interfaces';
