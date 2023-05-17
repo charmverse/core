@@ -1,6 +1,12 @@
-import type { PagesRequest, PageMeta } from '../../../pages/interfaces';
-import type { PermissionCompute, PermissionToDelete, Resource } from '../../interfaces';
-import type { PagePermissionFlags, PagePermissionAssignment, AssignedPagePermission } from '../interfaces';
+import type { PageMeta, PagesRequest, PageWithPermissions } from 'lib/pages/interfaces';
+import type { PermissionCompute, PermissionResource, Resource } from 'lib/permissions/interfaces';
+
+import type {
+  AssignedPagePermission,
+  PageEventTriggeringPermissions,
+  PagePermissionAssignment,
+  PagePermissionFlags
+} from '../interfaces';
 
 export type BasePagePermissionsClient = {
   computePagePermissions: (request: PermissionCompute) => Promise<PagePermissionFlags>;
@@ -9,7 +15,8 @@ export type BasePagePermissionsClient = {
 
 export type PremiumPagePermissionsClient = BasePagePermissionsClient & {
   upsertPagePermission: (request: PagePermissionAssignment) => Promise<AssignedPagePermission>;
-  deletePagePermission: (request: PermissionToDelete) => Promise<void>;
+  deletePagePermission: (request: PermissionResource) => Promise<void>;
   listPagePermissions: (request: Resource) => Promise<AssignedPagePermission[]>;
   lockPagePermissionsToBountyCreator: (request: Resource) => Promise<void>;
+  setupPagePermissionsAfterEvent: (request: PageEventTriggeringPermissions) => Promise<PageWithPermissions>;
 };

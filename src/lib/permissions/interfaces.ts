@@ -47,7 +47,7 @@ export interface AbstractPermissions<O extends string> {
   hasPermissions(operations: O[]): boolean;
 }
 
-export type PermissionToDelete = {
+export type PermissionResource = {
   permissionId: string;
 };
 

@@ -3,7 +3,7 @@ import type {
   ProposalWithCommentsAndUsers,
   ProposalWithUsers
 } from '../../../proposals/interfaces';
-import type { PermissionCompute, PermissionToDelete, Resource, SpaceResourcesRequest } from '../../interfaces';
+import type { PermissionCompute, PermissionResource, Resource, SpaceResourcesRequest } from '../../interfaces';
 import type {
   AssignedProposalCategoryPermission,
   ProposalCategoryPermissionAssignment,
@@ -30,6 +30,6 @@ export type PremiumProposalPermissionsClient = BaseProposalPermissionsClient & {
   upsertProposalCategoryPermission: (
     assignment: ProposalCategoryPermissionAssignment
   ) => Promise<AssignedProposalCategoryPermission>;
-  deleteProposalCategoryPermission: (permission: PermissionToDelete) => Promise<void>;
+  deleteProposalCategoryPermission: (permission: PermissionResource) => Promise<void>;
   getProposalCategoryPermissions: (request: PermissionCompute) => Promise<AssignedProposalCategoryPermission[]>;
 };

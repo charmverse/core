@@ -1,4 +1,5 @@
 import type { Page, PageOperations, PagePermission, PagePermissionLevel, Role, Space, SpaceRole } from '@prisma/client';
+import type { PageLifecyleEvent } from 'lib/pages/interfaces';
 
 import type { AssignablePermissionGroups, TargetPermissionGroup, UserPermissionFlags } from '../interfaces';
 
@@ -48,12 +49,12 @@ export type PagePermissionWithAssignee = PagePermission &
     public: boolean | null;
   };
 
-export type SpaceDefaultPublicPageToggle = {
-  spaceId: string;
-  defaultPublicPages: boolean;
-};
-
 export type BoardPagePermissionUpdated = {
   boardId: string;
   permissionId: string;
+};
+
+export type PageEventTriggeringPermissions = {
+  event: PageLifecyleEvent;
+  pageId: string;
 };

@@ -3,7 +3,7 @@ import type {
   CategoriesToFilter,
   MutatedPostSearch,
   PermissionCompute,
-  PermissionToDelete,
+  PermissionResource,
   PostCategoryPermissionAssignment,
   PostCategoryPermissionFlags,
   PostCategoryWithPermissions,
@@ -22,6 +22,6 @@ export type PremiumForumPermissionsClient = BaseForumPermissionsClient & {
   upsertPostCategoryPermission: (
     assignment: PostCategoryPermissionAssignment
   ) => Promise<AssignedPostCategoryPermission>;
-  deletePostCategoryPermission: (permission: PermissionToDelete) => Promise<void>;
+  deletePostCategoryPermission: (permission: PermissionResource) => Promise<void>;
   mutatePostCategorySearch: (search: PostSearchToMutate) => Promise<MutatedPostSearch>;
 };

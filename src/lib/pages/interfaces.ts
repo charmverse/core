@@ -91,3 +91,5 @@ export type PageMeta = Pick<
 export type PageWithPermissions = Page & {
   permissions: (PagePermission & { sourcePermission: PagePermission | null })[];
 };
+
+export type PageLifecyleEvent = 'created' | 'repositioned';

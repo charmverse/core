@@ -9,3 +9,13 @@ export type AssignableSpacePermissionGroups = Extract<AssignablePermissionGroups
 export type SpacePermissionAssignment = PermissionAssignment<AssignablePermissionGroups> & {
   operations: SpaceOperation[];
 };
+
+export type PublicBountyToggle = {
+  spaceId: string;
+  publicBountyBoard: boolean;
+};
+
+export type SpaceDefaultPublicPageToggle = {
+  spaceId: string;
+  defaultPublicPages: boolean;
+};

@@ -5,7 +5,7 @@ import type {
   AssignedPostCategoryPermission,
   MutatedPostSearch,
   PermissionCompute,
-  PermissionToDelete,
+  PermissionResource,
   PostCategoryPermissionFlags,
   PostPermissionFlags,
   PostSearchToMutate,
@@ -62,7 +62,7 @@ export class ForumPermissionsHttpClient extends AbstractPermissionsApiClient imp
     });
   }
 
-  deletePostCategoryPermission(request: PermissionToDelete): Promise<void> {
+  deletePostCategoryPermission(request: PermissionResource): Promise<void> {
     return fetch(`${this.prefix}/delete-post-category-permission`, {
       method: 'DELETE',
       body: JSON.stringify(request)

@@ -7,7 +7,7 @@ import type {
 } from '../../../proposals/interfaces';
 import { AbstractPermissionsApiClient } from '../../clients/abstractApiClient.class';
 import type { PermissionsApiClientConstructor } from '../../clients/interfaces';
-import type { PermissionCompute, PermissionToDelete, Resource, SpaceResourcesRequest } from '../../interfaces';
+import type { PermissionCompute, PermissionResource, Resource, SpaceResourcesRequest } from '../../interfaces';
 import type {
   AssignedProposalCategoryPermission,
   ProposalCategoryPermissionAssignment,
@@ -79,7 +79,7 @@ export class ProposalPermissionsHttpClient
     });
   }
 
-  deleteProposalCategoryPermission(request: PermissionToDelete): Promise<void> {
+  deleteProposalCategoryPermission(request: PermissionResource): Promise<void> {
     return fetch(`${this.prefix}/delete-proposal-category-permission`, {
       method: 'DELETE',
       body: JSON.stringify(request),
