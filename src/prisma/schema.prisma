@@ -240,6 +240,11 @@ enum SubscriptionPeriod {
   annual
 }
 
+enum PaymentStatus {
+  success
+  fail
+}
+
 model Space {
   id                          String                            @id @default(uuid()) @db.Uuid
   deletedAt                   DateTime?
@@ -314,8 +319,19 @@ model StripeSubscription {
   productId      String
   subscriptionId String
   deletedAt      DateTime?
+  stripePayment  StripePayment[]
 
   @@index([spaceId])
+}
+
+model StripePayment {
+  paymentId            String             @id
+  createdAt            DateTime           @default(now())
+  status               PaymentStatus
+  amount               Int
+  currency             String
+  stripeSubscriptionId String             @db.Uuid
+  stripeSubscription   StripeSubscription @relation(fields: [stripeSubscriptionId], references: [id], onDelete: Cascade)
 }
 
 model SpaceApiToken {
