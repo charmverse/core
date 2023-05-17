@@ -391,6 +391,7 @@ model UserSpaceAction {
   postId    String?             @db.Uuid
   post      Post?               @relation(fields: [postId], references: [id], onDelete: Cascade)
   action    UserSpaceActionType
+  pageType  String?
   user      User?               @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   spaceId   String              @db.Uuid
   space     Space               @relation(fields: [spaceId], references: [id], onDelete: Cascade)

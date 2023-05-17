@@ -9,6 +9,7 @@ CREATE TABLE "UserSpaceAction" (
     "pageId" UUID,
     "postId" UUID,
     "action" "UserSpaceActionType" NOT NULL,
+    "pageType" TEXT,
     "spaceId" UUID NOT NULL,
 
     CONSTRAINT "UserSpaceAction_pkey" PRIMARY KEY ("id")
