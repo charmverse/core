@@ -299,9 +299,9 @@ model Space {
   webhookSigningSecret        String?
   origin                      String?
 
-  hiddenFeatures  Feature[]
-  userPageActions UserPageAction[]
-  userPostActions UserPostAction[]
+  hiddenFeatures Feature[]
+  PageActions    PageAction[]
+  PostActions    PostAction[]
 
   @@index([createdBy])
 }
@@ -376,7 +376,7 @@ model Page {
   convertedProposal   Proposal?        @relation(fields: [convertedProposalId], references: [id], onDelete: SetNull, onUpdate: Cascade, name: "convertedProposal")
   comments            PageComment[]
   apiPageKeys         ApiPageKey[]
-  userActions         UserPageAction[]
+  userActions         PageAction[]
 
   @@index([bountyId])
   @@index([cardId])
@@ -387,13 +387,13 @@ model Page {
   @@index([title])
 }
 
-model UserPageAction {
+model PageAction {
   createdAt DateTime       @default(now())
   createdBy String         @db.Uuid
   pageId    String         @db.Uuid
   page      Page           @relation(fields: [pageId], references: [id], onDelete: Cascade)
   type      PageActionType
-  user      User           @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  user      User?          @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   spaceId   String         @db.Uuid
   space     Space          @relation(fields: [spaceId], references: [id], onDelete: Cascade)
 
@@ -573,8 +573,8 @@ model User {
   PageComment               PageComment[]
   verifiedEmails            VerifiedEmail[]
   apiPageKeys               ApiPageKey[]
-  pageActions               UserPageAction[]
-  postActions               UserPostAction[]
+  pageActions               PageAction[]
+  postActions               PostAction[]
 }
 
 model VerifiedEmail {
@@ -1269,7 +1269,7 @@ model Post {
   proposal           Proposal?               @relation(fields: [proposalId], references: [id], onDelete: SetNull)
   votes              Vote[]
   isDraft            Boolean?                @default(false)
-  userActions        UserPostAction[]
+  actions            PostAction[]
 
   @@index([categoryId])
   @@index([path])
@@ -1322,13 +1322,13 @@ model PostCommentUpDownVote {
   @@index([postId])
 }
 
-model UserPostAction {
+model PostAction {
   createdAt DateTime       @default(now())
   createdBy String         @db.Uuid
   postId    String         @db.Uuid
   post      Post           @relation(fields: [postId], references: [id], onDelete: Cascade)
   type      PostActionType
-  user      User           @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  user      User?          @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   spaceId   String         @db.Uuid
   space     Space          @relation(fields: [spaceId], references: [id], onDelete: Cascade)
 
