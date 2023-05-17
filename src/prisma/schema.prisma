@@ -388,8 +388,9 @@ model Page {
 }
 
 model PageAction {
+  id        String         @id @default(uuid()) @db.Uuid
   createdAt DateTime       @default(now())
-  createdBy String         @db.Uuid
+  createdBy String?        @db.Uuid
   pageId    String         @db.Uuid
   page      Page           @relation(fields: [pageId], references: [id], onDelete: Cascade)
   type      PageActionType
@@ -397,7 +398,6 @@ model PageAction {
   spaceId   String         @db.Uuid
   space     Space          @relation(fields: [spaceId], references: [id], onDelete: Cascade)
 
-  @@unique([createdBy, createdAt])
   @@index([createdBy, type])
   @@index([spaceId, type])
 }
@@ -1323,8 +1323,9 @@ model PostCommentUpDownVote {
 }
 
 model PostAction {
+  id        String         @id @default(uuid()) @db.Uuid
   createdAt DateTime       @default(now())
-  createdBy String         @db.Uuid
+  createdBy String?        @db.Uuid
   postId    String         @db.Uuid
   post      Post           @relation(fields: [postId], references: [id], onDelete: Cascade)
   type      PostActionType
@@ -1332,7 +1333,6 @@ model PostAction {
   spaceId   String         @db.Uuid
   space     Space          @relation(fields: [spaceId], references: [id], onDelete: Cascade)
 
-  @@unique([createdBy, createdAt])
   @@index([createdBy, type])
   @@index([spaceId, type])
 }
