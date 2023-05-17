@@ -1,7 +1,7 @@
 import type { Page, Prisma } from '@prisma/client';
 import { v4 } from 'uuid';
 
-import { prisma } from '../../db';
+import { prisma } from '../../prisma-client';
 import type { PageNode, PageWithPermissions } from '../pages/interfaces';
 import type { PagePermissionAssignmentByValues } from '../permissions/pages/interfaces';
 

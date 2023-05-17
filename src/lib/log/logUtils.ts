@@ -37,7 +37,7 @@ export function formatLog(
     // extract information from errors, and ensure that opts is always a JSON-serializable object
     let _opt: LogMeta = {};
     if (opt) {
-      let error: LogMeta['error'];
+      let error: LogMeta['error'] = (opt as LogMeta).error;
       const maybeError = (opt as { error?: Error }).error || opt;
       if (maybeError instanceof Error) {
         error = { ...maybeError, message: maybeError.message, stack: maybeError.stack };
