@@ -12,7 +12,7 @@ export const prisma: PrismaClient = (globalThis as any).prisma || new PrismaClie
 
 // remember this instance of prisma in development to avoid too many clients
 if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
-  (global as any).prisma = prisma;
+  (globalThis as any).prisma = prisma;
 }
 export type PrismaTransactionClient = PrismaClient | Prisma.TransactionClient;
 
