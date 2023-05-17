@@ -3,7 +3,8 @@ dist
 .env.local
 .env.test.local
 .env.production
-src/.env.production
+src/.env*
+src/prisma/client
 
 # ignore package-lock - it is not used in downstream projects
 package-lock.json

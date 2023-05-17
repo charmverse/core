@@ -2,6 +2,7 @@ generator client {
   provider        = "prisma-client-js"
   binaryTargets   = ["debian-openssl-1.1.x", "linux-musl", "darwin", "native"]
   previewFeatures = ["fullTextSearch", "extendedWhereUnique"]
+  output          = "./client"
 }
 
 datasource db {
@@ -843,7 +844,7 @@ model UserGnosisSafe {
   chainId   Int
   address   String
   name      String?
-  isHidden    Boolean  @default(false)
+  isHidden  Boolean  @default(false)
   threshold Int
   owners    String[]
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
