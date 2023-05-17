@@ -9,7 +9,8 @@ import type {
   ProposalCategoryPermissionAssignment,
   ProposalCategoryPermissionFlags,
   ProposalCategoryWithPermissions,
-  ProposalPermissionFlags
+  ProposalPermissionFlags,
+  ProposalReviewerPool
 } from '../interfaces';
 import type { ProposalFlowPermissionFlags } from '../proposalFlowFlags';
 
@@ -21,6 +22,7 @@ export type BaseProposalPermissionsClient = {
   getAccessibleProposals: (
     request: ListProposalsRequest
   ) => Promise<(ProposalWithUsers | ProposalWithCommentsAndUsers)[]>;
+  getProposalReviewerPool: (request: Resource) => Promise<ProposalReviewerPool>;
 };
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type PremiumProposalPermissionsClient = BaseProposalPermissionsClient & {

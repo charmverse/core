@@ -22,6 +22,10 @@
       "import": "./dist/esm/prisma.js",
       "require": "./dist/cjs/prisma.js"
     },
+    "./prisma-client": {
+      "import": "./dist/esm/prisma-client.js",
+      "require": "./dist/cjs/prisma-client.js"
+    },
     "./test": {
       "import": "./dist/esm/lib/testing/index.js",
       "require": "./dist/cjs/lib/testing/index.js"
@@ -31,10 +35,10 @@
     "typecheck": "tsc --noEmit",
     "test": "NODE_OPTIONS=\"--max_old_space_size=4096 --experimental-vm-modules=true\"  dotenv -e .env.test.local -- npx jest --config='./jest.config.js' --maxWorkers=2 --watch --verbose",
     "test:ci": "NODE_OPTIONS=\"--max_old_space_size=4096 --experimental-vm-modules=true\"  dotenv -e .env.test.local -- npx jest --config='./jest.config.js' --maxWorkers=2",
-    "build": "rimraf dist && npm run build:esm && tsc",
+    "build": "rimraf dist && npm run build:esm && tsc && tsc-alias",
     "build:watch": "tsc --watch",
     "start": "npm run build:watch",
-    "build:esm": "tsc --project tsconfig.esm.json && node createPackageJson.js",
+    "build:esm": "tsc --project tsconfig.esm.json && tsc-alias --project tsconfig.esm.json && node createPackageJson.js",
     "build:esm:watch": "node createPackageJson.js && tsc --project tsconfig.esm.json --watch",
     "postinstall": "npm run prisma:generate && npm run build",
     "prepare": "husky install",
@@ -96,6 +100,7 @@
     "nanoid-dictionary": "^3.0.0",
     "prisma": "4.13.0",
     "rimraf": "^5.0.0",
+    "tsc-alias": "^1.8.6",
     "utf-8-validate": "^5.0.10",
     "uuid": "^9.0.0"
   }

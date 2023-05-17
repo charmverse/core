@@ -13,7 +13,8 @@ import type {
   ProposalCategoryPermissionAssignment,
   ProposalCategoryPermissionFlags,
   ProposalCategoryWithPermissions,
-  ProposalPermissionFlags
+  ProposalPermissionFlags,
+  ProposalReviewerPool
 } from '../interfaces';
 import type { ProposalFlowPermissionFlags } from '../proposalFlowFlags';
 
@@ -30,6 +31,10 @@ export class ProposalPermissionsHttpClient
   // eslint-disable-next-line no-useless-constructor
   constructor(params: PermissionsApiClientConstructor) {
     super(params);
+  }
+
+  getProposalReviewerPool(request: Resource): Promise<ProposalReviewerPool> {
+    return GET(`${this.prefix}/reviewer-pool`, request);
   }
 
   getAccessibleProposalCategories(request: SpaceResourcesRequest): Promise<ProposalCategoryWithPermissions[]> {

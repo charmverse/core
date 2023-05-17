@@ -56,3 +56,13 @@ export type IsProposalReviewerFnInput = {
   userId?: string;
 };
 export type IsProposalReviewerFn = (args: IsProposalReviewerFnInput) => Promise<boolean> | boolean;
+
+/**
+ * @users - a list of user ids that can be selected to review a proposal
+ * @roles - a list of role ids that can be selected to review a proposal
+ *
+ */
+export type ProposalReviewerPool = {
+  userIds: string[];
+  roleIds: string[];
+};
