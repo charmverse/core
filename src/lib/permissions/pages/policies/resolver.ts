@@ -8,9 +8,11 @@ export function pageResolver({ resourceId }: { resourceId: string }) {
       id: resourceId
     },
     select: {
+      createdBy: true,
       id: true,
       proposalId: true,
-      convertedProposalId: true
+      convertedProposalId: true,
+      type: true
     }
   }) as Promise<PageResource>;
 }

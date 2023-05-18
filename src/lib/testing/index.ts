@@ -13,3 +13,5 @@ export * from './spaces';
 export * as testUtilsSpaces from './spaces';
 export * from './user';
 export * as testUtilsUser from './user';
+
+export * as testUtilsBounties from './bounties';
