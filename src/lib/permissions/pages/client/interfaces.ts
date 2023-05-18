@@ -1,4 +1,4 @@
-import type { PageMeta, PagesRequest, PageWithPermissions } from 'lib/pages/interfaces';
+import type { PageMeta, PageMetaWithPermissions, PagesRequest, PageWithPermissions } from 'lib/pages/interfaces';
 import type { PermissionCompute, PermissionResource, Resource } from 'lib/permissions/interfaces';
 
 import type {
@@ -18,5 +18,5 @@ export type PremiumPagePermissionsClient = BasePagePermissionsClient & {
   deletePagePermission: (request: PermissionResource) => Promise<void>;
   listPagePermissions: (request: Resource) => Promise<AssignedPagePermission[]>;
   lockPagePermissionsToBountyCreator: (request: Resource) => Promise<void>;
-  setupPagePermissionsAfterEvent: (request: PageEventTriggeringPermissions) => Promise<PageWithPermissions>;
+  setupPagePermissionsAfterEvent: (request: PageEventTriggeringPermissions) => Promise<PageMetaWithPermissions>;
 };

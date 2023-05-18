@@ -4,6 +4,7 @@ import { v4 } from 'uuid';
 import { prisma } from '../../prisma-client';
 import { randomThemeColor } from '../branding/colors';
 import { InvalidInputError } from '../errors';
+import type { PageMeta } from '../pages';
 import type { ProposalCategoryPermissionAssignment } from '../permissions/proposals/interfaces';
 import type { ProposalReviewerInput, ProposalWithUsers } from '../proposals/interfaces';
 
@@ -225,4 +226,33 @@ export async function generateProposalTemplate({
   });
 
   return convertedToTemplate.proposal as ProposalWithUsers;
+}
+export async function convertPageToProposal({
+  pageId,
+  proposalCategoryId,
+  userId
+}: {
+  pageId: string;
+  proposalCategoryId?: string;
+  userId?: string;
+}): Promise<void> {
+  const page = await prisma.page.findUniqueOrThrow({
+    where: { id: pageId },
+    select: { createdBy: true, spaceId: true }
+  });
+
+  const { page: proposalPage } = await generateProposal({
+    userId: userId ?? page.createdBy,
+    spaceId: page.spaceId,
+    categoryId: proposalCategoryId
+  });
+
+  await prisma.page.update({
+    where: {
+      id: pageId
+    },
+    data: {
+      convertedProposalId: proposalPage.id
+    }
+  });
 }

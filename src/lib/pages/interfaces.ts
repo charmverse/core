@@ -88,8 +88,12 @@ export type PageMeta = Pick<
   | 'hasContent'
   | 'galleryImage'
 >;
-export type PageWithPermissions = Page & {
+type WithPermissions = {
   permissions: (PagePermission & { sourcePermission: PagePermission | null })[];
 };
+
+export type PageMetaWithPermissions = PageMeta & WithPermissions;
+
+export type PageWithPermissions = Page & WithPermissions;
 
 export type PageLifecyleEvent = 'created' | 'repositioned';

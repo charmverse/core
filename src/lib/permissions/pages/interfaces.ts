@@ -1,6 +1,6 @@
 import type { Page, PageOperations, PagePermission, PagePermissionLevel, Role, Space, SpaceRole } from '@prisma/client';
-import type { PageLifecyleEvent } from 'lib/pages/interfaces';
 
+import type { PageLifecyleEvent } from '../../pages/interfaces';
 import type { AssignablePermissionGroups, TargetPermissionGroup, UserPermissionFlags } from '../interfaces';
 
 export type PagePermissionFlags = UserPermissionFlags<PageOperations>;
@@ -58,3 +58,8 @@ export type PageEventTriggeringPermissions = {
   event: PageLifecyleEvent;
   pageId: string;
 };
+
+export type PagePermissionMeta = Pick<
+  PagePermission,
+  'id' | 'pageId' | 'permissionLevel' | 'permissions' | 'public' | 'roleId' | 'spaceId' | 'userId'
+>;
