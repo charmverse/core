@@ -1,6 +1,6 @@
-import type { Page, Post, Prisma, ProposalCategory, ProposalStatus } from '@prisma/client';
 import { v4 } from 'uuid';
 
+import type { Page, Post, Prisma, ProposalCategory, ProposalStatus } from '../../prisma';
 import { prisma } from '../../prisma-client';
 import { randomThemeColor } from '../branding/colors';
 import { InvalidInputError } from '../errors';

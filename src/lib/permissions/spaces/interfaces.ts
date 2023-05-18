@@ -1,5 +1,4 @@
-import type { SpaceOperation } from '@prisma/client';
-
+import type { SpaceOperation } from '../../../prisma';
 import type { AssignablePermissionGroups, PermissionAssignment, UserPermissionFlags } from '../interfaces';
 
 export type SpacePermissionFlags = UserPermissionFlags<SpaceOperation>;

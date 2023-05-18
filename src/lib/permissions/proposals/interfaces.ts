@@ -1,11 +1,10 @@
-import { ProposalCategoryOperation, ProposalOperation } from '@prisma/client';
+import { ProposalCategoryOperation, ProposalOperation } from '../../../prisma';
 import type {
   ProposalCategory,
   ProposalCategoryPermissionLevel,
   ProposalAuthor,
   ProposalReviewer
-} from '@prisma/client';
-
+} from '../../../prisma';
 import type { ProposalWithUsers } from '../../proposals/interfaces';
 import { typedKeys } from '../../utilities/objects';
 import type { AssignablePermissionGroups, TargetPermissionGroup, UserPermissionFlags } from '../interfaces';

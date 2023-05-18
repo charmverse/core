@@ -1,5 +1,4 @@
-import type { Post } from '@prisma/client';
-
+import type { Post } from '../../../../prisma';
 import type { PermissionFilteringPolicyFnInput } from '../../core/policies';
 import type { PostPermissionFlags } from '../interfaces';
 

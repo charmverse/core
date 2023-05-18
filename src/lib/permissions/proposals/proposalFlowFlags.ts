@@ -1,5 +1,4 @@
-import { ProposalStatus } from '@prisma/client';
-
+import { ProposalStatus } from '../../../prisma';
 import type { ProposalWithUsers } from '../../proposals/interfaces';
 import { typedKeys } from '../../utilities/objects';
 import { BasePermissions } from '../core/basePermissions.class';

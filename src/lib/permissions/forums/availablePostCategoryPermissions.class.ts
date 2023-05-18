@@ -1,5 +1,4 @@
-import { PostCategoryOperation } from '@prisma/client';
-
+import { PostCategoryOperation } from '../../../prisma';
 import { typedKeys } from '../../utilities/objects';
 import { BasePermissions } from '../core/basePermissions.class';
 

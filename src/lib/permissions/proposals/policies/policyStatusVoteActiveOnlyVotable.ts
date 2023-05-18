@@ -1,5 +1,4 @@
-import type { ProposalOperation } from '@prisma/client';
-
+import type { ProposalOperation } from '../../../../prisma';
 import { typedKeys } from '../../../utilities/objects';
 import type { ProposalPermissionFlags } from '../interfaces';
 import { isProposalAuthor } from '../isProposalAuthor';

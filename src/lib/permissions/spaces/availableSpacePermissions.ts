@@ -1,5 +1,4 @@
-import { SpaceOperation } from '@prisma/client';
-
+import { SpaceOperation } from '../../../prisma';
 import { BasePermissions } from '../core/basePermissions.class';
 
 export class AvailableSpacePermissions extends BasePermissions<SpaceOperation> {

@@ -1,7 +1,7 @@
-import type { Prisma } from '@prisma/client';
-import { PrismaClient } from '@prisma/client';
+import type { Prisma } from './prisma';
+import { PrismaClient } from './prisma';
 
-export * from '@prisma/client';
+export * from './prisma';
 
 // @ts-ignore - add support for JSON for BigInt (used in telegramuser) - https://github.com/GoogleChromeLabs/jsbi/issues/30
 // eslint-disable-next-line no-extend-native

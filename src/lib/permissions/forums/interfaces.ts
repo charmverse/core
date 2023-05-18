@@ -1,6 +1,5 @@
-import { PostCategoryOperation, PostOperation } from '@prisma/client';
-import type { PostCategory, PostCategoryPermissionLevel } from '@prisma/client';
-
+import { PostCategoryOperation, PostOperation } from '../../../prisma';
+import type { PostCategory, PostCategoryPermissionLevel } from '../../../prisma';
 import { typedKeys } from '../../utilities/objects';
 import type { AssignablePermissionGroups, TargetPermissionGroup, UserPermissionFlags } from '../interfaces';
 

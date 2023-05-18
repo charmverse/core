@@ -1,5 +1,4 @@
-import { PostOperation } from '@prisma/client';
-
+import { PostOperation } from '../../../prisma';
 import { typedKeys } from '../../utilities/objects';
 import { BasePermissions } from '../core/basePermissions.class';
 

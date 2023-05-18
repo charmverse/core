@@ -10,7 +10,7 @@ import type {
   UserNotificationState,
   SpaceRoleToRole,
   Role
-} from '@prisma/client';
+} from '../../prisma';
 
 interface NestedMemberships {
   spaceRoleToRole: (SpaceRoleToRole & { role: Role })[];

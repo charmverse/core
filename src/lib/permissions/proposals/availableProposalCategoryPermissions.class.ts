@@ -1,5 +1,4 @@
-import type { ProposalCategoryOperation } from '@prisma/client';
-
+import type { ProposalCategoryOperation } from '../../../prisma';
 import { BasePermissions } from '../core/basePermissions.class';
 
 import { proposalCategoryOperations } from './interfaces';

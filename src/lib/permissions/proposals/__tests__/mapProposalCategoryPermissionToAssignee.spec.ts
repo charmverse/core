@@ -1,6 +1,6 @@
-import type { ProposalCategoryPermission } from '@prisma/client';
 import { v4 } from 'uuid';
 
+import type { ProposalCategoryPermission } from '../../../../prisma';
 import { InvalidPermissionGranteeError, ExpectedAnError } from '../../../errors';
 import type { AssignedProposalCategoryPermission } from '../interfaces';
 import { mapProposalCategoryPermissionToAssignee } from '../mapProposalCategoryPermissionToAssignee';

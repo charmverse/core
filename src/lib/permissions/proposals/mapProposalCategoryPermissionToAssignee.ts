@@ -1,5 +1,4 @@
-import type { ProposalCategoryPermission } from '@prisma/client';
-
+import type { ProposalCategoryPermission } from '../../../prisma';
 import { getPermissionAssignee } from '../core/getPermissionAssignee';
 import type { TargetPermissionGroup } from '../interfaces';
 

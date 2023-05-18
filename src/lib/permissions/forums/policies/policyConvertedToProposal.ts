@@ -1,5 +1,4 @@
-import type { PostOperation } from '@prisma/client';
-
+import type { PostOperation } from '../../../../prisma';
 import { typedKeys } from '../../../utilities/objects';
 import type { PostPermissionFlags } from '../interfaces';
 

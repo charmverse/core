@@ -1,5 +1,3 @@
-import type { SpaceRole } from '@prisma/client';
-
 import type { SystemError } from '../../lib/errors';
 import {
   InvalidInputError,
@@ -7,6 +5,7 @@ import {
   UserIsGuestError,
   UserIsNotSpaceMemberError
 } from '../../lib/errors';
+import type { SpaceRole } from '../../prisma';
 import { prisma } from '../../prisma-client';
 
 /**

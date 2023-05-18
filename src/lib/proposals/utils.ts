@@ -1,5 +1,4 @@
-import type { Prisma } from '@prisma/client';
-
+import type { Prisma } from '../../prisma';
 import { InvalidInputError } from '../errors';
 
 export function generateCategoryIdQuery(

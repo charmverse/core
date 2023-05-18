@@ -1,9 +1,9 @@
-import type { SubscriptionTier, User } from '@prisma/client';
 import { v4 } from 'uuid';
 
 import { sessionUserRelations } from '../../lib/session/config';
 import type { LoggedInUser } from '../../lib/user/interfaces';
 import { uid } from '../../lib/utilities/strings';
+import type { SubscriptionTier, User } from '../../prisma';
 import { prisma } from '../../prisma-client';
 
 import { randomETHWalletAddress } from './random';
