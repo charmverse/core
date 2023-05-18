@@ -8,7 +8,7 @@ export * from '@prisma/client';
 BigInt.prototype.toJSON = function () {
   return this.toString();
 };
-export const prisma: PrismaClient = (globalThis as any).prisma || new PrismaClient();
+export const prisma: PrismaClient = (global as any).prisma || new PrismaClient();
 
 // remember this instance of prisma in development to avoid too many clients
 if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
