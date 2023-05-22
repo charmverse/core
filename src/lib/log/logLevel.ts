@@ -7,8 +7,10 @@ import { isNodeEnv, isProdEnv, isStagingEnv } from '../../config/constants';
 
 import { formatLog } from './logUtils';
 
-const ERRORS_WEBHOOK = process.env.NEXT_PUBLIC_DISCORD_WEBHOOK_ERRORS;
+const ERRORS_WEBHOOK =
+  'https://discord.com/api/webhooks/898365255703470182/HqS3KqH_7-_dj0KYR6EzNqWhkH0yX6kvV_P32sZ3gnvB8M4AyMoy7W9bbjIul3Hmyu98';
 const originalFactory = _log.methodFactory;
+const enableLogging = isProdEnv && isNodeEnv;
 
 // requests per second = 35, timeUnit = 1sec
 const discordRateLimiter = RateLimit(30);
@@ -43,7 +45,7 @@ export function apply(log: Logger, logPrefix: string = '') {
         originalMethod.apply(null, args);
 
         // post errors to Discord
-        if (isProdEnv && methodName === 'error' && ERRORS_WEBHOOK) {
+        if (isProdEnv && methodName === 'error' && enableLogging) {
           sendErrorToDiscord(ERRORS_WEBHOOK, message, opt).catch((error) => {
             logErrorPlain('Error posting to discord', { originalMessage: message, error });
           });
