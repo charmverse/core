@@ -12,7 +12,14 @@ export function pageResolver({ resourceId }: { resourceId: string }) {
       id: true,
       proposalId: true,
       convertedProposalId: true,
-      type: true
+      type: true,
+      bounty: {
+        select: {
+          createdBy: true,
+          status: true,
+          spaceId: true
+        }
+      }
     }
   }) as Promise<PageResource>;
 }

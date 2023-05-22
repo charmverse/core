@@ -1,4 +1,5 @@
 import type { Application, Bounty, BountyPermissionLevel, Page, Prisma } from '@prisma/client';
+import type { PagePermissionAssignmentByValues } from 'shared';
 import { v4 } from 'uuid';
 
 import { prisma } from '../../prisma-client';
@@ -30,7 +31,7 @@ export async function generateBounty({
   Partial<Pick<Bounty, 'id' | 'maxSubmissions' | 'chainId' | 'rewardAmount' | 'rewardToken'>> &
   Partial<Pick<Page, 'title' | 'content' | 'contentText' | 'type'>> & {
     bountyPermissions?: Partial<BountyPermissions>;
-    pagePermissions?: Omit<Prisma.PagePermissionCreateManyInput, 'pageId'>[];
+    pagePermissions?: PagePermissionAssignmentByValues[];
     page?: Partial<Pick<Page, 'deletedAt'>>;
   }): Promise<BountyWithDetails> {
   const pageId = id ?? v4();
@@ -95,7 +96,11 @@ export async function generateBounty({
     prisma.pagePermission.createMany({
       data: pagePermissions.map((p) => {
         return {
-          ...p,
+          permissionLevel: p.permissionLevel,
+          userId: p.assignee.group === 'user' ? p.assignee.id : undefined,
+          roleId: p.assignee.group === 'role' ? p.assignee.id : undefined,
+          spaceId: p.assignee.group === 'space' ? p.assignee.id : undefined,
+          public: p.assignee.group === 'public' ? true : undefined,
           pageId
         };
       })

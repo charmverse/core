@@ -1,9 +1,11 @@
 import type { Space } from '@prisma/client';
 
-import type { PublicBountyToggle, SpaceDefaultPublicPageToggle } from '../interfaces';
+import type { PermissionCompute } from '../../core/interfaces';
+import type { PublicBountyToggle, SpaceDefaultPublicPageToggle, SpacePermissionFlags } from '../interfaces';
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export type BaseSpacePermissionsClient = {};
+export type BaseSpacePermissionsClient = {
+  computeSpacePermissions: (request: PermissionCompute) => Promise<SpacePermissionFlags>;
+};
 export type PremiumSpacePermissionsClient = BaseSpacePermissionsClient & {
   toggleSpaceDefaultPublicPage: (request: SpaceDefaultPublicPageToggle) => Promise<Space>;
   togglePublicBounties: (request: PublicBountyToggle) => Promise<Space>;

@@ -16,6 +16,10 @@ export * from '../pages/availablePagePermissions.class';
 // TODO - Add this when we implement HTTP Client
 // export {} from '../pages/client/proposalPermissionsHttpClient'
 
+// Spaces clients
+export * from '../spaces/client/interfaces';
+export * from '../spaces/client/spacePermissionsHttpClient';
+
 // Unique namespace for the implementing a permissions client that can interact with all domains, like prisma client
 export * from './permissionsApiClient.class';
 export * from './interfaces';
