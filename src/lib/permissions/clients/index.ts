@@ -12,13 +12,13 @@ export * from '../proposals/availableProposalPermissions.class';
 
 // Pages clients
 export * from '../pages/client/interfaces';
+export * from '../pages/client/pagePermissionsHttpClient';
 export * from '../pages/availablePagePermissions.class';
-// TODO - Add this when we implement HTTP Client
-// export {} from '../pages/client/proposalPermissionsHttpClient'
 
 // Spaces clients
 export * from '../spaces/client/interfaces';
 export * from '../spaces/client/spacePermissionsHttpClient';
+export * from '../spaces/availableSpacePermissions';
 
 // Unique namespace for the implementing a permissions client that can interact with all domains, like prisma client
 export * from './permissionsApiClient.class';

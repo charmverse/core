@@ -1,9 +1,13 @@
-import type { Page, Prisma } from '@prisma/client';
+import type { Page, Prisma, Thread, Comment } from '@prisma/client';
 import { v4 } from 'uuid';
 
 import { prisma } from '../../prisma-client';
 import type { PageNode, PageWithPermissions } from '../pages/interfaces';
 import type { PagePermissionAssignmentByValues } from '../permissions/pages/interfaces';
+
+type OptionalPagePermissionsToGenerate = {
+  pagePermissions?: (PagePermissionAssignmentByValues & { inheritedFromPermission?: string })[];
+};
 
 type PageGenerateArgs = Pick<Page, 'createdBy' | 'spaceId'> &
   Partial<
@@ -21,9 +25,8 @@ type PageGenerateArgs = Pick<Page, 'createdBy' | 'spaceId'> &
       | 'bountyId'
       | 'index'
     >
-  > & {
-    pagePermissions?: (PagePermissionAssignmentByValues & { inheritedFromPermission?: string })[];
-  };
+  > &
+  OptionalPagePermissionsToGenerate;
 
 const emptyDocument = {
   type: 'doc',
@@ -145,4 +148,72 @@ export async function getPageWithPermissions(pageId: string): Promise<PageWithPe
       }
     }
   });
+}
+export async function generateCommentWithThreadAndPage({
+  userId,
+  spaceId,
+  commentContent
+}: {
+  userId: string;
+  spaceId: string;
+  commentContent: string;
+} & OptionalPagePermissionsToGenerate): Promise<{ page: Page; thread: Thread; comment: Comment }> {
+  const page = await generatePage({
+    createdBy: userId,
+    spaceId
+  });
+
+  const thread = await prisma.thread.create({
+    data: {
+      context: 'Random context',
+      resolved: false,
+      page: {
+        connect: {
+          id: page.id
+        }
+      },
+      user: {
+        connect: {
+          id: userId
+        }
+      },
+      space: {
+        connect: {
+          id: spaceId
+        }
+      }
+    }
+  });
+
+  const comment = await prisma.comment.create({
+    data: {
+      page: {
+        connect: {
+          id: page.id
+        }
+      },
+      content: commentContent,
+      thread: {
+        connect: {
+          id: thread.id
+        }
+      },
+      user: {
+        connect: {
+          id: userId
+        }
+      },
+      space: {
+        connect: {
+          id: spaceId
+        }
+      }
+    }
+  });
+
+  return {
+    page,
+    thread,
+    comment
+  };
 }

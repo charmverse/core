@@ -15,3 +15,5 @@ export * from './user';
 export * as testUtilsUser from './user';
 
 export * as testUtilsBounties from './bounties';
+
+export * as testUtilsVotes from './votes';
