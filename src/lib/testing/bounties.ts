@@ -1,10 +1,10 @@
 import type { Application, Bounty, BountyPermissionLevel, Page, Prisma } from '@prisma/client';
-import type { PagePermissionAssignmentByValues } from 'shared';
 import { v4 } from 'uuid';
 
 import { prisma } from '../../prisma-client';
 import type { PageMetaWithPermissions } from '../pages/interfaces';
 import type { TargetPermissionGroup } from '../permissions/core/interfaces';
+import type { PagePermissionAssignmentByValues } from '../permissions/pages/interfaces';
 import { typedKeys } from '../utilities/objects';
 
 type BountyPermissions = { [key in BountyPermissionLevel]: TargetPermissionGroup[] };

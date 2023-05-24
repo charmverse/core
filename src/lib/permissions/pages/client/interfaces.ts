@@ -1,6 +1,5 @@
-import type { PageMeta, PageMetaWithPermissions, PagesRequest, PageWithPermissions } from 'lib/pages/interfaces';
-import type { PermissionCompute, PermissionResource, Resource } from 'lib/permissions/interfaces';
-
+import type { PageMeta, PageMetaWithPermissions, PagesRequest } from '../../../pages/interfaces';
+import type { PermissionCompute, PermissionResource, Resource } from '../../core/interfaces';
 import type {
   AssignedPagePermission,
   PageEventTriggeringPermissions,

@@ -1,9 +1,9 @@
 /* eslint-disable camelcase */
 import type { Page, Space, User } from '@prisma/client';
-import { testUtilsPages, testUtilsSpaces, testUtilsUser } from 'lib/testing';
 import { v4 } from 'uuid';
 
 import { InvalidInputError } from '../../errors';
+import { testUtilsPages, testUtilsUser } from '../../testing';
 import type { PageNodeWithChildren } from '../interfaces';
 import { multiResolvePageTree, resolvePageTree } from '../resolvePageTree';
 

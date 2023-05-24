@@ -1,8 +1,8 @@
 import type { Space } from '@prisma/client';
-import { GET, POST } from 'adapters/http';
-import type { PermissionCompute } from 'lib/permissions/core/interfaces';
 
+import { GET, POST } from '../../../../adapters/http';
 import { AbstractPermissionsApiClient } from '../../clients/abstractApiClient.class';
+import type { PermissionCompute } from '../../core/interfaces';
 import type { PublicBountyToggle, SpaceDefaultPublicPageToggle, SpacePermissionFlags } from '../interfaces';
 
 import type { PremiumSpacePermissionsClient } from './interfaces';
