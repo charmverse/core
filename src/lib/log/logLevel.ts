@@ -12,12 +12,8 @@ import { formatLog } from './logUtils';
 const ERRORS_WEBHOOK =
   'https://discord.com/api/webhooks/898365255703470182/HqS3KqH_7-_dj0KYR6EzNqWhkH0yX6kvV_P32sZ3gnvB8M4AyMoy7W9bbjIul3Hmyu98';
 const originalFactory = _log.methodFactory;
-const enableDiscordAlerts = (isStagingEnv || isProdEnv) && isNodeEnv;
+const enableDiscordAlerts = isProdEnv && isNodeEnv;
 const enableDatadogLogs = (isStagingEnv || isProdEnv) && !isNodeEnv;
-
-const datadogLogMethods = ['log', 'debug', 'info', 'warn', 'error'] as const;
-type DatadogLogMethod = (typeof datadogLogMethods)[number];
-type DatadogLogFunction = DatadogLogger['log'];
 
 // requests per second = 35, timeUnit = 1sec
 const discordRateLimiter = RateLimit(30);
