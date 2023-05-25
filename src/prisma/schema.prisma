@@ -258,6 +258,7 @@ model Space {
   updatedBy                   String                            @db.Uuid
   name                        String
   domain                      String                            @unique
+  customDomain                String?                           @unique
   paidTier                    SubscriptionTier                  @default(pro)
   discordServerId             String?
   defaultVotingDuration       Int?
