@@ -67,11 +67,12 @@ export function apply(log: Logger, logPrefix: string = '') {
       return (message, ...args) => {
         originalMethod.apply(null, [message, ...args]);
         const firstArg = args[0];
-        const error = firstArg instanceof Error ? firstArg : (firstArg as any).error || firstArg;
+        const error = firstArg instanceof Error ? firstArg : (firstArg as any)?.error || firstArg;
         const datadogLog = datadogLogs.logger[methodName as DatadogLogMethod] as DatadogLogFunction;
         datadogLog?.(message, args[0], error);
       };
     };
+    log.setLevel(log.getLevel()); // Be sure to call setLevel method in order to apply plugin
   }
 
   return log;
