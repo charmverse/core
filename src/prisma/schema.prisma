@@ -1308,13 +1308,24 @@ model Post {
   votes              Vote[]
   isDraft            Boolean?                @default(false)
   userSpaceActions   UserSpaceAction[]
-  tagId              String?                 @db.Uuid
-  tag                PostTag?                @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  postToPostTags     PostToPostTag[]
 
   @@index([categoryId])
   @@index([path])
   @@index([spaceId, deletedAt]) // space feed
   @@index([spaceId, deletedAt, categoryId]) // category feed
+}
+
+model PostToPostTag {
+  id        String  @id @default(uuid()) @db.Uuid
+  postId    String  @db.Uuid
+  postTagId String  @db.Uuid
+  post      Post    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postTag   PostTag @relation(fields: [postTagId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, postTagId])
+  @@index([postId])
+  @@index([postTagId])
 }
 
 model PostUpDownVote {
@@ -1363,11 +1374,11 @@ model PostCommentUpDownVote {
 }
 
 model PostTag {
-  id      String @id @default(uuid()) @db.Uuid
-  name    String
-  spaceId String @db.Uuid
-  space   Space  @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  posts   Post[]
+  id             String          @id @default(uuid()) @db.Uuid
+  name           String
+  spaceId        String          @db.Uuid
+  space          Space           @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  postToPostTags PostToPostTag[]
 
   @@unique([spaceId, name])
 }
