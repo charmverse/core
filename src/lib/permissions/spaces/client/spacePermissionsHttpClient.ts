@@ -17,10 +17,14 @@ export class SpacePermissionsHttpClient extends AbstractPermissionsApiClient imp
   }
 
   toggleSpaceDefaultPublicPage(request: SpaceDefaultPublicPageToggle): Promise<Space> {
-    return POST(`${this.prefix}/toggle-default-public-page`, request);
+    return POST(`${this.prefix}/toggle-default-public-page`, request, {
+      headers: this.jsonHeaders
+    });
   }
 
   togglePublicBounties(request: PublicBountyToggle): Promise<Space> {
-    return POST(`${this.prefix}/toggle-public-bounties`, request);
+    return POST(`${this.prefix}/toggle-public-bounties`, request, {
+      headers: this.jsonHeaders
+    });
   }
 }
