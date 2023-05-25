@@ -152,7 +152,8 @@ export async function getPageWithPermissions(pageId: string): Promise<PageWithPe
 export async function generateCommentWithThreadAndPage({
   userId,
   spaceId,
-  commentContent
+  commentContent,
+  pagePermissions
 }: {
   userId: string;
   spaceId: string;
@@ -160,7 +161,8 @@ export async function generateCommentWithThreadAndPage({
 } & OptionalPagePermissionsToGenerate): Promise<{ page: Page; thread: Thread; comment: Comment }> {
   const page = await generatePage({
     createdBy: userId,
-    spaceId
+    spaceId,
+    pagePermissions
   });
 
   const thread = await prisma.thread.create({
