@@ -40,11 +40,11 @@ export class PagePermissionsHttpClient extends AbstractPermissionsApiClient impl
   }
 
   setupPagePermissionsAfterEvent(request: PageEventTriggeringPermissions): Promise<PageMetaWithPermissions> {
-    return POST(`${this.prefix}/setup-page-permissions-after-event`, request);
+    return POST(`${this.prefix}/setup-page-permissions-after-event`, request, { headers: this.jsonHeaders });
   }
 
   lockPagePermissionsToBountyCreator(request: Resource): Promise<PageMetaWithPermissions> {
-    return POST(`${this.prefix}/lock-page-permissions-to-bounty-creator`, request);
+    return POST(`${this.prefix}/lock-page-permissions-to-bounty-creator`, request, { headers: this.jsonHeaders });
   }
 
   isBountyPageEditableByApplicants(request: Resource): Promise<{ editable: boolean }> {
