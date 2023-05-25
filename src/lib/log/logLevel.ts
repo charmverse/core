@@ -63,7 +63,7 @@ export function apply(log: Logger, logPrefix: string = '') {
       return (message, ...args) => {
         originalMethod.apply(null, [message, ...args]);
         const firstArg = args[0];
-        const error = firstArg instanceof Error ? firstArg : (firstArg as any)?.error || firstArg;
+        const error = firstArg instanceof Error ? firstArg : (firstArg as any)?.error;
         datadogLogs.logger.log(message, firstArg, methodName as any, error);
       };
     };
