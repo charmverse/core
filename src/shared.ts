@@ -8,6 +8,8 @@ export * from './lib/permissions/interfaces';
 export { generateCategoryIdQuery } from './lib/proposals/utils';
 export * from './lib/proposals/interfaces';
 
+export * from './lib/bounties/interfaces';
+
 // Sample utility function to check imports work
 export function randomiser() {
   const items = ['Plane', 'Bike', 'Car', 'Truck'];
