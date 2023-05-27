@@ -21,5 +21,5 @@ export * from '../spaces/client/spacePermissionsHttpClient';
 export * from '../spaces/availableSpacePermissions';
 
 // Unique namespace for the implementing a permissions client that can interact with all domains, like prisma client
-export * from './permissionsApiClient.class';
+export * from '../permissionsApiClient.class';
 export * from './interfaces';

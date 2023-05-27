@@ -27,8 +27,20 @@
       "require": "./dist/cjs/prisma-client.js"
     },
     "./test": {
-      "import": "./dist/esm/lib/testing/index.js",
-      "require": "./dist/cjs/lib/testing/index.js"
+      "import": "./dist/esm/test.js",
+      "require": "./dist/cjs/test.js"
+    },
+    "./pages": {
+      "import": "./dist/esm/pages.js",
+      "require": "./dist/cjs/pages.js"
+    },
+    "./lib-methods": {
+      "import": "./dist/esm/lib-methods.js",
+      "require": "./dist/cjs/lib-methods.js"
+    },
+    "./permissions": {
+      "import": "./dist/esm/permissions.js",
+      "require": "./dist/cjs/permissions.js"
     }
   },
   "scripts": {
