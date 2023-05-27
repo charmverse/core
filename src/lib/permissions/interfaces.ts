@@ -1,6 +1,19 @@
 // --- Domain specific interfaces
-export * from './spaces/interfaces';
-export * from './forums/interfaces';
-export * from './proposals/interfaces';
-export * from './pages/interfaces';
-export * from './core/interfaces';
+import type { BaseForumPermissionsClient, PremiumForumPermissionsClient } from './forums/client/interfaces';
+import type { BasePagePermissionsClient, PremiumPagePermissionsClient } from './pages/client/interfaces';
+import type { BaseProposalPermissionsClient, PremiumProposalPermissionsClient } from './proposals/client/interfaces';
+import type { BaseSpacePermissionsClient, PremiumSpacePermissionsClient } from './spaces/client/interfaces';
+
+export type PermissionsClient = {
+  forum: BaseForumPermissionsClient;
+  proposals: BaseProposalPermissionsClient;
+  pages: BasePagePermissionsClient;
+  spaces: BaseSpacePermissionsClient;
+};
+
+export type PremiumPermissionsClient = {
+  forum: PremiumForumPermissionsClient;
+  proposals: PremiumProposalPermissionsClient;
+  pages: PremiumPagePermissionsClient;
+  spaces: PremiumSpacePermissionsClient;
+};

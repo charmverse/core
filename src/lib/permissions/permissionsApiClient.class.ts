@@ -1,6 +1,7 @@
-import type { PermissionsApiClientConstructor, PremiumPermissionsClient } from './clients/interfaces';
+import type { PermissionsApiClientConstructor } from './clients/interfaces';
 import { ForumPermissionsHttpClient } from './forums/client/forumPermissionsHttpClient';
 import type { PremiumForumPermissionsClient } from './forums/client/interfaces';
+import type { PremiumPermissionsClient } from './interfaces';
 import type { PremiumPagePermissionsClient } from './pages/client/interfaces';
 import { PagePermissionsHttpClient } from './pages/client/pagePermissionsHttpClient';
 import type { PremiumProposalPermissionsClient } from './proposals/client/interfaces';

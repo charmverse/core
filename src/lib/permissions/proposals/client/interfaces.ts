@@ -3,7 +3,7 @@ import type {
   ProposalWithCommentsAndUsers,
   ProposalWithUsers
 } from '../../../proposals/interfaces';
-import type { PermissionCompute, PermissionResource, Resource, SpaceResourcesRequest } from '../../interfaces';
+import type { PermissionCompute, PermissionResource, Resource, SpaceResourcesRequest } from '../../core/interfaces';
 import type {
   AssignedProposalCategoryPermission,
   ProposalCategoryPermissionAssignment,

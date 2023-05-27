@@ -5,4 +5,4 @@ export {
   resolvePageTree
 } from './lib/pages/resolvePageTree';
 
-export {} from './lib/permissions/hasAccessToSpace';
+export { hasAccessToSpace } from './lib/permissions/hasAccessToSpace';
