@@ -34,13 +34,17 @@
       "import": "./dist/esm/pages.js",
       "require": "./dist/cjs/pages.js"
     },
-    "./lib-methods": {
-      "import": "./dist/esm/lib-methods.js",
-      "require": "./dist/cjs/lib-methods.js"
-    },
     "./permissions": {
       "import": "./dist/esm/permissions.js",
       "require": "./dist/cjs/permissions.js"
+    },
+    "./utilities": {
+      "import": "./dist/esm/utilities.js",
+      "require": "./dist/cjs/utilities.js"
+    },
+    "./errors": {
+      "import": "./dist/esm/errors.js",
+      "require": "./dist/cjs/errors.js"
     }
   },
   "scripts": {
