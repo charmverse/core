@@ -1,8 +1,6 @@
 import type { SubscriptionTier, User } from '@prisma/client';
 import { v4 } from 'uuid';
 
-import { sessionUserRelations } from '../../lib/session/config';
-import type { LoggedInUser } from '../../lib/user/interfaces';
 import { uid } from '../../lib/utilities/strings';
 import { prisma } from '../../prisma-client';
 
@@ -16,7 +14,7 @@ export async function generateSpaceUser({
   spaceId: string;
   isAdmin?: boolean;
   isGuest?: boolean;
-}): Promise<LoggedInUser> {
+}): Promise<User> {
   return prisma.user.create({
     data: {
       path: uid(),
@@ -38,8 +36,7 @@ export async function generateSpaceUser({
           isGuest: !isAdmin && isGuest
         }
       }
-    },
-    include: sessionUserRelations
+    }
   });
 }
 

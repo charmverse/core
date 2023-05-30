@@ -3,9 +3,10 @@ import { ProposalStatus } from '@prisma/client';
 import type { ProposalWithUsers } from '../../proposals/interfaces';
 import { typedKeys } from '../../utilities/objects';
 import { BasePermissions } from '../core/basePermissions.class';
+import type { PermissionCompute } from '../core/interfaces';
 import { hasAccessToSpace } from '../hasAccessToSpace';
-import type { PermissionCompute, ProposalPermissionFlags } from '../interfaces';
 
+import type { ProposalPermissionFlags } from './interfaces';
 import { isProposalAuthor } from './isProposalAuthor';
 
 export type ProposalFlowPermissionFlags = Record<ProposalStatus, boolean>;

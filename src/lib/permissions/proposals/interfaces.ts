@@ -8,7 +8,7 @@ import type {
 
 import type { ProposalWithUsers } from '../../proposals/interfaces';
 import { typedKeys } from '../../utilities/objects';
-import type { AssignablePermissionGroups, TargetPermissionGroup, UserPermissionFlags } from '../interfaces';
+import type { AssignablePermissionGroups, TargetPermissionGroup, UserPermissionFlags } from '../core/interfaces';
 
 export type ProposalActors = {
   authors: ProposalAuthor[];

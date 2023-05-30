@@ -1,16 +1,14 @@
+import type { PermissionCompute, PermissionResource, Resource } from '../../core/interfaces';
 import type {
-  AssignedPostCategoryPermission,
-  CategoriesToFilter,
-  MutatedPostSearch,
-  PermissionCompute,
-  PermissionResource,
-  PostCategoryPermissionAssignment,
-  PostCategoryPermissionFlags,
-  PostCategoryWithPermissions,
   PostPermissionFlags,
+  PostCategoryPermissionFlags,
+  CategoriesToFilter,
+  PostCategoryWithPermissions,
+  PostCategoryPermissionAssignment,
+  AssignedPostCategoryPermission,
   PostSearchToMutate,
-  Resource
-} from '../../interfaces';
+  MutatedPostSearch
+} from '../interfaces';
 
 export type BaseForumPermissionsClient = {
   computePostPermissions: (request: PermissionCompute) => Promise<PostPermissionFlags>;

@@ -1,6 +1,6 @@
 import type { Page, PageComment, Proposal, ProposalAuthor, ProposalReviewer } from '@prisma/client';
 
-import type { AssignablePermissionGroups } from '../permissions/interfaces';
+import type { AssignablePermissionGroups } from '../permissions/core/interfaces';
 
 export interface ProposalReviewerInput {
   group: Extract<AssignablePermissionGroups, 'role' | 'user'>;

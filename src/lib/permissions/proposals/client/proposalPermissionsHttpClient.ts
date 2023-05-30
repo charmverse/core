@@ -1,4 +1,3 @@
-import fetch from '../../../../adapters/http/fetch.server';
 import { DELETE, GET, POST } from '../../../../adapters/http/index';
 import type {
   ListProposalsRequest,
@@ -7,7 +6,7 @@ import type {
 } from '../../../proposals/interfaces';
 import { AbstractPermissionsApiClient } from '../../clients/abstractApiClient.class';
 import type { PermissionsApiClientConstructor } from '../../clients/interfaces';
-import type { PermissionCompute, PermissionResource, Resource, SpaceResourcesRequest } from '../../interfaces';
+import type { PermissionCompute, PermissionResource, Resource, SpaceResourcesRequest } from '../../core/interfaces';
 import type {
   AssignedProposalCategoryPermission,
   ProposalCategoryPermissionAssignment,

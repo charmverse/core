@@ -1,17 +1,17 @@
 import fetch from '../../../../adapters/http/fetch.server';
 import { AbstractPermissionsApiClient } from '../../clients/abstractApiClient.class';
 import type { PermissionsApiClientConstructor } from '../../clients/interfaces';
+import type { PermissionCompute, PermissionResource, Resource } from '../../core/interfaces';
 import type {
   AssignedPostCategoryPermission,
   MutatedPostSearch,
-  PermissionCompute,
-  PermissionResource,
   PostCategoryPermissionFlags,
   PostPermissionFlags,
   PostSearchToMutate,
-  Resource
-} from '../../interfaces';
-import type { CategoriesToFilter, PostCategoryPermissionAssignment, PostCategoryWithPermissions } from '../interfaces';
+  CategoriesToFilter,
+  PostCategoryPermissionAssignment,
+  PostCategoryWithPermissions
+} from '../interfaces';
 
 import type { PremiumForumPermissionsClient } from './interfaces';
 
