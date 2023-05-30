@@ -1,8 +1,8 @@
 import type { Post, PostCategory, PostComment, Prisma } from '@prisma/client';
-import type { PostCategoryPermissionAssignment } from 'permissions';
 import { v4 } from 'uuid';
 
 import { prisma } from '../../prisma-client';
+import type { PostCategoryPermissionAssignment } from '../permissions/forums/interfaces';
 import { stringToValidPath } from '../utilities/strings';
 
 export async function generatePostCategory({
