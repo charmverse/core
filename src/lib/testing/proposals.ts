@@ -4,7 +4,6 @@ import { v4 } from 'uuid';
 import { prisma } from '../../prisma-client';
 import { randomThemeColor } from '../branding/colors';
 import { InvalidInputError } from '../errors';
-import type { PageMeta } from '../pages';
 import type { ProposalCategoryPermissionAssignment } from '../permissions/proposals/interfaces';
 import type { ProposalReviewerInput, ProposalWithUsers } from '../proposals/interfaces';
 

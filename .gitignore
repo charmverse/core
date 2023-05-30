@@ -9,3 +9,5 @@ src/.env.production
 package-lock.json
 
 depgraphs
+
+.DS_Store
