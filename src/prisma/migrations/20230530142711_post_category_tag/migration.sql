@@ -26,6 +26,9 @@ CREATE INDEX "PostToPostTag_postTagId_idx" ON "PostToPostTag"("postTagId");
 CREATE UNIQUE INDEX "PostToPostTag_postId_postTagId_key" ON "PostToPostTag"("postId", "postTagId");
 
 -- CreateIndex
+CREATE INDEX "PostTag_spaceId_idx" ON "PostTag"("spaceId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "PostTag_spaceId_name_key" ON "PostTag"("spaceId", "name");
 
 -- AddForeignKey

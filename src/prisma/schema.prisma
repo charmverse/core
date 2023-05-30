@@ -308,7 +308,7 @@ model Space {
   hiddenFeatures              Feature[]
   stripeSubscription          StripeSubscription[]
   userActions                 UserSpaceAction[]
-  PostTag                     PostTag[]
+  postTags                    PostTag[]
 
   @@index([createdBy])
 }
@@ -1381,6 +1381,7 @@ model PostTag {
   postToPostTags PostToPostTag[]
 
   @@unique([spaceId, name])
+  @@index([spaceId])
 }
 
 model UnstoppableDomain {
