@@ -1,3 +1,4 @@
+import { datadogLogs } from '@datadog/browser-logs';
 import { RateLimit } from 'async-sema';
 import type { Logger, LogLevelDesc } from 'loglevel';
 import _log from 'loglevel';
@@ -10,7 +11,8 @@ import { formatLog } from './logUtils';
 const ERRORS_WEBHOOK =
   'https://discord.com/api/webhooks/898365255703470182/HqS3KqH_7-_dj0KYR6EzNqWhkH0yX6kvV_P32sZ3gnvB8M4AyMoy7W9bbjIul3Hmyu98';
 const originalFactory = _log.methodFactory;
-const enableLogging = isProdEnv && isNodeEnv;
+const enableDiscordAlerts = isProdEnv && isNodeEnv;
+const enableDatadogLogs = isProdEnv && !isNodeEnv;
 
 // requests per second = 35, timeUnit = 1sec
 const discordRateLimiter = RateLimit(30);
@@ -45,7 +47,7 @@ export function apply(log: Logger, logPrefix: string = '') {
         originalMethod.apply(null, args);
 
         // post errors to Discord
-        if (isProdEnv && methodName === 'error' && enableLogging) {
+        if (isProdEnv && methodName === 'error' && enableDiscordAlerts) {
           sendErrorToDiscord(ERRORS_WEBHOOK, message, opt).catch((error) => {
             logErrorPlain('Error posting to discord', { originalMessage: message, error });
           });
@@ -53,6 +55,17 @@ export function apply(log: Logger, logPrefix: string = '') {
       };
     };
 
+    log.setLevel(log.getLevel()); // Be sure to call setLevel method in order to apply plugin
+  } else if (enableDatadogLogs) {
+    log.methodFactory = (methodName, logLevel, loggerName) => {
+      const originalMethod = originalFactory(methodName, logLevel, loggerName);
+      return (message, ...args) => {
+        originalMethod.apply(null, [message, ...args]);
+        const firstArg = args[0];
+        const error = firstArg instanceof Error ? firstArg : (firstArg as any)?.error;
+        datadogLogs.logger.log(message, firstArg, methodName as any, error);
+      };
+    };
     log.setLevel(log.getLevel()); // Be sure to call setLevel method in order to apply plugin
   }
 
