@@ -1317,7 +1317,6 @@ model Post {
 }
 
 model PostToPostTag {
-  id        String  @id @default(uuid()) @db.Uuid
   postId    String  @db.Uuid
   postTagId String  @db.Uuid
   post      Post    @relation(fields: [postId], references: [id], onDelete: Cascade)

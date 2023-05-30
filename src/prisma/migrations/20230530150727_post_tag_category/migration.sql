@@ -1,10 +1,7 @@
 -- CreateTable
 CREATE TABLE "PostToPostTag" (
-    "id" UUID NOT NULL,
     "postId" UUID NOT NULL,
-    "postTagId" UUID NOT NULL,
-
-    CONSTRAINT "PostToPostTag_pkey" PRIMARY KEY ("id")
+    "postTagId" UUID NOT NULL
 );
 
 -- CreateTable
