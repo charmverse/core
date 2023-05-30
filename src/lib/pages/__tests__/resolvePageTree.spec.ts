@@ -2,8 +2,8 @@
 import type { Page, Space, User } from '@prisma/client';
 import { v4 } from 'uuid';
 
+import { testUtilsPages, testUtilsUser } from '../../../test';
 import { InvalidInputError } from '../../errors';
-import { testUtilsPages, testUtilsUser } from '../../testing';
 import type { PageNodeWithChildren } from '../interfaces';
 import { multiResolvePageTree, resolvePageTree } from '../resolvePageTree';
 
