@@ -42,6 +42,10 @@
       "import": "./dist/esm/proposals.js",
       "require": "./dist/cjs/proposals.js"
     },
+    "./bounties": {
+      "import": "./dist/esm/bounties.js",
+      "require": "./dist/cjs/bounties.js"
+    },
     "./permissions": {
       "import": "./dist/esm/permissions.js",
       "require": "./dist/cjs/permissions.js"
