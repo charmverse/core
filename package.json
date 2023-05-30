@@ -34,9 +34,21 @@
       "import": "./dist/esm/pages.js",
       "require": "./dist/cjs/pages.js"
     },
+    "./pages/utilities": {
+      "import": "./dist/esm/pages-utilities.js",
+      "require": "./dist/cjs/pages-utilities.js"
+    },
+    "./proposals": {
+      "import": "./dist/esm/proposals.js",
+      "require": "./dist/cjs/proposals.js"
+    },
     "./permissions": {
       "import": "./dist/esm/permissions.js",
       "require": "./dist/cjs/permissions.js"
+    },
+    "./permissions/flags": {
+      "import": "./dist/esm/permissions-flags.js",
+      "require": "./dist/cjs/permissions-flags.js"
     },
     "./utilities": {
       "import": "./dist/esm/utilities.js",
