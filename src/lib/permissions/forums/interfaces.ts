@@ -2,7 +2,7 @@ import { PostCategoryOperation, PostOperation } from '@prisma/client';
 import type { PostCategory, PostCategoryPermissionLevel } from '@prisma/client';
 
 import { typedKeys } from '../../utilities/objects';
-import type { AssignablePermissionGroups, TargetPermissionGroup, UserPermissionFlags } from '../interfaces';
+import type { AssignablePermissionGroups, TargetPermissionGroup, UserPermissionFlags } from '../core/interfaces';
 
 export type PostPermissionFlags = UserPermissionFlags<PostOperation>;
 export type PostCategoryPermissionFlags = UserPermissionFlags<PostCategoryOperation>;

@@ -21,14 +21,12 @@ export async function generatePostCategory({
       path: stringToValidPath(name, 50),
       postCategoryPermissions: {
         createMany: {
-          data: permissions.map((p) => {
-            return {
-              permissionLevel: p.permissionLevel,
-              spaceId: p.assignee.group === 'space' ? p.assignee.id : undefined,
-              roleId: p.assignee.group === 'role' ? p.assignee.id : undefined,
-              public: p.assignee.group === 'public' ? true : undefined
-            } as Prisma.PostCategoryPermissionCreateManyPostCategoryInput;
-          })
+          data: permissions.map((p) => ({
+            permissionLevel: p.permissionLevel,
+            roleId: p.assignee.group === 'role' ? p.assignee.id : undefined,
+            spaceId: p.assignee.group === 'space' ? p.assignee.id : undefined,
+            public: p.assignee.group === 'public' ? true : undefined
+          }))
         }
       }
     }
