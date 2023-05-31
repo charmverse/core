@@ -247,6 +247,7 @@ enum SubscriptionPeriod {
 enum PaymentStatus {
   success
   fail
+  pending
 }
 
 model Space {
@@ -332,7 +333,7 @@ model StripeSubscription {
 }
 
 model StripePayment {
-  paymentId            String             @id
+  invoiceId            String             @id
   createdAt            DateTime           @default(now())
   status               PaymentStatus
   amount               Int
