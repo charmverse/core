@@ -1,5 +1,5 @@
 import { InvalidPermissionGranteeError } from '../../errors';
-import type { TargetPermissionGroup } from '../interfaces';
+import type { TargetPermissionGroup } from '../core/interfaces';
 
 export function getPermissionAssignee(
   permission: Partial<{ roleId: string | null; userId: string | null; spaceId: string | null; public: boolean | null }>

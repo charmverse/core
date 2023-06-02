@@ -2,20 +2,33 @@ import type { Post, PostCategory, PostComment, Prisma } from '@prisma/client';
 import { v4 } from 'uuid';
 
 import { prisma } from '../../prisma-client';
+import type { PostCategoryPermissionAssignment } from '../permissions/forums/interfaces';
 import { stringToValidPath } from '../utilities/strings';
 
 export async function generatePostCategory({
   spaceId,
-  name = `Category-${Math.random()}`
+  name = `Category-${Math.random()}`,
+  permissions = []
 }: {
   spaceId: string;
   name?: string;
+  permissions?: Omit<PostCategoryPermissionAssignment, 'postCategoryId'>[];
 }): Promise<Required<PostCategory>> {
   return prisma.postCategory.create({
     data: {
       name,
       spaceId,
-      path: stringToValidPath(name, 50)
+      path: stringToValidPath(name, 50),
+      postCategoryPermissions: {
+        createMany: {
+          data: permissions.map((p) => ({
+            permissionLevel: p.permissionLevel,
+            roleId: p.assignee.group === 'role' ? p.assignee.id : undefined,
+            spaceId: p.assignee.group === 'space' ? p.assignee.id : undefined,
+            public: p.assignee.group === 'public' ? true : undefined
+          }))
+        }
+      }
     }
   });
 }

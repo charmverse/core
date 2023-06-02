@@ -1,7 +1,8 @@
 import { DataNotFoundError } from '../../errors';
 import { objectUtils } from '../../utilities';
 import { hasAccessToSpace } from '../hasAccessToSpace';
-import type { PermissionCompute, UserPermissionFlags } from '../interfaces';
+
+import type { PermissionCompute, UserPermissionFlags } from './interfaces';
 
 /**
  * In these types, we use the following naming convention:

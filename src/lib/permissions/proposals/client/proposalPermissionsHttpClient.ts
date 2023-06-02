@@ -1,5 +1,4 @@
-import fetch from '../../../../adapters/http/fetch.server';
-import { GET } from '../../../../adapters/http/index';
+import { DELETE, GET, POST } from '../../../../adapters/http/index';
 import type {
   ListProposalsRequest,
   ProposalWithCommentsAndUsers,
@@ -7,7 +6,7 @@ import type {
 } from '../../../proposals/interfaces';
 import { AbstractPermissionsApiClient } from '../../clients/abstractApiClient.class';
 import type { PermissionsApiClientConstructor } from '../../clients/interfaces';
-import type { PermissionCompute, PermissionToDelete, Resource, SpaceResourcesRequest } from '../../interfaces';
+import type { PermissionCompute, PermissionResource, Resource, SpaceResourcesRequest } from '../../core/interfaces';
 import type {
   AssignedProposalCategoryPermission,
   ProposalCategoryPermissionAssignment,
@@ -62,9 +61,7 @@ export class ProposalPermissionsHttpClient
   }
 
   assignDefaultProposalCategoryPermissions(request: Resource): Promise<void> {
-    return fetch(`${this.prefix}/assign-default-proposal-category-permissions`, {
-      method: 'POST',
-      body: JSON.stringify(request),
+    return POST(`${this.prefix}/assign-default-proposal-category-permissions`, request, {
       headers: this.jsonHeaders
     });
   }
@@ -72,17 +69,13 @@ export class ProposalPermissionsHttpClient
   upsertProposalCategoryPermission(
     request: ProposalCategoryPermissionAssignment
   ): Promise<AssignedProposalCategoryPermission> {
-    return fetch(`${this.prefix}/upsert-proposal-category-permission`, {
-      method: 'POST',
-      body: JSON.stringify(request),
+    return POST(`${this.prefix}/upsert-proposal-category-permission`, request, {
       headers: this.jsonHeaders
     });
   }
 
-  deleteProposalCategoryPermission(request: PermissionToDelete): Promise<void> {
-    return fetch(`${this.prefix}/delete-proposal-category-permission`, {
-      method: 'DELETE',
-      body: JSON.stringify(request),
+  deleteProposalCategoryPermission(request: PermissionResource): Promise<void> {
+    return DELETE(`${this.prefix}/delete-proposal-category-permission`, request, {
       headers: this.jsonHeaders
     });
   }

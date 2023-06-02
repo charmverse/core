@@ -70,74 +70,66 @@ export async function generateProposal({
 }: GenerateProposalInput): Promise<ProposalWithUsers & { page: Page }> {
   const proposalId = v4();
 
-  const result = await generatePage<{ proposal: ProposalWithUsers }>({
+  await prisma.proposal.create({
     data: {
+      category: !categoryId
+        ? { create: { color: randomThemeColor(), title: `Category ${Math.random()}`, spaceId } }
+        : { connect: { id: categoryId } },
       id: proposalId,
-      contentText: '',
-      path: `path-${v4()}`,
-      title: 'Proposal',
-      type: 'proposal',
-      author: {
-        connect: {
-          id: userId
-        }
-      },
-      updatedBy: userId,
+      createdBy: userId,
+      status: proposalStatus,
       space: {
         connect: {
           id: spaceId
         }
       },
-      deletedAt,
-      proposal: {
-        create: {
-          category: !categoryId
-            ? { create: { color: randomThemeColor(), title: `Category ${Math.random()}`, spaceId } }
-            : { connect: { id: categoryId } },
-          id: proposalId,
-          createdBy: userId,
-          status: proposalStatus,
-          space: {
-            connect: {
-              id: spaceId
+      authors: !authors.length
+        ? undefined
+        : {
+            createMany: {
+              data: authors.map((authorId) => ({ userId: authorId }))
             }
           },
-          authors: !authors.length
-            ? undefined
-            : {
-                createMany: {
-                  data: authors.map((authorId) => ({ userId: authorId }))
-                }
-              },
-          reviewers: !reviewers.length
-            ? undefined
-            : {
-                createMany: {
-                  data: (reviewers ?? []).map((r) => {
-                    return {
-                      userId: r.group === 'user' ? r.id : undefined,
-                      roleId: r.group === 'role' ? r.id : undefined
-                    };
-                  })
-                }
-              }
-        }
-      }
-    },
-    include: {
-      proposal: {
-        include: {
-          authors: true,
-          reviewers: true,
-          category: true
-        }
-      }
+      reviewers: !reviewers.length
+        ? undefined
+        : {
+            createMany: {
+              data: (reviewers ?? []).map((r) => {
+                return {
+                  userId: r.group === 'user' ? r.id : undefined,
+                  roleId: r.group === 'role' ? r.id : undefined
+                };
+              })
+            }
+          }
     }
   });
 
-  const { proposal, ...page } = result;
+  await generatePage({
+    id: proposalId,
+    contentText: '',
+    path: `path-${v4()}`,
+    title: 'Proposal',
+    type: 'proposal',
+    createdBy: userId,
+    spaceId,
+    deletedAt,
+    proposalId
+  });
 
-  return { ...proposal, page };
+  const result = await prisma.proposal.findUniqueOrThrow({
+    where: {
+      id: proposalId
+    },
+    include: {
+      category: true,
+      authors: true,
+      reviewers: true,
+      page: true
+    }
+  });
+
+  return result as ProposalWithUsers & { page: Page };
 }
 export async function convertPostToProposal({
   post,
@@ -233,4 +225,33 @@ export async function generateProposalTemplate({
   });
 
   return convertedToTemplate.proposal as ProposalWithUsers;
+}
+export async function convertPageToProposal({
+  pageId,
+  proposalCategoryId,
+  userId
+}: {
+  pageId: string;
+  proposalCategoryId?: string;
+  userId?: string;
+}): Promise<void> {
+  const page = await prisma.page.findUniqueOrThrow({
+    where: { id: pageId },
+    select: { createdBy: true, spaceId: true }
+  });
+
+  const { page: proposalPage } = await generateProposal({
+    userId: userId ?? page.createdBy,
+    spaceId: page.spaceId,
+    categoryId: proposalCategoryId
+  });
+
+  await prisma.page.update({
+    where: {
+      id: pageId
+    },
+    data: {
+      convertedProposalId: proposalPage.id
+    }
+  });
 }

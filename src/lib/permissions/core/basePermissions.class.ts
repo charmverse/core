@@ -1,5 +1,6 @@
 import { typedKeys } from '../../utilities/objects';
-import type { AbstractPermissions, UserPermissionFlags } from '../interfaces';
+
+import type { AbstractPermissions, UserPermissionFlags } from './interfaces';
 
 /**
  * Defines each operation as a member property queryable as true / false

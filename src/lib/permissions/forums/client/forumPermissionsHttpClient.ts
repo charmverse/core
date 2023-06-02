@@ -1,17 +1,17 @@
 import fetch from '../../../../adapters/http/fetch.server';
 import { AbstractPermissionsApiClient } from '../../clients/abstractApiClient.class';
 import type { PermissionsApiClientConstructor } from '../../clients/interfaces';
+import type { PermissionCompute, PermissionResource, Resource } from '../../core/interfaces';
 import type {
   AssignedPostCategoryPermission,
   MutatedPostSearch,
-  PermissionCompute,
-  PermissionToDelete,
   PostCategoryPermissionFlags,
   PostPermissionFlags,
   PostSearchToMutate,
-  Resource
-} from '../../interfaces';
-import type { CategoriesToFilter, PostCategoryPermissionAssignment, PostCategoryWithPermissions } from '../interfaces';
+  CategoriesToFilter,
+  PostCategoryPermissionAssignment,
+  PostCategoryWithPermissions
+} from '../interfaces';
 
 import type { PremiumForumPermissionsClient } from './interfaces';
 
@@ -62,7 +62,7 @@ export class ForumPermissionsHttpClient extends AbstractPermissionsApiClient imp
     });
   }
 
-  deletePostCategoryPermission(request: PermissionToDelete): Promise<void> {
+  deletePostCategoryPermission(request: PermissionResource): Promise<void> {
     return fetch(`${this.prefix}/delete-post-category-permission`, {
       method: 'DELETE',
       body: JSON.stringify(request)

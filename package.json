@@ -27,8 +27,40 @@
       "require": "./dist/cjs/prisma-client.js"
     },
     "./test": {
-      "import": "./dist/esm/lib/testing/index.js",
-      "require": "./dist/cjs/lib/testing/index.js"
+      "import": "./dist/esm/test.js",
+      "require": "./dist/cjs/test.js"
+    },
+    "./pages": {
+      "import": "./dist/esm/pages.js",
+      "require": "./dist/cjs/pages.js"
+    },
+    "./pages/utilities": {
+      "import": "./dist/esm/pages-utilities.js",
+      "require": "./dist/cjs/pages-utilities.js"
+    },
+    "./proposals": {
+      "import": "./dist/esm/proposals.js",
+      "require": "./dist/cjs/proposals.js"
+    },
+    "./bounties": {
+      "import": "./dist/esm/bounties.js",
+      "require": "./dist/cjs/bounties.js"
+    },
+    "./permissions": {
+      "import": "./dist/esm/permissions.js",
+      "require": "./dist/cjs/permissions.js"
+    },
+    "./permissions/flags": {
+      "import": "./dist/esm/permissions-flags.js",
+      "require": "./dist/cjs/permissions-flags.js"
+    },
+    "./utilities": {
+      "import": "./dist/esm/utilities.js",
+      "require": "./dist/cjs/utilities.js"
+    },
+    "./errors": {
+      "import": "./dist/esm/errors.js",
+      "require": "./dist/cjs/errors.js"
     }
   },
   "scripts": {
