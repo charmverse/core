@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import type { Prisma } from '@prisma/client';
+import type { Page, Prisma } from '@prisma/client';
 
 import type { OptionalPrismaTransaction } from '../../prisma-client';
 import { prisma } from '../../prisma-client';
@@ -15,14 +15,20 @@ import type {
 import { flattenTree, mapTargetPageTree } from './mapPageTree';
 
 function generatePagesQuery({
-  spaceId,
   includeDeletedPages,
-  fullPage
+  fullPage,
+  pageIds,
+  spaceId
 }: {
-  spaceId: string;
   includeDeletedPages?: boolean;
   fullPage?: boolean;
+  pageIds?: string[];
+  spaceId?: string;
 }) {
+  if (!pageIds && !spaceId) {
+    throw new InvalidInputError(`1 of spaceId or pageIds is required`);
+  }
+
   const pageQueryContent: Partial<Prisma.PageFindManyArgs> = fullPage
     ? {
         include: {
@@ -54,6 +60,9 @@ function generatePagesQuery({
   return {
     where: {
       spaceId,
+      id: {
+        in: pageIds
+      },
       // Soft deleted pages have a value for deletedAt. Active pages are null
       deletedAt: includeDeletedPages ? undefined : null
     },
@@ -73,8 +82,7 @@ function generatePagesQuery({
 export async function resolvePageTreeAlt({
   pageId,
   flattenChildren,
-  fullPage,
-  pageNodes
+  fullPage
 }: PageTreeResolveInput & {
   flattenChildren?: undefined | false;
   fullPage?: false | undefined;
@@ -82,8 +90,7 @@ export async function resolvePageTreeAlt({
 export async function resolvePageTreeAlt({
   pageId,
   flattenChildren,
-  fullPage,
-  pageNodes
+  fullPage
 }: PageTreeResolveInput & { flattenChildren: true; fullPage?: false | undefined } & OptionalPrismaTransaction): Promise<
   TargetPageTreeWithFlatChildren<PageNodeWithPermissions>
 >;
@@ -91,16 +98,14 @@ export async function resolvePageTreeAlt({
 export async function resolvePageTreeAlt({
   pageId,
   flattenChildren,
-  fullPage,
-  pageNodes
+  fullPage
 }: PageTreeResolveInput & { flattenChildren?: undefined | false; fullPage: true } & OptionalPrismaTransaction): Promise<
   TargetPageTree<PageWithPermissions>
 >;
 export async function resolvePageTreeAlt({
   pageId,
   flattenChildren,
-  fullPage,
-  pageNodes
+  fullPage
 }: PageTreeResolveInput & { flattenChildren: true; fullPage: true } & OptionalPrismaTransaction): Promise<
   TargetPageTreeWithFlatChildren<PageWithPermissions>
 >;
@@ -109,21 +114,18 @@ export async function resolvePageTreeAlt({
   flattenChildren = false,
   includeDeletedPages = false,
   fullPage,
-  pageNodes,
   tx = prisma
 }: PageTreeResolveInput & OptionalPrismaTransaction): Promise<
   TargetPageTree<PageNodeWithPermissions> | TargetPageTreeWithFlatChildren<PageNodeWithPermissions>
 > {
-  const pageWithSpaceIdOnly = pageNodes
-    ? pageNodes.find((node) => node.id === pageId)
-    : await tx.page.findUnique({
-        where: {
-          id: pageId
-        },
-        select: {
-          spaceId: true
-        }
-      });
+  const pageWithSpaceIdOnly = await tx.page.findUnique({
+    where: {
+      id: pageId
+    },
+    select: {
+      spaceId: true
+    }
+  });
 
   if (!pageWithSpaceIdOnly) {
     throw new PageNotFoundError(pageId);
@@ -131,49 +133,46 @@ export async function resolvePageTreeAlt({
 
   console.time('PRISMA');
 
-  // const pagesInSpace = (pageNodes ??
-  //   (await tx.page.findMany(
-  //     generatePagesQuery({
-  //       includeDeletedPages,
-  //       spaceId: pageWithSpaceIdOnly.spaceId,
-  //       fullPage
-  //     })
-  //   ))) as PageNodeWithPermissions[] | PageWithPermissions[];
-
-  const pagesTreeIds = (await prisma.$queryRaw`WITH RECURSIVE parents_cte AS (
-    SELECT id, "parentId", title
+  const pagesTreeIds = (await tx.$queryRaw`WITH RECURSIVE parents_cte AS (
+    SELECT id, "parentId"
     FROM "Page"
     WHERE id = ${pageId}::UUID
     
     UNION ALL
     
-    SELECT p.id, p."parentId", p.title
+    SELECT p.id, p."parentId"
     FROM "Page" p
     INNER JOIN parents_cte ON p.id = parents_cte."parentId"
   ), children_cte AS (
-    SELECT id, "parentId", title
+    SELECT id, "parentId"
     FROM "Page"
     WHERE id = ${pageId}::UUID
     
     UNION ALL
     
-    SELECT p.id, p."parentId", p.title
+    SELECT p.id, p."parentId"
     FROM "Page" p
     INNER JOIN children_cte ON p."parentId" = children_cte.id
   )
-  SELECT 'parent' as type, id, "parentId", title FROM parents_cte 
+  SELECT id FROM parents_cte 
   UNION 
-  SELECT 'child' as type, id, "parentId", title FROM children_cte;
-`) as any;
+  SELECT id FROM children_cte;
+`) as Pick<Page, 'id'>[];
 
-  console.log(pagesTreeIds);
+  const pagesInSpace = (await tx.page.findMany(
+    generatePagesQuery({
+      includeDeletedPages,
+      pageIds: pagesTreeIds?.map((p) => p.id) ?? [],
+      fullPage
+    })
+  )) as PageNodeWithPermissions[] | PageWithPermissions[];
 
   console.timeEnd('PRISMA');
 
   console.time('MAP');
 
   const { parents, targetPage } = mapTargetPageTree({
-    items: pagesTreeIds,
+    items: pagesInSpace,
     targetPageId: pageId,
     includeDeletedPages
   });
