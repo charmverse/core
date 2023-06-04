@@ -136,7 +136,6 @@ export async function resolvePageTree({
         fullPage
       })
     ))) as PageNodeWithPermissions[] | PageWithPermissions[];
-
   const { parents, targetPage } = mapTargetPageTree({
     items: pagesInSpace,
     targetPageId: pageId,

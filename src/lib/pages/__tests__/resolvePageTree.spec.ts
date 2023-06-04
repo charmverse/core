@@ -2,10 +2,11 @@
 import type { Page, Space, User } from '@prisma/client';
 import { v4 } from 'uuid';
 
+import { prisma } from '../../../prisma-client';
 import { testUtilsPages, testUtilsUser } from '../../../test';
 import { InvalidInputError } from '../../errors';
 import type { PageNodeWithChildren } from '../interfaces';
-import { multiResolvePageTree, resolvePageTree } from '../resolvePageTree';
+import { multiResolvePageTreeAlt, resolvePageTreeAlt } from '../resolvePageTreeAlt';
 
 let user: User;
 let space: Space;
@@ -23,10 +24,17 @@ let page_1_2_1: Page;
 let page_1_2_1_1: Page;
 
 beforeAll(async () => {
-  const generated = await testUtilsUser.generateUserAndSpace({ isAdmin: false });
+  const generated = await testUtilsUser.generateSpaceUser({
+    isAdmin: false,
+    spaceId: '1bc9d330-6949-4ad3-9abe-a25a51095f30'
+  });
 
-  user = generated.user;
-  space = generated.space;
+  user = generated;
+  space = (await prisma.space.findUnique({
+    where: {
+      id: '1bc9d330-6949-4ad3-9abe-a25a51095f30'
+    }
+  })) as Space;
 
   root_1 = await testUtilsPages.generatePage({
     parentId: null,
@@ -116,10 +124,9 @@ function validateRootNode(node: PageNodeWithChildren) {
   expect(node.children[1].children[0].children[0].id).toBe(page_1_2_1_1.id);
 }
 
-describe('resolvePageTree', () => {
+describe('resolvePageTreeAlt', () => {
   it('should return the list of parents from closest to root, along with the page and its children', async () => {
-    const { parents, targetPage } = await resolvePageTree({ pageId: page_1_1.id });
-
+    const { parents, targetPage } = await resolvePageTreeAlt({ pageId: page_1_1.id });
     // Manually list out the parent chain
     const parentList = [root_1];
 
@@ -136,7 +143,7 @@ describe('resolvePageTree', () => {
   });
 
   it('should prune the parents so they each only contain one child, establishing a direct link to the page', async () => {
-    const { parents, targetPage } = await resolvePageTree({ pageId: page_1_1_1.id });
+    const { parents, targetPage } = await resolvePageTreeAlt({ pageId: page_1_1_1.id });
 
     // Make sure we got correct page
     expect(targetPage.id).toEqual(page_1_1_1.id);
@@ -160,7 +167,7 @@ describe('resolvePageTree', () => {
   });
 
   it('should return an empty list of parents for a root page, along with the page and its children', async () => {
-    const { parents, targetPage } = await resolvePageTree({ pageId: root_1.id });
+    const { parents, targetPage } = await resolvePageTreeAlt({ pageId: root_1.id });
 
     expect(parents.length).toBe(0);
 
@@ -168,14 +175,14 @@ describe('resolvePageTree', () => {
   });
 
   it('should not return the full page content by default', async () => {
-    const { targetPage } = await resolvePageTree({ pageId: root_1.id });
+    const { targetPage } = await resolvePageTreeAlt({ pageId: root_1.id });
 
     expect(targetPage).not.toMatchObject(expect.objectContaining(root_1));
     expect((targetPage as any as Page).content).toBeUndefined();
   });
 
   it('should return the full page content if the full page option is passed', async () => {
-    const { targetPage } = await resolvePageTree({ pageId: root_1.id, fullPage: true });
+    const { targetPage } = await resolvePageTreeAlt({ pageId: root_1.id, fullPage: true });
 
     expect(targetPage).toMatchObject(expect.objectContaining(root_1));
   });
@@ -206,7 +213,7 @@ describe('resolvePageTree', () => {
       deletedAt: new Date()
     });
 
-    const { parents, targetPage } = await resolvePageTree({ pageId: childPage_1.id });
+    const { parents, targetPage } = await resolvePageTreeAlt({ pageId: childPage_1.id });
 
     expect(parents.length).toBe(1);
     expect(parents[0].id).toBe(rootPage.id);
@@ -240,7 +247,7 @@ describe('resolvePageTree', () => {
       deletedAt: new Date()
     });
 
-    const { parents, targetPage } = await resolvePageTree({ pageId: childPage_1.id, includeDeletedPages: true });
+    const { parents, targetPage } = await resolvePageTreeAlt({ pageId: childPage_1.id, includeDeletedPages: true });
 
     expect(parents.length).toBe(1);
     expect(parents[0].id).toBe(rootPage.id);
@@ -253,22 +260,21 @@ describe('resolvePageTree', () => {
   });
 });
 
-describe('multiResolvePageTree', () => {
+describe('multiResolvePageTreeAlt', () => {
   it('should return the target page tree for each page in a record with the page ids as key', async () => {
-    const { space: space1, user: user1 } = await testUtilsUser.generateUserAndSpace();
-
     const page1 = await testUtilsPages.generatePage({
-      createdBy: user1.id,
-      spaceId: space1.id
+      createdBy: user.id,
+      spaceId: space.id
     });
 
     const page2 = await testUtilsPages.generatePage({
-      createdBy: user1.id,
-      spaceId: space1.id
+      createdBy: user.id,
+      spaceId: space.id
     });
 
-    const result = await multiResolvePageTree({ pageIds: [page1.id, page2.id] });
+    const result = await multiResolvePageTreeAlt({ pageIds: [page1.id, page2.id] });
 
+    await multiResolvePageTreeAlt({ pageIds: [page1.id, page2.id] });
     expect(result[page1.id]?.targetPage.id).toBe(page1.id);
 
     expect(result[page2.id]?.targetPage.id).toBe(page2.id);
@@ -290,7 +296,7 @@ describe('multiResolvePageTree', () => {
 
     const inexistentPageId = v4();
 
-    const result = await multiResolvePageTree({ pageIds: [page1.id, inexistentPageId], flattenChildren: true });
+    const result = await multiResolvePageTreeAlt({ pageIds: [page1.id, inexistentPageId], flattenChildren: true });
 
     expect(result[page1.id]?.targetPage.id).toBe(page1.id);
     expect(result[page1.id]?.flatChildren[0].id).toBe(page1Child.id);
@@ -314,7 +320,7 @@ describe('multiResolvePageTree', () => {
 
     const inexistentPageId = v4();
 
-    const result = await multiResolvePageTree({ pageIds: [page1.id, inexistentPageId] });
+    const result = await multiResolvePageTreeAlt({ pageIds: [page1.id, inexistentPageId] });
 
     expect((result[page1.id] as any).flatChildren).toBeUndefined();
     // Make sure normal tree still got resolved
@@ -335,6 +341,6 @@ describe('multiResolvePageTree', () => {
       spaceId: space2.id
     });
 
-    await expect(multiResolvePageTree({ pageIds: [page1.id, page2.id] })).rejects.toBeInstanceOf(InvalidInputError);
+    await expect(multiResolvePageTreeAlt({ pageIds: [page1.id, page2.id] })).rejects.toBeInstanceOf(InvalidInputError);
   });
 });

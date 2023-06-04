@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-console */
 import type { Page, Prisma } from '@prisma/client';
 
@@ -10,7 +11,8 @@ import type {
   PageTreeResolveInput,
   TargetPageTree,
   TargetPageTreeWithFlatChildren,
-  PageWithPermissions
+  PageWithPermissions,
+  PageMetaWithPermissions
 } from './interfaces';
 import { flattenTree, mapTargetPageTree } from './mapPageTree';
 
@@ -214,19 +216,19 @@ export type MultiPageTreeResolveOutput<F extends boolean | undefined = false> = 
   | null
 >;
 
-export async function multiResolvePageTree({
+export async function multiResolvePageTreeAlt({
   pageIds,
   includeDeletedPages,
   flattenChildren,
   fullPage
 }: MultiPageTreeResolveInput<false | undefined>): Promise<MultiPageTreeResolveOutput<false | undefined>>;
-export async function multiResolvePageTree({
+export async function multiResolvePageTreeAlt({
   pageIds,
   includeDeletedPages,
   flattenChildren,
   fullPage
 }: MultiPageTreeResolveInput<true>): Promise<MultiPageTreeResolveOutput<true>>;
-export async function multiResolvePageTree<F extends boolean | undefined>({
+export async function multiResolvePageTreeAlt<F extends boolean | undefined>({
   pageIds,
   includeDeletedPages,
   flattenChildren,
@@ -255,27 +257,59 @@ export async function multiResolvePageTree<F extends boolean | undefined>({
     return {};
   }
 
-  const spaceId = uniqueSpaceIds[0];
+  const pagesTreeIds = (await tx.$queryRaw`WITH RECURSIVE parents_cte AS (
+    SELECT id, "parentId"
+    FROM "Page"
+    WHERE id = ANY(ARRAY[${pageIds}]::UUID[])
+    
+    UNION ALL
+    
+    SELECT p.id, p."parentId"
+    FROM "Page" p
+    INNER JOIN parents_cte ON p.id = parents_cte."parentId"
+  ), children_cte AS (
+    SELECT id, "parentId"
+    FROM "Page"
+    WHERE id = ANY(ARRAY[${pageIds}]::UUID[])
+    
+    UNION ALL
+    
+    SELECT p.id, p."parentId"
+    FROM "Page" p
+    INNER JOIN children_cte ON p."parentId" = children_cte.id
+  )
+  SELECT id FROM parents_cte 
+  UNION 
+  SELECT id FROM children_cte;
+`) as Pick<Page, 'id'>[];
 
   const pagesInSpace = (await tx.page.findMany(
     generatePagesQuery({
       includeDeletedPages,
-      spaceId
+      pageIds: pagesTreeIds.map((p) => p.id),
+      fullPage
     })
-  )) as PageNodeWithPermissions[] | PageWithPermissions[];
+  )) as (PageNodeWithPermissions[] | PageWithPermissions[]);
 
-  const mappedResults = await Promise.all(
-    pageIds.map((id) =>
-      resolvePageTreeAlt({
-        pageId: id,
-        flattenChildren: flattenChildren as any,
-        includeDeletedPages,
-        fullPage: fullPage as any,
-        pageNodes: pagesInSpace,
-        tx
-      }).catch(() => null)
-    )
-  );
+  const pagemap = (pagesInSpace as PageNodeWithPermissions[]).reduce((acc, val) => {
+    acc[val.id] = val;
+    return acc;
+  }, {} as Record<string, PageNodeWithPermissions>)
+
+  let mappedResults = pageIds.map(id => pagemap[id] ? mapTargetPageTree({
+    items: pagesInSpace,
+    targetPageId: id,
+    includeDeletedPages
+  }) : null);
+
+  if (flattenChildren) {
+    mappedResults = mappedResults.map(tree => {
+      return tree ? {
+        ...tree,
+        flatChildren: flattenTree(tree.targetPage)
+      } as TargetPageTreeWithFlatChildren<PageMetaWithPermissions> : null
+    })
+  }
 
   return pageIds.reduce((acc, id, index) => {
     acc[id] = mappedResults[index] as any;
