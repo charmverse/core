@@ -2,7 +2,6 @@
 import type { Page, Space, User } from '@prisma/client';
 import { v4 } from 'uuid';
 
-import { prisma } from '../../../prisma-client';
 import { testUtilsPages, testUtilsUser } from '../../../test';
 import { InvalidInputError } from '../../errors';
 import type { PageNodeWithChildren } from '../interfaces';
@@ -24,17 +23,10 @@ let page_1_2_1: Page;
 let page_1_2_1_1: Page;
 
 beforeAll(async () => {
-  const generated = await testUtilsUser.generateSpaceUser({
-    isAdmin: false,
-    spaceId: '1bc9d330-6949-4ad3-9abe-a25a51095f30'
-  });
+  const generated = await testUtilsUser.generateUserAndSpace({ isAdmin: false });
 
-  user = generated;
-  space = (await prisma.space.findUnique({
-    where: {
-      id: '1bc9d330-6949-4ad3-9abe-a25a51095f30'
-    }
-  })) as Space;
+  user = generated.user;
+  space = generated.space;
 
   root_1 = await testUtilsPages.generatePage({
     parentId: null,
@@ -127,6 +119,7 @@ function validateRootNode(node: PageNodeWithChildren) {
 describe('resolvePageTree', () => {
   it('should return the list of parents from closest to root, along with the page and its children', async () => {
     const { parents, targetPage } = await resolvePageTree({ pageId: page_1_1.id });
+
     // Manually list out the parent chain
     const parentList = [root_1];
 
@@ -262,19 +255,20 @@ describe('resolvePageTree', () => {
 
 describe('multiResolvePageTree', () => {
   it('should return the target page tree for each page in a record with the page ids as key', async () => {
+    const { space: space1, user: user1 } = await testUtilsUser.generateUserAndSpace();
+
     const page1 = await testUtilsPages.generatePage({
-      createdBy: user.id,
-      spaceId: space.id
+      createdBy: user1.id,
+      spaceId: space1.id
     });
 
     const page2 = await testUtilsPages.generatePage({
-      createdBy: user.id,
-      spaceId: space.id
+      createdBy: user1.id,
+      spaceId: space1.id
     });
 
     const result = await multiResolvePageTree({ pageIds: [page1.id, page2.id] });
 
-    await multiResolvePageTree({ pageIds: [page1.id, page2.id] });
     expect(result[page1.id]?.targetPage.id).toBe(page1.id);
 
     expect(result[page2.id]?.targetPage.id).toBe(page2.id);
