@@ -412,6 +412,7 @@ model Page {
   comments            PageComment[]
   apiPageKeys         ApiPageKey[]
   userSpaceActions    UserSpaceAction[]
+  syncWithPageId      String?
 
   @@index([bountyId])
   @@index([cardId])
