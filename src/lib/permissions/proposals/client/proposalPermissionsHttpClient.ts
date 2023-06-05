@@ -1,4 +1,4 @@
-import { DELETE, GET, POST } from '../../../../adapters/http/index';
+import { DELETE, GET, POST } from '../../../http/index';
 import type {
   ListProposalsRequest,
   ProposalWithCommentsAndUsers,

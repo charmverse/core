@@ -4,8 +4,8 @@ import { RateLimit } from 'async-sema';
 import type { Logger, LogLevelDesc } from 'loglevel';
 import _log from 'loglevel';
 
-import * as http from '../../adapters/http';
 import { isNodeEnv, isProdEnv, isStagingEnv } from '../../config/constants';
+import * as http from '../http';
 
 import { formatLog } from './logUtils';
 

@@ -1,4 +1,4 @@
-import { SystemError } from '../../lib/errors';
+import { SystemError } from '../errors';
 
 type HTTPMeta = {
   message?: string;

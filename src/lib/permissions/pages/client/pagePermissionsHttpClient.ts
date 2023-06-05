@@ -1,4 +1,4 @@
-import { DELETE, GET, POST } from '../../../../adapters/http';
+import { DELETE, GET, POST } from '../../../http';
 import type { PageMeta, PageMetaWithPermissions, PagesRequest } from '../../../pages/interfaces';
 import { AbstractPermissionsApiClient } from '../../clients/abstractApiClient.class';
 import type { PermissionCompute, PermissionResource, Resource } from '../../core/interfaces';
