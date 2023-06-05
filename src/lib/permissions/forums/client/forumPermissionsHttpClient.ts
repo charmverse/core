@@ -1,4 +1,4 @@
-import fetch from '../../../../adapters/http/fetch.server';
+import fetch from '../../../http/fetch';
 import { AbstractPermissionsApiClient } from '../../clients/abstractApiClient.class';
 import type { PermissionsApiClientConstructor } from '../../clients/interfaces';
 import type { PermissionCompute, PermissionResource, Resource } from '../../core/interfaces';
