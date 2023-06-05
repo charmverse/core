@@ -131,30 +131,31 @@ export async function resolvePageTree({
     throw new PageNotFoundError(pageId);
   }
   const pagesTreeIds = (await tx.$queryRaw`WITH RECURSIVE parents_cte AS (
-    SELECT id, "parentId"
+    SELECT id, "parentId", ARRAY[id] AS path
     FROM "Page"
     WHERE id = ${pageId}::UUID
-    
+
     UNION ALL
-    
-    SELECT p.id, p."parentId"
+
+    SELECT p.id, p."parentId", pc.path || p.id
     FROM "Page" p
-    INNER JOIN parents_cte ON p.id = parents_cte."parentId"
+    INNER JOIN parents_cte pc ON p.id = pc."parentId"
+    WHERE NOT p.id = ANY(pc.path)
   ), children_cte AS (
-    SELECT id, "parentId"
+    SELECT id, "parentId", ARRAY[id] AS path
     FROM "Page"
     WHERE id = ${pageId}::UUID
-    
+
     UNION ALL
-    
-    SELECT p.id, p."parentId"
+
+    SELECT p.id, p."parentId", cc.path || p.id
     FROM "Page" p
-    INNER JOIN children_cte ON p."parentId" = children_cte.id
+    INNER JOIN children_cte cc ON p."parentId" = cc.id
+    WHERE NOT p.id = ANY(cc.path)
   )
-  SELECT id FROM parents_cte 
-  UNION 
-  SELECT id FROM children_cte;
-`) as Pick<Page, 'id'>[];
+  SELECT id FROM parents_cte
+  UNION
+  SELECT id FROM children_cte;`) as Pick<Page, 'id'>[];
 
   const pagesInSpace = (await tx.page.findMany(
     generatePagesQuery({
@@ -187,7 +188,7 @@ export async function resolvePageTree({
     parents,
     targetPage,
     flatChildren: flattenChildren ? flattenTree(targetPage) : undefined
-  } as any;
+  };
 }
 
 export type MultiPageTreeResolveInput<F extends boolean | undefined = boolean> = Pick<
@@ -247,30 +248,31 @@ export async function multiResolvePageTree<F extends boolean | undefined>({
   }
 
   const pagesTreeIds = (await tx.$queryRaw`WITH RECURSIVE parents_cte AS (
-    SELECT id, "parentId"
+    SELECT id, "parentId", ARRAY[id] AS path
     FROM "Page"
     WHERE id = ANY(ARRAY[${pageIds}]::UUID[])
-    
+
     UNION ALL
-    
-    SELECT p.id, p."parentId"
+
+    SELECT p.id, p."parentId", pc.path || p.id
     FROM "Page" p
-    INNER JOIN parents_cte ON p.id = parents_cte."parentId"
+    INNER JOIN parents_cte pc ON p.id = pc."parentId"
+    WHERE NOT p.id = ANY(pc.path)
   ), children_cte AS (
-    SELECT id, "parentId"
+    SELECT id, "parentId", ARRAY[id] AS path
     FROM "Page"
     WHERE id = ANY(ARRAY[${pageIds}]::UUID[])
-    
+
     UNION ALL
-    
-    SELECT p.id, p."parentId"
+
+    SELECT p.id, p."parentId", cc.path || p.id
     FROM "Page" p
-    INNER JOIN children_cte ON p."parentId" = children_cte.id
+    INNER JOIN children_cte cc ON p."parentId" = cc.id
+    WHERE NOT p.id = ANY(cc.path)
   )
-  SELECT id FROM parents_cte 
-  UNION 
-  SELECT id FROM children_cte;
-`) as Pick<Page, 'id'>[];
+  SELECT id FROM parents_cte
+  UNION
+  SELECT id FROM children_cte;`) as Pick<Page, 'id'>[];
 
   const pagesInSpace = (await tx.page.findMany(
     generatePagesQuery({

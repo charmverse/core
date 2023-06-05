@@ -2,9 +2,10 @@
 import type { Page, Space, User } from '@prisma/client';
 import { v4 } from 'uuid';
 
+import { prisma } from '../../../prisma-client';
 import { testUtilsPages, testUtilsUser } from '../../../test';
 import { InvalidInputError } from '../../errors';
-import type { PageNodeWithChildren } from '../interfaces';
+import type { PageNodeWithChildren, PageNodeWithPermissions, TargetPageTree } from '../interfaces';
 import { multiResolvePageTree, resolvePageTree } from '../resolvePageTree';
 
 let user: User;
@@ -23,10 +24,17 @@ let page_1_2_1: Page;
 let page_1_2_1_1: Page;
 
 beforeAll(async () => {
-  const generated = await testUtilsUser.generateUserAndSpace({ isAdmin: false });
+  const generated = await testUtilsUser.generateSpaceUser({
+    isAdmin: false,
+    spaceId: '1bc9d330-6949-4ad3-9abe-a25a51095f30'
+  });
 
-  user = generated.user;
-  space = generated.space;
+  user = generated;
+  space = (await prisma.space.findUnique({
+    where: {
+      id: '1bc9d330-6949-4ad3-9abe-a25a51095f30'
+    }
+  })) as Space;
 
   root_1 = await testUtilsPages.generatePage({
     parentId: null,
@@ -116,6 +124,9 @@ function validateRootNode(node: PageNodeWithChildren) {
   expect(node.children[1].children[0].children[0].id).toBe(page_1_2_1_1.id);
 }
 
+/**
+ * All tests related to handling recursion depend on the raw SQL query inside the page tree, and the handling of nodes inside reducePagesToPageTree method found at src/lib/pages/mapPageTree.ts
+ */
 describe('resolvePageTree', () => {
   it('should return the list of parents from closest to root, along with the page and its children', async () => {
     const { parents, targetPage } = await resolvePageTree({ pageId: page_1_1.id });
@@ -251,8 +262,72 @@ describe('resolvePageTree', () => {
     expect(targetPage.children[0].children.length).toBe(1);
     expect(targetPage.children[0].children[0].id).toBe(childPage_1_1_1.id);
   });
-});
 
+  it('should handle a page that references itself without an infinite recursion timeout', async () => {
+    const pageId = v4();
+
+    const selfReferencingNode = await testUtilsPages.generatePage({
+      id: pageId,
+      parentId: pageId,
+      index: 2,
+      title: 'Self-referencing',
+      createdBy: user.id,
+      spaceId: space.id
+    });
+
+    const { parents, targetPage } = await resolvePageTree({
+      pageId
+    });
+
+    expect(targetPage.id).toBe(selfReferencingNode.id);
+    expect(targetPage.children.length).toBe(0);
+    expect(parents.length).toBe(0);
+  });
+
+  it('should drop a circular reference between two nodes without an infinite recursion timeout', async () => {
+    const firstPageId = v4();
+    const secondPageId = v4();
+
+    const firstNode = await testUtilsPages.generatePage({
+      id: firstPageId,
+      parentId: secondPageId,
+      index: 2,
+      title: 'Circular 1',
+      createdBy: user.id,
+      spaceId: space.id
+    });
+
+    const secondNode = await testUtilsPages.generatePage({
+      id: secondPageId,
+      parentId: firstPageId,
+      index: 2,
+      title: 'Circular 2',
+      createdBy: user.id,
+      spaceId: space.id
+    });
+    // Test in both directions
+    const { parents: secondNodeParents, targetPage: secondNodePage } = await resolvePageTree({
+      pageId: secondNode.id
+    });
+
+    expect(secondNodePage.id).toBe(secondNode.id);
+    expect(secondNodePage.children.length).toBe(1);
+    expect(secondNodePage.children[0].id).toBe(firstNode.id);
+    expect(secondNodeParents.length).toBe(0);
+
+    const { parents: firstNodeParents, targetPage: firstNodePage } = await resolvePageTree({
+      pageId: firstNode.id
+    });
+
+    expect(firstNodePage.id).toBe(firstNodePage.id);
+    expect(firstNodePage.children.length).toBe(0);
+    expect(firstNodeParents.length).toBe(1);
+    expect(firstNodeParents[0].id).toBe(secondNode.id);
+  });
+});
+/**
+ * All tests related to handling recursion depend on the raw SQL query inside the page tree, and the handling of nodes inside reducePagesToPageTree method found at src/lib/pages/mapPageTree.ts
+ */
 describe('multiResolvePageTree', () => {
   it('should return the target page tree for each page in a record with the page ids as key', async () => {
     const { space: space1, user: user1 } = await testUtilsUser.generateUserAndSpace();
@@ -336,5 +411,77 @@ describe('multiResolvePageTree', () => {
     });
 
     await expect(multiResolvePageTree({ pageIds: [page1.id, page2.id] })).rejects.toBeInstanceOf(InvalidInputError);
+  });
+
+  it('should handle a page that references itself without an infinite recursion timeout', async () => {
+    const pageId = v4();
+
+    const selfReferencingNode = await testUtilsPages.generatePage({
+      id: pageId,
+      parentId: pageId,
+      index: 2,
+      title: 'Self-referencing',
+      createdBy: user.id,
+      spaceId: space.id
+    });
+
+    const result = await multiResolvePageTree({
+      pageIds: [pageId]
+    });
+
+    expect(Object.keys(result).length).toBe(1);
+
+    const { parents, targetPage } = result[pageId] as TargetPageTree<PageNodeWithPermissions>;
+
+    expect(targetPage.id).toBe(pageId);
+
+    expect(targetPage.children.length).toBe(0);
+    expect(parents.length).toBe(0);
+  });
+
+  it('should drop a circular reference between two nodes without an infinite recursion timeout', async () => {
+    const firstPageId = v4();
+    const secondPageId = v4();
+
+    const firstNode = await testUtilsPages.generatePage({
+      id: firstPageId,
+      parentId: secondPageId,
+      index: 2,
+      title: 'Circular 1',
+      createdBy: user.id,
+      spaceId: space.id
+    });
+
+    const secondNode = await testUtilsPages.generatePage({
+      id: secondPageId,
+      parentId: firstPageId,
+      index: 2,
+      title: 'Circular 2',
+      createdBy: user.id,
+      spaceId: space.id
+    });
+
+    const result = await multiResolvePageTree({
+      pageIds: [firstNode.id, secondNode.id]
+    });
+
+    // Test in both directions
+    const { parents: secondNodeParents, targetPage: secondNodePage } = result[
+      secondNode.id
+    ] as TargetPageTree<PageNodeWithPermissions>;
+
+    const { parents: firstNodeParents, targetPage: firstNodePage } = result[
+      firstNode.id
+    ] as TargetPageTree<PageNodeWithPermissions>;
+
+    expect(secondNodePage.id).toBe(secondNode.id);
+    expect(secondNodePage.children.length).toBe(1);
+    expect(secondNodePage.children[0].id).toBe(firstNode.id);
+    expect(secondNodeParents.length).toBe(0);
+
+    expect(firstNodePage.id).toBe(firstNodePage.id);
+    expect(firstNodePage.children.length).toBe(0);
+    expect(firstNodeParents.length).toBe(1);
+    expect(firstNodeParents[0].id).toBe(secondNode.id);
   });
 });

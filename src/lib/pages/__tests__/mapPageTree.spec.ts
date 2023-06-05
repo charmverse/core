@@ -1,4 +1,6 @@
 /* eslint-disable camelcase */
+import { v4 } from 'uuid';
+
 import { generatePageNode } from '../../testing/pages';
 import type { PageNode, PageNodeWithChildren } from '../interfaces';
 import { mapPageTree, mapTargetPageTree, reducePagesToPageTree } from '../mapPageTree';
@@ -318,6 +320,51 @@ describe('reducePagesToPageTree', () => {
     // Should be the card's children pages
     expect(rootNodes[0].children[0].children[0].id).toBe(card_page_1.id);
     expect(rootNodes[0].children[0].children[1].id).toBe(card_page_2.id);
+  });
+
+  it('should handle a page that has itself as a parent', async () => {
+    const pageId = v4();
+
+    const selfReferencingPage = generatePageNode({
+      id: pageId,
+      parentId: pageId,
+      index: 2,
+      title: 'Self referencing'
+    });
+
+    const reduced = reducePagesToPageTree({
+      items: [selfReferencingPage]
+    });
+
+    expect(reduced.rootNodes[0].id).toBe(selfReferencingPage.id);
+    expect(reduced.rootNodes[0].children.length).toBe(0);
+  });
+
+  it('should drop a circular reference between two nodes', async () => {
+    const firstPageId = v4();
+    const secondPageId = v4();
+
+    const firstNode = generatePageNode({
+      id: firstPageId,
+      parentId: secondPageId,
+      index: 2,
+      title: 'Circular 1'
+    });
+
+    const secondNode = generatePageNode({
+      id: secondPageId,
+      parentId: firstPageId,
+      index: 2,
+      title: 'Circular 2'
+    });
+    const { rootNodes } = reducePagesToPageTree({
+      items: [firstNode, secondNode]
+    });
+
+    expect(rootNodes.length).toBe(1);
+    expect(rootNodes[0].id).toBe(secondNode.id);
+    expect(rootNodes[0].children.length).toBe(1);
+    expect(rootNodes[0].children[0].id).toBe(firstNode.id);
   });
 });
 
