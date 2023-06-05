@@ -5,7 +5,6 @@ import type { Logger, LogLevelDesc } from 'loglevel';
 import _log from 'loglevel';
 
 import { isNodeEnv, isProdEnv, isStagingEnv } from '../../config/constants';
-import * as http from '../http';
 
 import { formatLog } from './logUtils';
 
@@ -87,6 +86,8 @@ function logErrorPlain(message: string, opts: any) {
 
 async function sendErrorToDiscord(webhook: string, message: any, opt: any) {
   let fields: { name: string; value?: string }[] = [];
+  // eslint-disable-next-line global-require, @typescript-eslint/no-var-requires
+  const http = require('../http');
   if (opt instanceof Error) {
     fields = [
       { name: 'Error', value: opt.message },

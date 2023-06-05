@@ -1,12 +1,14 @@
+import type { RequestInitWithRetry } from 'fetch-retry';
+
 import { SystemError } from '../errors';
 
 type HTTPMeta = {
   message?: string;
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  method: RequestInitWithRetry['method'];
   requestBody?: any;
   requestUrl: string;
-  responseCode: number;
-  response: any;
+  responseCode: number | string;
+  response?: any;
 };
 
 export class HTTPFetchError extends SystemError {
@@ -19,7 +21,7 @@ export class HTTPFetchError extends SystemError {
   response: HTTPMeta['response'];
 
   constructor(meta: HTTPMeta) {
-    const severity = meta.responseCode >= 500 ? 'error' : 'warning';
+    const severity = typeof meta.responseCode === 'string' || meta.responseCode >= 500 ? 'error' : 'warning';
     const message = meta.message || `HTTP Error ${meta.method} ${meta.responseCode}: ${meta.requestUrl}`;
     super({
       message,
