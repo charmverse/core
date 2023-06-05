@@ -36,6 +36,11 @@ export function reducePagesToPageTree<T extends PageNode = PageNode>({
 
   // Assign empty children to each node
   const tempItems: PageNodeWithChildren<T>[] = items.map((item: T) => {
+    if (item.parentId === item.id) {
+      // Prevent accidental infinite recursion
+      item.parentId = null;
+    }
+
     return {
       ...item,
       children: []
@@ -44,6 +49,9 @@ export function reducePagesToPageTree<T extends PageNode = PageNode>({
 
   // A map that contains the temp items array position for each page
   const map: { [key: string]: number } = {};
+
+  // Track parent IDs to avoid infinite recursion
+  const mapWithParentId: { [key: string]: string | null } = {};
   let node: PageNodeWithChildren<T>;
 
   // Root pages will only be pushed here if rootPageIds is undefined, or if it is provided and the root page ID matches
@@ -51,7 +59,14 @@ export function reducePagesToPageTree<T extends PageNode = PageNode>({
 
   let i: number;
   for (i = 0; i < tempItems.length; i += 1) {
-    map[tempItems[i].id] = i; // initialize the map
+    const currentItem = tempItems[i];
+    map[currentItem.id] = i; // initialize the map
+    mapWithParentId[currentItem.id] = currentItem.parentId;
+
+    if (currentItem.parentId && mapWithParentId[currentItem.parentId] === currentItem.id) {
+      // Circular reference detected. Delete the second reference
+      currentItem.parentId = null;
+    }
   }
 
   for (i = 0; i < tempItems.length; i += 1) {
