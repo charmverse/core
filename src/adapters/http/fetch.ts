@@ -1,4 +1,16 @@
-type RequestInit = Parameters<typeof fetch>[1];
+import type { RequestInitWithRetry } from 'fetch-retry';
+import fetchRetry from 'fetch-retry';
+import { fetch as nativeFetch } from 'undici';
+
+const delayMultiplier = process.env.NODE_ENV === 'test' ? 1 : 1000;
+
+const fetchAndRetry = fetchRetry(nativeFetch as any, {
+  retries: 5,
+  retryOn: [500, 501, 502, 503],
+  retryDelay(attempt: number) {
+    return 2 ** attempt * delayMultiplier; // 1000, 2000, 4000
+  }
+});
 
 export function transformResponse(response: Response) {
   if (response.status >= 400) {
@@ -21,6 +33,11 @@ export function transformResponse(response: Response) {
   });
 }
 
-export default function fetchWrapper<T>(resource: string, init?: RequestInit): Promise<T> {
-  return fetch(resource, init).then(transformResponse) as Promise<T>;
+export default function fetchWrapper<T>(url: RequestInfo, init?: RequestInitWithRetry): Promise<T> {
+  return fetchAndRetry(url, init)
+    .then((r) => transformResponse(r as unknown as Response)) //  as Promise<T>
+    .catch((e) => {
+      //  console.error('fetch error', e);
+      throw e;
+    });
 }
