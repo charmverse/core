@@ -24,17 +24,10 @@ let page_1_2_1: Page;
 let page_1_2_1_1: Page;
 
 beforeAll(async () => {
-  const generated = await testUtilsUser.generateSpaceUser({
-    isAdmin: false,
-    spaceId: '1bc9d330-6949-4ad3-9abe-a25a51095f30'
-  });
+  const generated = await testUtilsUser.generateUserAndSpace({ isAdmin: false });
 
-  user = generated;
-  space = (await prisma.space.findUnique({
-    where: {
-      id: '1bc9d330-6949-4ad3-9abe-a25a51095f30'
-    }
-  })) as Space;
+  user = generated.user;
+  space = generated.space;
 
   root_1 = await testUtilsPages.generatePage({
     parentId: null,
