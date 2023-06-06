@@ -2,7 +2,12 @@ import type { Space } from '@prisma/client';
 
 import type { BountyWithDetails } from '../../../bounties/interfaces';
 import type { PermissionCompute, SpaceResourcesRequest } from '../../core/interfaces';
-import type { PublicBountyToggle, SpaceDefaultPublicPageToggle, SpacePermissionFlags } from '../interfaces';
+import type {
+  PublicBountyToggle,
+  SpaceDefaultPublicPageToggle,
+  SpacePermissionFlags,
+  SpaceRequireProposalTemplateToggle
+} from '../interfaces';
 
 export type BaseSpacePermissionsClient = {
   computeSpacePermissions: (request: PermissionCompute) => Promise<SpacePermissionFlags>;
@@ -12,4 +17,5 @@ export type BaseSpacePermissionsClient = {
 export type PremiumSpacePermissionsClient = BaseSpacePermissionsClient & {
   toggleSpaceDefaultPublicPage: (request: SpaceDefaultPublicPageToggle) => Promise<Space>;
   togglePublicBounties: (request: PublicBountyToggle) => Promise<Space>;
+  toggleRequireProposalTemplate: (request: SpaceRequireProposalTemplateToggle) => Promise<Space>;
 };

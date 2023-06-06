@@ -19,3 +19,8 @@ export type SpaceDefaultPublicPageToggle = {
   spaceId: string;
   defaultPublicPages: boolean;
 };
+
+export type SpaceRequireProposalTemplateToggle = {
+  spaceId: string;
+  requireProposalTemplate: boolean;
+};
