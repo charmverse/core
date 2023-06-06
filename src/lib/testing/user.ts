@@ -50,6 +50,7 @@ type CreateUserAndSpaceInput = {
   onboarded?: boolean;
   spaceName?: string;
   publicBountyBoard?: boolean;
+  publicProposals?: boolean;
   spacePaidTier?: SubscriptionTier;
 };
 
@@ -59,7 +60,8 @@ export async function generateUserAndSpace({
   isGuest,
   onboarded = true,
   spaceName = 'Example Space',
-  publicBountyBoard,
+  publicBountyBoard = false,
+  publicProposals = false,
   spacePaidTier = 'pro'
 }: CreateUserAndSpaceInput = {}) {
   const userId = v4();
@@ -85,7 +87,8 @@ export async function generateUserAndSpace({
               name: spaceName,
               // Adding prefix avoids this being evaluated as uuid
               domain: `domain-${v4()}`,
-              publicBountyBoard
+              publicBountyBoard,
+              publicProposals
             }
           }
         }

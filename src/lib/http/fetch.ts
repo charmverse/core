@@ -14,19 +14,22 @@ const fetchAndRetry = fetchRetry(nativeFetch as any, {
   }
 });
 
-export function transformResponse(response: Response) {
+export async function transformResponse(response: Response) {
+  const contentType = response.headers.get('content-type');
+
   if (response.status >= 400) {
-    const contentType = response.headers.get('content-type') as string;
     // necessary to capture the regular response for embedded blocks
     if (contentType?.includes('application/json')) {
-      return response
-        .json()
-        .then((json: any) => Promise.reject({ status: response.status, message: response.statusText, ...json }));
+      try {
+        const jsonResponse = await response.json();
+        return Promise.reject({ status: response.status, message: response.statusText, ...jsonResponse });
+      } catch (error) {
+        // not valid JSON, content-type is lying!
+      }
     }
     // Note: 401 if user is logged out
     return response.text().then((text) => Promise.reject({ status: response.status, message: text }));
   }
-  const contentType = response.headers.get('content-type');
 
   if (contentType?.includes('application/json')) {
     return response.json();
@@ -41,7 +44,8 @@ export default function fetchWrapper<T>(url: RequestInfo, init?: RequestInitWith
   return fetchAndRetry(url, init)
     .then((r) => transformResponse(r as unknown as Response)) //  as Promise<T>
     .catch((e) => {
-      if (e.cause?.code === 'ECONNREFUSED') {
+      if (e.cause) {
+        // handle "fetch error"
         return Promise.reject(
           new HTTPFetchError({
             message: e.cause.message,

@@ -260,6 +260,7 @@ model Space {
   name                        String
   domain                      String                            @unique
   customDomain                String?                           @unique
+  notifyNewProposals          DateTime?                         @default(now())
   paidTier                    SubscriptionTier                  @default(pro)
   discordServerId             String?
   defaultVotingDuration       Int?
@@ -272,6 +273,7 @@ model Space {
   requireProposalTemplate     Boolean?                          @default(false)
   permissionConfigurationMode SpacePermissionConfigurationMode? @default(custom)
   publicBountyBoard           Boolean?                          @default(false)
+  publicProposals             Boolean?                          @default(false)
   xpsEngineId                 String?                           @unique
   author                      User                              @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   blocks                      Block[]
@@ -409,6 +411,7 @@ model Page {
   votes               Vote[]
   workspaceEvents     WorkspaceEvent[]
   diffs               PageDiff[]
+  syncWithPageId      String?           @db.Uuid
   convertedProposalId String?           @unique @db.Uuid
   convertedProposal   Proposal?         @relation(fields: [convertedProposalId], references: [id], onDelete: SetNull, onUpdate: Cascade, name: "convertedProposal")
   comments            PageComment[]
