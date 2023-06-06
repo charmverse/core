@@ -109,7 +109,7 @@ export async function generateProposal({
     id: proposalId,
     contentText: '',
     path: `path-${v4()}`,
-    title: 'Proposal',
+    title,
     type: 'proposal',
     createdBy: userId,
     spaceId,
@@ -208,7 +208,7 @@ export async function generateProposalTemplate({
 
   const convertedToTemplate = await prisma.page.update({
     data: {
-      type: 'page_template'
+      type: 'proposal_template'
     },
     where: {
       id: proposal.id

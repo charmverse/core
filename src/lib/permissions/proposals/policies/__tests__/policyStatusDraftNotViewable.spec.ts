@@ -92,7 +92,7 @@ describe('policyStatusDraftOnlyViewable', () => {
     });
   });
 
-  it('should return same level of permissions as the author for an admin apart from edit', async () => {
+  it('should return same level of permissions as the author for an admin', async () => {
     const permissions = await policyStatusDraftNotViewable({
       flags: fullPermissions,
       isAdmin: true,
@@ -102,7 +102,7 @@ describe('policyStatusDraftOnlyViewable', () => {
 
     expect(permissions).toMatchObject<ProposalPermissionFlags>({
       view: true,
-      edit: false,
+      edit: true,
       delete: true,
       comment: true,
       make_public: true,

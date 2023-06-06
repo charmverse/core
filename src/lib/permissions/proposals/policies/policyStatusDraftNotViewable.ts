@@ -21,18 +21,10 @@ export function injectPolicyStatusDraftNotViewable({ isProposalReviewer }: Propo
     }
 
     const allowedAuthorOperations: ProposalOperation[] = ['view', 'edit', 'delete', 'comment', 'make_public'];
-    const allowedAdminOperations: ProposalOperation[] = ['view', 'delete', 'comment', 'make_public'];
 
-    if (isProposalAuthor({ proposal: resource, userId })) {
+    if (isProposalAuthor({ proposal: resource, userId }) || isAdmin) {
       typedKeys(flags).forEach((flag) => {
         if (!allowedAuthorOperations.includes(flag)) {
-          newPermissions[flag] = false;
-        }
-      });
-      return newPermissions;
-    } else if (isAdmin) {
-      typedKeys(flags).forEach((flag) => {
-        if (!allowedAdminOperations.includes(flag)) {
           newPermissions[flag] = false;
         }
       });
