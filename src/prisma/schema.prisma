@@ -136,6 +136,7 @@ enum SpaceOperation {
   createForumCategory
   moderateForums
   reviewProposals
+  requireProposalTemplate
 }
 
 enum ProfileItemType {
