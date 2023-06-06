@@ -407,6 +407,7 @@ model Page {
   votes               Vote[]
   workspaceEvents     WorkspaceEvent[]
   diffs               PageDiff[]
+  syncWithPageId      String?           @db.Uuid
   convertedProposalId String?           @unique @db.Uuid
   convertedProposal   Proposal?         @relation(fields: [convertedProposalId], references: [id], onDelete: SetNull, onUpdate: Cascade, name: "convertedProposal")
   comments            PageComment[]
