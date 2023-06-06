@@ -4,12 +4,7 @@ import type { BountyWithDetails } from '../../../bounties/interfaces';
 import { GET, POST } from '../../../http';
 import { AbstractPermissionsApiClient } from '../../clients/abstractApiClient.class';
 import type { PermissionCompute, SpaceResourcesRequest } from '../../core/interfaces';
-import type {
-  PublicBountyToggle,
-  SpaceDefaultPublicPageToggle,
-  SpacePermissionFlags,
-  SpaceRequireProposalTemplateToggle
-} from '../interfaces';
+import type { PublicBountyToggle, SpaceDefaultPublicPageToggle, SpacePermissionFlags } from '../interfaces';
 
 import type { PremiumSpacePermissionsClient } from './interfaces';
 
@@ -34,12 +29,6 @@ export class SpacePermissionsHttpClient extends AbstractPermissionsApiClient imp
 
   togglePublicBounties(request: PublicBountyToggle): Promise<Space> {
     return POST(`${this.prefix}/toggle-public-bounties`, request, {
-      headers: this.jsonHeaders
-    });
-  }
-
-  toggleRequireProposalTemplate(request: SpaceRequireProposalTemplateToggle): Promise<Space> {
-    return POST(`${this.prefix}/toggle-require-proposal-template`, request, {
       headers: this.jsonHeaders
     });
   }
