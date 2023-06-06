@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Space" ADD COLUMN     "notifyNewProposals" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP;
