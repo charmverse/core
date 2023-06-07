@@ -85,30 +85,30 @@ function logErrorPlain(message: string, opts: any) {
 }
 
 async function sendErrorToDiscord(webhook: string, message: any, opt: any) {
-  let fields: { name: string; value?: string }[] = [];
+  const fields: { name: string; value?: string }[] = [];
   // eslint-disable-next-line global-require, @typescript-eslint/no-var-requires
-  const http = require('../http');
-  if (opt instanceof Error) {
-    fields = [
-      { name: 'Error', value: opt.message },
-      { name: 'Stacktrace', value: opt.stack?.slice(0, 500) }
-    ];
-  } else if (opt) {
-    fields = Object.entries<any>(opt)
-      .map(([name, _value]) => {
-        const value = typeof _value === 'string' ? _value.slice(0, 500) : JSON.stringify(_value || {});
-        return { name, value };
-      })
-      .slice(0, 5); // add a sane max # of fields just in case
-  }
-  await discordRateLimiter();
-  return http.POST(webhook, {
-    embeds: [
-      {
-        color: 14362664, // #db2828
-        description: message,
-        fields
-      }
-    ]
-  });
+  // const http = require('../http');
+  // if (opt instanceof Error) {
+  //   fields = [
+  //     { name: 'Error', value: opt.message },
+  //     { name: 'Stacktrace', value: opt.stack?.slice(0, 500) }
+  //   ];
+  // } else if (opt) {
+  //   fields = Object.entries<any>(opt)
+  //     .map(([name, _value]) => {
+  //       const value = typeof _value === 'string' ? _value.slice(0, 500) : JSON.stringify(_value || {});
+  //       return { name, value };
+  //     })
+  //     .slice(0, 5); // add a sane max # of fields just in case
+  // }
+  // await discordRateLimiter();
+  // return http.POST(webhook, {
+  //   embeds: [
+  //     {
+  //       color: 14362664, // #db2828
+  //       description: message,
+  //       fields
+  //     }
+  //   ]
+  // });
 }
