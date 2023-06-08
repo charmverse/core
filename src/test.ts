@@ -8,3 +8,4 @@ export * as testUtilsSpaces from './lib/testing/spaces';
 export * as testUtilsUser from './lib/testing/user';
 export * as testUtilsBounties from './lib/testing/bounties';
 export * as testUtilsVotes from './lib/testing/votes';
+export * as testUtils from './lib/testing/utilities';
