@@ -1,6 +1,6 @@
 import type { ProposalPolicyDependencies } from './interfaces';
 import { policyStatusDiscussionEditableCommentable } from './policyStatusDiscussionEditableCommentable';
-import { injectPolicyStatusDraftNotViewable } from './policyStatusDraftNotViewable';
+import { policyStatusDraftNotViewable } from './policyStatusDraftNotViewable';
 import { injectPolicyStatusReviewCommentable } from './policyStatusReviewCommentable';
 import { policyStatusReviewedOnlyCreateVote } from './policyStatusReviewedOnlyCreateVote';
 import { policyStatusVoteActiveOnlyVotable } from './policyStatusVoteActiveOnlyVotable';
@@ -11,8 +11,8 @@ import { policyStatusVoteClosedViewOnly } from './policyStatusVoteClosedViewOnly
  */
 export function getDefaultProposalPermissionPolicies(deps: ProposalPolicyDependencies) {
   return [
+    policyStatusDraftNotViewable,
     policyStatusDiscussionEditableCommentable,
-    injectPolicyStatusDraftNotViewable(deps),
     injectPolicyStatusReviewCommentable(deps),
     policyStatusReviewedOnlyCreateVote,
     policyStatusVoteActiveOnlyVotable,

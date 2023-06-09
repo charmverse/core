@@ -5,39 +5,30 @@ import { AvailableProposalPermissions } from '../availableProposalPermissions.cl
 import type { ProposalPermissionFlags } from '../interfaces';
 import { isProposalAuthor } from '../isProposalAuthor';
 
-import type { ProposalPolicyDependencies, ProposalPolicyInput } from './interfaces';
+import type { ProposalPolicyInput } from './interfaces';
 
-export function injectPolicyStatusDraftNotViewable({ isProposalReviewer }: ProposalPolicyDependencies) {
-  return async function policyStatusDraftNotViewable({
-    resource,
-    flags,
-    userId,
-    isAdmin
-  }: ProposalPolicyInput): Promise<ProposalPermissionFlags> {
-    const newPermissions = { ...flags };
+export async function policyStatusDraftNotViewable({
+  resource,
+  flags,
+  userId,
+  isAdmin
+}: ProposalPolicyInput): Promise<ProposalPermissionFlags> {
+  const newPermissions = { ...flags };
 
-    if (resource.status !== 'draft') {
-      return newPermissions;
-    }
+  if (resource.status !== 'draft') {
+    return newPermissions;
+  }
 
-    const allowedAuthorOperations: ProposalOperation[] = ['view', 'edit', 'delete', 'comment', 'make_public'];
+  const allowedAuthorOperations: ProposalOperation[] = ['view', 'edit', 'delete', 'comment', 'make_public'];
 
-    if (isProposalAuthor({ proposal: resource, userId }) || isAdmin) {
-      typedKeys(flags).forEach((flag) => {
-        if (!allowedAuthorOperations.includes(flag)) {
-          newPermissions[flag] = false;
-        }
-      });
-      return newPermissions;
-    }
+  if (isProposalAuthor({ proposal: resource, userId }) || isAdmin) {
+    typedKeys(flags).forEach((flag) => {
+      if (!allowedAuthorOperations.includes(flag)) {
+        newPermissions[flag] = false;
+      }
+    });
+    return newPermissions;
+  }
 
-    const isReviewer = await isProposalReviewer({ proposal: resource, userId });
-
-    if (isReviewer) {
-      // At most allow a non author to view the proposal
-      return { ...new AvailableProposalPermissions().empty, view: newPermissions.view === true };
-    }
-
-    return new AvailableProposalPermissions().empty;
-  };
+  return new AvailableProposalPermissions().empty;
 }
