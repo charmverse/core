@@ -5,12 +5,7 @@ import { generateProposal, generateProposalCategory } from '../../../../testing/
 import { generateSpaceUser, generateUserAndSpace } from '../../../../testing/user';
 import { AvailableProposalPermissions } from '../../availableProposalPermissions.class';
 import type { ProposalPermissionFlags } from '../../interfaces';
-import { isProposalReviewer } from '../../isProposalReviewer';
-import { injectPolicyStatusDraftNotViewable } from '../policyStatusDraftNotViewable';
-
-const policyStatusDraftNotViewable = injectPolicyStatusDraftNotViewable({
-  isProposalReviewer
-});
+import { policyStatusDraftNotViewable } from '../policyStatusDraftNotViewable';
 
 let proposal: ProposalWithUsers;
 let proposalCategory: ProposalCategory;
@@ -112,7 +107,7 @@ describe('policyStatusDraftOnlyViewable', () => {
     });
   });
 
-  it('should only provide view permissions for the reviewer', async () => {
+  it('should not allow the reviewer to view the proposal', async () => {
     const permissions = await policyStatusDraftNotViewable({
       flags: fullPermissions,
       isAdmin: false,
@@ -121,7 +116,7 @@ describe('policyStatusDraftOnlyViewable', () => {
     });
 
     expect(permissions).toMatchObject<ProposalPermissionFlags>({
-      view: true,
+      view: false,
       edit: false,
       delete: false,
       comment: false,
@@ -132,7 +127,7 @@ describe('policyStatusDraftOnlyViewable', () => {
     });
   });
 
-  it('should return only view permissions for the space members', async () => {
+  it('should not allow space members to view the proposal', async () => {
     const permissions = await policyStatusDraftNotViewable({
       flags: fullPermissions,
       isAdmin: false,
