@@ -76,16 +76,20 @@ export async function generateRole({
 }
 export async function generateInviteLink({
   createdBy,
+  createdAt,
   spaceId,
   maxAgeMinutes,
   maxUses,
+  useCount,
   publicContext,
   assignedRoleIds
 }: {
   spaceId: string;
   createdBy: string;
+  createdAt?: Date;
   maxAgeMinutes?: number;
   maxUses?: number;
+  useCount?: number;
   publicContext?: PublicInviteLinkContext;
   assignedRoleIds?: string[];
 }): Promise<InviteLink & { inviteLinkToRoles: InviteLinkToRole[] }> {
@@ -93,8 +97,10 @@ export async function generateInviteLink({
     data: {
       code: `code-${v4()}`,
       createdBy,
+      createdAt,
       maxAgeMinutes,
       maxUses,
+      useCount,
       spaceId,
       publicContext,
       inviteLinkToRoles: assignedRoleIds ? { create: assignedRoleIds.map((roleId) => ({ roleId })) } : undefined
