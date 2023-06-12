@@ -132,7 +132,7 @@ export async function generatePostComment({
   postId,
   userId,
   deletedAt
-}: CreatePostCommentInput & {
+}: Partial<CreatePostCommentInput> & {
   deletedAt?: Date;
   postId: string;
   userId: string;
@@ -148,8 +148,8 @@ export async function generatePostComment({
     data: {
       deletedAt,
       deletedBy: deletedAt ? userId : undefined,
-      content,
-      contentText: contentText.trim(),
+      content: content ?? { type: 'doc', content: [{ type: 'paragraph' }] },
+      contentText: (contentText ?? '').trim(),
       parentId,
       user: {
         connect: {
