@@ -1515,6 +1515,7 @@ model BlockCount {
   count     Int
   spaceId   String   @db.Uuid
   space     Space    @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  details   Json
 
   @@index([spaceId])
 }

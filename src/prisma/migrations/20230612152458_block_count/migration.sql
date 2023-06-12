@@ -4,6 +4,7 @@ CREATE TABLE "BlockCount" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "count" INTEGER NOT NULL,
     "spaceId" UUID NOT NULL,
+    "details" JSONB NOT NULL,
 
     CONSTRAINT "BlockCount_pkey" PRIMARY KEY ("id")
 );
