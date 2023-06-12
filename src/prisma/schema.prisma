@@ -312,6 +312,7 @@ model Space {
   stripeSubscription          StripeSubscription[]
   userActions                 UserSpaceAction[]
   postTags                    PostTag[]
+  blockCounts                 BlockCount[]
 
   @@index([createdBy])
 }
@@ -1505,4 +1506,15 @@ model ApiPageKey {
   @@unique([apiKey])
   @@index([pageId])
   @@index([apiKey])
+}
+
+
+model BlockCount {
+  id        String   @id @default(uuid()) @db.Uuid
+  createdAt DateTime @default(now())
+  count     Int
+  spaceId   String   @db.Uuid
+  space     Space    @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+
+  @@index([spaceId])
 }
