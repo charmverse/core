@@ -53,6 +53,7 @@ export type GenerateProposalInput = {
   reviewers?: ProposalReviewerInput[];
   proposalStatus?: ProposalStatus;
   title?: string;
+  content?: any;
 };
 
 /**
@@ -66,7 +67,8 @@ export async function generateProposal({
   title = 'Proposal',
   authors = [],
   reviewers = [],
-  deletedAt = null
+  deletedAt = null,
+  content
 }: GenerateProposalInput): Promise<ProposalWithUsers & { page: Page }> {
   const proposalId = v4();
 
@@ -114,7 +116,8 @@ export async function generateProposal({
     createdBy: userId,
     spaceId,
     deletedAt,
-    proposalId
+    proposalId,
+    content
   });
 
   const result = await prisma.proposal.findUniqueOrThrow({

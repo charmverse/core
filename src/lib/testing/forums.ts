@@ -130,8 +130,10 @@ export async function generatePostComment({
   contentText,
   parentId,
   postId,
-  userId
+  userId,
+  deletedAt
 }: CreatePostCommentInput & {
+  deletedAt?: Date;
   postId: string;
   userId: string;
 }): Promise<PostComment> {
@@ -144,6 +146,8 @@ export async function generatePostComment({
 
   const comment = await prisma.postComment.create({
     data: {
+      deletedAt,
+      deletedBy: deletedAt ? userId : undefined,
       content,
       contentText: contentText.trim(),
       parentId,
