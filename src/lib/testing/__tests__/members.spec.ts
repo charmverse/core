@@ -12,7 +12,7 @@ describe('generateInviteLink', () => {
       spaceId: space.id,
       maxAgeMinutes: 90,
       maxUses: 100,
-      publicContext: 'proposals',
+      visibleOn: 'proposals',
       assignedRoleIds: [role.id]
     });
 
@@ -21,7 +21,7 @@ describe('generateInviteLink', () => {
       spaceId: space.id,
       maxAgeMinutes: 90,
       maxUses: 100,
-      publicContext: 'proposals'
+      visibleOn: 'proposals'
     });
 
     expect(inviteLink.inviteLinkToRoles.length).toBe(1);

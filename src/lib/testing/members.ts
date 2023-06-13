@@ -81,7 +81,7 @@ export async function generateInviteLink({
   maxAgeMinutes,
   maxUses,
   useCount,
-  publicContext,
+  visibleOn,
   assignedRoleIds
 }: {
   spaceId: string;
@@ -90,7 +90,7 @@ export async function generateInviteLink({
   maxAgeMinutes?: number;
   maxUses?: number;
   useCount?: number;
-  publicContext?: PublicInviteLinkContext;
+  visibleOn?: PublicInviteLinkContext;
   assignedRoleIds?: string[];
 }): Promise<InviteLink & { inviteLinkToRoles: InviteLinkToRole[] }> {
   return prisma.inviteLink.create({
@@ -102,7 +102,7 @@ export async function generateInviteLink({
       maxUses,
       useCount,
       spaceId,
-      publicContext,
+      visibleOn,
       inviteLinkToRoles: assignedRoleIds ? { create: assignedRoleIds.map((roleId) => ({ roleId })) } : undefined
     },
     include: {
