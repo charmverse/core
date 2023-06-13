@@ -148,7 +148,7 @@ export async function generatePostComment({
     data: {
       deletedAt,
       deletedBy: deletedAt ? userId : undefined,
-      content: content ?? { type: 'doc', content: [{ type: 'paragraph' }] },
+      content,
       contentText: (contentText ?? '').trim(),
       parentId,
       user: {
