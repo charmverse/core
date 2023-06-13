@@ -314,7 +314,8 @@ model Space {
 enum SubscriptionStatus {
   active
   pending
-  disabled
+  cancelled
+  cancelAtEnd
 }
 
 model StripeSubscription {

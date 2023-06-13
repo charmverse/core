@@ -9,7 +9,7 @@
 
 */
 -- CreateEnum
-CREATE TYPE "SubscriptionStatus" AS ENUM ('active', 'pending', 'disabled');
+CREATE TYPE "SubscriptionStatus" AS ENUM ('active', 'pending', 'cancelled', 'cancelAtEnd');
 
 -- DropForeignKey
 ALTER TABLE "StripePayment" DROP CONSTRAINT "StripePayment_stripeSubscriptionId_fkey";
