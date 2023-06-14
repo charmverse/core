@@ -112,3 +112,12 @@ export async function generateUserAndSpace({
     space: spaceRoles[0].space
   };
 }
+export function generateUser(): Promise<User> {
+  return prisma.user.create({
+    data: {
+      path: uid(),
+      username: `Test user ${Math.random()}`,
+      identityType: 'RandomName'
+    }
+  });
+}
