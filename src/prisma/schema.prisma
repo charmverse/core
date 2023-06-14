@@ -244,11 +244,6 @@ enum SubscriptionPeriod {
   annual
 }
 
-enum PaymentStatus {
-  success
-  fail
-}
-
 model Space {
   id                          String                            @id @default(uuid()) @db.Uuid
   deletedAt                   DateTime?
@@ -316,32 +311,27 @@ model Space {
   @@index([createdBy])
 }
 
-model StripeSubscription {
-  id        String   @id @default(uuid()) @db.Uuid
-  createdAt DateTime @default(now())
-  createdBy String   @db.Uuid
-  creator   User     @relation(fields: [createdBy], references: [id], onDelete: Cascade)
-  spaceId   String   @db.Uuid
-  space     Space    @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+enum SubscriptionStatus {
+  active
+  pending
+  cancelled
+  cancelAtEnd
+}
 
+model StripeSubscription {
+  id             String             @id @default(uuid()) @db.Uuid
+  createdAt      DateTime           @default(now())
+  spaceId        String             @db.Uuid
+  space          Space              @relation(fields: [spaceId], references: [id], onDelete: Cascade)
   period         SubscriptionPeriod
   customerId     String
   productId      String
-  subscriptionId String
+  priceId        String
+  subscriptionId String             @unique
   deletedAt      DateTime?
-  stripePayment  StripePayment[]
+  status         SubscriptionStatus
 
   @@index([spaceId])
-}
-
-model StripePayment {
-  paymentId            String             @id
-  createdAt            DateTime           @default(now())
-  status               PaymentStatus
-  amount               Int
-  currency             String
-  stripeSubscriptionId String             @db.Uuid
-  stripeSubscription   StripeSubscription @relation(fields: [stripeSubscriptionId], references: [id], onDelete: Cascade)
 }
 
 model SpaceApiToken {
@@ -615,7 +605,6 @@ model User {
   PageComment               PageComment[]
   verifiedEmails            VerifiedEmail[]
   apiPageKeys               ApiPageKey[]
-  stripeSubscription        StripeSubscription[]
   spaceActions              UserSpaceAction[]
 }
 
