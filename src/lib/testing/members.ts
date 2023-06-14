@@ -1,4 +1,4 @@
-import type { Prisma, Role, RoleSource } from '@prisma/client';
+import type { InviteLink, InviteLinkToRole, Prisma, PublicInviteLinkContext, Role, RoleSource } from '@prisma/client';
 import { v4 } from 'uuid';
 
 import { prisma } from '../../prisma-client';
@@ -73,4 +73,40 @@ export async function generateRole({
   });
 
   return role;
+}
+export async function generateInviteLink({
+  createdBy,
+  createdAt,
+  spaceId,
+  maxAgeMinutes,
+  maxUses,
+  useCount,
+  visibleOn,
+  assignedRoleIds
+}: {
+  spaceId: string;
+  createdBy: string;
+  createdAt?: Date;
+  maxAgeMinutes?: number;
+  maxUses?: number;
+  useCount?: number;
+  visibleOn?: PublicInviteLinkContext;
+  assignedRoleIds?: string[];
+}): Promise<InviteLink & { inviteLinkToRoles: InviteLinkToRole[] }> {
+  return prisma.inviteLink.create({
+    data: {
+      code: `code-${v4()}`,
+      createdBy,
+      createdAt,
+      maxAgeMinutes,
+      maxUses,
+      useCount,
+      spaceId,
+      visibleOn,
+      inviteLinkToRoles: assignedRoleIds ? { create: assignedRoleIds.map((roleId) => ({ roleId })) } : undefined
+    },
+    include: {
+      inviteLinkToRoles: true
+    }
+  });
 }
