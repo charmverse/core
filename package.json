@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "1.0.7-rc-44-merge.0",
+  "version": "1.0.7-rc-44-merge.1",
   "description": "",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
