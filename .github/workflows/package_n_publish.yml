@@ -18,7 +18,7 @@ jobs:
       - name: Prune dependencies
         run: |
           npm run postinstall
-          npm prune --production
+#          npm prune --production
       - name: Write Version for major and minor release
         uses:  'phips28/gh-action-bump-version@master'
         env:
