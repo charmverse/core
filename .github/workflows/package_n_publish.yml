@@ -1,49 +1,49 @@
-# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+# # This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: Package, Publish, and Trigger workflow
+# name: Package, Publish, and Trigger workflow
 
-on:
-  push:
-    branches: [publish-npm-package, main]
+# on:
+#   push:
+#     branches: [publish-npm-package, main]
 
-jobs:
-  create-package:
-    name: Create package when merged into main
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
+# jobs:
+#   create-package:
+#     name: Create package when merged into main
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v3
 
-      - name: Inject slug/short variables
-        uses: rlespinasse/github-slug-action@v4.x
+#       - name: Inject slug/short variables
+#         uses: rlespinasse/github-slug-action@v4.x
 
-      - name: Restore dependencies from cache
-        uses: ./.github/actions/install
-      - name: Prune dependencies
-        run: |
-          npm run postinstall
-      - name: Write Version for major and minor release
-        if: github.ref == 'refs/heads/main'
-        uses:  'phips28/gh-action-bump-version@master'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          default: prerelease
-          major-wording:  'MAJOR,major,breaking,'
-          minor-wording:  'add,Adds,new,feat'
-          patch-wording:  'patch,fixes,fix'
-      - name: Write Version for major and minor release
-        if: github.ref != 'refs/heads/main'
-        uses:  'phips28/gh-action-bump-version@master'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          version-type: prerelease
-          preid: 'rc-${{ env.GITHUB_REF_SLUG }}'
+#       - name: Restore dependencies from cache
+#         uses: ./.github/actions/install
+#       - name: Prune dependencies
+#         run: |
+#           npm run postinstall
+#       - name: Write Version for major and minor release
+#         if: github.ref == 'refs/heads/main'
+#         uses:  'phips28/gh-action-bump-version@master'
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#         with:
+#           default: prerelease
+#           major-wording:  'MAJOR,major,breaking,'
+#           minor-wording:  'add,Adds,new,feat'
+#           patch-wording:  'patch,fixes,fix'
+#       - name: Write Version for major and minor release
+#         if: github.ref != 'refs/heads/main'
+#         uses:  'phips28/gh-action-bump-version@master'
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#         with:
+#           version-type: prerelease
+#           preid: 'rc-${{ env.GITHUB_REF_SLUG }}'
 
-      - name: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          npm pack
-          npm publish 
+#       - name: npm publish
+#         env:
+#           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#         run: |
+#           npm pack
+#           npm publish 
