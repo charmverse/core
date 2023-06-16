@@ -37,8 +37,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag-suffix:  '-rc-${{ env.GITHUB_REF_SLUG }}'
-          skip-tag:  'true'
+          default: prerelease
+          preid: 'rc-${{ env.GITHUB_REF_SLUG }}'
+
       - name: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
