@@ -34,6 +34,7 @@ runs:
         preid: 'rc-${{ env.GITHUB_REF_SLUG }}'
 
     - name: Publish package
+      shell: bash
       env:
         NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
