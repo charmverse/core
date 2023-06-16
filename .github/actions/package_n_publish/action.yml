@@ -17,7 +17,7 @@ runs:
       if: github.ref == 'refs/heads/main'
       uses:  'phips28/gh-action-bump-version@master'
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ env.AUTH_TOKEN_GITHUB }}
       with:
         default: prerelease
         major-wording:  'MAJOR,major,breaking,'
@@ -28,7 +28,7 @@ runs:
       if: github.ref != 'refs/heads/main'
       uses:  'phips28/gh-action-bump-version@master'
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ env.AUTH_TOKEN_GITHUB }}
       with:
         version-type: prerelease
         preid: 'rc-${{ env.GITHUB_REF_SLUG }}'
@@ -36,7 +36,7 @@ runs:
     - name: Publish package
       shell: bash
       env:
-        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        NODE_AUTH_TOKEN: ${{ env.AUTH_TOKEN_GITHUB }}
       run: |
         npm pack
         npm publish 

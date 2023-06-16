@@ -47,6 +47,8 @@ jobs:
       - uses: actions/checkout@v3
       - name: package and publish release candidate pkg
         uses: ./.github/actions/package_n_publish
+        env:
+          AUTH_TOKEN_GITHUB: ${{ secrets.GITHUB_TOKEN }} 
 
   integration-test:
     name: Tests
@@ -97,3 +99,5 @@ jobs:
       - uses: actions/checkout@v3
       - name: package and publish release candidate pkg
         uses: ./.github/actions/package_n_publish
+        env:
+          AUTH_TOKEN_GITHUB: ${{ secrets.GITHUB_TOKEN }} 
