@@ -13,6 +13,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
+      - name: Inject slug/short variables
+        uses: rlespinasse/github-slug-action@v4.x
+
       - name: Restore dependencies from cache
         uses: ./.github/actions/install
       - name: Prune dependencies
@@ -39,6 +43,5 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          npm prune --production
           npm pack
           npm publish 
