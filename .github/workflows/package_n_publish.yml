@@ -28,6 +28,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          default: prerelease
           major-wording:  'MAJOR,major,breaking,'
           minor-wording:  'add,Adds,new,feat'
           patch-wording:  'patch,fixes,fix'
@@ -37,8 +38,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          version: prerelease
-          tag-suffix: 'rc-${{ env.GITHUB_REF_SLUG }}'
+          version-type: prerelease
+          preid: 'rc-${{ env.GITHUB_REF_SLUG }}'
 
       - name: npm publish
         env:
