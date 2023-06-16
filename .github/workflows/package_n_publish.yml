@@ -37,7 +37,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          default: prerelease
+          version: prerelease
           preid: 'rc-${{ env.GITHUB_REF_SLUG }}'
 
       - name: npm publish
