@@ -1,4 +1,5 @@
 import type { Page, Prisma, Thread, Comment } from '@prisma/client';
+import { DataNotFoundError, InvalidInputError, PageNotFoundError } from 'errors';
 import { v4 } from 'uuid';
 
 import { prisma } from '../../prisma-client';
@@ -153,39 +154,67 @@ export async function generateCommentWithThreadAndPage({
   userId,
   spaceId,
   commentContent,
-  pagePermissions
+  pagePermissions,
+  pageId,
+  threadId
 }: {
   userId: string;
   spaceId: string;
-  commentContent: string;
+  commentContent: any;
+  pageId?: string;
+  threadId?: string;
 } & OptionalPagePermissionsToGenerate): Promise<{ page: Page; thread: Thread; comment: Comment }> {
-  const page = await generatePage({
-    createdBy: userId,
-    spaceId,
-    pagePermissions
-  });
+  if (threadId && !pageId) {
+    throw new InvalidInputError(`Please also provide the page ID for the thread`);
+  }
 
-  const thread = await prisma.thread.create({
-    data: {
-      context: 'Random context',
-      resolved: false,
-      page: {
-        connect: {
-          id: page.id
+  const page = pageId
+    ? await prisma.page.findUnique({ where: { id: pageId } })
+    : await generatePage({
+        createdBy: userId,
+        spaceId,
+        pagePermissions
+      });
+
+  if (!page) {
+    throw new PageNotFoundError(pageId as string);
+  }
+
+  const thread = threadId
+    ? await prisma.thread.findUnique({
+        where: { id: threadId }
+      })
+    : await prisma.thread.create({
+        data: {
+          context: 'Random context',
+          resolved: false,
+          page: {
+            connect: {
+              id: page.id
+            }
+          },
+          user: {
+            connect: {
+              id: userId
+            }
+          },
+          space: {
+            connect: {
+              id: spaceId
+            }
+          }
         }
-      },
-      user: {
-        connect: {
-          id: userId
-        }
-      },
-      space: {
-        connect: {
-          id: spaceId
-        }
-      }
-    }
-  });
+      });
+
+  if (!thread) {
+    throw new DataNotFoundError(`Thread with id ${threadId} not found`);
+  }
+
+  if (thread.pageId !== page.id) {
+    throw new InvalidInputError(
+      `thread.pageId and page.id mismatched. Thread must belong to the page if threadId and pageId are provided`
+    );
+  }
 
   const comment = await prisma.comment.create({
     data: {
