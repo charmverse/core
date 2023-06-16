@@ -18,8 +18,8 @@ jobs:
       - name: Prune dependencies
         run: |
           npm run postinstall
-#          npm prune --production
       - name: Write Version for major and minor release
+        if: github.ref == 'refs/heads/main'
         uses:  'phips28/gh-action-bump-version@master'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -27,7 +27,18 @@ jobs:
           major-wording:  'MAJOR,major,breaking,'
           minor-wording:  'add,Adds,new,feat'
           patch-wording:  'patch,fixes,fix'
+      - name: Write Version for major and minor release
+        if: github.ref != 'refs/heads/main'
+        uses:  'phips28/gh-action-bump-version@master'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag-suffix:  '-rc-${{ env.GITHUB_REF_SLUG }}'
+          skip-tag:  'true'
       - name: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          npm prune --production
           npm pack
           npm publish 
