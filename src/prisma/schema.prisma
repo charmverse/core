@@ -254,6 +254,7 @@ model Space {
   name                        String
   domain                      String                            @unique
   customDomain                String?                           @unique
+  isCustomDomainVerified       Boolean?                          @default(false)
   notifyNewProposals          DateTime?                         @default(now())
   paidTier                    SubscriptionTier                  @default(pro)
   discordServerId             String?
