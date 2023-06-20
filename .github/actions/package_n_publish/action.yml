@@ -8,16 +8,17 @@ runs:
     - uses: actions/setup-node@v3
       with:
         node-version: 18
-        registry-url: 'https://npm.pkg.github.com'
+        registry-url: 'https://registry.npmjs.org/'
 
     - name: Inject slug/short variables
       uses: rlespinasse/github-slug-action@v4.x
 
     - name: Write Version for package of main branch
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      id: version_main
       uses:  'phips28/gh-action-bump-version@master'
       env:
-        GITHUB_TOKEN: ${{ env.AUTH_TOKEN_GITHUB }}
+        GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
       with:
         default: prerelease
         major-wording:  'MAJOR,major,breaking,'
@@ -26,9 +27,10 @@ runs:
 
     - name: Write Version for package of pull request branch 
       if: github.event_name == 'pull_request' && ( github.event.action == 'opened' || github.event.action == 'synchronize' )
+      id: version_other_branch
       uses:  'phips28/gh-action-bump-version@master'
       env:
-        GITHUB_TOKEN: ${{ env.AUTH_TOKEN_GITHUB }}
+        GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
       with:
         version-type: prerelease
         preid: 'rc-${{ env.GITHUB_HEAD_REF }}'
@@ -36,8 +38,13 @@ runs:
     - name: Publish package
       shell: bash
       env:
-        NODE_AUTH_TOKEN: ${{ env.AUTH_TOKEN_GITHUB }}
+        NODE_AUTH_TOKEN: ${{ env.NODE_AUTH_TOKEN }}
       run: |
         npm pack
-        npm publish 
+
+        if [[ ${{ steps.version_main.outputs.newTag }} != "" ]]; then 
+          npm publish --access=public
+        else
+          npm publish --access=public --tag ${{ steps.version_other_branch.outputs.newTag }}
+        fi 
 

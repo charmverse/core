@@ -48,7 +48,8 @@ jobs:
       - name: package and publish release candidate pkg
         uses: ./.github/actions/package_n_publish
         env:
-          AUTH_TOKEN_GITHUB: ${{ secrets.GITHUB_TOKEN }} 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }} 
 
   integration-test:
     name: Tests
@@ -100,4 +101,5 @@ jobs:
       - name: package and publish release candidate pkg
         uses: ./.github/actions/package_n_publish
         env:
-          AUTH_TOKEN_GITHUB: ${{ secrets.GITHUB_TOKEN }} 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
