@@ -331,6 +331,7 @@ model StripeSubscription {
   subscriptionId String             @unique
   deletedAt      DateTime?
   status         SubscriptionStatus
+  quantity       Int                @default(1)
 
   @@index([spaceId])
 }
@@ -763,24 +764,23 @@ enum PublicInviteLinkContext {
 }
 
 model InviteLink {
-  id                String             @id @default(uuid()) @db.Uuid
-  code              String             @unique
-  createdAt         DateTime           @default(now())
-  createdBy         String             @db.Uuid
-  spaceId           String             @db.Uuid
-  maxAgeMinutes     Int                @default(60)
-  maxUses           Int                @default(-1)
-  useCount          Int                @default(0)
+  id                String                   @id @default(uuid()) @db.Uuid
+  code              String                   @unique
+  createdAt         DateTime                 @default(now())
+  createdBy         String                   @db.Uuid
+  spaceId           String                   @db.Uuid
+  maxAgeMinutes     Int                      @default(60)
+  maxUses           Int                      @default(-1)
+  useCount          Int                      @default(0)
   visibleOn         PublicInviteLinkContext?
-  author            User               @relation(fields: [createdBy], references: [id], onDelete: Cascade)
-  space             Space              @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  author            User                     @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  space             Space                    @relation(fields: [spaceId], references: [id], onDelete: Cascade)
   inviteLinkToRoles InviteLinkToRole[]
-
-  @@index([createdBy])
-  @@index([spaceId])
 
   // One link per public context type for a space
   @@unique([spaceId, visibleOn])
+  @@index([createdBy])
+  @@index([spaceId])
 }
 
 model Bounty {
@@ -1504,7 +1504,6 @@ model ApiPageKey {
   @@index([pageId])
   @@index([apiKey])
 }
-
 
 model BlockCount {
   id        String   @id @default(uuid()) @db.Uuid
