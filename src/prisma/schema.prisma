@@ -331,7 +331,7 @@ model StripeSubscription {
   subscriptionId String             @unique
   deletedAt      DateTime?
   status         SubscriptionStatus
-  quantity       Int                @default(1)
+  blockQuota     Int                @default(1)
 
   @@index([spaceId])
 }
