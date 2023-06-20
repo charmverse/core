@@ -235,7 +235,7 @@ enum ApiPageKeyType {
 
 enum SubscriptionTier {
   free
-  pro
+  community
   enterprise
 }
 
@@ -255,7 +255,7 @@ model Space {
   domain                      String                            @unique
   customDomain                String?                           @unique
   notifyNewProposals          DateTime?                         @default(now())
-  paidTier                    SubscriptionTier                  @default(pro)
+  paidTier                    SubscriptionTier                  @default(community)
   discordServerId             String?
   defaultVotingDuration       Int?
   snapshotDomain              String?
