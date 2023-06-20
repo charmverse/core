@@ -9,7 +9,7 @@ describe('generateUserAndSpace', () => {
 
     expect(space.publicBountyBoard).toBe(false);
     expect(space.publicProposals).toBe(false);
-    expect(space.paidTier).toBe('community');
+    expect(space.paidTier).toBe('pro');
 
     const spaceRole = (await prisma.spaceRole.findFirst({
       where: {
