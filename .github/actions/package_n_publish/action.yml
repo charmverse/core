@@ -45,6 +45,6 @@ runs:
         if [[ "${{ steps.version_main.outputs.newTag }}" != "" ]]; then 
           npm publish --access=public
         else
-          npm publish --access=public --tag ${{ steps.version_other_branch.outputs.newTag }}
+          npm publish --access=public --tag "pr-${{ github.event.number }}-${{ env.GITHUB_HEAD_REF_SLUG }}"
         fi 
 
