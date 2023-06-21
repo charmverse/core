@@ -77,7 +77,7 @@
     "build:esm": "tsc --project tsconfig.esm.json && tsc-alias --project tsconfig.esm.json && node createPackageJson.js",
     "build:esm:watch": "node createPackageJson.js && tsc --project tsconfig.esm.json --watch",
     "postinstall": "npm run prisma:generate && npm run build",
-    "preinstall": "husky install",
+    "prepare": "husky install",
     "prisma:studio": "npx prisma studio --schema=./src/prisma/schema.prisma",
     "prisma:generate": "npx prisma generate --schema=./src/prisma/schema.prisma",
     "prisma:reset": "npx prisma migrate reset --schema=./src/prisma/schema.prisma --force",
