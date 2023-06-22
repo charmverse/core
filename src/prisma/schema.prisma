@@ -237,6 +237,7 @@ enum SubscriptionTier {
   free
   pro
   enterprise
+  cancelled
 }
 
 enum SubscriptionPeriod {
