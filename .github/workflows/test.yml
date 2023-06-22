@@ -60,7 +60,7 @@ jobs:
           github_user: yiwork
           workflow_file_name: test_new_core_pkg.yml
           ref: main
-          client_payload: '{ core_pkg_version: ${{ steps.publish_pkg.outputs.pkg_version }} }'
+          client_payload: "{ \"core_pkg_version\": \"${{ steps.publish_pkg.outputs.pkg_version }}\" }"
           wait_interval: 10
           propagate_failure: true
           trigger_workflow: true
