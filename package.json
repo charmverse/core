@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "1.0.9-rc-npmjs-publish.5",
+  "version": "1.0.9-rc-npmjs-publish.6",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
