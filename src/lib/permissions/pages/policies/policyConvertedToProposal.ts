@@ -1,7 +1,3 @@
-import type { Space } from '@prisma/client';
-import { prisma } from 'prisma-client';
-
-import { hasAccessToSpace } from '../../hasAccessToSpace';
 import { AvailablePagePermissions } from '../availablePagePermissions.class';
 import type { PagePermissionFlags } from '../interfaces';
 
