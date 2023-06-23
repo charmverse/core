@@ -43,6 +43,8 @@ jobs:
     name: Push Release candidate package to allow devs to use to test
     runs-on: ubuntu-latest
     needs: test
+    outputs:
+      pkg_version: ${{ steps.publish_pkg.outputs.pkg_version }}
     steps:
       - uses: actions/checkout@v3
       - name: package and publish release candidate pkg
@@ -51,9 +53,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
-      - name: stores the pkg version as output
-        run:
-          echo "pkg_version=${{ steps.publish_pkg.outputs.pkg_version }}" >> $GITHUB_OUTPUT
 
   trigger-downstream-repo-workflow:
     if: github.event_name == 'pull_request' && ( github.event.action == 'opened' || github.event.action == 'synchronize' )
