@@ -1,24 +1,26 @@
-import type { PageOperations } from '@prisma/client';
+import type { Space } from '@prisma/client';
+import { prisma } from 'prisma-client';
 
-import { typedKeys } from '../../../utilities/objects';
+import { hasAccessToSpace } from '../../hasAccessToSpace';
+import { AvailablePagePermissions } from '../availablePagePermissions.class';
 import type { PagePermissionFlags } from '../interfaces';
 
 import type { PagePolicyInput } from './interfaces';
 
-export async function policyConvertedToProposal({ flags, resource }: PagePolicyInput): Promise<PagePermissionFlags> {
-  const newPermissions = { ...flags };
-
-  if (!resource.convertedProposalId) {
-    return newPermissions;
+export async function policyConvertedToProposal({
+  flags,
+  resource,
+  isAdmin
+}: PagePolicyInput): Promise<PagePermissionFlags> {
+  if (!resource.convertedProposalId || isAdmin) {
+    return flags;
   }
 
-  const allowedOperations: PageOperations[] = ['read'];
+  const emptyPermissions = new AvailablePagePermissions().empty;
 
-  typedKeys(flags).forEach((flag) => {
-    if (!allowedOperations.includes(flag)) {
-      newPermissions[flag] = false;
-    }
-  });
-
-  return newPermissions;
+  // Only provide the read permission if it exists
+  return {
+    ...emptyPermissions,
+    read: flags.read === true
+  };
 }
