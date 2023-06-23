@@ -10,6 +10,7 @@ import { policyConvertedToProposal } from '../policyConvertedToProposal';
 describe('policyConvertedToProposal', () => {
   let space: Space;
   let admin: User;
+  let author: User;
   let member: User;
   let post: Post;
   let postConvertedToProposal: Post;
@@ -22,21 +23,25 @@ describe('policyConvertedToProposal', () => {
     });
     space = generated.space;
     admin = generated.user;
+    author = await generateSpaceUser({
+      spaceId: space.id,
+      isAdmin: false
+    });
     member = await generateSpaceUser({
       spaceId: space.id,
       isAdmin: false
     });
     post = await generateForumPost({
-      userId: admin.id,
+      userId: author.id,
       spaceId: space.id
     });
     postConvertedToProposal = await generateForumPost({
-      userId: admin.id,
+      userId: author.id,
       spaceId: space.id
     });
     const proposal = await generateProposal({
       spaceId: space.id,
-      userId: admin.id
+      userId: author.id
     });
     postConvertedToProposal = await prisma.post.update({
       where: {
@@ -56,6 +61,20 @@ describe('policyConvertedToProposal', () => {
     });
 
     expect(updated).toEqual(fullPermissionFlags);
+  });
+
+  it('should not remove the delete or view permissions from the author', async () => {
+    const updated = await policyConvertedToProposal({
+      flags: fullPermissionFlags,
+      resource: postConvertedToProposal,
+      userId: author.id
+    });
+
+    expect(updated).toEqual({
+      ...emptyPermissionFlags,
+      delete_post: true,
+      view_post: true
+    });
   });
   it('should not allow a space member to delete or edit a post converted to a proposal, but still allow them to view it', async () => {
     const updated = await policyConvertedToProposal({
