@@ -3,7 +3,7 @@ name: "Install dependencies"
 outputs:
   pkg_version:
     description: "Random number"
-    value: ${{ steps.public_pkg.outputs.PKG_VERSION }}
+    value: ${{ steps.public_pkg.outputs.pkg_version }}
 
 runs:
   using: "composite"
@@ -51,9 +51,9 @@ runs:
 
         if [[ "${{ steps.version_main.outputs.newTag }}" != "" ]]; then 
           npm publish --access=public
-          echo "PKG_VERSION=${{ steps.version_main.outputs.newTag }}" >> $GITHUB_OUTPUT
+          echo "pkg_version=${{ steps.version_main.outputs.newTag }}" >> $GITHUB_OUTPUT
         else
           npm publish --access=public --tag "pr-${{ github.event.number }}-${{ env.GITHUB_HEAD_REF_SLUG }}"
-          echo "PKG_VERSION=${{ steps.version_other_branch.outputs.newTag }}" >> $GITHUB_OUTPUT
+          echo "pkg_version=${{ steps.version_other_branch.outputs.newTag }}" >> $GITHUB_OUTPUT
         fi 
 
