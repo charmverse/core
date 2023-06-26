@@ -83,7 +83,7 @@ jobs:
           client_payload: |
             { "core_pkg_version": "${{ needs.push-rc-package.outputs.pkg_version }}", 
               "run_e2e_browser_test": true, 
-              "deploy_to_prd": true }
+              "deploy_to_prd": false }
           wait_interval: 10
           propagate_failure: true
           trigger_workflow: true
@@ -148,6 +148,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: package and publish release candidate pkg
+        id: publish_release_pkg
         uses: ./.github/actions/package_n_publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -162,7 +163,7 @@ jobs:
           workflow_file_name: test_and_deploy.yml
           ref: main
           client_payload: |
-              { "core_pkg_version": "latest", 
+              { "core_pkg_version": ${{ steps.pkg_test_workflow.outputs.pkg_version }}, 
                 "run_e2e_browser_test": true, 
                 "deploy_to_prd": true }
           wait_interval: 10
