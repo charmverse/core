@@ -66,7 +66,7 @@ jobs:
         include:
           - test_name: "Testing with Webapp"
             repo: "app.charmverse.io"
-            pkg_test_workflow: "test_new_core_pkg.yml"
+            pkg_test_workflow: "test_and_deploy.yml"
           - test_name: "Testing with Permission API"
             repo: "permissions.charmverse.io"
             pkg_test_workflow: "test_and_deploy.yml"
@@ -130,10 +130,21 @@ jobs:
         run: ${{matrix.test_command}}
 
   push-full-release:
-    if: github.event_name == 'push' && github.ref != 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     name: Pkg and push full release on main
     runs-on: ubuntu-latest
     needs: integration-test
+    strategy:
+      max-parallel: 2
+      fail-fast: false
+      matrix:
+        include:
+          - test_name: "Update Core on Webapp and Deploy"
+            repo: "app.charmverse.io"
+            pkg_test_workflow: "test_and_deploy.yml"
+          # - test_name: "Update Core on Permissions API and Deploy"
+          #   repo: "permissions.charmverse.io"
+          #   pkg_test_workflow: "test_and_deploy.yml"
     steps:
       - uses: actions/checkout@v3
       - name: package and publish release candidate pkg
@@ -141,17 +152,17 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
-      - name: Trigger Webapp Core pkg update 
+      - name: Trigger Core pkg update
         uses: convictional/trigger-workflow-and-wait@v1.6.1
         with:
           owner: charmverse
           repo: app.charmverse.io
           github_token: ${{ secrets.WORKFLOW_TRIGGER_PAT }}
           github_user: yiwork
-          workflow_file_name: ${{matrix.pkg_test_workflow}}
+          workflow_file_name: test_and_deploy.yml
           ref: main
           client_payload: |
-              { "core_pkg_version": "${{ needs.push-rc-package.outputs.pkg_version }}", 
+              { "core_pkg_version": "latest", 
                 "run_e2e_browser_test": true, 
                 "deploy_to_prd": true }
           wait_interval: 10
