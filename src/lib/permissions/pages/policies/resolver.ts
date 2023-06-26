@@ -13,6 +13,7 @@ export function pageResolver({ resourceId }: { resourceId: string }) {
       proposalId: true,
       convertedProposalId: true,
       type: true,
+      spaceId: true,
       bounty: {
         select: {
           createdBy: true,
