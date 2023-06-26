@@ -81,9 +81,9 @@ jobs:
           workflow_file_name: ${{matrix.pkg_test_workflow}}
           ref: main
           client_payload: |
-            '{ "core_pkg_version": "${{ needs.push-rc-package.outputs.pkg_version }}", 
-               "run_e2e_browser_test": true, 
-               "deploy_to_prd": true }'
+            { "core_pkg_version": "${{ needs.push-rc-package.outputs.pkg_version }}", 
+              "run_e2e_browser_test": true, 
+              "deploy_to_prd": true }
           wait_interval: 10
           propagate_failure: true
           trigger_workflow: true
@@ -151,9 +151,9 @@ jobs:
           workflow_file_name: ${{matrix.pkg_test_workflow}}
           ref: main
           client_payload: |
-              '{ "core_pkg_version": "${{ needs.push-rc-package.outputs.pkg_version }}", 
-                 "run_e2e_browser_test": true, 
-                 "deploy_to_prd": true }'
+              { "core_pkg_version": "${{ needs.push-rc-package.outputs.pkg_version }}", 
+                "run_e2e_browser_test": true, 
+                "deploy_to_prd": true }
           wait_interval: 10
           propagate_failure: true
           trigger_workflow: true
