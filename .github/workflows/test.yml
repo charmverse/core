@@ -80,7 +80,10 @@ jobs:
           github_user: yiwork
           workflow_file_name: ${{matrix.pkg_test_workflow}}
           ref: main
-          client_payload: "{ \"core_pkg_version\": \"${{ needs.push-rc-package.outputs.pkg_version }}\" }"
+          client_payload: |
+            '{ "core_pkg_version": "${{ needs.push-rc-package.outputs.pkg_version }}", 
+               "run_e2e_browser_test": true, 
+               "deploy_to_prd": true }'
           wait_interval: 10
           propagate_failure: true
           trigger_workflow: true
@@ -138,3 +141,18 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+      - name: Trigger Webapp Core pkg update 
+        uses: convictional/trigger-workflow-and-wait@v1.6.1
+        with:
+          owner: charmverse
+          repo: app.charmverse.io
+          github_token: ${{ secrets.WORKFLOW_TRIGGER_PAT }}
+          github_user: yiwork
+          workflow_file_name: ${{matrix.pkg_test_workflow}}
+          ref: main
+          client_payload: "{ \"core_pkg_version\": \"${{ needs.push-rc-package.outputs.pkg_version }}\" }"
+          wait_interval: 10
+          propagate_failure: true
+          trigger_workflow: true
+          wait_workflow: true
+
