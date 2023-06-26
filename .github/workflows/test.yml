@@ -54,7 +54,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
 
-  trigger-downstream-repo-workflow:
+  trigger-downstream-repo-test-workflows:
     if: github.event_name == 'pull_request' && ( github.event.action == 'opened' || github.event.action == 'synchronize' )
     name: Trigger ${{matrix.repo}} testing workflow
     runs-on: ubuntu-latest
@@ -150,7 +150,10 @@ jobs:
           github_user: yiwork
           workflow_file_name: ${{matrix.pkg_test_workflow}}
           ref: main
-          client_payload: "{ \"core_pkg_version\": \"${{ needs.push-rc-package.outputs.pkg_version }}\" }"
+          client_payload: |
+              '{ "core_pkg_version": "${{ needs.push-rc-package.outputs.pkg_version }}", 
+                 "run_e2e_browser_test": true, 
+                 "deploy_to_prd": true }'
           wait_interval: 10
           propagate_failure: true
           trigger_workflow: true
