@@ -25,7 +25,7 @@ runs:
       env:
         GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
       with:
-        default: prerelease
+        default: patch
         major-wording:  'MAJOR,major,breaking,'
         minor-wording:  'add,Adds,new,feat'
         patch-wording:  'patch,fixes,fix'
