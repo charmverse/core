@@ -23,7 +23,7 @@ runs:
       id: version_main
       uses:  'phips28/gh-action-bump-version@master'
       env:
-        GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ env.WORKFLOW_TRIGGER_PAT }}
       with:
         default: patch
         major-wording:  'MAJOR,major,breaking,'
