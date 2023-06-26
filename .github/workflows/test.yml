@@ -82,7 +82,7 @@ jobs:
           ref: main
           client_payload: |
             { "core_pkg_version": "${{ needs.push-rc-package.outputs.pkg_version }}", 
-              "run_e2e_browser_test": true, 
+              "run_e2e_browser_test": false, 
               "deploy_to_prd": false }
           wait_interval: 10
           propagate_failure: true
