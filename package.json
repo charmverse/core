@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "1.0.11",
+  "version": "1.0.12-rc-making-pushpkg-workflow-rerunnable.0",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
