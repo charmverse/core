@@ -152,7 +152,8 @@ jobs:
         #   Then the following bumping version step will not run
         #   as the bump-policy is only checking against that last commit.
       - uses: actions/checkout@v3
-        fetch-depth: 2
+        with:
+          fetch-depth: 2
       - run: git checkout HEAD
       - name: package and publish release candidate pkg
         id: publish_release_pkg
