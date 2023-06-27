@@ -146,7 +146,15 @@ jobs:
           #   repo: "permissions.charmverse.io"
           #   pkg_test_workflow: "test_and_deploy.yml"
     steps:
+        # assuming that there was a previous workflow run that had changed the version
+        #   then failed in substeps.  In a workflow/job rerun, the special checkout 
+        #   procedure will advance the code to include that last commit.
+        #   Then the following bumping version step will not run
+        #   as the bump-policy is only checking against that last commit.
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+      - run: git checkout HEAD
       - name: package and publish release candidate pkg
         id: publish_release_pkg
         uses: ./.github/actions/package_n_publish

@@ -8,8 +8,6 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - uses: actions/checkout@v3
-
     - uses: actions/setup-node@v3
       with:
         node-version: 18
@@ -29,6 +27,8 @@ runs:
         major-wording:  'MAJOR,major,breaking,'
         minor-wording:  'add,Adds,new,feat'
         patch-wording:  'patch,fixes,fix'
+        bump-policy: 'last-commit'
+        commit-message: 'CI: bumps version to {{version}} in workflow ${{ github.run_id }}'
 
     - name: Write Version for package of pull request branch 
       if: github.event_name == 'pull_request' && ( github.event.action == 'opened' || github.event.action == 'synchronize' )
@@ -39,6 +39,7 @@ runs:
       with:
         version-type: prerelease
         preid: 'rc-${{ env.GITHUB_HEAD_REF }}'
+        bump-policy: 'ignore'
 
     - name: Publish package
       shell: bash
