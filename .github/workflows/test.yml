@@ -164,7 +164,7 @@ jobs:
           workflow_file_name: test_and_deploy.yml
           ref: main
           client_payload: |
-              { "core_pkg_version": ${{ steps.pkg_test_workflow.outputs.pkg_version }}, 
+              { "core_pkg_version": "${{ steps.pkg_test_workflow.outputs.pkg_version }}", 
                 "run_e2e_browser_test": true, 
                 "deploy_to_prd": true }
           wait_interval: 10
