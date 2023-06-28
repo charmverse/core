@@ -86,7 +86,7 @@ jobs:
           github_token: ${{ secrets.WORKFLOW_TRIGGER_PAT }}
           github_user: yiwork
           workflow_file_name: ${{ matrix.workflow_file }}
-          ref: main
+          ref: adding-printing-workflow-input-to-workflows
           client_payload: ${{ matrix.workflow_payload }}
           wait_interval: 10
           propagate_failure: true
@@ -179,7 +179,7 @@ jobs:
           github_token: ${{ secrets.WORKFLOW_TRIGGER_PAT }}
           github_user: yiwork
           workflow_file_name: ${{ matrix.workflow_file }}
-          ref: main
+          ref: adding-printing-workflow-input-to-workflows
           client_payload: ${{ matrix.workflow_payload }}
           wait_interval: 10
           propagate_failure: true
