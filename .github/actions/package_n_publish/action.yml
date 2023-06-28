@@ -19,7 +19,7 @@ runs:
     - name: Write Version for package of main branch
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       id: version_main
-      uses:  'phips28/gh-action-bump-version@master'
+      uses:  'phips28/gh-action-bump-version@v10.0.0'
       env:
         GITHUB_TOKEN: ${{ env.WORKFLOW_TRIGGER_PAT }}
       with:
@@ -33,12 +33,11 @@ runs:
     - name: Write Version for package of pull request branch 
       if: github.event_name == 'pull_request' && ( github.event.action == 'opened' || github.event.action == 'synchronize' )
       id: version_other_branch
-      uses:  'phips28/gh-action-bump-version@master'
+      uses:  'phips28/gh-action-bump-version@v10.0.0'
       env:
         GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
       with:
         version-type: prerelease
-        patch-wording:  'patch,fixes,fix'
         preid: 'rc-${{ env.GITHUB_HEAD_REF }}'
         bump-policy: 'ignore'
 
