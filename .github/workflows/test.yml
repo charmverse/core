@@ -142,14 +142,11 @@ jobs:
           - repo: "app.charmverse.io"
             workflow_file: "test_and_deploy.yml"
             workflow_payload: |
-              { "core_pkg_version": "${{ needs.publish_release_pkg.outputs.pkg_version }}", 
-              "run_e2e_browser_test": true, 
-              "deploy_to_prd": true }
+              { "core_pkg_version": "${{ needs.publish_release_pkg.outputs.pkg_version }}" }
           - repo: "permissions.charmverse.io"
             workflow_file: "test_and_deploy.yml"
             workflow_payload: |
-              { "core_pkg_version": "${{ needs.push-rc-package.outputs.pkg_version }}", 
-              "deploy_to_prd": true }
+              { "core_pkg_version": "${{ needs.publish_release_pkg.outputs.pkg_version }}" }
     steps:
         # assuming that there was a previous workflow run that had changed the version
         #   then failed in substeps.  In a workflow/job rerun, the special checkout 
