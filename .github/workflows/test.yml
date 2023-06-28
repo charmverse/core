@@ -72,7 +72,7 @@ jobs:
               "run_e2e_browser_test": false, 
               "deploy_to_prd": false }
           - repo: "permissions.charmverse.io"
-            workflow_file: "test_and_deploy.yml"
+            workflow_file: "test_core_pkg.yml"
             workflow_payload: |
               { "core_pkg_version": "${{ needs.push-rc-package.outputs.pkg_version }}", 
               "deploy_to_prd": false }
