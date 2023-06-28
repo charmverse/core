@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "1.0.12",
+  "version": "1.0.13-rc-fixing-triggering-permission-api-workflow2.0",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
