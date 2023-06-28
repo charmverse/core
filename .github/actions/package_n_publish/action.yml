@@ -38,7 +38,7 @@ runs:
         GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
       with:
         version-type: prerelease
-        default: prerelease
+        patch-wording:  'patch,fixes,fix'
         preid: 'rc-${{ env.GITHUB_HEAD_REF }}'
         bump-policy: 'ignore'
 
