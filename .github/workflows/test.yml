@@ -38,6 +38,57 @@ jobs:
       - name: Run ${{matrix.test_name}}
         run: ${{matrix.test_command}}
 
+  push-rc-package:
+    if: github.event_name == 'pull_request' && ( github.event.action == 'opened' || github.event.action == 'synchronize' )
+    name: Push Release candidate package to allow devs to use to test
+    runs-on: ubuntu-latest
+    needs: test
+    outputs:
+      pkg_version: ${{ steps.publish_pkg.outputs.pkg_version }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: package and publish release candidate pkg
+        id: publish_pkg
+        uses: ./.github/actions/package_n_publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+
+  trigger-downstream-repo-test-workflows:
+    if: github.event_name == 'pull_request' && ( github.event.action == 'opened' || github.event.action == 'synchronize' )
+    name: Trigger ${{matrix.repo}} testing workflow
+    runs-on: ubuntu-latest
+    needs: push-rc-package
+    strategy:
+      max-parallel: 2
+      fail-fast: false
+      matrix:
+        include:
+          - test_name: "Testing with Webapp"
+            repo: "app.charmverse.io"
+            pkg_test_workflow: "test_and_deploy.yml"
+          - test_name: "Testing with Permission API"
+            repo: "permissions.charmverse.io"
+            pkg_test_workflow: "test_and_deploy.yml"
+    steps:
+      - name: Trigger test workflow - ${{matrix.test_name}}
+        uses: convictional/trigger-workflow-and-wait@v1.6.1
+        with:
+          owner: charmverse
+          repo: ${{matrix.repo}}
+          github_token: ${{ secrets.WORKFLOW_TRIGGER_PAT }}
+          github_user: yiwork
+          workflow_file_name: ${{matrix.pkg_test_workflow}}
+          ref: main
+          client_payload: |
+            { "core_pkg_version": "${{ needs.push-rc-package.outputs.pkg_version }}", 
+              "run_e2e_browser_test": false, 
+              "deploy_to_prd": false }
+          wait_interval: 10
+          propagate_failure: true
+          trigger_workflow: true
+          wait_workflow: true
+
   integration-test:
     name: Tests
     runs-on: ubuntu-latest
@@ -77,4 +128,55 @@ jobs:
 
       - name: Run ${{matrix.test_name}}
         run: ${{matrix.test_command}}
+
+  push-full-release:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    name: Pkg and push full release on main
+    runs-on: ubuntu-latest
+    needs: integration-test
+    strategy:
+      max-parallel: 2
+      fail-fast: false
+      matrix:
+        include:
+          - test_name: "Update Core on Webapp and Deploy"
+            repo: "app.charmverse.io"
+            pkg_test_workflow: "test_and_deploy.yml"
+          # - test_name: "Update Core on Permissions API and Deploy"
+          #   repo: "permissions.charmverse.io"
+          #   pkg_test_workflow: "test_and_deploy.yml"
+    steps:
+        # assuming that there was a previous workflow run that had changed the version
+        #   then failed in substeps.  In a workflow/job rerun, the special checkout 
+        #   procedure will advance the code to include that last commit.
+        #   Then the following bumping version step will not run
+        #   as the bump-policy is only checking against that last commit.
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+      - run: git checkout HEAD
+      - name: package and publish release candidate pkg
+        id: publish_release_pkg
+        uses: ./.github/actions/package_n_publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+          WORKFLOW_TRIGGER_PAT: ${{ secrets.WORKFLOW_TRIGGER_PAT }}
+      - name: Trigger Core pkg update
+        uses: convictional/trigger-workflow-and-wait@v1.6.1
+        with:
+          owner: charmverse
+          repo: app.charmverse.io
+          github_token: ${{ secrets.WORKFLOW_TRIGGER_PAT }}
+          github_user: yiwork
+          workflow_file_name: test_and_deploy.yml
+          ref: main
+          client_payload: |
+              { "core_pkg_version": "${{ steps.publish_release_pkg.outputs.pkg_version }}", 
+                "run_e2e_browser_test": true, 
+                "deploy_to_prd": true }
+          wait_interval: 10
+          propagate_failure: true
+          trigger_workflow: true
+          wait_workflow: true
 
