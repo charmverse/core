@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "1.0.14-rc-trigger-wf-disable-integration-tests.0",
+  "version": "1.0.14-rc-trigger-wf-disable-integration-tests.1",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
