@@ -68,8 +68,9 @@ jobs:
             repo: "app.charmverse.io"
             workflow_file: "test_and_deploy.yml"
             workflow_payload: |
-              { "core_pkg_version": "${{ needs.push-rc-package.outputs.pkg_version }}", 
-              "run_e2e_browser_test": false, 
+              { "core_pkg_version": "${{ needs.push-rc-package.outputs.pkg_version }}",
+              "run_integration_test": false,
+              "run_e2e_browser_test": false,
               "deploy_to_prd": false }
           - repo: "permissions.charmverse.io"
             workflow_file: "test_and_deploy.yml"

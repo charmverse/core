@@ -2,7 +2,7 @@ name: "Install dependencies"
 
 outputs:
   pkg_version:
-    description: "Random number"
+    description: "SemVer number pushed"
     value: ${{ steps.public_pkg.outputs.pkg_version }}
 
 runs:
