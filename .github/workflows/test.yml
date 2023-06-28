@@ -66,24 +66,27 @@ jobs:
         include:
           - test_name: "Testing with Webapp"
             repo: "app.charmverse.io"
-            pkg_test_workflow: "test_and_deploy.yml"
-          - test_name: "Testing with Permission API"
-            repo: "permissions.charmverse.io"
-            pkg_test_workflow: "test_and_deploy.yml"
+            workflow_file: "test_and_deploy.yml"
+            workflow_payload: |
+              { "core_pkg_version": "${{ needs.push-rc-package.outputs.pkg_version }}", 
+              "run_e2e_browser_test": false, 
+              "deploy_to_prd": false }
+          - repo: "permissions.charmverse.io"
+            workflow_file: "test_and_deploy.yml"
+            workflow_payload: |
+              { "core_pkg_version": "${{ needs.push-rc-package.outputs.pkg_version }}", 
+              "deploy_to_prd": false }
     steps:
-      - name: Trigger test workflow - ${{matrix.test_name}}
+      - name: Trigger tests on repo ${{ matrix.repo }}
         uses: convictional/trigger-workflow-and-wait@v1.6.1
         with:
           owner: charmverse
-          repo: ${{matrix.repo}}
+          repo: ${{ matrix.repo }}
           github_token: ${{ secrets.WORKFLOW_TRIGGER_PAT }}
           github_user: yiwork
-          workflow_file_name: ${{matrix.pkg_test_workflow}}
+          workflow_file_name: ${{ matrix.workflow_file }}
           ref: main
-          client_payload: |
-            { "core_pkg_version": "${{ needs.push-rc-package.outputs.pkg_version }}", 
-              "run_e2e_browser_test": false, 
-              "deploy_to_prd": false }
+          client_payload: ${{ matrix.workflow_payload }}
           wait_interval: 10
           propagate_failure: true
           trigger_workflow: true
@@ -139,12 +142,17 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - test_name: "Update Core on Webapp and Deploy"
-            repo: "app.charmverse.io"
-            pkg_test_workflow: "test_and_deploy.yml"
-          # - test_name: "Update Core on Permissions API and Deploy"
-          #   repo: "permissions.charmverse.io"
-          #   pkg_test_workflow: "test_and_deploy.yml"
+          - repo: "app.charmverse.io"
+            workflow_file: "test_and_deploy.yml"
+            workflow_payload: |
+              { "core_pkg_version": "${{ needs.publish_release_pkg.outputs.pkg_version }}", 
+              "run_e2e_browser_test": true, 
+              "deploy_to_prd": true }
+          - repo: "permissions.charmverse.io"
+            workflow_file: "test_and_deploy.yml"
+            workflow_payload: |
+              { "core_pkg_version": "${{ needs.push-rc-package.outputs.pkg_version }}", 
+              "deploy_to_prd": true }
     steps:
         # assuming that there was a previous workflow run that had changed the version
         #   then failed in substeps.  In a workflow/job rerun, the special checkout 
@@ -162,19 +170,16 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
           WORKFLOW_TRIGGER_PAT: ${{ secrets.WORKFLOW_TRIGGER_PAT }}
-      - name: Trigger Core pkg update
+      - name: Trigger Core pkg update and deploy on repo ${{ matrix.repo }}
         uses: convictional/trigger-workflow-and-wait@v1.6.1
         with:
           owner: charmverse
-          repo: app.charmverse.io
+          repo: ${{ matrix.repo }}
           github_token: ${{ secrets.WORKFLOW_TRIGGER_PAT }}
           github_user: yiwork
-          workflow_file_name: test_and_deploy.yml
+          workflow_file_name: ${{ matrix.workflow_file }}
           ref: main
-          client_payload: |
-              { "core_pkg_version": "${{ steps.publish_release_pkg.outputs.pkg_version }}", 
-                "run_e2e_browser_test": true, 
-                "deploy_to_prd": true }
+          client_payload: ${{ matrix.workflow_payload }}
           wait_interval: 10
           propagate_failure: true
           trigger_workflow: true
