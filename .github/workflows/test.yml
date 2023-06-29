@@ -130,7 +130,7 @@ jobs:
         run: ${{matrix.test_command}}
 
   push-full-release:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/separate-workflow-file-for-core'
     name: Pkg and push full release on main
     runs-on: ubuntu-latest
     needs: integration-test
