@@ -137,9 +137,9 @@ jobs:
         run: ${{matrix.test_command}}
 
   trigger-pkg-upgrade:
-#    if: github.event_name == 'push' && github.ref == 'refs/heads/separate-workflow-file-for-core'
+    if: github.event_name == 'push'
 #    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    name: Trigger Core pkg Upgrade workflow on ${{ matrix.repo }}
+    name: Trigger Core pkg Upgrade on ${{ matrix.repo }}
     runs-on: ubuntu-latest
     needs: [push-package, integration-test]
     strategy:
