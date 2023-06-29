@@ -5,7 +5,7 @@ name: CI
 
 on:
   push:
-    branches: [main, splitting-out-downstream-to-own-workflow]
+    branches: [main, compiling-core-b4-pkg]
   pull_request:
     branches: ['**']
 
