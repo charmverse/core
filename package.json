@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
@@ -68,9 +68,16 @@
     }
   },
   "files": {
-    "include": ["dist", "src"],
-    "exclude": [".vscode", ".github", ".husky"]
-  }, 
+    "include": [
+      "dist",
+      "src"
+    ],
+    "exclude": [
+      ".vscode",
+      ".github",
+      ".husky"
+    ]
+  },
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test": "NODE_OPTIONS=\"--max_old_space_size=4096 --experimental-vm-modules=true\"  dotenv -e .env.test.local -- npx jest --config='./jest.config.js' --maxWorkers=2 --watch --verbose",
