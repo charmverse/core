@@ -60,9 +60,10 @@ jobs:
         #   as the bump-policy is only checking against that last commit.
       - uses: actions/checkout@v3
         with:
+          clean: 'false'
           fetch-depth: 2
       - run: |
-          git checkout HEAD
+          git checkout HEAD package.json
           git log -2
           cat .npmignore
           cat package.json
