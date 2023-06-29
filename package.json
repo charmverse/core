@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
