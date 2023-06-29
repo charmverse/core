@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "1.0.15-rc-splitting-out-d.1",
+  "version": "1.0.15",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
