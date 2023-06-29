@@ -50,6 +50,8 @@ runs:
       env:
         NODE_AUTH_TOKEN: ${{ env.NODE_AUTH_TOKEN }}
       run: |
+        git log -2
+        ls -la 
         npm pkg delete scripts.prepare
         npm pkg delete scripts.postinstall
         npm pack
