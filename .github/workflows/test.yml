@@ -45,7 +45,15 @@ jobs:
     outputs:
       pkg_version: ${{ steps.publish_pkg.outputs.pkg_version }}
     steps:
+        # assuming that there was a previous workflow run that had changed the version
+        #   then failed in substeps.  In a workflow/job rerun, the special checkout 
+        #   procedure will advance the code in workspace to include that last commit.
+        #   Then the following bumping version step will not run
+        #   as the bump-policy is only checking against that last commit.
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+      - run: git checkout HEAD
       - name: package and publish release candidate pkg
         id: publish_pkg
         uses: ./.github/actions/package_n_publish
@@ -131,9 +139,9 @@ jobs:
   push-full-release:
 #    if: github.event_name == 'push' && github.ref == 'refs/heads/separate-workflow-file-for-core'
 #    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    name: Pkg and push full release on main
+    name: Trigger Core Upgrade workflow on ${{ matrix.repo }}
     runs-on: ubuntu-latest
-    needs: integration-test
+    needs: [push-package, integration-test]
     strategy:
       max-parallel: 2
       fail-fast: false
@@ -148,15 +156,6 @@ jobs:
             workflow_payload: |
               { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}" }
     steps:
-        # assuming that there was a previous workflow run that had changed the version
-        #   then failed in substeps.  In a workflow/job rerun, the special checkout 
-        #   procedure will advance the code to include that last commit.
-        #   Then the following bumping version step will not run
-        #   as the bump-policy is only checking against that last commit.
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 2
-      - run: git checkout HEAD
       - name: Trigger Core pkg update and deploy on repo ${{ matrix.repo }}
         uses: convictional/trigger-workflow-and-wait@v1.6.1
         with:
