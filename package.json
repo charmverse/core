@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "1.0.14",
+  "version": "1.0.15-rc-feat-custom-domain-verified-field.0",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
