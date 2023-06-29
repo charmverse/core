@@ -3,25 +3,22 @@ name: "Install dependencies"
 runs:
   using: "composite"
   steps:
-    - uses: actions/checkout@v3
-
-    - uses: actions/setup-node@v3
-      with:
-        node-version: 18
-        registry-url: 'https://npm.pkg.github.com'
-
     - name: Create .env.test.local file
       shell: bash
       run: cp .env.test.local.example .env.test.local
 
     - name: Cache dependencies
-      id: cache_node_modules
+      id: cache_build
       uses: actions/cache@v3
       with:
-        path: ./node_modules
-        key: nodemodules-cache-${{ hashFiles('package.json') }}-${{ hashFiles('patches/**.patch', 'src/prisma/schema.prisma') }}
+        path: |
+          dist  
+          .env.test.local
+        key: core-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('dist/**/*.[jt]s') }}
 
-    - name: Install npm dependencies
+    - name: Build
       shell: bash
-      if: steps.cache_node_modules.outputs.cache-hit != 'true'
-      run: npm i --no-audit --no-fund
+      if: steps.cache_build.outputs.cache-hit != 'true'
+      run: |
+        npm run prisma:generate
+        npm run build
