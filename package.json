@@ -68,7 +68,7 @@
     }
   },
   "files": {
-  "include": ["dist"]
+  "include": ["dist", "src", "**/*.js"]
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
