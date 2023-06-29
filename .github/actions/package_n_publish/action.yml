@@ -1,0 +1,60 @@
+name: "Install dependencies"
+
+outputs:
+  pkg_version:
+    description: "Random number"
+    value: ${{ steps.public_pkg.outputs.pkg_version }}
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 18
+        registry-url: 'https://registry.npmjs.org/'
+
+    - name: Inject slug/short variables
+      uses: rlespinasse/github-slug-action@v4.x
+
+    - name: Write Version for package of main branch
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      id: version_main
+      uses:  'phips28/gh-action-bump-version@master'
+      env:
+        GITHUB_TOKEN: ${{ env.WORKFLOW_TRIGGER_PAT }}
+      with:
+        default: patch
+        major-wording:  'MAJOR,major,breaking,'
+        minor-wording:  'add,Adds,new,feat'
+        patch-wording:  'patch,fixes,fix'
+        bump-policy: 'last-commit'
+        commit-message: 'CI: bumps version to {{version}} in workflow ${{ github.run_id }}'
+
+    - name: Write Version for package of pull request branch 
+      if: github.event_name == 'pull_request' && ( github.event.action == 'opened' || github.event.action == 'synchronize' )
+      id: version_other_branch
+      uses:  'phips28/gh-action-bump-version@master'
+      env:
+        GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
+      with:
+        version-type: prerelease
+        preid: 'rc-${{ env.GITHUB_HEAD_REF_SLUG }}'
+        bump-policy: 'ignore'
+
+    - name: Publish package
+      shell: bash
+      id: public_pkg
+      env:
+        NODE_AUTH_TOKEN: ${{ env.NODE_AUTH_TOKEN }}
+      run: |
+        npm pkg delete scripts.prepare
+        npm pack
+
+        if [[ "${{ steps.version_main.outputs.newTag }}" != "" ]]; then 
+          npm publish --access=public
+          echo "pkg_version=${{ steps.version_main.outputs.newTag }}" >> $GITHUB_OUTPUT
+        else
+          npm publish --access=public --tag "pr-${{ github.event.number }}-${{ env.GITHUB_HEAD_REF_SLUG }}"
+          echo "pkg_version=${{ steps.version_other_branch.outputs.newTag }}" >> $GITHUB_OUTPUT
+        fi 
+

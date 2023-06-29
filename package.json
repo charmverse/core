@@ -1,7 +1,7 @@
 {
   "name": "@charmverse/core",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.0.14",
+  "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
   "main": "./dist/cjs/index.js",
@@ -85,6 +85,9 @@
     "prisma:migrate:local": "npx dotenv -e .env.local -- npx prisma migrate dev --schema=./src/prisma/schema.prisma",
     "prisma:deploy": "npx prisma migrate deploy --schema=./src/prisma/schema.prisma"
   },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/charmverse/core.git"
@@ -92,7 +95,7 @@
   "keywords": [
     "charmverse"
   ],
-  "author": "",
+  "author": "matt.casey@charmverse.io",
   "bugs": {
     "url": "https://github.com/charmverse/core/issues"
   },
@@ -142,5 +145,6 @@
     "undici": "^5.22.1",
     "utf-8-validate": "^5.0.10",
     "uuid": "^9.0.0"
-  }
+  },
+  "license": "GPLv3"
 }

@@ -237,6 +237,7 @@ enum SubscriptionTier {
   free
   pro
   enterprise
+  cancelled
 }
 
 enum SubscriptionPeriod {
@@ -313,25 +314,14 @@ model Space {
   @@index([createdBy])
 }
 
-enum SubscriptionStatus {
-  active
-  pending
-  cancelled
-  cancelAtEnd
-}
-
 model StripeSubscription {
-  id             String             @id @default(uuid()) @db.Uuid
-  createdAt      DateTime           @default(now())
-  spaceId        String             @db.Uuid
-  space          Space              @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  period         SubscriptionPeriod
+  id             String    @id @default(uuid()) @db.Uuid
+  createdAt      DateTime  @default(now())
+  spaceId        String    @db.Uuid
+  space          Space     @relation(fields: [spaceId], references: [id], onDelete: Cascade)
   customerId     String
-  productId      String
-  priceId        String
-  subscriptionId String             @unique
+  subscriptionId String    @unique
   deletedAt      DateTime?
-  status         SubscriptionStatus
 
   @@index([spaceId])
 }
@@ -530,6 +520,8 @@ model Vote {
   postId      String?       @db.Uuid
   title       String
   description String?
+  content     Json?
+  contentText String?
   deadline    DateTime
   status      VoteStatus
   createdAt   DateTime      @default(now())
