@@ -5,11 +5,9 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, splitting-out-downstream-to-own-workflow]
   pull_request:
     branches: ['**']
-  push:
-    branches: [splitting-out-downstream-to-own-workflow]
 
 jobs:
   build-test-env:
