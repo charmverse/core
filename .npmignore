@@ -3,3 +3,4 @@ node_modules
 .github
 .husky
 pull_request_template.md
+!dist
