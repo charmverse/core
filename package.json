@@ -67,13 +67,6 @@
       "require": "./dist/cjs/http.js"
     }
   },
-  "files": {
-    "include": [
-      "dist",
-      "src",
-      "**/*.js"
-    ]
-  },
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test": "NODE_OPTIONS=\"--max_old_space_size=4096 --experimental-vm-modules=true\"  dotenv -e .env.test.local -- npx jest --config='./jest.config.js' --maxWorkers=2 --watch --verbose",
