@@ -8,6 +8,8 @@ on:
     branches: [main]
   pull_request:
     branches: ['**']
+  push:
+    branches: [splitting-out-downstream-to-own-workflow]
 
 jobs:
   build-test-env:
@@ -131,6 +133,7 @@ jobs:
 
   push-full-release:
     if: github.event_name == 'push' && github.ref == 'refs/heads/separate-workflow-file-for-core'
+#    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     name: Pkg and push full release on main
     runs-on: ubuntu-latest
     needs: integration-test
