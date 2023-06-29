@@ -143,11 +143,11 @@ jobs:
           - repo: "app.charmverse.io"
             workflow_file: "test_and_deploy.yml"
             workflow_payload: |
-              { "core_pkg_version": "${{ steps.publish_release_pkg.outputs.pkg_version }}" }
+              { "core_pkg_version": "${{ env.pkg_version }}" }
           - repo: "permissions.charmverse.io"
             workflow_file: "test_and_deploy.yml"
             workflow_payload: |
-              { "core_pkg_version": "${{ steps.publish_release_pkg.outputs.pkg_version }}" }
+              { "core_pkg_version": "${{ env.pkg_version }}" }
     steps:
         # assuming that there was a previous workflow run that had changed the version
         #   then failed in substeps.  In a workflow/job rerun, the special checkout 
@@ -166,6 +166,8 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
           WORKFLOW_TRIGGER_PAT: ${{ secrets.WORKFLOW_TRIGGER_PAT }}
       - name: Trigger Core pkg update and deploy on repo ${{ matrix.repo }}
+        env: 
+          pkg_version: ${{ steps.publish_release_pkg.outputs.pkg_version }}
         uses: convictional/trigger-workflow-and-wait@v1.6.1
         with:
           owner: charmverse
