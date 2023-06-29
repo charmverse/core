@@ -38,8 +38,7 @@ jobs:
       - name: Run ${{matrix.test_name}}
         run: ${{matrix.test_command}}
 
-  push-rc-package:
-    if: github.event_name == 'pull_request' && ( github.event.action == 'opened' || github.event.action == 'synchronize' )
+  push-package:
     name: Push Release candidate package to allow devs to use to test
     runs-on: ubuntu-latest
     needs: test
@@ -58,7 +57,7 @@ jobs:
     if: github.event_name == 'pull_request' && ( github.event.action == 'opened' || github.event.action == 'synchronize' )
     name: Trigger ${{matrix.repo}} testing workflow
     runs-on: ubuntu-latest
-    needs: push-rc-package
+    needs: push-package
     strategy:
       max-parallel: 2
       fail-fast: false
@@ -68,11 +67,11 @@ jobs:
             repo: "app.charmverse.io"
             workflow_file: "test_new_core_pkg.yml"
             workflow_payload: |
-              { "core_pkg_version": "${{ needs.push-rc-package.outputs.pkg_version }}" }
+              { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}" }
           - repo: "permissions.charmverse.io"
             workflow_file: "test_core_pkg.yml"
             workflow_payload: |
-              { "core_pkg_version": "${{ needs.push-rc-package.outputs.pkg_version }}" }
+              { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}" }
     steps:
       - name: Trigger tests on repo ${{ matrix.repo }}
         uses: convictional/trigger-workflow-and-wait@v1.6.1
@@ -143,11 +142,11 @@ jobs:
           - repo: "app.charmverse.io"
             workflow_file: "test_and_deploy.yml"
             workflow_payload: |
-              { "core_pkg_version": "${{ job.env.pkg_version }}" }
+              { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}" }
           - repo: "permissions.charmverse.io"
             workflow_file: "test_and_deploy.yml"
             workflow_payload: |
-              { "core_pkg_version": "${{ job.env.pkg_version }}" }
+              { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}" }
     steps:
         # assuming that there was a previous workflow run that had changed the version
         #   then failed in substeps.  In a workflow/job rerun, the special checkout 
@@ -158,16 +157,7 @@ jobs:
         with:
           fetch-depth: 2
       - run: git checkout HEAD
-      - name: package and publish release candidate pkg
-        id: publish_release_pkg
-        uses: ./.github/actions/package_n_publish
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
-          WORKFLOW_TRIGGER_PAT: ${{ secrets.WORKFLOW_TRIGGER_PAT }}
       - name: Trigger Core pkg update and deploy on repo ${{ matrix.repo }}
-        env: 
-          pkg_version: ${{ steps.publish_release_pkg.outputs.pkg_version }}
         uses: convictional/trigger-workflow-and-wait@v1.6.1
         with:
           owner: charmverse
