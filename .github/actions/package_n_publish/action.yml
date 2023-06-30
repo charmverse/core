@@ -19,8 +19,7 @@ runs:
         slug-maxlength: 15
 
     - name: Write Version for package of main branch
-#      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-      if: github.event_name == 'push'
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       id: version_main
       uses:  'phips28/gh-action-bump-version@master'
       env:

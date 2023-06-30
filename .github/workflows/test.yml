@@ -46,21 +46,19 @@ jobs:
         run: ${{matrix.test_command}}
 
   push-package:
-    if: github.event_name == 'push'
     name: Push Release candidate package to allow devs to use to test
     runs-on: ubuntu-latest
     needs: typecheck
     outputs:
       pkg_version: ${{ steps.publish_pkg.outputs.pkg_version }}
     steps:
-        # assuming that there was a previous workflow run that had changed the version
-        #   then failed in substeps.  In a workflow/job rerun, the special checkout 
-        #   procedure will advance the code in workspace to include that last commit.
-        #   Then the following bumping version step will not run
-        #   as the bump-policy is only checking against that last commit.
       - uses: actions/checkout@v3
+        if: github.run_attempt > 1
         with:
           ref: ${{ github.ref }}
+      - uses: actions/checkout@v3
+        if: github.run_attempt == 1
+
       - run: |
           git log -2
           cat .npmignore
