@@ -53,7 +53,6 @@ runs:
         git log -2
         ls -la 
         npm pkg delete scripts.prepare
-        npm pkg delete scripts.postinstall
         npm pack
 
         if [[ "${{ steps.version_main.outputs.newTag }}" != "" ]]; then 
