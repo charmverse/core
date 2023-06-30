@@ -60,9 +60,8 @@ jobs:
         #   as the bump-policy is only checking against that last commit.
       - uses: actions/checkout@v3
         with:
-          fetch-depth: 2
+          ref: ${{ github.ref }}
       - run: |
-          git checkout HEAD package.json
           git log -2
           cat .npmignore
           cat package.json
