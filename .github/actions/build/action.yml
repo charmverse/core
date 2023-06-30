@@ -7,18 +7,20 @@ runs:
       shell: bash
       run: cp .env.test.local.example .env.test.local
 
-    - name: Cache dependencies
+    - name: Restore build cache
       id: cache_build
       uses: actions/cache@v3
       with:
         path: |
           dist  
           .env.test.local
-        key: core-${{ runner.os }}-${{ hashFiles('src/prisma/schema.prisma') }}-${{ hashFiles('dist/**/*.[jt]s') }}
+          src/prisma/schema.prisma
+        key: core-${{ runner.os }}-${{ github.sha }}-${{ hashFiles('src/prisma/schema.prisma') }}-${{ hashFiles('dist/**/*.[jt]s') }}
 
     - name: Build
       shell: bash
       if: steps.cache_build.outputs.cache-hit != 'true'
       run: |
+        echo "Cache missed!"
         npm run prisma:generate
         npm run build
