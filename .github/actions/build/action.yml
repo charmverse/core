@@ -14,8 +14,7 @@ runs:
         path: |
           dist  
           .env.test.local
-          src/prisma/schema.prisma
-        key: core-${{ runner.os }}-${{ github.sha }}-${{ hashFiles('src/prisma/schema.prisma') }}-${{ hashFiles('dist/**/*.[jt]s') }}
+        key: core-${{ runner.os }}-${{ github.sha }}-${{ hashFiles('tsconfig.esm.json') }}-${{ hashFiles('dist/**/*.[jt]s') }}
 
     - name: Build
       shell: bash
