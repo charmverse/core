@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "1.9.1-rc-compiling-core.2",
+  "version": "1.9.1-rc-compiling-core.3",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
@@ -70,8 +70,8 @@
   "files": [
     "dist",
     "src",
-    "**/*.[jt]s", 
-    "!.vscode", 
+    "**/*.[jt]s",
+    "!.vscode",
     "!.github",
     "!.husky",
     "!pull_request_template.md"
