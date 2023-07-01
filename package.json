@@ -70,7 +70,11 @@
   "files": [
     "dist",
     "src",
-    "**/*.[jt]s"
+    "**/*.[jt]s", 
+    "!.vscode", 
+    "!.github",
+    "!.husky",
+    "!pull_request_template.md"
   ],
   "scripts": {
     "typecheck": "tsc --noEmit",

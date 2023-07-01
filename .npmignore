@@ -1,6 +1,0 @@
-node_modules
-.vscode
-.github
-.husky
-pull_request_template.md
-!dist

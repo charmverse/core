@@ -15,11 +15,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: |
-          git checkout HEAD
-          git log -2
-          cat .npmignore
-          cat package.json
       - name: Install dependencies
         uses: ./.github/actions/install
       - name: Run build
@@ -52,16 +47,15 @@ jobs:
     outputs:
       pkg_version: ${{ steps.publish_pkg.outputs.pkg_version }}
     steps:
+      # On rerun - upstream would've changed with a version update. 
+      #   So checking out with the head of Pull request Merge 
       - uses: actions/checkout@v3
         if: github.run_attempt > 1
-        with:
+        with:   
           ref: refs/pull/${{ github.event.number }}/merge
       - uses: actions/checkout@v3
         if: github.run_attempt == 1
-
       - run: |
-          git log -2
-          cat .npmignore
           cat package.json
       - name: Restore build cache
         uses: ./.github/actions/build
@@ -100,7 +94,7 @@ jobs:
           github_token: ${{ secrets.WORKFLOW_TRIGGER_PAT }}
           github_user: yiwork
           workflow_file_name: ${{ matrix.workflow_file }}
-          ref: compiling-core-b4-pkg
+          ref: main
           client_payload: ${{ matrix.workflow_payload }}
           wait_interval: 10
           propagate_failure: true
@@ -148,10 +142,11 @@ jobs:
         run: ${{matrix.test_command}}
 
   trigger-pkg-upgrade:
-    if: github.event_name == 'push'
-#    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     name: Trigger Core pkg Upgrade on ${{ matrix.repo }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     needs: [push-package, integration-test]
     strategy:
       max-parallel: 2
@@ -175,7 +170,7 @@ jobs:
           github_token: ${{ secrets.WORKFLOW_TRIGGER_PAT }}
           github_user: yiwork
           workflow_file_name: ${{ matrix.workflow_file }}
-          ref: compiling-core-b4-pkg
+          ref: main
           client_payload: ${{ matrix.workflow_payload }}
           wait_interval: 10
           propagate_failure: true
