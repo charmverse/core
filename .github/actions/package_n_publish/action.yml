@@ -15,13 +15,15 @@ runs:
 
     - name: Inject slug/short variables
       uses: rlespinasse/github-slug-action@v4.x
+      with:
+        slug-maxlength: 15
 
     - name: Write Version for package of main branch
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       id: version_main
       uses:  'phips28/gh-action-bump-version@master'
       env:
-        GITHUB_TOKEN: ${{ env.WORKFLOW_TRIGGER_PAT }}
+        GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
       with:
         default: patch
         major-wording:  'MAJOR,major,breaking,'
@@ -47,6 +49,8 @@ runs:
       env:
         NODE_AUTH_TOKEN: ${{ env.NODE_AUTH_TOKEN }}
       run: |
+        git log -2
+        ls -la 
         npm pkg delete scripts.prepare
         npm pack
 
