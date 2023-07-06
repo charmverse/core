@@ -19,7 +19,13 @@ export async function policyArchivedViewOnly({
   const newPermissions = { ...flags };
 
   const allowedOperations: ProposalOperation[] = ['view'];
-  const allowedAuthorOperations: ProposalOperation[] = [...allowedOperations, 'delete', 'make_public'];
+  const allowedAuthorOperations: ProposalOperation[] = [
+    ...allowedOperations,
+    'delete',
+    'make_public',
+    'archive',
+    'unarchive'
+  ];
   const allowedAdminOperations: ProposalOperation[] = allowedAuthorOperations;
 
   if (isAdmin) {

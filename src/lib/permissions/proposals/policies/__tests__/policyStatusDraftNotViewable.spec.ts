@@ -64,10 +64,12 @@ describe('policyStatusDraftOnlyViewable', () => {
       create_vote: true,
       review: true,
       vote: true,
-      make_public: true
+      make_public: true,
+      archive: true,
+      unarchive: true
     });
   });
-  it('should allow the author to view, edit, comment, delete and make public', async () => {
+  it('should allow the author to view, edit, comment, delete, make public, archive and unarchive', async () => {
     const permissions = await policyStatusDraftNotViewable({
       flags: fullPermissions,
       isAdmin: false,
@@ -83,7 +85,9 @@ describe('policyStatusDraftOnlyViewable', () => {
       make_public: true,
       create_vote: false,
       review: false,
-      vote: false
+      vote: false,
+      archive: true,
+      unarchive: true
     });
   });
 
@@ -103,7 +107,9 @@ describe('policyStatusDraftOnlyViewable', () => {
       make_public: true,
       create_vote: false,
       review: false,
-      vote: false
+      vote: false,
+      archive: true,
+      unarchive: true
     });
   });
 
@@ -123,7 +129,9 @@ describe('policyStatusDraftOnlyViewable', () => {
       make_public: false,
       create_vote: false,
       review: false,
-      vote: false
+      vote: false,
+      archive: false,
+      unarchive: false
     });
   });
 
@@ -143,7 +151,9 @@ describe('policyStatusDraftOnlyViewable', () => {
       create_vote: false,
       review: false,
       vote: false,
-      make_public: false
+      make_public: false,
+      archive: false,
+      unarchive: false
     });
   });
 });

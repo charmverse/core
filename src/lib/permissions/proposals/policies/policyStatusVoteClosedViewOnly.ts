@@ -19,7 +19,7 @@ export async function policyStatusVoteClosedViewOnly({
   }
 
   const allowedOperations: ProposalOperation[] = ['view'];
-  const allowedAuthorOperations: ProposalOperation[] = [...allowedOperations, 'make_public'];
+  const allowedAuthorOperations: ProposalOperation[] = [...allowedOperations, 'make_public', 'archive', 'unarchive'];
   const allowedAdminOperations: ProposalOperation[] = [...allowedAuthorOperations, 'delete'];
 
   if (isAdmin) {

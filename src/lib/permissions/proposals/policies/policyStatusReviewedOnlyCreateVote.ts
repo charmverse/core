@@ -19,7 +19,14 @@ export async function policyStatusReviewedOnlyCreateVote({
     return newPermissions;
   }
 
-  const allowedAuthorOperations: ProposalOperation[] = ['view', 'create_vote', 'delete', 'make_public'];
+  const allowedAuthorOperations: ProposalOperation[] = [
+    'view',
+    'create_vote',
+    'delete',
+    'make_public',
+    'archive',
+    'unarchive'
+  ];
   const allowedAdminOperations: ProposalOperation[] = [...allowedAuthorOperations, 'edit'];
 
   if (isProposalAuthor({ proposal: resource, userId })) {

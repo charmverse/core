@@ -64,11 +64,13 @@ describe('policyArchivedViewOnly', () => {
       create_vote: true,
       review: true,
       vote: true,
-      make_public: true
+      make_public: true,
+      archive: true,
+      unarchive: true
     });
   });
 
-  it('should allow authors to view, make public and delete', async () => {
+  it('should allow authors to view, make public, delete, archive and unarchive', async () => {
     const permissions = await policyArchivedViewOnly({
       flags: fullPermissions,
       isAdmin: false,
@@ -84,7 +86,9 @@ describe('policyArchivedViewOnly', () => {
       comment: false,
       delete: true,
       edit: false,
-      review: false
+      review: false,
+      archive: true,
+      unarchive: true
     });
   });
 
@@ -104,7 +108,9 @@ describe('policyArchivedViewOnly', () => {
       create_vote: false,
       comment: false,
       edit: false,
-      review: false
+      review: false,
+      archive: true,
+      unarchive: true
     });
   });
 
@@ -127,7 +133,9 @@ describe('policyArchivedViewOnly', () => {
         comment: false,
         delete: false,
         edit: false,
-        review: false
+        review: false,
+        archive: false,
+        unarchive: false
       });
     }
   });

@@ -1163,6 +1163,8 @@ enum ProposalOperation {
   comment
   review
   make_public
+  archive
+  unarchive
 }
 
 enum ProposalCategoryPermissionLevel {
