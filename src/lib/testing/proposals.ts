@@ -123,6 +123,18 @@ export async function generateProposal({
     content
   });
 
+  await prisma.workspaceEvent.create({
+    data: {
+      type: 'proposal_status_change',
+      meta: {
+        newStatus: proposalStatus
+      },
+      actorId: userId,
+      pageId: proposalId,
+      spaceId
+    }
+  });
+
   const result = await prisma.proposal.findUniqueOrThrow({
     where: {
       id: proposalId
