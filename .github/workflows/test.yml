@@ -86,7 +86,7 @@ jobs:
             workflow_file: "test_core_pkg.yml"
             workflow_payload: |
               { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}", 
-                "debug": "true" }
+                "logLevel": "debug" }
     steps:
       - name: Trigger tests on repo ${{ matrix.repo }}
         uses: convictional/trigger-workflow-and-wait@v1.6.1
