@@ -46,6 +46,7 @@ export type ProposalWithUsersAndPageMeta = ProposalWithUsers & { page: Pick<Page
 
 export type GenerateProposalInput = {
   deletedAt?: Page['deletedAt'];
+  archived?: boolean;
   categoryId?: string;
   userId: string;
   spaceId: string;
@@ -68,7 +69,8 @@ export async function generateProposal({
   authors = [],
   reviewers = [],
   deletedAt = null,
-  content
+  content,
+  archived
 }: GenerateProposalInput): Promise<ProposalWithUsers & { page: Page }> {
   const proposalId = v4();
 
@@ -80,6 +82,7 @@ export async function generateProposal({
       id: proposalId,
       createdBy: userId,
       status: proposalStatus,
+      archived,
       space: {
         connect: {
           id: spaceId
@@ -229,6 +232,7 @@ export async function generateProposalTemplate({
 
   return convertedToTemplate.proposal as ProposalWithUsers;
 }
+
 export async function convertPageToProposal({
   pageId,
   proposalCategoryId,

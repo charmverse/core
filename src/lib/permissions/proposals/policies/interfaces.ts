@@ -4,7 +4,7 @@ import type { IsProposalReviewerFn, ProposalPermissionFlags } from '../interface
 
 export type ProposalResource = Pick<
   ProposalWithUsers,
-  'id' | 'createdBy' | 'status' | 'categoryId' | 'spaceId' | 'spaceId' | 'authors' | 'reviewers'
+  'id' | 'createdBy' | 'status' | 'categoryId' | 'spaceId' | 'spaceId' | 'authors' | 'reviewers' | 'archived'
 >;
 
 export type ProposalPolicyInput = PermissionFilteringPolicyFnInput<ProposalResource, ProposalPermissionFlags>;
