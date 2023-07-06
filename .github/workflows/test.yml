@@ -80,11 +80,13 @@ jobs:
             repo: "app.charmverse.io"
             workflow_file: "test_new_core_pkg.yml"
             workflow_payload: |
-              { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}" }
+              { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}", 
+                "debug": "true" }
           - repo: "permissions.charmverse.io"
             workflow_file: "test_core_pkg.yml"
             workflow_payload: |
-              { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}" }
+              { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}", 
+                "debug": "true" }
     steps:
       - name: Trigger tests on repo ${{ matrix.repo }}
         uses: convictional/trigger-workflow-and-wait@v1.6.1
@@ -94,7 +96,7 @@ jobs:
           github_token: ${{ secrets.WORKFLOW_TRIGGER_PAT }}
           github_user: yiwork
           workflow_file_name: ${{ matrix.workflow_file }}
-          ref: main
+          ref: turn-on-debug-wf-logging
           client_payload: ${{ matrix.workflow_payload }}
           wait_interval: 10
           propagate_failure: true
