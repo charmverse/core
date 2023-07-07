@@ -115,7 +115,7 @@ jobs:
           owner: charmverse
           repo: ${{ matrix.repo }}
           github_token: ${{ secrets.WORKFLOW_TRIGGER_PAT }}
-          github_user: yiwork
+          github_user: charmed-bot
           workflow_file_name: ${{ matrix.workflow_file }}
           ref: ${{ matrix.branch }}
           client_payload: ${{ matrix.workflow_payload }}
@@ -191,7 +191,7 @@ jobs:
           owner: charmverse
           repo: ${{ matrix.repo }}
           github_token: ${{ secrets.WORKFLOW_TRIGGER_PAT }}
-          github_user: yiwork
+          github_user: charmed-bot
           workflow_file_name: ${{ matrix.workflow_file }}
           ref: main
           client_payload: ${{ matrix.workflow_payload }}
