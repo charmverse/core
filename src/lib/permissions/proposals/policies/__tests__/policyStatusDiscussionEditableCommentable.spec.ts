@@ -64,11 +64,13 @@ describe('policyStatusDiscussionEditableCommentable', () => {
       create_vote: true,
       review: true,
       vote: true,
-      make_public: true
+      make_public: true,
+      archive: true,
+      unarchive: true
     });
   });
 
-  it('should allow the author to view, edit, comment, delete and make public', async () => {
+  it('should allow the author to view, edit, comment, delete, make public, archive and unarchive', async () => {
     const permissions = await policyStatusDiscussionEditableCommentable({
       flags: fullPermissions,
       isAdmin: false,
@@ -84,7 +86,9 @@ describe('policyStatusDiscussionEditableCommentable', () => {
       make_public: true,
       create_vote: false,
       review: false,
-      vote: false
+      vote: false,
+      archive: true,
+      unarchive: true
     });
   });
 
@@ -104,7 +108,9 @@ describe('policyStatusDiscussionEditableCommentable', () => {
       make_public: true,
       create_vote: false,
       review: false,
-      vote: false
+      vote: false,
+      archive: true,
+      unarchive: true
     });
   });
 
@@ -124,7 +130,9 @@ describe('policyStatusDiscussionEditableCommentable', () => {
       delete: false,
       create_vote: false,
       review: false,
-      vote: false
+      vote: false,
+      archive: false,
+      unarchive: false
     });
   });
 
@@ -144,7 +152,9 @@ describe('policyStatusDiscussionEditableCommentable', () => {
       delete: false,
       create_vote: false,
       review: false,
-      vote: false
+      vote: false,
+      archive: false,
+      unarchive: false
     });
   });
 });

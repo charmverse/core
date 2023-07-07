@@ -12,11 +12,11 @@ export async function policyStatusVoteActiveOnlyVotable({
   flags,
   userId
 }: ProposalPolicyInput): Promise<ProposalPermissionFlags> {
-  const newPermissions = { ...flags };
-
   if (resource.status !== 'vote_active') {
-    return newPermissions;
+    return flags;
   }
+
+  const newPermissions = { ...flags };
 
   const allowedOperations: ProposalOperation[] = ['view', 'vote'];
   const allowedAuthorOperations: ProposalOperation[] = [...allowedOperations, 'make_public'];

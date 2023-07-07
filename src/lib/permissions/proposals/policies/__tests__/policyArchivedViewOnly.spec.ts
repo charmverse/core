@@ -5,7 +5,7 @@ import { generateProposal, generateProposalCategory } from '../../../../testing/
 import { generateSpaceUser, generateUserAndSpace } from '../../../../testing/user';
 import { AvailableProposalPermissions } from '../../availableProposalPermissions.class';
 import type { ProposalPermissionFlags } from '../../interfaces';
-import { policyStatusDraftNotViewable } from '../policyStatusDraftNotViewable';
+import { policyArchivedViewOnly } from '../policyArchivedViewOnly';
 
 let proposal: ProposalWithUsers;
 let proposalCategory: ProposalCategory;
@@ -33,7 +33,7 @@ beforeAll(async () => {
   proposal = await generateProposal({
     categoryId: proposalCategory.id,
     authors: [proposalAuthor.id],
-    proposalStatus: 'draft',
+    archived: true,
     spaceId: space.id,
     userId: proposalAuthor.id,
     reviewers: [
@@ -47,12 +47,12 @@ beforeAll(async () => {
 
 const fullPermissions = new AvailableProposalPermissions().full;
 
-describe('policyStatusDraftOnlyViewable', () => {
-  it('should perform a no-op if the status is not draft', async () => {
-    const permissions = await policyStatusDraftNotViewable({
+describe('policyArchivedViewOnly', () => {
+  it('should perform a no-op if proposal is not archived', async () => {
+    const permissions = await policyArchivedViewOnly({
       flags: fullPermissions,
       isAdmin: false,
-      resource: { ...proposal, status: 'discussion' },
+      resource: { ...proposal, archived: false },
       userId: proposalAuthor.id
     });
 
@@ -69,8 +69,9 @@ describe('policyStatusDraftOnlyViewable', () => {
       unarchive: true
     });
   });
-  it('should allow the author to view, edit, comment, delete, make public, archive and unarchive', async () => {
-    const permissions = await policyStatusDraftNotViewable({
+
+  it('should allow authors to view, make public, delete, archive and unarchive', async () => {
+    const permissions = await policyArchivedViewOnly({
       flags: fullPermissions,
       isAdmin: false,
       resource: proposal,
@@ -79,20 +80,20 @@ describe('policyStatusDraftOnlyViewable', () => {
 
     expect(permissions).toMatchObject<ProposalPermissionFlags>({
       view: true,
-      edit: true,
-      delete: true,
-      comment: true,
+      vote: false,
       make_public: true,
       create_vote: false,
+      comment: false,
+      delete: true,
+      edit: false,
       review: false,
-      vote: false,
       archive: true,
       unarchive: true
     });
   });
 
-  it('should return same level of permissions as the author for an admin', async () => {
-    const permissions = await policyStatusDraftNotViewable({
+  it('should allow admins to view, make public and delete', async () => {
+    const permissions = await policyArchivedViewOnly({
       flags: fullPermissions,
       isAdmin: true,
       resource: proposal,
@@ -101,59 +102,41 @@ describe('policyStatusDraftOnlyViewable', () => {
 
     expect(permissions).toMatchObject<ProposalPermissionFlags>({
       view: true,
-      edit: true,
-      delete: true,
-      comment: true,
       make_public: true,
-      create_vote: false,
-      review: false,
+      delete: true,
       vote: false,
+      create_vote: false,
+      comment: false,
+      edit: false,
+      review: false,
       archive: true,
       unarchive: true
     });
   });
 
-  it('should not allow the reviewer to view the proposal', async () => {
-    const permissions = await policyStatusDraftNotViewable({
-      flags: fullPermissions,
-      isAdmin: false,
-      resource: proposal,
-      userId: proposalReviewer.id
-    });
+  it('should allow users only to view', async () => {
+    const users = [proposalReviewer, spaceMember];
 
-    expect(permissions).toMatchObject<ProposalPermissionFlags>({
-      view: false,
-      edit: false,
-      delete: false,
-      comment: false,
-      make_public: false,
-      create_vote: false,
-      review: false,
-      vote: false,
-      archive: false,
-      unarchive: false
-    });
-  });
+    for (const user of users) {
+      const permissions = await policyArchivedViewOnly({
+        flags: fullPermissions,
+        isAdmin: false,
+        resource: proposal,
+        userId: user.id
+      });
 
-  it('should not allow space members to view the proposal', async () => {
-    const permissions = await policyStatusDraftNotViewable({
-      flags: fullPermissions,
-      isAdmin: false,
-      resource: proposal,
-      userId: spaceMember.id
-    });
-
-    expect(permissions).toMatchObject<ProposalPermissionFlags>({
-      view: false,
-      edit: false,
-      delete: false,
-      comment: false,
-      create_vote: false,
-      review: false,
-      vote: false,
-      make_public: false,
-      archive: false,
-      unarchive: false
-    });
+      expect(permissions).toMatchObject<ProposalPermissionFlags>({
+        view: true,
+        vote: false,
+        make_public: false,
+        create_vote: false,
+        comment: false,
+        delete: false,
+        edit: false,
+        review: false,
+        archive: false,
+        unarchive: false
+      });
+    }
   });
 });

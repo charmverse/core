@@ -6,21 +6,27 @@ import { isProposalAuthor } from '../isProposalAuthor';
 
 import type { ProposalPolicyInput } from './interfaces';
 
-export async function policyStatusVoteClosedViewOnly({
+export async function policyArchivedViewOnly({
   resource,
   isAdmin,
   flags,
   userId
 }: ProposalPolicyInput): Promise<ProposalPermissionFlags> {
-  const newPermissions = { ...flags };
-
-  if (resource.status !== 'vote_closed') {
-    return newPermissions;
+  if (!resource.archived) {
+    return flags;
   }
 
+  const newPermissions = { ...flags };
+
   const allowedOperations: ProposalOperation[] = ['view'];
-  const allowedAuthorOperations: ProposalOperation[] = [...allowedOperations, 'make_public', 'archive', 'unarchive'];
-  const allowedAdminOperations: ProposalOperation[] = [...allowedAuthorOperations, 'delete'];
+  const allowedAuthorOperations: ProposalOperation[] = [
+    ...allowedOperations,
+    'delete',
+    'make_public',
+    'archive',
+    'unarchive'
+  ];
+  const allowedAdminOperations: ProposalOperation[] = allowedAuthorOperations;
 
   if (isAdmin) {
     typedKeys(flags).forEach((flag) => {
