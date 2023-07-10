@@ -6,8 +6,20 @@ name: CI
 on:
   push:
     branches: [main]
+    # paths:
+    #   - '!.github/**'
   pull_request:
     branches: ['**']
+  workflow_dispatch:
+    inputs:
+      webapp_branch:
+        description: 'Webapp branch to test against, defaults to main'
+        required: true
+        default: 'main'
+      permissions_branch:
+        description: 'Permissionsi api branch to test against, defaults to main'
+        required: true
+        default: 'main'
 
 jobs:
   build-test-env:
@@ -17,9 +29,11 @@ jobs:
       - uses: actions/checkout@v3
       - name: Install dependencies
         uses: ./.github/actions/install
+      - name: Run build
+        uses: ./.github/actions/build
 
-  test:
-    name: Tests
+  typecheck:
+    name: Type Check
     runs-on: ubuntu-latest
     needs: build-test-env
     strategy:
@@ -38,27 +52,46 @@ jobs:
       - name: Run ${{matrix.test_name}}
         run: ${{matrix.test_command}}
 
-  push-rc-package:
-    if: github.event_name == 'pull_request' && ( github.event.action == 'opened' || github.event.action == 'synchronize' )
+  push-package:
     name: Push Release candidate package to allow devs to use to test
     runs-on: ubuntu-latest
-    needs: test
+    needs: typecheck
+    permissions:
+      contents: write
+      pull-requests: write
     outputs:
       pkg_version: ${{ steps.publish_pkg.outputs.pkg_version }}
     steps:
+      # On rerun - upstream would've changed with a version update. 
+      #   So checking out with the head of Pull request Merge 
       - uses: actions/checkout@v3
-      - name: package and publish release candidate pkg
+        if: github.run_attempt > 1
+        with:   
+          ref: refs/pull/${{ github.event.number }}/merge
+      - uses: actions/checkout@v3
+        if: github.run_attempt == 1
+      - run: |
+          cat package.json
+      - name: Restore build cache
+        uses: ./.github/actions/build
+      - name: Package and publish release candidate pkg
         id: publish_pkg
         uses: ./.github/actions/package_n_publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+      - name: Posting pkg version in comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: Pkg version
+          message: |
+            Code ${{ github.sha }} labeled version ${{ steps.publish_pkg.outputs.pkg_version }}
 
-  trigger-downstream-repo-test-workflows:
+  run-downstream-test-workflows:
     if: github.event_name == 'pull_request' && ( github.event.action == 'opened' || github.event.action == 'synchronize' )
     name: Trigger ${{matrix.repo}} testing workflow
     runs-on: ubuntu-latest
-    needs: push-rc-package
+    needs: push-package
     strategy:
       max-parallel: 2
       fail-fast: false
@@ -66,16 +99,15 @@ jobs:
         include:
           - test_name: "Testing with Webapp"
             repo: "app.charmverse.io"
-            workflow_file: "test_and_deploy.yml"
+            branch: ${{ inputs.webapp_branch }}
+            workflow_file: "test_new_core_pkg.yml"
             workflow_payload: |
-              { "core_pkg_version": "${{ needs.push-rc-package.outputs.pkg_version }}", 
-              "run_e2e_browser_test": false, 
-              "deploy_to_prd": false }
+              { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}" }
           - repo: "permissions.charmverse.io"
-            workflow_file: "test_and_deploy.yml"
+            branch: ${{ inputs.permissions_branch }}
+            workflow_file: "test_core_pkg.yml"
             workflow_payload: |
-              { "core_pkg_version": "${{ needs.push-rc-package.outputs.pkg_version }}", 
-              "deploy_to_prd": false }
+              { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}" }
     steps:
       - name: Trigger tests on repo ${{ matrix.repo }}
         uses: convictional/trigger-workflow-and-wait@v1.6.1
@@ -83,9 +115,9 @@ jobs:
           owner: charmverse
           repo: ${{ matrix.repo }}
           github_token: ${{ secrets.WORKFLOW_TRIGGER_PAT }}
-          github_user: yiwork
+          github_user: charmed-bot
           workflow_file_name: ${{ matrix.workflow_file }}
-          ref: main
+          ref: ${{ matrix.branch }}
           client_payload: ${{ matrix.workflow_payload }}
           wait_interval: 10
           propagate_failure: true
@@ -93,7 +125,7 @@ jobs:
           wait_workflow: true
 
   integration-test:
-    name: Tests
+    name: Run Integration Tests
     runs-on: ubuntu-latest
     needs: build-test-env
     # Postgres setup copied from https://gist.github.com/2color/537f8ef13ecec80059abb007839a6878
@@ -132,11 +164,13 @@ jobs:
       - name: Run ${{matrix.test_name}}
         run: ${{matrix.test_command}}
 
-  push-full-release:
+  trigger-pkg-upgrade:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    name: Pkg and push full release on main
+    name: Trigger Core pkg Upgrade on ${{ matrix.repo }}
     runs-on: ubuntu-latest
-    needs: integration-test
+    permissions:
+      contents: write
+    needs: [push-package, integration-test]
     strategy:
       max-parallel: 2
       fail-fast: false
@@ -145,38 +179,19 @@ jobs:
           - repo: "app.charmverse.io"
             workflow_file: "test_and_deploy.yml"
             workflow_payload: |
-              { "core_pkg_version": "${{ needs.publish_release_pkg.outputs.pkg_version }}", 
-              "run_e2e_browser_test": true, 
-              "deploy_to_prd": true }
+              { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}" }
           - repo: "permissions.charmverse.io"
             workflow_file: "test_and_deploy.yml"
             workflow_payload: |
-              { "core_pkg_version": "${{ needs.push-rc-package.outputs.pkg_version }}", 
-              "deploy_to_prd": true }
+              { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}" }
     steps:
-        # assuming that there was a previous workflow run that had changed the version
-        #   then failed in substeps.  In a workflow/job rerun, the special checkout 
-        #   procedure will advance the code to include that last commit.
-        #   Then the following bumping version step will not run
-        #   as the bump-policy is only checking against that last commit.
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 2
-      - run: git checkout HEAD
-      - name: package and publish release candidate pkg
-        id: publish_release_pkg
-        uses: ./.github/actions/package_n_publish
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
-          WORKFLOW_TRIGGER_PAT: ${{ secrets.WORKFLOW_TRIGGER_PAT }}
       - name: Trigger Core pkg update and deploy on repo ${{ matrix.repo }}
         uses: convictional/trigger-workflow-and-wait@v1.6.1
         with:
           owner: charmverse
           repo: ${{ matrix.repo }}
           github_token: ${{ secrets.WORKFLOW_TRIGGER_PAT }}
-          github_user: yiwork
+          github_user: charmed-bot
           workflow_file_name: ${{ matrix.workflow_file }}
           ref: main
           client_payload: ${{ matrix.workflow_payload }}

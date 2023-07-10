@@ -64,11 +64,13 @@ describe('policyStatusVoteClosedViewOnly', () => {
       create_vote: true,
       review: true,
       vote: true,
-      make_public: true
+      make_public: true,
+      archive: true,
+      unarchive: true
     });
   });
 
-  it('should allow authors to view and make public', async () => {
+  it('should allow authors to view, make public, archive and unarchive', async () => {
     const permissions = await policyStatusVoteClosedViewOnly({
       flags: fullPermissions,
       isAdmin: false,
@@ -84,11 +86,13 @@ describe('policyStatusVoteClosedViewOnly', () => {
       comment: false,
       delete: false,
       edit: false,
-      review: false
+      review: false,
+      archive: true,
+      unarchive: true
     });
   });
 
-  it('should allow admins to view, make public and delete', async () => {
+  it('should allow admins to view, make public, delete, archive and unarchive', async () => {
     const permissions = await policyStatusVoteClosedViewOnly({
       flags: fullPermissions,
       isAdmin: true,
@@ -104,7 +108,9 @@ describe('policyStatusVoteClosedViewOnly', () => {
       create_vote: false,
       comment: false,
       edit: false,
-      review: false
+      review: false,
+      archive: true,
+      unarchive: true
     });
   });
 
@@ -127,7 +133,9 @@ describe('policyStatusVoteClosedViewOnly', () => {
         comment: false,
         delete: false,
         edit: false,
-        review: false
+        review: false,
+        archive: false,
+        unarchive: false
       });
     }
   });
