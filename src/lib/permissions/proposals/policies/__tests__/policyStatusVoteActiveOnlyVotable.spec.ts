@@ -64,7 +64,9 @@ describe('policyStatusVoteActiveOnlyVotable', () => {
       create_vote: true,
       review: true,
       vote: true,
-      make_public: true
+      make_public: true,
+      archive: true,
+      unarchive: true
     });
   });
   it('should allow author to view, vote make the proposal public', async () => {
@@ -83,7 +85,9 @@ describe('policyStatusVoteActiveOnlyVotable', () => {
       comment: false,
       delete: false,
       edit: false,
-      review: false
+      review: false,
+      archive: false,
+      unarchive: false
     });
   });
 
@@ -103,7 +107,9 @@ describe('policyStatusVoteActiveOnlyVotable', () => {
       create_vote: false,
       comment: false,
       edit: false,
-      review: false
+      review: false,
+      archive: false,
+      unarchive: false
     });
   });
 
@@ -126,7 +132,9 @@ describe('policyStatusVoteActiveOnlyVotable', () => {
         comment: false,
         delete: false,
         edit: false,
-        review: false
+        review: false,
+        archive: false,
+        unarchive: false
       });
     }
   });

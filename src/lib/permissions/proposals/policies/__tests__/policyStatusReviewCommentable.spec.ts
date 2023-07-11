@@ -69,10 +69,12 @@ describe('policyStatusReviewCommentable', () => {
       create_vote: true,
       review: true,
       vote: true,
-      make_public: true
+      make_public: true,
+      archive: true,
+      unarchive: true
     });
   });
-  it('should allow the author to view, comment, delete and make public', async () => {
+  it('should allow the author to view, comment, delete, make public, archive and unarchive', async () => {
     const permissions = await policyStatusReviewCommentable({
       flags: fullPermissions,
       isAdmin: false,
@@ -88,11 +90,13 @@ describe('policyStatusReviewCommentable', () => {
       edit: false,
       create_vote: false,
       review: false,
-      vote: false
+      vote: false,
+      archive: true,
+      unarchive: true
     });
   });
 
-  it('should allow a user who is author and reviewer to view, comment, delete, review and make public', async () => {
+  it('should allow a user who is author and reviewer to view, comment, delete, review, make public, archive and unarchive', async () => {
     const proposalWithSameAuthorReviewer = await generateProposal({
       categoryId: proposalCategory.id,
       authors: [proposalAuthor.id],
@@ -122,11 +126,13 @@ describe('policyStatusReviewCommentable', () => {
       make_public: true,
       edit: false,
       create_vote: false,
-      vote: false
+      vote: false,
+      archive: true,
+      unarchive: true
     });
   });
 
-  it('should allow the admin to view, comment, edit, delete, review and make public', async () => {
+  it('should allow the admin to view, comment, edit, delete, review, make public, archive and unarchive', async () => {
     const permissions = await policyStatusReviewCommentable({
       flags: fullPermissions,
       isAdmin: true,
@@ -142,7 +148,9 @@ describe('policyStatusReviewCommentable', () => {
       comment: true,
       make_public: true,
       create_vote: false,
-      vote: false
+      vote: false,
+      archive: true,
+      unarchive: true
     });
   });
 
@@ -162,7 +170,9 @@ describe('policyStatusReviewCommentable', () => {
       edit: false,
       delete: false,
       create_vote: false,
-      vote: false
+      vote: false,
+      archive: false,
+      unarchive: false
     });
   });
 
@@ -182,7 +192,9 @@ describe('policyStatusReviewCommentable', () => {
       delete: false,
       create_vote: false,
       review: false,
-      vote: false
+      vote: false,
+      archive: false,
+      unarchive: false
     });
   });
 });

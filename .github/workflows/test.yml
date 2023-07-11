@@ -6,10 +6,20 @@ name: CI
 on:
   push:
     branches: [main]
-    paths:
-      - '!.github/**'
+    # paths:
+    #   - '!.github/**'
   pull_request:
     branches: ['**']
+  workflow_dispatch:
+    inputs:
+      webapp_branch:
+        description: 'Webapp branch to test against, defaults to main'
+        required: true
+        default: 'main'
+      permissions_branch:
+        description: 'Permissionsi api branch to test against, defaults to main'
+        required: true
+        default: 'main'
 
 jobs:
   build-test-env:
@@ -89,10 +99,12 @@ jobs:
         include:
           - test_name: "Testing with Webapp"
             repo: "app.charmverse.io"
+            branch: ${{ inputs.webapp_branch }}
             workflow_file: "test_new_core_pkg.yml"
             workflow_payload: |
               { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}" }
           - repo: "permissions.charmverse.io"
+            branch: ${{ inputs.permissions_branch }}
             workflow_file: "test_core_pkg.yml"
             workflow_payload: |
               { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}" }
@@ -103,9 +115,9 @@ jobs:
           owner: charmverse
           repo: ${{ matrix.repo }}
           github_token: ${{ secrets.WORKFLOW_TRIGGER_PAT }}
-          github_user: yiwork
+          github_user: charmed-bot
           workflow_file_name: ${{ matrix.workflow_file }}
-          ref: main
+          ref: ${{ matrix.branch }}
           client_payload: ${{ matrix.workflow_payload }}
           wait_interval: 10
           propagate_failure: true
@@ -179,7 +191,7 @@ jobs:
           owner: charmverse
           repo: ${{ matrix.repo }}
           github_token: ${{ secrets.WORKFLOW_TRIGGER_PAT }}
-          github_user: yiwork
+          github_user: charmed-bot
           workflow_file_name: ${{ matrix.workflow_file }}
           ref: main
           client_payload: ${{ matrix.workflow_payload }}

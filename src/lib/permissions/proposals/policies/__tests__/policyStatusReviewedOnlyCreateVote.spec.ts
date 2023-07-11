@@ -64,10 +64,12 @@ describe('policyStatusReviewedOnlyCreateVote', () => {
       create_vote: true,
       review: true,
       vote: true,
-      make_public: true
+      make_public: true,
+      archive: true,
+      unarchive: true
     });
   });
-  it('should allow the author to view, create_vote, delete_vote and make public', async () => {
+  it('should allow the author to view, create_vote, delete_vote, make public, archive and unarchive', async () => {
     const permissions = await policyStatusReviewedOnlyCreateVote({
       flags: fullPermissions,
       isAdmin: false,
@@ -83,11 +85,13 @@ describe('policyStatusReviewedOnlyCreateVote', () => {
       delete: true,
       edit: false,
       review: false,
-      vote: false
+      vote: false,
+      archive: true,
+      unarchive: true
     });
   });
 
-  it('should allow the admin to view, delete, edit, create_vote and make public', async () => {
+  it('should allow the admin to view, delete, edit, create_vote, make public, archive and unarchive', async () => {
     const permissions = await policyStatusReviewedOnlyCreateVote({
       flags: fullPermissions,
       isAdmin: true,
@@ -103,7 +107,9 @@ describe('policyStatusReviewedOnlyCreateVote', () => {
       edit: true,
       review: false,
       comment: false,
-      vote: false
+      vote: false,
+      archive: true,
+      unarchive: true
     });
   });
 
@@ -123,7 +129,9 @@ describe('policyStatusReviewedOnlyCreateVote', () => {
       edit: false,
       delete: false,
       create_vote: false,
-      vote: false
+      vote: false,
+      archive: false,
+      unarchive: false
     });
   });
 
@@ -143,7 +151,9 @@ describe('policyStatusReviewedOnlyCreateVote', () => {
       delete: false,
       create_vote: false,
       review: false,
-      vote: false
+      vote: false,
+      archive: false,
+      unarchive: false
     });
   });
 });
