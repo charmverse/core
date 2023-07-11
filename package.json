@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.0.6-rc-feat-game7-role.0",
+  "version": "0.0.3-rc-feat-game7-role.2",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
@@ -74,7 +74,9 @@
     "!.vscode",
     "!.github",
     "!.husky",
-    "!pull_request_template.md"
+    "!pull_request_template.md",
+    "tsconfig.json",
+    "tsconfig.esm.json"
   ],
   "scripts": {
     "typecheck": "tsc --noEmit",
