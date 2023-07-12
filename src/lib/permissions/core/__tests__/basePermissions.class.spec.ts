@@ -44,4 +44,17 @@ describe('basePermissions', () => {
     expect(permissions.hasPermissions(['read'])).toBe(true);
     expect(permissions.hasPermissions(['read', 'write'])).toBe(false);
   });
+
+  it('should return the instance when addPermissions is called to enable chaining', () => {
+    const permissions = new TestClass();
+
+    const afterAddPermissions = permissions.addPermissions(['read']);
+
+    expect(afterAddPermissions).toEqual(permissions);
+
+    // Test the new syntax
+    const newlyCreated = new TestClass().addPermissions(['read']);
+
+    expect(newlyCreated).toBeInstanceOf(TestClass);
+  });
 });
