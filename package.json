@@ -74,7 +74,9 @@
     "!.vscode",
     "!.github",
     "!.husky",
-    "!pull_request_template.md"
+    "!pull_request_template.md",
+    "tsconfig.json",
+    "tsconfig.esm.json"
   ],
   "scripts": {
     "typecheck": "tsc --noEmit",
