@@ -7,7 +7,14 @@ import { isProposalAuthor } from '../isProposalAuthor';
 
 import type { ProposalPolicyDependencies, ProposalPolicyInput } from './interfaces';
 
-const allowedAuthorOperations: ProposalOperation[] = ['view', 'comment', 'delete', 'make_public'];
+const allowedAuthorOperations: ProposalOperation[] = [
+  'view',
+  'comment',
+  'delete',
+  'make_public',
+  'archive',
+  'unarchive'
+];
 const allowedAdminOperations: ProposalOperation[] = [...allowedAuthorOperations, 'review', 'edit'];
 const allowedReviewerOperations: ProposalOperation[] = ['view', 'comment', 'review'];
 

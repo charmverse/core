@@ -20,7 +20,7 @@ export * from './lib/permissions/proposals/isProposalAuthor';
 export * from './lib/permissions/proposals/isProposalReviewer';
 export * from './lib/permissions/proposals/proposalFlowFlags';
 export * from './lib/permissions/proposals/mapProposalCategoryPermissionToAssignee';
-export { getDefaultProposalPermissionPolicies } from './lib/permissions/proposals/policies/index';
+export * from './lib/permissions/proposals/policies/index';
 export * from './lib/permissions/proposals/policies/interfaces';
 export * from './lib/permissions/proposals/client/interfaces';
 
