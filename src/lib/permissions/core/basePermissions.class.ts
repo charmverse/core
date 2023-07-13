@@ -36,7 +36,7 @@ export abstract class BasePermissions<O extends string> implements AbstractPermi
     }, {} as any);
   }
 
-  addPermissions(operations: O[] | Partial<UserPermissionFlags<O>>) {
+  addPermissions(operations: O[] | Partial<UserPermissionFlags<O>>): AbstractPermissions<O> {
     if (operations instanceof Array) {
       operations.forEach((opName) => {
         if (typeof this.operations[opName] === 'boolean') {
@@ -50,6 +50,8 @@ export abstract class BasePermissions<O extends string> implements AbstractPermi
         }
       });
     }
+
+    return this;
   }
 
   /**

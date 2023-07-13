@@ -1154,6 +1154,9 @@ enum ProposalCategoryOperation {
   create_proposal
   edit
   delete
+  view_category
+  comment_proposals
+  vote_proposals
 }
 
 enum ProposalOperation {
