@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.0.5",
+  "version": "0.0.3-rc-feat-game7-role.2",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
