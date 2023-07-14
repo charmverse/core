@@ -54,7 +54,7 @@ runs:
         npm pkg delete scripts.prepare
         npm pack
 
-        if [[ "${{ steps.version_main.outputs.newTag }}" != "" ]]; then 
+        if [[ "${{ steps.version_main.outputs.newTag }}" != "" ]]; then
           npm publish --access=public
           echo "pkg_version=${{ steps.version_main.outputs.newTag }}" >> $GITHUB_OUTPUT
         else
