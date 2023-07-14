@@ -1,7 +1,10 @@
 import type { UserWallet } from '@prisma/client';
 import { Wallet, getAddress } from 'ethers';
 
+import { prisma } from '../../../prisma-client';
+import { generatePage } from '../../testing/pages';
 import { randomETHWalletAddress } from '../../testing/random';
+import { generateUserAndSpace } from '../../testing/user';
 import {
   conditionalPlural,
   matchWalletAddress,
@@ -169,6 +172,9 @@ describe('isValidEmail', () => {
   });
 });
 describe('escapeTsQueryCharactersAndFormatPrismaSearch', () => {
+  // This is appended to queries
+  const partialMatchTsQueryString = ':*';
+
   it('should escape tsQueryLanguage characters for postgres by removing them from the query', () => {
     const specialCharacters = tsQueryLanguageCharacters();
 
@@ -177,14 +183,45 @@ describe('escapeTsQueryCharactersAndFormatPrismaSearch', () => {
 
     for (const character of specialCharacters) {
       const escaped = escapeTsQueryCharactersAndFormatPrismaSearch(`${baseString} ${character}`);
-      expect(escaped).toEqual(baseString);
+      expect(escaped).toEqual(`${baseString}${partialMatchTsQueryString}`);
 
       const escapedComposite = escapeTsQueryCharactersAndFormatPrismaSearch(
         // Arbitrary number of spaces to make sure escaping works
         `${baseString}   ${character}    ${secondBaseString}`
       );
-      expect(escapedComposite).toEqual(`${baseString} & ${secondBaseString}`);
+      expect(escapedComposite).toEqual(`${baseString} & ${secondBaseString}${partialMatchTsQueryString}`);
     }
+  });
+
+  it('should generate a query that allows case-insensitive partial string matching based on the start of the word', async () => {
+    const { user, space } = await generateUserAndSpace();
+    const matchedPage = await generatePage({ createdBy: user.id, spaceId: space.id, title: 'Example' });
+    const nonMatchedPage = await generatePage({ createdBy: user.id, spaceId: space.id, title: 'Not matched' });
+
+    const formattedSearch = escapeTsQueryCharactersAndFormatPrismaSearch('exa');
+    const foundPages = await prisma.page.findMany({
+      where: {
+        title: {
+          search: formattedSearch
+        },
+        spaceId: space.id
+      }
+    });
+
+    expect(foundPages).toHaveLength(1);
+
+    expect(foundPages[0].id).toEqual(matchedPage.id);
+  });
+
+  it('should return undefined if the input is an empty string, or if the interpolation would result in an empty string', () => {
+    const empty = escapeTsQueryCharactersAndFormatPrismaSearch(undefined as any);
+    expect(empty).toEqual(undefined);
+
+    const emptyString = escapeTsQueryCharactersAndFormatPrismaSearch('');
+    expect(emptyString).toEqual(undefined);
+
+    const replaced = escapeTsQueryCharactersAndFormatPrismaSearch("      &      '   ");
+    expect(replaced).toEqual(undefined);
   });
 });
 
