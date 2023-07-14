@@ -6,8 +6,6 @@ name: CI
 on:
   push:
     branches: [main]
-    # paths:
-    #   - '!.github/**'
   pull_request:
     branches: ['**']
   workflow_dispatch:
@@ -17,7 +15,7 @@ on:
         required: true
         default: 'main'
       permissions_branch:
-        description: 'Permissionsi api branch to test against, defaults to main'
+        description: 'Permissions api branch to test against, defaults to main'
         required: true
         default: 'main'
 
