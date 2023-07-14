@@ -226,3 +226,31 @@ const emailRegexp =
 export function isValidEmail(email: string) {
   return !!email && !!email.match(emailRegexp);
 }
+
+export function tsQueryLanguageCharacters() {
+  return [' ', '&', '|', '!', '<->', '<N>', '(', ')', ':', '*', "'"];
+}
+
+// Postgres uses the following characters as special characters for text search. If provided as part of the search input, they throw an error
+// Although \s is a special character, it is excluded here since manually handled by the escape method
+export function tsQueryLanguageSpecialCharacterRegexp() {
+  // eslint-disable-next-line no-useless-escape
+  return /[&|!\(\):*']|(<->)|<N>/g;
+}
+
+export function escapeTsQueryCharactersAndFormatPrismaSearch(text: string): string {
+  if (!text) {
+    return '';
+  }
+
+  let formattedSearch = text.replace(tsQueryLanguageSpecialCharacterRegexp(), '');
+
+  if (formattedSearch) {
+    formattedSearch = formattedSearch
+      .split(/\s/)
+      .filter((s) => s)
+      .join(' & ');
+  }
+
+  return formattedSearch;
+}
