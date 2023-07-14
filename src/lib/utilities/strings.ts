@@ -238,19 +238,19 @@ export function tsQueryLanguageSpecialCharacterRegexp() {
   return /[&|!\(\):*']|(<->)|<N>/g;
 }
 
-export function escapeTsQueryCharactersAndFormatPrismaSearch(text: string): string {
+export function escapeTsQueryCharactersAndFormatPrismaSearch(text: string): string | undefined {
   if (!text) {
-    return '';
+    return undefined;
   }
 
-  let formattedSearch = text.replace(tsQueryLanguageSpecialCharacterRegexp(), '');
+  const formattedSearch = text.replace(tsQueryLanguageSpecialCharacterRegexp(), '').trim();
 
   if (formattedSearch) {
-    formattedSearch = formattedSearch
+    return `${formattedSearch
       .split(/\s/)
       .filter((s) => s)
-      .join(' & ');
+      .join(' & ')}:*`;
+  } else {
+    return undefined;
   }
-
-  return formattedSearch;
 }
