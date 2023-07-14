@@ -169,7 +169,7 @@ describe('isValidEmail', () => {
   });
 });
 describe('escapeTsQueryCharactersAndFormatPrismaSearch', () => {
-  it('should escape tsQueryLanguage characters for Prisma by removing them from the query', () => {
+  it('should escape tsQueryLanguage characters for postgres by removing them from the query', () => {
     const specialCharacters = tsQueryLanguageCharacters();
 
     const baseString = 'apples';
@@ -185,5 +185,13 @@ describe('escapeTsQueryCharactersAndFormatPrismaSearch', () => {
       );
       expect(escapedComposite).toEqual(`${baseString} & ${secondBaseString}`);
     }
+  });
+});
+
+describe('tsQueryLanguageCharacters', () => {
+  it('should return a list corresponding to all tsQueryLanguage characters for postgres', () => {
+    const specialCharacters = tsQueryLanguageCharacters();
+
+    expect(specialCharacters).toEqual([' ', '&', '|', '!', '<->', '<N>', '(', ')', ':', '*', "'"]);
   });
 });
