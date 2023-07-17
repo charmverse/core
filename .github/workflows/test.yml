@@ -72,6 +72,7 @@ jobs:
         if: github.run_attempt == 1
       - run: |
           cat package.json
+          echo "run attempt ${{github.run_attempt}}"
       - name: Restore build cache
         uses: ./.github/actions/build
       - name: Package and publish release candidate pkg
