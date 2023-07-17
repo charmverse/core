@@ -22,4 +22,6 @@ runs:
     - name: Install npm dependencies
       shell: bash
       if: steps.cache_node_modules.outputs.cache-hit != 'true'
-      run: npm i --no-audit --no-fund
+      run: |
+        npm i --no-audit --no-fund
+        echo "workflow ref: ${{github.workflow_ref}}"
