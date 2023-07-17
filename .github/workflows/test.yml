@@ -24,9 +24,10 @@ on:
 # Workflow_branch env variables should not change unless you need to 
 #   trigger workflow in those remote repos that only exists in 
 #   those branches, and you're triggering the test via PR sync event. 
-env: 
-  WEBAPP_WORKFLOW_BRANCH: 'gha-change-install-order'
-  PERMISSION_WORKFLOW_BRANCH: 'gha-change-install-order'
+
+env:
+  WEBAPP_WORKFLOW_BRANCH: "gha-change-install-order"
+  PERMISSION_WORKFLOW_BRANCH: "gha-change-install-order"
 
 jobs:
   build-test-env:
