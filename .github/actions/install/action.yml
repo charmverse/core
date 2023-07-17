@@ -17,7 +17,7 @@ runs:
       uses: actions/cache@v3
       with:
         path: ./node_modules
-        key: nodemodules-cache-${{ hashFiles('package.json') }}-${{ hashFiles('patches/**.patch', 'src/prisma/schema.prisma') }}
+        key: core-depcache-${{ hashFiles('package.json') }}-${{ hashFiles('patches/**.patch', 'src/prisma/schema.prisma') }}
 
     - name: Install npm dependencies
       shell: bash
