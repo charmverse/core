@@ -15,11 +15,11 @@ on:
       webapp_branch:
         description: 'Webapp branch to test against, defaults to main'
         required: true
-        default: 'main'
+        default: 'gha-change-install-order'
       permissions_branch:
         description: 'Permissionsi api branch to test against, defaults to main'
         required: true
-        default: 'main'
+        default: 'gha-change-install-order'
 
 jobs:
   build-test-env:
@@ -193,7 +193,7 @@ jobs:
           github_token: ${{ secrets.WORKFLOW_TRIGGER_PAT }}
           github_user: charmed-bot
           workflow_file_name: ${{ matrix.workflow_file }}
-          ref: gha-change-install-order
+          ref: ${{ matrix.branch }}
           client_payload: ${{ matrix.workflow_payload }}
           wait_interval: 10
           propagate_failure: true
