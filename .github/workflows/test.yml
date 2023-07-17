@@ -15,11 +15,18 @@ on:
       webapp_branch:
         description: 'Webapp branch to test against, defaults to main'
         required: true
-        default: 'gha-change-install-order'
+        default: 'main'
       permissions_branch:
         description: 'Permissionsi api branch to test against, defaults to main'
         required: true
-        default: 'gha-change-install-order'
+        default: 'main'
+
+# Workflow_branch env variables should not change unless you need to 
+#   trigger workflow in those remote repos that only exists in 
+#   those branches, and you're triggering the test via PR sync event. 
+env: 
+  WEBAPP_WORKFLOW_BRANCH: 'gha-change-install-order'
+  PERMISSION_WORKFLOW_BRANCH: 'gha-change-install-order'
 
 jobs:
   build-test-env:
@@ -100,12 +107,12 @@ jobs:
         include:
           - test_name: "Testing with Webapp"
             repo: "app.charmverse.io"
-            branch: ${{ inputs.webapp_branch }}
+            branch: ${{ env.WEBAPP_WORKFLOW_BRANCH || inputs.webapp_branch }}
             workflow_file: "test_new_core_pkg.yml"
             workflow_payload: |
               { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}" }
           - repo: "permissions.charmverse.io"
-            branch: ${{ inputs.permissions_branch }}
+            branch: ${{ env.PERMISSION_WORKFLOW_BRANCH || inputs.permissions_branch }}
             workflow_file: "test_core_pkg.yml"
             workflow_payload: |
               { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}" }
