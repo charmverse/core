@@ -69,6 +69,24 @@ jobs:
       webapp_workflow_branch: ${{ steps.set_downstream_repo_branch.outputs.webapp_workflow_branch }}
       permissionapi_workflow_branch: ${{ steps.set_downstream_repo_branch.outputs.permissionapi_workflow_branch }}
     steps:
+      - name: Determine downstream repo branch to run tests against first
+        id: set_downstream_repo_branch
+        run: |
+          if [[ ${{ github.event_name }} == 'push' && ${{ github.ref }} == 'refs/heads/main' ]]; then
+            echo "webapp_workflow_branch='main'" >> $GITHUB_OUTPUT
+            echo "permissionapi_workflow_branch='main'" >> $GITHUB_OUTPUT
+          elif [[ ${{ github.event_name }} == 'workflow_dispatch' ]]; then
+            echo "webapp_workflow_branch=${{inputs.webapp_branch}}" >> $GITHUB_OUTPUT
+            echo "permissionapi_workflow_branch=${{inputs.permissionapi_branch}}" >> $GITHUB_OUTPUT
+          else
+            if [[ $WEBAPP_WORKFLOW_BRANCH != ${{ github.ref_name }} || \
+                  $PERMISSION_WORKFLOW_BRANCH != ${{ github.ref_name }}]]; then 
+              echo "Workflow branch env vars is not this current branch. Are you sure they are set correctly?"
+              exit 1
+            fi
+            echo "webapp_workflow_branch=$WEBAPP_WORKFLOW_BRANCH" >> $GITHUB_OUTPUT
+            echo "permissionapi_workflow_branch=$PERMISSION_WORKFLOW_BRANCH" >> $GITHUB_OUTPUT
+          fi
       # On rerun - upstream would've changed with a version update. 
       #   So checking out with the head of Pull request Merge 
       - uses: actions/checkout@v3
@@ -94,19 +112,6 @@ jobs:
           header: Pkg version
           message: |
             Code ${{ github.sha }} labeled version ${{ steps.publish_pkg.outputs.pkg_version }}
-      - name: Determine downstream repo branch to run tests against
-        id: set_downstream_repo_branch
-        run: |
-          if [[ ${{ github.event_name }} == 'push' && ${{ github.ref }} == 'refs/heads/main' ]]; then
-            echo "webapp_workflow_branch='main'" >> $GITHUB_OUTPUT
-            echo "permissionapi_workflow_branch='main'" >> $GITHUB_OUTPUT
-          elif [[ ${{ github.event_name }} == 'workflow_dispatch' ]]; then
-            echo "webapp_workflow_branch=${{inputs.webapp_branch}}" >> $GITHUB_OUTPUT
-            echo "permissionapi_workflow_branch=${{inputs.permissionapi_branch}}" >> $GITHUB_OUTPUT
-          else
-            echo "webapp_workflow_branch=$WEBAPP_WORKFLOW_BRANCH" >> $GITHUB_OUTPUT
-            echo "permissionapi_workflow_branch=$PERMISSION_WORKFLOW_BRANCH" >> $GITHUB_OUTPUT
-          fi
 
   run-downstream-test-workflows:
     if: github.event_name != 'push' && github.ref != 'refs/heads/main'
