@@ -236,7 +236,7 @@ enum ApiPageKeyType {
 
 enum SubscriptionTier {
   free
-  pro
+  community
   enterprise
   cancelled
 }
@@ -258,7 +258,7 @@ model Space {
   customDomain                String?                           @unique
   isCustomDomainVerified      Boolean?
   notifyNewProposals          DateTime?                         @default(now())
-  paidTier                    SubscriptionTier                  @default(pro)
+  paidTier                    SubscriptionTier                  @default(community)
   discordServerId             String?
   defaultVotingDuration       Int?
   snapshotDomain              String?
@@ -1071,7 +1071,7 @@ model Proposal {
   createdBy              String             @db.Uuid
   spaceId                String             @db.Uuid
   status                 ProposalStatus
-  archived               Boolean?            @default(false)
+  archived               Boolean?           @default(false)
   authors                ProposalAuthor[]
   reviewers              ProposalReviewer[]
   space                  Space              @relation(fields: [spaceId], references: [id], onDelete: Cascade)
