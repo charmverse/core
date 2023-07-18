@@ -1,4 +1,4 @@
-/// 7/18, after changing battery on smoke detector
+/// 7/18 pushing this one out as branch gha-change-install-order-2
 
 generator client {
   provider        = "prisma-client-js"
