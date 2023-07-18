@@ -15,11 +15,9 @@ on:
       webapp_branch:
         description: 'Webapp branch to test against, defaults to main'
         required: true
-        default: 'main'
       permissionapi_branch:
         description: 'Permissions api branch to test against, defaults to main'
         required: true
-        default: 'main'
 
 # Change the below to get your PR CI to run tests against a specific branch
 #   Overrides the input, as inputs always have a default value
@@ -31,7 +29,23 @@ jobs:
   build-test-env:
     name: Build test env
     runs-on: ubuntu-latest
+    outputs:
+      webapp_workflow_branch: ${{ steps.set_downstream_repo_branch.outputs.webapp_workflow_branch }}
+      permissionapi_workflow_branch: ${{ steps.set_downstream_repo_branch.outputs.permissionapi_workflow_branch }}
     steps:
+      - name: Determine downstream repo branch to run tests against
+        id: set_downstream_repo_branch
+        run: |
+          if [[ ${{ github.event_name }} == 'push' && ${{ github.ref }} == 'refs/heads/main' ]]; then
+            echo "webapp_workflow_branch='main'" >> $GITHUB_OUTPUT
+            echo "permissionapi_workflow_branch='main'" >> $GITHUB_OUTPUT
+          elif [[ ${{ github.event_name }} == 'workflow_dispatch' ]] then;
+            echo "webapp_workflow_branch=${{inputs.webapp_branch}}" >> $GITHUB_OUTPUT
+            echo "permissionapi_workflow_branch=${{inputs.permissionapi_branch}}" >> $GITHUB_OUTPUT
+          else
+            echo "webapp_workflow_branch=$WEBAPP_WORKFLOW_BRANCH" >> $GITHUB_OUTPUT
+            echo "permissionapi_workflow_branch=$PERMISSION_WORKFLOW_BRANCH" >> $GITHUB_OUTPUT
+          fi
       - uses: actions/checkout@v3
       - name: Install dependencies
         uses: ./.github/actions/install
@@ -67,8 +81,6 @@ jobs:
       pull-requests: write
     outputs:
       pkg_version: ${{ steps.publish_pkg.outputs.pkg_version }}
-      webapp_workflow_branch: ${{ env.WEBAPP_WORKFLOW_BRANCH || inputs.webapp_branch }}
-      permissionapi_workflow_branch: ${{ env.PERMISSION_WORKFLOW_BRANCH || inputs.permissionapi_branch }}
     steps:
       # On rerun - upstream would've changed with a version update. 
       #   So checking out with the head of Pull request Merge 
@@ -107,12 +119,12 @@ jobs:
       matrix:
         include:
           - repo: "app.charmverse.io"
-            branch: "${{ needs.push-package.outputs.webapp_workflow_branch }}"
+            branch: "${{ needs.build-test-env.outputs.webapp_workflow_branch }}"
             workflow_file: "test_new_core_pkg.yml"
             workflow_payload: |
               { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}" }
           - repo: "permissions.charmverse.io"
-            branch: "${{ needs.push-package.outputs.permissionapi_workflow_branch }}"
+            branch: "${{ needs.build-test-env.outputs.permissionapi_workflow_branch }}"
             workflow_file: "test_core_pkg.yml"
             workflow_payload: |
               { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}" }
