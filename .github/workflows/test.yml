@@ -16,14 +16,15 @@ on:
         description: 'Webapp branch to test against, defaults to main'
         required: true
         default: 'main'
-      permissions_branch:
+      permissionapi_branch:
         description: 'Permissions api branch to test against, defaults to main'
         required: true
         default: 'main'
 
-# change the below to get your PR CI to run tests against a specific branch
+# Change the below to get your PR CI to run tests against a specific branch
+#   Overrides the input, as inputs always have a default value
 env:
-  WEBAPP_WORKFLOW_BRANCH:
+  WEBAPP_WORKFLOW_BRANCH: "gha-change-install-order"
   PERMISSION_WORKFLOW_BRANCH: "gha-change-install-order"
 
 jobs:
@@ -66,6 +67,8 @@ jobs:
       pull-requests: write
     outputs:
       pkg_version: ${{ steps.publish_pkg.outputs.pkg_version }}
+      webapp_workflow_branch: ${{ env.WEBAPP_WORKFLOW_BRANCH || inputs.webapp_branch }}
+      permissionapi_workflow_branch: ${{ env.PERMISSION_WORKFLOW_BRANCH || inputs.permissionapi_branch }}
     steps:
       # On rerun - upstream would've changed with a version update. 
       #   So checking out with the head of Pull request Merge 
@@ -104,23 +107,16 @@ jobs:
       matrix:
         include:
           - repo: "app.charmverse.io"
-            branch: "${{ github.env.WEBAPP_WORKFLOW_BRANCH || inputs.webapp_branch }}"
+            branch: "${{ needs.push-package.outputs.webapp_workflow_branch }}"
             workflow_file: "test_new_core_pkg.yml"
             workflow_payload: |
               { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}" }
           - repo: "permissions.charmverse.io"
-            branch: "${{ github.env.PERMISSION_WORKFLOW_BRANCH || inputs.permissions_branch }}"
+            branch: "${{ needs.push-package.outputs.permissionapi_workflow_branch }}"
             workflow_file: "test_core_pkg.yml"
             workflow_payload: |
               { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}" }
     steps:
-      - name: evaling env or statement
-        run: |
-          env
-          echo "the bash assign option statement ${{jobs.run-downstream-test-workflows.env.PERMISSION_WORKFLOW_BRANCH || inputs.permissions_branch}}"
-          bob="workflow branch - ${{ job.env.PERMISSION_WORKFLOW_BRANCH }} or the simple version $PERMISSION_WORKFLOW_BRANCH"
-          echo "bob is $bob"
-
       - name: Trigger tests on repo ${{ matrix.repo }}
         uses: convictional/trigger-workflow-and-wait@v1.6.1
         with:
