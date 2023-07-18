@@ -36,10 +36,10 @@ jobs:
       - name: Determine downstream repo branch to run tests against
         id: set_downstream_repo_branch
         run: |
-          if [[ ${{ github.event_name }} == 'push' && ${{ github.ref }} == 'refs/heads/main' ]] then;
+          if [[ ${{ github.event_name }} == 'push' && ${{ github.ref }} == 'refs/heads/main' ]]; then
             echo "webapp_workflow_branch='main'" >> $GITHUB_OUTPUT
             echo "permissionapi_workflow_branch='main'" >> $GITHUB_OUTPUT
-          elif [[ ${{ github.event_name }} == 'workflow_dispatch' ]] then;
+          elif [[ ${{ github.event_name }} == 'workflow_dispatch' ]]; then
             echo "webapp_workflow_branch=${{inputs.webapp_branch}}" >> $GITHUB_OUTPUT
             echo "permissionapi_workflow_branch=${{inputs.permissionapi_branch}}" >> $GITHUB_OUTPUT
           else
