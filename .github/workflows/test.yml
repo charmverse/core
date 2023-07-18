@@ -103,12 +103,12 @@ jobs:
       matrix:
         include:
           - repo: "app.charmverse.io"
-            branch: "${{ github.env.WEBAPP_WORKFLOW_BRANCH || inputs.webapp_branch }}"
+            branch: "gha-change-install-order"
             workflow_file: "test_new_core_pkg.yml"
             workflow_payload: |
               { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}" }
           - repo: "permissions.charmverse.io"
-            branch: "${{ github.env.WEBAPP_WORKFLOW_BRANCH || inputs.webapp_branch }}"
+            branch: "gha-change-install-order"
             workflow_file: "test_core_pkg.yml"
             workflow_payload: |
               { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}" }
