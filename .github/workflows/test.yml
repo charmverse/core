@@ -78,8 +78,7 @@ jobs:
             echo "webapp_workflow_branch=${{inputs.webapp_branch}}" >> $GITHUB_OUTPUT
             echo "permissionapi_workflow_branch=${{inputs.permissionapi_branch}}" >> $GITHUB_OUTPUT
           else
-            if [[ $WEBAPP_WORKFLOW_BRANCH != ${{ github.ref_name }} || \
-                  $PERMISSION_WORKFLOW_BRANCH != ${{ github.ref_name }}]]; then 
+            if [[ $WEBAPP_WORKFLOW_BRANCH != ${{ github.ref_name }} || $PERMISSION_WORKFLOW_BRANCH != ${{ github.ref_name }} ]]; then 
               echo "Workflow branch env vars is not this current branch. Are you sure they are set correctly?"
               exit 1
             fi
