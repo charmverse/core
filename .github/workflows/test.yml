@@ -68,19 +68,18 @@ jobs:
       webapp_workflow_branch: ${{ steps.set_downstream_repo_branch.outputs.webapp_workflow_branch }}
       permissionapi_workflow_branch: ${{ steps.set_downstream_repo_branch.outputs.permissionapi_workflow_branch }}
     steps:
-      - name: Inject slug/short variables
-        uses: rlespinasse/github-slug-action@v4.x
       - name: Determine downstream repo branch to run tests against first
         id: set_downstream_repo_branch
         run: |
           if [[ ${{ github.event_name }} == 'push' && ${{ github.ref }} == 'refs/heads/main' ]]; then
             echo "webapp_workflow_branch='main'" >> $GITHUB_OUTPUT
             echo "permissionapi_workflow_branch='main'" >> $GITHUB_OUTPUT
+
           elif [[ ${{ github.event_name }} == 'workflow_dispatch' ]]; then
             echo "webapp_workflow_branch=${{inputs.webapp_branch}}" >> $GITHUB_OUTPUT
             echo "permissionapi_workflow_branch=${{inputs.permissionapi_branch}}" >> $GITHUB_OUTPUT
           else
-            if [[ $WEBAPP_WORKFLOW_BRANCH != $GITHUB_HEAD_REF_SLUG || $PERMISSION_WORKFLOW_BRANCH != $GITHUB_HEAD_REF_SLUG ]]; then 
+            if [[ $WEBAPP_WORKFLOW_BRANCH != ${{ github.head_ref }} || $PERMISSION_WORKFLOW_BRANCH != ${{ github.head_ref }} ]]; then 
               echo "Workflow branch env vars is not this current branch. Are you sure they are set correctly?"
               echo "PR head branch: $GITHUB_HEAD_REF_SLUG"
               echo "env WEBAPP_WORKFLOW_BRANCH: $WEBAPP_WORKFLOW_BRANCH"
