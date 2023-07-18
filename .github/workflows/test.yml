@@ -127,12 +127,12 @@ jobs:
       matrix:
         include:
           - repo: "app.charmverse.io"
-            branch: "${{ needs.build-test-env.outputs.webapp_workflow_branch }}"
+            branch: "${{ needs.push-package.outputs.webapp_workflow_branch }}"
             workflow_file: "test_new_core_pkg.yml"
             workflow_payload: |
               { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}" }
           - repo: "permissions.charmverse.io"
-            branch: "${{ needs.build-test-env.outputs.permissionapi_workflow_branch }}"
+            branch: "${{ needs.push-package.outputs.permissionapi_workflow_branch }}"
             workflow_file: "test_core_pkg.yml"
             workflow_payload: |
               { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}" }
