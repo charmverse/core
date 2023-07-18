@@ -1,5 +1,3 @@
-/// 7/18 swapping on permission's core brach on the permossion api end
-
 generator client {
   provider        = "prisma-client-js"
   binaryTargets   = ["debian-openssl-1.1.x", "linux-musl", "darwin", "native"]
