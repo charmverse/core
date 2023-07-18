@@ -102,14 +102,13 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - test_name: "Testing with Webapp"
-            branch: "${{ github.env.WEBAPP_WORKFLOW_BRANCH }}"
-            repo: "app.charmverse.io"
+          - repo: "app.charmverse.io"
+            branch: "${{ env.WEBAPP_WORKFLOW_BRANCH || inputs.webapp_branch }}"
             workflow_file: "test_new_core_pkg.yml"
             workflow_payload: |
               { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}" }
           - repo: "permissions.charmverse.io"
-            branch: "gha-change-install-order"
+            branch: "${{ env.WEBAPP_WORKFLOW_BRANCH || inputs.webapp_branch }}"
             workflow_file: "test_core_pkg.yml"
             workflow_payload: |
               { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}" }
