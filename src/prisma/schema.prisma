@@ -1,4 +1,4 @@
-/// 7/18 pushing this one out as branch gha-change-install-order-2
+/// 7/18 swapping on permission's core brach on the permossion api end
 
 generator client {
   provider        = "prisma-client-js"
