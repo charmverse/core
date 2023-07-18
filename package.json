@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.1.3-rc-gha-change-inst.12",
+  "version": "0.1.3-rc-gha-change-inst.13",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
