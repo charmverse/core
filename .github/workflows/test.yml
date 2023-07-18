@@ -30,7 +30,6 @@ jobs:
     name: Build test env
     runs-on: ubuntu-latest
     steps:
-      - name: Determine downstream repo branch to run tests against
       - uses: actions/checkout@v3
       - name: Install dependencies
         uses: ./.github/actions/install
