@@ -17,7 +17,7 @@ on:
         required: true
         default: 'main'
       permissions_branch:
-        description: 'Permissionsi api branch to test against, defaults to main'
+        description: 'Permissions api branch to test against, defaults to main'
         required: true
         default: 'main'
 
@@ -94,8 +94,9 @@ jobs:
             Code ${{ github.sha }} labeled version ${{ steps.publish_pkg.outputs.pkg_version }}
 
   run-downstream-test-workflows:
-    if: github.event_name == 'pull_request' && ( github.event.action == 'opened' || github.event.action == 'synchronize' )
+    if: github.event_name != 'push' && github.ref != 'refs/heads/main'
     name: Trigger ${{matrix.repo}} testing workflow
+    id: trigger_downstream_ci
     runs-on: ubuntu-latest
     needs: push-package
     strategy:
@@ -117,11 +118,9 @@ jobs:
       - name: evaling env or statement
         run: |
           env
-          echo "the bash assign option statement ${WEBAPP_WORKFLOW_BRANCH:-${{inputs.webapp_branch}}}"
-          bob="workflow branch - ${{ github.env.WEBAPP_WORKFLOW_BRANCH}} or the simple version $WEBAPP_WORKFLOW_BRANCH"
-          nancy="inputs var - ${{inputs.webapp_branch}}"
-          don= "$WEBAPP_WORKFLOW_BRANCH" || "${{inputs.webapp_branch}}"
-          echo "bob is $bob, nancy is $nancy, Don is $don"
+          echo "the bash assign option statement ${{jobs.trigger_downstream_ci.env.PERMISSION_WORKFLOW_BRANCH || inputs.permissions_branch}}"
+          bob="workflow branch - ${{ job.env.PERMISSION_WORKFLOW_BRANCH }} or the simple version $PERMISSION_WORKFLOW_BRANCH"
+          echo "bob is $bob"
 
       - name: Trigger tests on repo ${{ matrix.repo }}
         uses: convictional/trigger-workflow-and-wait@v1.6.1
