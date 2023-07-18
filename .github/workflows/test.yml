@@ -22,8 +22,8 @@ on:
 # Change the below to get your PR CI to run tests against a specific branch
 #   Overrides the input, as inputs always have a default value
 env:
-  WEBAPP_WORKFLOW_BRANCH: "gha-change-install-order"
-  PERMISSION_WORKFLOW_BRANCH: "gha-change-install-order"
+  WEBAPP_WORKFLOW_BRANCH: "gha-change-install-order-2"
+  PERMISSION_WORKFLOW_BRANCH: "gha-change-install-order-2"
 
 jobs:
   build-test-env:
