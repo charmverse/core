@@ -114,6 +114,9 @@ jobs:
             workflow_payload: |
               { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}" }
     steps:
+      - name: evaling env or statement
+        run: |
+          echo "the OR statement ${{ github.env.WEBAPP_WORKFLOW_BRANCH || inputs.webapp_branch }}"
       - name: Trigger tests on repo ${{ matrix.repo }}
         uses: convictional/trigger-workflow-and-wait@v1.6.1
         with:
