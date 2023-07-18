@@ -1,4 +1,4 @@
-/// 7/18, feeling very dizzy today
+/// 7/18, after changing battery on smoke detector
 
 generator client {
   provider        = "prisma-client-js"
