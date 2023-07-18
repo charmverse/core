@@ -29,23 +29,8 @@ jobs:
   build-test-env:
     name: Build test env
     runs-on: ubuntu-latest
-    outputs:
-      webapp_workflow_branch: ${{ steps.set_downstream_repo_branch.outputs.webapp_workflow_branch }}
-      permissionapi_workflow_branch: ${{ steps.set_downstream_repo_branch.outputs.permissionapi_workflow_branch }}
     steps:
       - name: Determine downstream repo branch to run tests against
-        id: set_downstream_repo_branch
-        run: |
-          if [[ ${{ github.event_name }} == 'push' && ${{ github.ref }} == 'refs/heads/main' ]]; then
-            echo "webapp_workflow_branch='main'" >> $GITHUB_OUTPUT
-            echo "permissionapi_workflow_branch='main'" >> $GITHUB_OUTPUT
-          elif [[ ${{ github.event_name }} == 'workflow_dispatch' ]]; then
-            echo "webapp_workflow_branch=${{inputs.webapp_branch}}" >> $GITHUB_OUTPUT
-            echo "permissionapi_workflow_branch=${{inputs.permissionapi_branch}}" >> $GITHUB_OUTPUT
-          else
-            echo "webapp_workflow_branch=$WEBAPP_WORKFLOW_BRANCH" >> $GITHUB_OUTPUT
-            echo "permissionapi_workflow_branch=$PERMISSION_WORKFLOW_BRANCH" >> $GITHUB_OUTPUT
-          fi
       - uses: actions/checkout@v3
       - name: Install dependencies
         uses: ./.github/actions/install
@@ -81,6 +66,8 @@ jobs:
       pull-requests: write
     outputs:
       pkg_version: ${{ steps.publish_pkg.outputs.pkg_version }}
+      webapp_workflow_branch: ${{ steps.set_downstream_repo_branch.outputs.webapp_workflow_branch }}
+      permissionapi_workflow_branch: ${{ steps.set_downstream_repo_branch.outputs.permissionapi_workflow_branch }}
     steps:
       # On rerun - upstream would've changed with a version update. 
       #   So checking out with the head of Pull request Merge 
@@ -107,12 +94,25 @@ jobs:
           header: Pkg version
           message: |
             Code ${{ github.sha }} labeled version ${{ steps.publish_pkg.outputs.pkg_version }}
+      - name: Determine downstream repo branch to run tests against
+        id: set_downstream_repo_branch
+        run: |
+          if [[ ${{ github.event_name }} == 'push' && ${{ github.ref }} == 'refs/heads/main' ]]; then
+            echo "webapp_workflow_branch='main'" >> $GITHUB_OUTPUT
+            echo "permissionapi_workflow_branch='main'" >> $GITHUB_OUTPUT
+          elif [[ ${{ github.event_name }} == 'workflow_dispatch' ]]; then
+            echo "webapp_workflow_branch=${{inputs.webapp_branch}}" >> $GITHUB_OUTPUT
+            echo "permissionapi_workflow_branch=${{inputs.permissionapi_branch}}" >> $GITHUB_OUTPUT
+          else
+            echo "webapp_workflow_branch=$WEBAPP_WORKFLOW_BRANCH" >> $GITHUB_OUTPUT
+            echo "permissionapi_workflow_branch=$PERMISSION_WORKFLOW_BRANCH" >> $GITHUB_OUTPUT
+          fi
 
   run-downstream-test-workflows:
     if: github.event_name != 'push' && github.ref != 'refs/heads/main'
     name: Trigger ${{matrix.repo}} testing workflow
     runs-on: ubuntu-latest
-    needs: [ build-test-env, push-package ]
+    needs: push-package
     strategy:
       max-parallel: 2
       fail-fast: false
