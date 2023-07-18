@@ -117,7 +117,6 @@ jobs:
       - name: evaling env or statement
         run: |
           env
-          echo "the OR statement ${{ WEBAPP_WORKFLOW_BRANCH || inputs.webapp_branch }}"
           echo "the bash assign option statement ${WEBAPP_WORKFLOW_BRANCH:-${{inputs.webapp_branch}}}"
           bob="workflow branch - ${{ github.env.WEBAPP_WORKFLOW_BRANCH}} or the simple version $WEBAPP_WORKFLOW_BRANCH"
           nancy="inputs var - ${{inputs.webapp_branch}}"
