@@ -1,12 +1,7 @@
 import type { SpaceRole } from '@prisma/client';
+import { stringUtils } from 'utilities';
 
-import type { SystemError } from '../../lib/errors';
-import {
-  InvalidInputError,
-  AdministratorOnlyError,
-  UserIsGuestError,
-  UserIsNotSpaceMemberError
-} from '../../lib/errors';
+import { InvalidInputError } from '../../lib/errors';
 import { prisma } from '../../prisma-client';
 
 /**
@@ -16,34 +11,34 @@ import { prisma } from '../../prisma-client';
 interface Input {
   userId?: string;
   spaceId: string;
-  adminOnly?: boolean;
-  disallowGuest?: boolean;
+  spaceRole?: SpaceRole | null;
 }
 
 interface Result {
-  error?: SystemError;
-  success?: boolean;
   isAdmin?: boolean;
-  spaceRole?: SpaceRole;
+  spaceRole: SpaceRole | null;
 }
 
-export async function hasAccessToSpace({ userId, spaceId, adminOnly = false, disallowGuest }: Input): Promise<Result> {
-  if (!spaceId || !userId) {
-    return { error: new InvalidInputError('User ID and space ID are required') };
+export async function hasAccessToSpace({ userId, spaceId, spaceRole }: Input): Promise<Result> {
+  if (spaceRole && (spaceRole.userId !== userId || spaceRole.spaceId !== spaceId)) {
+    throw new InvalidInputError(`SpaceRole userId and spaceId do not match the provided userId and spaceId`);
+  } else if (!userId) {
+    return { spaceRole: null };
+  } else if (!spaceId || !stringUtils.isUUID(spaceId)) {
+    throw new InvalidInputError(`Valid space ID is required`);
   }
 
-  const spaceRole = await prisma.spaceRole.findFirst({
-    where: {
-      spaceId,
-      userId
-    }
-  });
-  if (!spaceRole) {
-    return { error: new UserIsNotSpaceMemberError() };
-  } else if (adminOnly && spaceRole.isAdmin !== true) {
-    return { error: new AdministratorOnlyError() };
-  } else if (spaceRole.isGuest === true && disallowGuest) {
-    return { error: new UserIsGuestError() };
+  const evaluatedSpaceRole =
+    spaceRole || spaceRole === null
+      ? spaceRole
+      : await prisma.spaceRole.findFirst({
+          where: {
+            spaceId,
+            userId
+          }
+        });
+  if (!evaluatedSpaceRole) {
+    return { spaceRole: null };
   }
-  return { success: true, isAdmin: spaceRole.isAdmin, spaceRole };
+  return { isAdmin: evaluatedSpaceRole.isAdmin, spaceRole: evaluatedSpaceRole };
 }

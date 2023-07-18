@@ -1,7 +1,8 @@
-import type { Space, User } from '@prisma/client';
-import { InvalidInputError, AdministratorOnlyError, UserIsGuestError, UserIsNotSpaceMemberError } from 'lib/errors';
-import { generateUserAndSpace, generateSpaceUser } from 'lib/testing/user';
-import { uid } from 'lib/utilities/strings';
+import { jest } from '@jest/globals';
+import type { Space, SpaceRole, User } from '@prisma/client';
+import { InvalidInputError } from 'lib/errors';
+import { generateSpaceUser, generateUserAndSpace } from 'lib/testing/user';
+import { v4 as uuid } from 'uuid';
 
 import { prisma } from '../../../prisma-client';
 import { hasAccessToSpace } from '../hasAccessToSpace';
@@ -12,7 +13,6 @@ let memberUser: User;
 let guestUser: User;
 
 let outsideUser: User;
-
 beforeAll(async () => {
   const generated = await generateUserAndSpace({ isAdmin: true });
   space = generated.space;
@@ -20,7 +20,7 @@ beforeAll(async () => {
   memberUser = await generateSpaceUser({ spaceId: space.id, isAdmin: false });
   outsideUser = await prisma.user.create({
     data: {
-      path: uid(),
+      path: uuid(),
       username: 'Test user'
     }
   });
@@ -31,99 +31,183 @@ beforeAll(async () => {
 });
 
 describe('hasAccessToSpace', () => {
-  it('should return an error if userId or spaceId is empty', async () => {
-    const { error } = await hasAccessToSpace({
+  it('should return a null spaceRole if userId is empty', async () => {
+    const { spaceRole } = await hasAccessToSpace({
       spaceId: space.id,
       userId: undefined
     });
 
-    expect(error).toBeInstanceOf(InvalidInputError);
-
-    const { error: secondError } = await hasAccessToSpace({
-      spaceId: undefined as any,
-      userId: adminUser.id
-    });
-
-    expect(error).toBeInstanceOf(InvalidInputError);
+    expect(spaceRole).toBe(null);
+  });
+  it('should throw an error if spaceId is empty', async () => {
+    await expect(
+      hasAccessToSpace({
+        spaceId: undefined as any,
+        userId: uuid()
+      })
+    ).rejects.toBeInstanceOf(InvalidInputError);
   });
 
   it('should return success and admin status of the admin user', async () => {
-    const { success, isAdmin, error } = await hasAccessToSpace({
+    const { spaceRole, isAdmin } = await hasAccessToSpace({
       spaceId: space.id,
       userId: adminUser.id
     });
 
-    expect(error).toBeUndefined();
-    expect(success).toBe(true);
     expect(isAdmin).toBe(true);
+    expect(spaceRole).toMatchObject<SpaceRole>({
+      createdAt: expect.any(Date),
+      id: expect.any(String),
+      isAdmin: true,
+      isGuest: false,
+      joinedViaLink: null,
+      onboarded: expect.any(Boolean),
+      spaceId: space.id,
+      tokenGateId: null,
+      userId: adminUser.id
+    });
   });
 
   it('should return success and admin status of the member user', async () => {
-    const { success, isAdmin, error } = await hasAccessToSpace({
+    const { spaceRole, isAdmin } = await hasAccessToSpace({
       spaceId: space.id,
       userId: memberUser.id
     });
-
-    expect(error).toBeUndefined();
-    expect(success).toBe(true);
     expect(isAdmin).toBe(false);
+    expect(spaceRole).toMatchObject<SpaceRole>({
+      createdAt: expect.any(Date),
+      id: expect.any(String),
+      isAdmin: false,
+      isGuest: false,
+      joinedViaLink: null,
+      onboarded: expect.any(Boolean),
+      spaceId: space.id,
+      tokenGateId: null,
+      userId: memberUser.id
+    });
   });
 
-  it('should return success if user is a guest and disallow guest is undefined', async () => {
-    const { success, isAdmin, error } = await hasAccessToSpace({
+  it('should return success if user is a guest', async () => {
+    const { spaceRole, isAdmin } = await hasAccessToSpace({
       spaceId: space.id,
       userId: guestUser.id
     });
 
-    expect(error).toBeUndefined();
-    expect(success).toBe(true);
     expect(isAdmin).toBe(false);
-  });
-
-  it('should return success if user is a guest and disallow guest is false', async () => {
-    const { success, isAdmin, error } = await hasAccessToSpace({
+    expect(spaceRole).toMatchObject<SpaceRole>({
+      createdAt: expect.any(Date),
+      id: expect.any(String),
+      isAdmin: false,
+      isGuest: true,
+      joinedViaLink: null,
+      onboarded: expect.any(Boolean),
       spaceId: space.id,
-      userId: guestUser.id,
-      disallowGuest: false
+      tokenGateId: null,
+      userId: guestUser.id
     });
-
-    expect(error).toBeUndefined();
-    expect(success).toBe(true);
-    expect(isAdmin).toBe(false);
   });
 
-  it('should return an error if user is a guest and disallow guest is true', async () => {
-    const { success, isAdmin, error } = await hasAccessToSpace({
-      spaceId: space.id,
-      userId: guestUser.id,
-      disallowGuest: true
-    });
-
-    expect(error).toBeInstanceOf(UserIsGuestError);
-    expect(success).toBeUndefined();
-    expect(isAdmin).toBeUndefined();
-  });
-
-  it('should return an error if user is a space member, but not an admin', async () => {
-    const { success, isAdmin, error } = await hasAccessToSpace({
-      spaceId: space.id,
-      userId: memberUser.id,
-      adminOnly: true
-    });
-
-    expect(error).toBeInstanceOf(AdministratorOnlyError);
-    expect(success).toBeUndefined();
-    expect(isAdmin).toBeUndefined();
-  });
-
-  it('should return an error for non space members', async () => {
-    const { success, isAdmin, error } = await hasAccessToSpace({
+  it('should return a null space role for non space members', async () => {
+    const { spaceRole, isAdmin } = await hasAccessToSpace({
       spaceId: space.id,
       userId: outsideUser.id
     });
 
-    expect(error).toBeInstanceOf(UserIsNotSpaceMemberError);
-    expect(success).toBeUndefined();
+    expect(spaceRole).toBe(null);
     expect(isAdmin).toBeUndefined();
+  });
+
+  it('should use the provided spaceRole if userId and spaceId are a match to evaluate OR the spaceRole is null', async () => {
+    const adminSpaceRole = await prisma.spaceRole.findUniqueOrThrow({
+      where: {
+        spaceUser: {
+          userId: adminUser.id,
+          spaceId: space.id
+        }
+      }
+    });
+
+    const mockPrisma = jest.fn();
+
+    jest.doMock('../../../prisma-client', () => ({
+      prisma: {
+        spaceRole: {
+          findUnique: mockPrisma,
+          findFirst: mockPrisma
+        } as any
+      } as Partial<typeof prisma>
+    }));
+
+    const { hasAccessToSpace: hasAccessToSpaceWithMockedPrisma } = await import('../hasAccessToSpace');
+
+    const { spaceRole: evaluatedSpaceRole } = await hasAccessToSpaceWithMockedPrisma({
+      spaceId: space.id,
+      userId: adminUser.id,
+      spaceRole: adminSpaceRole
+    });
+
+    expect(evaluatedSpaceRole).toMatchObject<SpaceRole>(adminSpaceRole);
+    expect(mockPrisma).not.toHaveBeenCalled();
+
+    const { spaceRole: evaluatedSpaceRole2, isAdmin: isAdmin2 } = await hasAccessToSpaceWithMockedPrisma({
+      spaceId: space.id,
+      userId: adminUser.id,
+      spaceRole: null
+    });
+
+    expect(evaluatedSpaceRole2).toBe(null);
+
+    expect(isAdmin2).toBeUndefined();
+
+    expect(mockPrisma).not.toHaveBeenCalled();
+
+    jest.dontMock('../../../prisma-client');
+  });
+
+  it('should throw an error if a spaceRole is provided that does not match the provided userId and spaceId', async () => {
+    const mockSpaceRole: SpaceRole = {
+      createdAt: new Date(),
+      id: uuid(),
+      isAdmin: false,
+      isGuest: true,
+      joinedViaLink: null,
+      onboarded: true,
+      spaceId: uuid(),
+      tokenGateId: null,
+      userId: uuid()
+    };
+    await expect(
+      hasAccessToSpace({
+        spaceId: space.id,
+        userId: guestUser.id,
+        spaceRole: {
+          ...mockSpaceRole,
+          spaceId: space.id
+        }
+      })
+    ).rejects.toBeInstanceOf(InvalidInputError);
+
+    await expect(
+      hasAccessToSpace({
+        spaceId: space.id,
+        userId: guestUser.id,
+        spaceRole: {
+          ...mockSpaceRole,
+          userId: uuid()
+        }
+      })
+    ).rejects.toBeInstanceOf(InvalidInputError);
+
+    await expect(
+      hasAccessToSpace({
+        spaceId: space.id,
+        // Make sure the an early null from inexistent userId doesn't happen
+        userId: undefined,
+        spaceRole: {
+          ...mockSpaceRole,
+          userId: uuid()
+        }
+      })
+    ).rejects.toBeInstanceOf(InvalidInputError);
   });
 });

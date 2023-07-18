@@ -1,3 +1,5 @@
+import type { SpaceOperation, SpaceRole } from 'prisma';
+
 export type Resource = {
   resourceId: string;
 };
@@ -25,6 +27,15 @@ export type PermissionCompute = {
   resourceId: string;
   userId?: string;
 };
+
+export type CachedPermissionData = {
+  spacePermissionFlags?: UserPermissionFlags<SpaceOperation>;
+  spaceRole?: SpaceRole | null;
+};
+
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type PermissionComputeWithCachedData = PermissionCompute & CachedPermissionData;
+
 export type SpaceResourcesRequest = {
   spaceId: string;
   userId?: string;
