@@ -11,13 +11,14 @@ export async function policyStatusDraftNotViewable({
   resource,
   flags,
   userId,
-  isAdmin
+  isAdmin,
+  spacePermissionFlags
 }: ProposalPolicyInput): Promise<ProposalPermissionFlags> {
-  const newPermissions = { ...flags };
-
   if (resource.status !== 'draft') {
-    return newPermissions;
+    return flags;
   }
+
+  const newPermissions = { ...flags };
 
   const allowedAuthorOperations: ProposalOperation[] = [
     'view',
@@ -32,6 +33,14 @@ export async function policyStatusDraftNotViewable({
   if (isProposalAuthor({ proposal: resource, userId }) || isAdmin) {
     typedKeys(flags).forEach((flag) => {
       if (!allowedAuthorOperations.includes(flag)) {
+        newPermissions[flag] = false;
+      }
+    });
+    return newPermissions;
+  } else if (spacePermissionFlags?.deleteAnyProposal) {
+    const allowedSpaceWideProposalPermissions: ProposalOperation[] = ['delete', 'view', 'archive', 'unarchive'];
+    typedKeys(flags).forEach((flag) => {
+      if (!allowedSpaceWideProposalPermissions.includes(flag)) {
         newPermissions[flag] = false;
       }
     });

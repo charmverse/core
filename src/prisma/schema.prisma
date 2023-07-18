@@ -125,6 +125,7 @@ enum PageOperations {
   grant_permissions
   comment
   create_poll
+  delete_attached_bounty
 }
 
 enum UserSpaceActionType {
@@ -137,6 +138,9 @@ enum SpaceOperation {
   createForumCategory
   moderateForums
   reviewProposals
+  deleteAnyPage
+  deleteAnyBounty
+  deleteAnyProposal
 }
 
 enum ProfileItemType {

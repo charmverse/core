@@ -11,7 +11,8 @@ export async function policyStatusDiscussionEditableCommentable({
   resource,
   flags,
   userId,
-  isAdmin
+  isAdmin,
+  spacePermissionFlags
 }: ProposalPolicyInput): Promise<ProposalPermissionFlags> {
   const newPermissions = { ...flags };
 
@@ -32,6 +33,14 @@ export async function policyStatusDiscussionEditableCommentable({
   if (isProposalAuthor({ proposal: resource, userId }) || isAdmin) {
     typedKeys(flags).forEach((flag) => {
       if (!allowedAuthorOperations.includes(flag)) {
+        newPermissions[flag] = false;
+      }
+    });
+    return newPermissions;
+  } else if (spacePermissionFlags?.deleteAnyProposal) {
+    const allowedSpaceWideProposalPermissions: ProposalOperation[] = ['delete', 'view', 'archive', 'unarchive'];
+    typedKeys(flags).forEach((flag) => {
+      if (!allowedSpaceWideProposalPermissions.includes(flag)) {
         newPermissions[flag] = false;
       }
     });

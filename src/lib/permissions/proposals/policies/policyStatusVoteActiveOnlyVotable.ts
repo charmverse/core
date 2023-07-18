@@ -10,7 +10,8 @@ export async function policyStatusVoteActiveOnlyVotable({
   resource,
   isAdmin,
   flags,
-  userId
+  userId,
+  spacePermissionFlags
 }: ProposalPolicyInput): Promise<ProposalPermissionFlags> {
   if (resource.status !== 'vote_active') {
     return flags;
@@ -34,6 +35,14 @@ export async function policyStatusVoteActiveOnlyVotable({
         newPermissions[flag] = false;
       }
     });
+  } else if (spacePermissionFlags?.deleteAnyProposal) {
+    const allowedSpaceWideProposalPermissions: ProposalOperation[] = ['delete', 'view'];
+    typedKeys(flags).forEach((flag) => {
+      if (!allowedSpaceWideProposalPermissions.includes(flag)) {
+        newPermissions[flag] = false;
+      }
+    });
+    return newPermissions;
   } else {
     typedKeys(flags).forEach((flag) => {
       if (!allowedOperations.includes(flag)) {
