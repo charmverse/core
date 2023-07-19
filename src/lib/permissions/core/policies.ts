@@ -23,7 +23,6 @@ type ResourceWithSpaceId = { spaceId: string };
 
 /**
  * @type F - The flags returned by the compute method
- * @type P - Optional additional input params
  */
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type PermissionComputeFn<F> = (request: PermissionComputeWithCachedData) => Promise<F>;
@@ -68,24 +67,25 @@ export function buildComputePermissionsWithPermissionFilteringPolicies<R, F exte
   policies,
   computeSpacePermissions
 }: PolicyBuilderInput<R, F>): PermissionComputeFn<F> {
-  return async (request: PermissionCompute): Promise<F> => {
+  return async (request: PermissionComputeWithCachedData): Promise<F> => {
     const resource = await resolver({ resourceId: request.resourceId });
     if (!resource) {
       throw new DataNotFoundError(`Could not find resource with ID ${request.resourceId}`);
     }
     // If the resource has a spaceId, we can auto resolve admin status
     let spaceRole: SpaceRole | undefined | null;
-    let preComputedSpacePermissionFlags: SpacePermissionFlags | undefined;
+    let preComputedSpacePermissionFlags = request.preComputedSpacePermissionFlags;
     const spaceId = (resource as any as ResourceWithSpaceId).spaceId;
 
     if (spaceId) {
       spaceRole = (
         await hasAccessToSpace({
           spaceId,
-          userId: request.userId
+          userId: request.userId,
+          preComputedSpaceRole: request.preComputedSpaceRole
         })
       ).spaceRole;
-      if (computeSpacePermissions) {
+      if (computeSpacePermissions && !preComputedSpacePermissionFlags) {
         preComputedSpacePermissionFlags = await computeSpacePermissions({
           resourceId: spaceId,
           userId: request.userId,
