@@ -1,3 +1,5 @@
+// Weds, July 19th, bunny not eating much veggies today and ate 1.5 slice of peach. took from my oatmeal.
+
 generator client {
   provider        = "prisma-client-js"
   binaryTargets   = ["debian-openssl-1.1.x", "linux-musl", "darwin", "native"]
