@@ -4,9 +4,7 @@ import { stringUtils } from 'utilities';
 import { InvalidInputError } from '../../lib/errors';
 import { prisma } from '../../prisma-client';
 
-export type PreComputedSpaceRole = {
-  preComputedSpaceRole?: SpaceRole | null;
-};
+import type { PreComputedSpaceRole } from './core/interfaces';
 
 /**
  * @param userId - The ID of the user to check. If empty, the hasAccess should always return an error

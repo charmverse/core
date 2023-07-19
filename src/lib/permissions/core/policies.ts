@@ -6,7 +6,13 @@ import { objectUtils } from '../../utilities';
 import { hasAccessToSpace } from '../hasAccessToSpace';
 import type { SpacePermissionFlags } from '../spaces/interfaces';
 
-import type { PermissionCompute, PermissionComputeWithCachedData, UserPermissionFlags } from './interfaces';
+import type {
+  PermissionCompute,
+  PermissionComputeWithCachedData,
+  PreComputedSpacePermissionFlags,
+  PreComputedSpaceRole,
+  UserPermissionFlags
+} from './interfaces';
 
 /**
  * In these types, we use the following naming convention:
@@ -28,7 +34,7 @@ export type PermissionFilteringPolicyFnInput<R, F, C extends boolean = false> = 
   userId?: string;
 } & (R extends ResourceWithSpaceId
   ? C extends true
-    ? { isAdmin?: boolean; spacePermissionFlags?: SpacePermissionFlags }
+    ? { isAdmin?: boolean } & PreComputedSpacePermissionFlags
     : {
         isAdmin?: boolean;
       }
@@ -49,7 +55,7 @@ type PolicyBuilderInput<R, F> = {
   resolver: (input: { resourceId: string }) => Promise<R | null>;
   computeFn: PermissionComputeFn<F>;
   policies: PermissionFilteringPolicyFn<R, F>[];
-  computeSpacePermissions?: PermissionComputeFn<SpacePermissionFlags>;
+  computeSpacePermissions?: (input: PermissionCompute & PreComputedSpaceRole) => Promise<SpacePermissionFlags>;
 };
 
 /**
@@ -69,7 +75,7 @@ export function buildComputePermissionsWithPermissionFilteringPolicies<R, F exte
     }
     // If the resource has a spaceId, we can auto resolve admin status
     let spaceRole: SpaceRole | undefined | null;
-    let spacePermissionFlags: SpacePermissionFlags | undefined;
+    let preComputedSpacePermissionFlags: SpacePermissionFlags | undefined;
     const spaceId = (resource as any as ResourceWithSpaceId).spaceId;
 
     if (spaceId) {
@@ -80,14 +86,19 @@ export function buildComputePermissionsWithPermissionFilteringPolicies<R, F exte
         })
       ).spaceRole;
       if (computeSpacePermissions) {
-        spacePermissionFlags = await computeSpacePermissions({
+        preComputedSpacePermissionFlags = await computeSpacePermissions({
           resourceId: spaceId,
-          userId: request.userId
+          userId: request.userId,
+          preComputedSpaceRole: spaceRole
         });
       }
     }
 
-    const flags = await computeFn({ ...request, spacePermissionFlags, preComputedSpaceRole: spaceRole ?? null });
+    const flags = await computeFn({
+      ...request,
+      preComputedSpacePermissionFlags,
+      preComputedSpaceRole: spaceRole
+    });
     // After each policy run, we assign the new set of flag to this variable. Flags should never become true after being false as the compute function assigns the max permissions available
     let applicableFlags = flags;
 
@@ -99,7 +110,7 @@ export function buildComputePermissionsWithPermissionFilteringPolicies<R, F exte
         resource,
         userId: request.userId,
         isAdmin: spaceRole?.isAdmin,
-        spacePermissionFlags
+        preComputedSpacePermissionFlags
       } as PermissionFilteringPolicyFnInput<R & ResourceWithSpaceId, F, true>);
       // Check the policy did not add any new flags as true
       // eslint-disable-next-line no-loop-func

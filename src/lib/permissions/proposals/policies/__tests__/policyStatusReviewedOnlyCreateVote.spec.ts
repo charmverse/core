@@ -98,7 +98,8 @@ describe('policyStatusReviewedOnlyCreateVote', () => {
       isAdmin: false,
       resource: proposal,
       userId: spaceMember.id,
-      spacePermissionFlags: new AvailableSpacePermissions().addPermissions(['deleteAnyProposal']).operationFlags
+      preComputedSpacePermissionFlags: new AvailableSpacePermissions().addPermissions(['deleteAnyProposal'])
+        .operationFlags
     });
 
     expect(permissions).toMatchObject<ProposalPermissionFlags>({

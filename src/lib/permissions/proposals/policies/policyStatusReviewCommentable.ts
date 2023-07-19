@@ -24,7 +24,7 @@ export function injectPolicyStatusReviewCommentable({ isProposalReviewer }: Prop
     flags,
     userId,
     isAdmin,
-    spacePermissionFlags
+    preComputedSpacePermissionFlags
   }: ProposalPolicyInput): Promise<ProposalPermissionFlags> {
     const newPermissions = { ...flags };
 
@@ -39,7 +39,7 @@ export function injectPolicyStatusReviewCommentable({ isProposalReviewer }: Prop
         }
       });
       return newPermissions;
-    } else if (spacePermissionFlags?.deleteAnyProposal) {
+    } else if (preComputedSpacePermissionFlags?.deleteAnyProposal) {
       const allowedSpaceWideProposalPermissions: ProposalOperation[] = ['delete', 'view', 'archive', 'unarchive'];
       typedKeys(flags).forEach((flag) => {
         if (!allowedSpaceWideProposalPermissions.includes(flag)) {

@@ -11,7 +11,7 @@ export async function policyArchivedViewOnly({
   isAdmin,
   flags,
   userId,
-  spacePermissionFlags
+  preComputedSpacePermissionFlags
 }: ProposalPolicyInput): Promise<ProposalPermissionFlags> {
   if (!resource.archived) {
     return flags;
@@ -41,7 +41,7 @@ export async function policyArchivedViewOnly({
         newPermissions[flag] = false;
       }
     });
-  } else if (spacePermissionFlags?.deleteAnyProposal) {
+  } else if (preComputedSpacePermissionFlags?.deleteAnyProposal) {
     const allowedSpaceWideProposalPermissions: ProposalOperation[] = ['delete', 'view', 'archive', 'unarchive'];
     typedKeys(flags).forEach((flag) => {
       if (!allowedSpaceWideProposalPermissions.includes(flag)) {

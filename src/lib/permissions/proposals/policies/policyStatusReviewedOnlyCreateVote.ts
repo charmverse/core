@@ -12,7 +12,7 @@ export async function policyStatusReviewedOnlyCreateVote({
   flags,
   userId,
   isAdmin,
-  spacePermissionFlags
+  preComputedSpacePermissionFlags
 }: ProposalPolicyInput): Promise<ProposalPermissionFlags> {
   const newPermissions = { ...flags };
 
@@ -44,7 +44,7 @@ export async function policyStatusReviewedOnlyCreateVote({
       }
     });
     return newPermissions;
-  } else if (spacePermissionFlags?.deleteAnyProposal) {
+  } else if (preComputedSpacePermissionFlags?.deleteAnyProposal) {
     const allowedSpaceWideProposalPermissions: ProposalOperation[] = ['delete', 'view', 'archive', 'unarchive'];
     typedKeys(flags).forEach((flag) => {
       if (!allowedSpaceWideProposalPermissions.includes(flag)) {
