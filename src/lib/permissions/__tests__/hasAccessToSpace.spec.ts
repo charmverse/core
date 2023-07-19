@@ -143,7 +143,7 @@ describe('hasAccessToSpace', () => {
     const { spaceRole: evaluatedSpaceRole } = await hasAccessToSpaceWithMockedPrisma({
       spaceId: space.id,
       userId: adminUser.id,
-      spaceRole: adminSpaceRole
+      preComputedSpaceRole: adminSpaceRole
     });
 
     expect(evaluatedSpaceRole).toMatchObject<SpaceRole>(adminSpaceRole);
@@ -152,7 +152,7 @@ describe('hasAccessToSpace', () => {
     const { spaceRole: evaluatedSpaceRole2, isAdmin: isAdmin2 } = await hasAccessToSpaceWithMockedPrisma({
       spaceId: space.id,
       userId: adminUser.id,
-      spaceRole: null
+      preComputedSpaceRole: null
     });
 
     expect(evaluatedSpaceRole2).toBe(null);
@@ -180,7 +180,7 @@ describe('hasAccessToSpace', () => {
       hasAccessToSpace({
         spaceId: space.id,
         userId: guestUser.id,
-        spaceRole: {
+        preComputedSpaceRole: {
           ...mockSpaceRole,
           spaceId: space.id
         }
@@ -191,7 +191,7 @@ describe('hasAccessToSpace', () => {
       hasAccessToSpace({
         spaceId: space.id,
         userId: guestUser.id,
-        spaceRole: {
+        preComputedSpaceRole: {
           ...mockSpaceRole,
           userId: uuid()
         }
@@ -203,7 +203,7 @@ describe('hasAccessToSpace', () => {
         spaceId: space.id,
         // Make sure the an early null from inexistent userId doesn't happen
         userId: undefined,
-        spaceRole: {
+        preComputedSpaceRole: {
           ...mockSpaceRole,
           userId: uuid()
         }

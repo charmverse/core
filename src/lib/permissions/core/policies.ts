@@ -87,7 +87,7 @@ export function buildComputePermissionsWithPermissionFilteringPolicies<R, F exte
       }
     }
 
-    const flags = await computeFn({ ...request, spacePermissionFlags, spaceRole: spaceRole ?? null });
+    const flags = await computeFn({ ...request, spacePermissionFlags, preComputedSpaceRole: spaceRole ?? null });
     // After each policy run, we assign the new set of flag to this variable. Flags should never become true after being false as the compute function assigns the max permissions available
     let applicableFlags = flags;
 

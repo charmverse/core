@@ -1,7 +1,7 @@
 // Space permission exports
 export * from './lib/permissions/spaces/interfaces';
 export * from './lib/permissions/spaces/availableSpacePermissions';
-export { hasAccessToSpace } from './lib/permissions/hasAccessToSpace';
+export * from './lib/permissions/hasAccessToSpace';
 export * from './lib/permissions/spaces/client/interfaces';
 
 // Forum permission exports

@@ -1,5 +1,7 @@
 import type { SpaceOperation, SpaceRole } from 'prisma';
 
+import type { PreComputedSpaceRole } from '../hasAccessToSpace';
+
 export type Resource = {
   resourceId: string;
 };
@@ -30,8 +32,7 @@ export type PermissionCompute = {
 
 export type CachedPermissionData = {
   spacePermissionFlags?: UserPermissionFlags<SpaceOperation>;
-  spaceRole?: SpaceRole | null;
-};
+} & PreComputedSpaceRole;
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type PermissionComputeWithCachedData = PermissionCompute & CachedPermissionData;

@@ -7,3 +7,4 @@ export * from './users';
 export * from './proposals';
 export * from './pages';
 export * from './permissions';
+export * from './spaces';
