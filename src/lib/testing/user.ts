@@ -62,7 +62,7 @@ export async function generateUserAndSpace({
   spaceName = 'Example Space',
   publicBountyBoard = false,
   publicProposals = false,
-  spacePaidTier = 'pro'
+  spacePaidTier = 'community'
 }: CreateUserAndSpaceInput = {}) {
   const userId = v4();
   const newUser = await prisma.user.create({
