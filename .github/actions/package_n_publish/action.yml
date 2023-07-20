@@ -27,7 +27,7 @@ runs:
       with:
         default: patch
         major-wording:  'MAJOR,major,breaking,'
-        minor-wording:  'add,Adds,new,feat'
+        minor-wording:  'feat,feature,upgrade'
         patch-wording:  'patch,fixes,fix'
         bump-policy: 'last-commit'
         commit-message: 'CI: bumps version to {{version}} in workflow ${{ github.run_id }}'
