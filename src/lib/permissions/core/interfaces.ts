@@ -1,4 +1,4 @@
-import type { SpaceOperation, SpaceRole } from 'prisma';
+import type { SpaceOperation, SpaceRole } from '@prisma/client';
 
 export type Resource = {
   resourceId: string;

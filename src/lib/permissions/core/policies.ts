@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import type { SpaceRole } from 'prisma';
+import type { SpaceRole } from '@prisma/client';
 
 import { DataNotFoundError } from '../../errors';
 import { objectUtils } from '../../utilities';
