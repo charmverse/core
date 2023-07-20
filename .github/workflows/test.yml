@@ -40,21 +40,15 @@ jobs:
     name: Type Check
     runs-on: ubuntu-latest
     needs: build-test-env
-    strategy:
-      max-parallel: 5
-      fail-fast: false
-      matrix:
-        include:
-          - test_name: "Type check"
-            test_command: "npm run typecheck"
     steps:
       - uses: actions/checkout@v3
 
       - name: Restore dependencies from cache
         uses: ./.github/actions/install
 
-      - name: Run ${{matrix.test_name}}
-        run: ${{matrix.test_command}}
+      - name: Run type check
+        run: |
+          npm run typecheck
 
   push-package:
     name: Push Release candidate package to allow devs to use to test
