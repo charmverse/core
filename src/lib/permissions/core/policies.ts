@@ -111,7 +111,8 @@ export function buildComputePermissionsWithPermissionFilteringPolicies<R, F exte
         userId: request.userId,
         isAdmin: spaceRole?.isAdmin,
         preComputedSpacePermissionFlags
-      } as PermissionFilteringPolicyFnInput<R & ResourceWithSpaceId, F, true>);
+        // Any flag is needed here so that downstream compiler doesn't throw an error
+      } as any as PermissionFilteringPolicyFnInput<R & ResourceWithSpaceId, F, true>);
       // Check the policy did not add any new flags as true
       // eslint-disable-next-line no-loop-func
       objectUtils.typedKeys(newFlags).forEach((key) => {
