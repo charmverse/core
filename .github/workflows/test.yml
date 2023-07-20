@@ -97,6 +97,7 @@ jobs:
             fi
             echo "webapp_workflow_branch=$WEBAPP_WORKFLOW_BRANCH" >> $GITHUB_OUTPUT
             echo "permissionapi_workflow_branch=$PERMISSION_WORKFLOW_BRANCH" >> $GITHUB_OUTPUT
+          fi
       # On rerun - upstream would've changed with a version update. 
       #   So checking out with the head of Pull request Merge 
       - uses: actions/checkout@v3
