@@ -68,7 +68,7 @@ jobs:
           # values of this step's output is used in step run-downstream-test-workflows
           # strategy/matrix doesn't permit access to env context. very lame...
 
-          if [[ ${{ github.event_name }} == 'push' && ${{ github.ref }} == 'refs/heads/main' ]]; then
+          if [[ "${{ github.event_name }}" == "push" && "${{ github.ref }}" == "refs/heads/main" ]]; then
             echo "webapp_workflow_branch='main'" >> $GITHUB_OUTPUT
             echo "permissionapi_workflow_branch='main'" >> $GITHUB_OUTPUT
 
