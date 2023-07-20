@@ -6,6 +6,11 @@ import { isProposalAuthor } from '../isProposalAuthor';
 
 import type { ProposalPolicyInput } from './interfaces';
 
+const allowedOperations: ProposalOperation[] = ['view', 'vote'];
+const allowedAuthorOperations: ProposalOperation[] = [...allowedOperations, 'make_public'];
+const allowedAdminOperations: ProposalOperation[] = [...allowedAuthorOperations, 'delete'];
+const allowedSpaceWideProposalPermissions: ProposalOperation[] = ['delete', 'view'];
+
 export async function policyStatusVoteActiveOnlyVotable({
   resource,
   isAdmin,
@@ -18,10 +23,6 @@ export async function policyStatusVoteActiveOnlyVotable({
   }
 
   const newPermissions = { ...flags };
-
-  const allowedOperations: ProposalOperation[] = ['view', 'vote'];
-  const allowedAuthorOperations: ProposalOperation[] = [...allowedOperations, 'make_public'];
-  const allowedAdminOperations: ProposalOperation[] = [...allowedAuthorOperations, 'delete'];
 
   if (isAdmin) {
     typedKeys(flags).forEach((flag) => {
@@ -36,7 +37,6 @@ export async function policyStatusVoteActiveOnlyVotable({
       }
     });
   } else if (preComputedSpacePermissionFlags?.deleteAnyProposal) {
-    const allowedSpaceWideProposalPermissions: ProposalOperation[] = ['delete', 'view'];
     typedKeys(flags).forEach((flag) => {
       if (!allowedSpaceWideProposalPermissions.includes(flag)) {
         newPermissions[flag] = false;

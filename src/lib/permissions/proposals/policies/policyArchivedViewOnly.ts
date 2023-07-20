@@ -6,6 +6,17 @@ import { isProposalAuthor } from '../isProposalAuthor';
 
 import type { ProposalPolicyInput } from './interfaces';
 
+const allowedOperations: ProposalOperation[] = ['view'];
+const allowedAuthorOperations: ProposalOperation[] = [
+  ...allowedOperations,
+  'delete',
+  'make_public',
+  'archive',
+  'unarchive'
+];
+const allowedAdminOperations: ProposalOperation[] = allowedAuthorOperations;
+const allowedSpaceWideProposalPermissions: ProposalOperation[] = ['delete', 'view', 'archive', 'unarchive'];
+
 export async function policyArchivedViewOnly({
   resource,
   isAdmin,
@@ -18,17 +29,6 @@ export async function policyArchivedViewOnly({
   }
 
   const newPermissions = { ...flags };
-
-  const allowedOperations: ProposalOperation[] = ['view'];
-  const allowedAuthorOperations: ProposalOperation[] = [
-    ...allowedOperations,
-    'delete',
-    'make_public',
-    'archive',
-    'unarchive'
-  ];
-  const allowedAdminOperations: ProposalOperation[] = allowedAuthorOperations;
-
   if (isAdmin) {
     typedKeys(flags).forEach((flag) => {
       if (!allowedAdminOperations.includes(flag)) {
@@ -42,7 +42,6 @@ export async function policyArchivedViewOnly({
       }
     });
   } else if (preComputedSpacePermissionFlags?.deleteAnyProposal) {
-    const allowedSpaceWideProposalPermissions: ProposalOperation[] = ['delete', 'view', 'archive', 'unarchive'];
     typedKeys(flags).forEach((flag) => {
       if (!allowedSpaceWideProposalPermissions.includes(flag)) {
         newPermissions[flag] = false;
