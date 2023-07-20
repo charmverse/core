@@ -146,7 +146,7 @@ jobs:
               { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}" }
     steps:
       - name: Trigger tests on repo ${{ matrix.repo }}
-        uses: convictional/trigger-workflow-and-wait@v1.6.1
+        uses: convictional/trigger-workflow-and-wait@v1.6.5
         with:
           owner: charmverse
           repo: ${{ matrix.repo }}
