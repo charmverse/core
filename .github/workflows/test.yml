@@ -61,7 +61,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: typecheck
     permissions:
-      contents: write
       pull-requests: write
     outputs:
       pkg_version: ${{ steps.publish_pkg.outputs.pkg_version }}
