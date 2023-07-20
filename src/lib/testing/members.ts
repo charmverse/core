@@ -1,4 +1,12 @@
-import type { InviteLink, InviteLinkToRole, Prisma, PublicInviteLinkContext, Role, RoleSource } from '@prisma/client';
+import type {
+  InviteLink,
+  InviteLinkToRole,
+  Prisma,
+  PublicInviteLinkContext,
+  Role,
+  RoleSource,
+  SpaceOperation
+} from '@prisma/client';
 import { v4 } from 'uuid';
 
 import { prisma } from '../../prisma-client';
@@ -15,7 +23,8 @@ export async function generateRole({
   roleName = `role-${v4()}`,
   source,
   assigneeUserIds,
-  id = v4()
+  id = v4(),
+  spacePermissions
 }: {
   externalId?: string;
   spaceId: string;
@@ -24,6 +33,7 @@ export async function generateRole({
   source?: RoleSource;
   id?: string;
   assigneeUserIds?: string[];
+  spacePermissions?: SpaceOperation[];
 }): Promise<Role> {
   const assignUsers = assigneeUserIds && assigneeUserIds.length >= 1;
 
@@ -71,6 +81,16 @@ export async function generateRole({
           : undefined
     }
   });
+
+  if (spacePermissions && spacePermissions.length > 0) {
+    await prisma.spacePermission.create({
+      data: {
+        forSpace: { connect: { id: spaceId } },
+        role: { connect: { id: role.id } },
+        operations: spacePermissions
+      }
+    });
+  }
 
   return role;
 }

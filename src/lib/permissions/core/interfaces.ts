@@ -1,3 +1,5 @@
+import type { SpaceOperation, SpaceRole } from '@prisma/client';
+
 export type Resource = {
   resourceId: string;
 };
@@ -25,6 +27,26 @@ export type PermissionCompute = {
   resourceId: string;
   userId?: string;
 };
+
+/**
+ * Undefined means we don't have a valid compute yet
+ *
+ * Null means we already computed space role, and the target user does not belong to this space
+ */
+export type PreComputedSpaceRole = {
+  preComputedSpaceRole?: SpaceRole | null;
+};
+
+export type PreComputedSpacePermissionFlags = {
+  preComputedSpacePermissionFlags?: UserPermissionFlags<SpaceOperation>;
+};
+
+export type PreComputedPermissionData = PreComputedSpacePermissionFlags & PreComputedSpaceRole;
+
+export type PermissionComputeWithCachedData = PermissionCompute &
+  PreComputedSpacePermissionFlags &
+  PreComputedSpaceRole;
+
 export type SpaceResourcesRequest = {
   spaceId: string;
   userId?: string;

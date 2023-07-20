@@ -1,4 +1,6 @@
 import { prisma } from '../../../../prisma-client';
+import { InvalidInputError, ProposalNotFoundError } from '../../../errors';
+import { isUUID } from '../../../utilities/strings';
 import type { Resource } from '../../core/interfaces';
 
 import type { ProposalPolicyDependencies, ProposalResource } from './interfaces';
@@ -10,8 +12,11 @@ import { policyStatusReviewedOnlyCreateVote } from './policyStatusReviewedOnlyCr
 import { policyStatusVoteActiveOnlyVotable } from './policyStatusVoteActiveOnlyVotable';
 import { policyStatusVoteClosedViewOnly } from './policyStatusVoteClosedViewOnly';
 
-export function proposalResolver({ resourceId }: Resource): Promise<ProposalResource> {
-  return prisma.proposal.findUniqueOrThrow({
+export async function proposalResolver({ resourceId }: Resource): Promise<ProposalResource> {
+  if (!isUUID(resourceId)) {
+    throw new InvalidInputError(`Invalid resource ID provided. Must be a UUID`);
+  }
+  const proposal = await prisma.proposal.findUnique({
     where: { id: resourceId },
     select: {
       id: true,
@@ -24,6 +29,11 @@ export function proposalResolver({ resourceId }: Resource): Promise<ProposalReso
       archived: true
     }
   });
+
+  if (!proposal) {
+    throw new ProposalNotFoundError(resourceId);
+  }
+  return proposal;
 }
 
 /**

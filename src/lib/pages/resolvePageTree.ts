@@ -282,13 +282,10 @@ export async function multiResolvePageTree<F extends boolean | undefined>({
     })
   )) as PageNodeWithPermissions[] | PageWithPermissions[];
 
-  const pagemap = (pagesInSpace as PageNodeWithPermissions[]).reduce(
-    (acc, val) => {
-      acc[val.id] = val;
-      return acc;
-    },
-    {} as Record<string, PageNodeWithPermissions>
-  );
+  const pagemap = (pagesInSpace as PageNodeWithPermissions[]).reduce((acc, val) => {
+    acc[val.id] = val;
+    return acc;
+  }, {} as Record<string, PageNodeWithPermissions>);
 
   let mappedResults = pageIds.map((id) =>
     pagemap[id]

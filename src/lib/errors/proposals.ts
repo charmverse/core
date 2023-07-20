@@ -1,12 +1,8 @@
 import { DataNotFoundError, SystemError } from './errors';
 
-export class ProposalNotFoundError extends SystemError {
+export class ProposalNotFoundError extends DataNotFoundError {
   constructor(proposalid: string) {
-    super({
-      message: `Proposal with ID ${proposalid} not found`,
-      errorType: 'Data not found',
-      severity: 'warning'
-    });
+    super(`Proposal with ID ${proposalid} not found`);
   }
 }
 export class ProposalCategoryNotDeleteableError extends SystemError {

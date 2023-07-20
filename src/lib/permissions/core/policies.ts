@@ -1,8 +1,18 @@
+/* eslint-disable @typescript-eslint/ban-types */
+import type { SpaceRole } from '@prisma/client';
+
 import { DataNotFoundError } from '../../errors';
 import { objectUtils } from '../../utilities';
 import { hasAccessToSpace } from '../hasAccessToSpace';
+import type { SpacePermissionFlags } from '../spaces/interfaces';
 
-import type { PermissionCompute, UserPermissionFlags } from './interfaces';
+import type {
+  PermissionCompute,
+  PermissionComputeWithCachedData,
+  PreComputedSpacePermissionFlags,
+  PreComputedSpaceRole,
+  UserPermissionFlags
+} from './interfaces';
 
 /**
  * In these types, we use the following naming convention:
@@ -11,24 +21,40 @@ import type { PermissionCompute, UserPermissionFlags } from './interfaces';
  */
 type ResourceWithSpaceId = { spaceId: string };
 
-type PermissionComputeFn<F> = (request: PermissionCompute) => Promise<F>;
+/**
+ * @type F - The flags returned by the compute method
+ */
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type PermissionComputeFn<F> = (request: PermissionComputeWithCachedData) => Promise<F>;
 
-export type PermissionFilteringPolicyFnInput<R, F> = {
+export type PermissionFilteringPolicyFnInput<R, F, C extends boolean = false> = {
   flags: F;
   resource: R;
   userId?: string;
-  // eslint-disable-next-line @typescript-eslint/ban-types
-} & (R extends ResourceWithSpaceId ? { isAdmin?: boolean } : {});
+} & (R extends ResourceWithSpaceId
+  ? C extends true
+    ? { isAdmin?: boolean } & PreComputedSpacePermissionFlags
+    : {
+        isAdmin?: boolean;
+      }
+  : // eslint-disable-next-line @typescript-eslint/ban-types
+    {});
 
-export type PermissionFilteringPolicyFn<R, F> = (input: PermissionFilteringPolicyFnInput<R, F>) => F | Promise<F>;
+export type PermissionFilteringPolicyFn<R, F, C extends boolean = false> = (
+  input: PermissionFilteringPolicyFnInput<R, F, C>
+) => F | Promise<F>;
 
 /**
  * @policies - permission filtering policy functions - each should be a pure function that returns a fresh set of flags rather than mutating the original flags
+ * @type R - The shape of the resource passed to the filtering functions
+ * @type F - The flags returned by the policy check
+ * @type C - Whether we should compute space permissions
  */
 type PolicyBuilderInput<R, F> = {
   resolver: (input: { resourceId: string }) => Promise<R | null>;
-  computeFn: (input: PermissionCompute) => Promise<F>;
+  computeFn: PermissionComputeFn<F>;
   policies: PermissionFilteringPolicyFn<R, F>[];
+  computeSpacePermissions?: (input: PermissionCompute & PreComputedSpaceRole) => Promise<SpacePermissionFlags>;
 };
 
 /**
@@ -38,29 +64,43 @@ type PolicyBuilderInput<R, F> = {
 export function buildComputePermissionsWithPermissionFilteringPolicies<R, F extends UserPermissionFlags<any>>({
   computeFn,
   resolver,
-  policies
+  policies,
+  computeSpacePermissions
 }: PolicyBuilderInput<R, F>): PermissionComputeFn<F> {
-  return async (request: PermissionCompute): Promise<F> => {
-    const flags = await computeFn(request);
+  return async (request: PermissionComputeWithCachedData): Promise<F> => {
     const resource = await resolver({ resourceId: request.resourceId });
     if (!resource) {
       throw new DataNotFoundError(`Could not find resource with ID ${request.resourceId}`);
     }
+    // If the resource has a spaceId, we can auto resolve admin status
+    let spaceRole: SpaceRole | undefined | null;
+    let preComputedSpacePermissionFlags = request.preComputedSpacePermissionFlags;
+    const spaceId = (resource as any as ResourceWithSpaceId).spaceId;
 
+    if (spaceId) {
+      spaceRole = (
+        await hasAccessToSpace({
+          spaceId,
+          userId: request.userId,
+          preComputedSpaceRole: request.preComputedSpaceRole
+        })
+      ).spaceRole;
+      if (computeSpacePermissions && !preComputedSpacePermissionFlags) {
+        preComputedSpacePermissionFlags = await computeSpacePermissions({
+          resourceId: spaceId,
+          userId: request.userId,
+          preComputedSpaceRole: spaceRole
+        });
+      }
+    }
+
+    const flags = await computeFn({
+      ...request,
+      preComputedSpacePermissionFlags,
+      preComputedSpaceRole: spaceRole
+    });
     // After each policy run, we assign the new set of flag to this variable. Flags should never become true after being false as the compute function assigns the max permissions available
     let applicableFlags = flags;
-
-    // If the resource has a spaceId, we can auto resolve admin status
-    let isAdminStatus: boolean | undefined;
-
-    if ((resource as any as ResourceWithSpaceId).spaceId) {
-      isAdminStatus = (
-        await hasAccessToSpace({
-          spaceId: (resource as any as ResourceWithSpaceId).spaceId,
-          userId: request.userId
-        })
-      ).isAdmin;
-    }
 
     for (const policy of policies) {
       let hasTrueFlag = false;
@@ -69,8 +109,10 @@ export function buildComputePermissionsWithPermissionFilteringPolicies<R, F exte
         flags: applicableFlags,
         resource,
         userId: request.userId,
-        isAdmin: isAdminStatus
-      } as any as PermissionFilteringPolicyFnInput<R & ResourceWithSpaceId, F>);
+        isAdmin: spaceRole?.isAdmin,
+        preComputedSpacePermissionFlags
+        // Any flag is needed here so that downstream compiler doesn't throw an error
+      } as any as PermissionFilteringPolicyFnInput<R & ResourceWithSpaceId, F, true>);
       // Check the policy did not add any new flags as true
       // eslint-disable-next-line no-loop-func
       objectUtils.typedKeys(newFlags).forEach((key) => {

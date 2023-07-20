@@ -6,21 +6,23 @@ import { isProposalAuthor } from '../isProposalAuthor';
 
 import type { ProposalPolicyInput } from './interfaces';
 
+const allowedOperations: ProposalOperation[] = ['view', 'vote'];
+const allowedAuthorOperations: ProposalOperation[] = [...allowedOperations, 'make_public'];
+const allowedAdminOperations: ProposalOperation[] = [...allowedAuthorOperations, 'delete'];
+const allowedSpaceWideProposalPermissions: ProposalOperation[] = ['delete', 'view'];
+
 export async function policyStatusVoteActiveOnlyVotable({
   resource,
   isAdmin,
   flags,
-  userId
+  userId,
+  preComputedSpacePermissionFlags
 }: ProposalPolicyInput): Promise<ProposalPermissionFlags> {
   if (resource.status !== 'vote_active') {
     return flags;
   }
 
   const newPermissions = { ...flags };
-
-  const allowedOperations: ProposalOperation[] = ['view', 'vote'];
-  const allowedAuthorOperations: ProposalOperation[] = [...allowedOperations, 'make_public'];
-  const allowedAdminOperations: ProposalOperation[] = [...allowedAuthorOperations, 'delete'];
 
   if (isAdmin) {
     typedKeys(flags).forEach((flag) => {
@@ -34,6 +36,13 @@ export async function policyStatusVoteActiveOnlyVotable({
         newPermissions[flag] = false;
       }
     });
+  } else if (preComputedSpacePermissionFlags?.deleteAnyProposal) {
+    typedKeys(flags).forEach((flag) => {
+      if (!allowedSpaceWideProposalPermissions.includes(flag)) {
+        newPermissions[flag] = false;
+      }
+    });
+    return newPermissions;
   } else {
     typedKeys(flags).forEach((flag) => {
       if (!allowedOperations.includes(flag)) {

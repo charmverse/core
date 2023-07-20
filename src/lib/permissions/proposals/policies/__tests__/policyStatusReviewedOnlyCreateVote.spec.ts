@@ -3,6 +3,7 @@ import type { ProposalCategory, Space, User } from '@prisma/client';
 import type { ProposalWithUsers } from '../../../../proposals/interfaces';
 import { generateProposal, generateProposalCategory } from '../../../../testing/proposals';
 import { generateSpaceUser, generateUserAndSpace } from '../../../../testing/user';
+import { AvailableSpacePermissions } from '../../../spaces/availableSpacePermissions';
 import { AvailableProposalPermissions } from '../../availableProposalPermissions.class';
 import type { ProposalPermissionFlags } from '../../interfaces';
 import { policyStatusReviewedOnlyCreateVote } from '../policyStatusReviewedOnlyCreateVote';
@@ -88,6 +89,30 @@ describe('policyStatusReviewedOnlyCreateVote', () => {
       vote: false,
       archive: true,
       unarchive: true
+    });
+  });
+
+  it('should preserve space-wide delete and archive permissions when space wide proposal deletion is allowed', async () => {
+    const permissions = await policyStatusReviewedOnlyCreateVote({
+      flags: fullPermissions,
+      isAdmin: false,
+      resource: proposal,
+      userId: spaceMember.id,
+      preComputedSpacePermissionFlags: new AvailableSpacePermissions().addPermissions(['deleteAnyProposal'])
+        .operationFlags
+    });
+
+    expect(permissions).toMatchObject<ProposalPermissionFlags>({
+      view: true,
+      delete: true,
+      archive: true,
+      unarchive: true,
+      edit: false,
+      comment: false,
+      create_vote: false,
+      review: false,
+      vote: false,
+      make_public: false
     });
   });
 

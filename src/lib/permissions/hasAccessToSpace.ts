@@ -1,49 +1,47 @@
 import type { SpaceRole } from '@prisma/client';
 
-import type { SystemError } from '../../lib/errors';
-import {
-  InvalidInputError,
-  AdministratorOnlyError,
-  UserIsGuestError,
-  UserIsNotSpaceMemberError
-} from '../../lib/errors';
+import { InvalidInputError } from '../../lib/errors';
 import { prisma } from '../../prisma-client';
+import { isUUID } from '../utilities/strings';
+
+import type { PreComputedSpaceRole } from './core/interfaces';
 
 /**
  * @param userId - The ID of the user to check. If empty, the hasAccess should always return an error
  * @disallowGuest - If true, the user must be a member or admin of the space. If false, the user can be a guest
  */
-interface Input {
+type Input = {
   userId?: string;
   spaceId: string;
-  adminOnly?: boolean;
-  disallowGuest?: boolean;
-}
+} & PreComputedSpaceRole;
 
 interface Result {
-  error?: SystemError;
-  success?: boolean;
   isAdmin?: boolean;
-  spaceRole?: SpaceRole;
+  spaceRole: SpaceRole | null;
 }
 
-export async function hasAccessToSpace({ userId, spaceId, adminOnly = false, disallowGuest }: Input): Promise<Result> {
-  if (!spaceId || !userId) {
-    return { error: new InvalidInputError('User ID and space ID are required') };
+export async function hasAccessToSpace({ userId, spaceId, preComputedSpaceRole }: Input): Promise<Result> {
+  if (!spaceId || !isUUID(spaceId)) {
+    throw new InvalidInputError(`Valid space ID is required`);
+  } else if (
+    preComputedSpaceRole &&
+    (preComputedSpaceRole.userId !== userId || preComputedSpaceRole.spaceId !== spaceId)
+  ) {
+    throw new InvalidInputError(`SpaceRole userId and spaceId do not match the provided userId and spaceId`);
+  } else if (!userId) {
+    return { spaceRole: null };
   }
-
-  const spaceRole = await prisma.spaceRole.findFirst({
-    where: {
-      spaceId,
-      userId
-    }
-  });
-  if (!spaceRole) {
-    return { error: new UserIsNotSpaceMemberError() };
-  } else if (adminOnly && spaceRole.isAdmin !== true) {
-    return { error: new AdministratorOnlyError() };
-  } else if (spaceRole.isGuest === true && disallowGuest) {
-    return { error: new UserIsGuestError() };
+  const evaluatedSpaceRole =
+    preComputedSpaceRole || preComputedSpaceRole === null
+      ? preComputedSpaceRole
+      : await prisma.spaceRole.findFirst({
+          where: {
+            spaceId,
+            userId
+          }
+        });
+  if (!evaluatedSpaceRole) {
+    return { spaceRole: null };
   }
-  return { success: true, isAdmin: spaceRole.isAdmin, spaceRole };
+  return { isAdmin: evaluatedSpaceRole.isAdmin, spaceRole: evaluatedSpaceRole };
 }

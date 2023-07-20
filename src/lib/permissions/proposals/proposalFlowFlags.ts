@@ -27,7 +27,7 @@ type GetFlagFilterDependencies = {
 function withDepsDraftProposal({ countReviewers }: GetFlagFilterDependencies) {
   return async function draftProposal({ proposal, userId }: GetFlagsInput): Promise<ProposalFlowPermissionFlags> {
     const flags = new TransitionFlags();
-    const { isAdmin } = await hasAccessToSpace({ spaceId: proposal.spaceId, userId, adminOnly: true });
+    const { isAdmin } = await hasAccessToSpace({ spaceId: proposal.spaceId, userId });
 
     if (isProposalAuthor({ proposal, userId }) || isAdmin) {
       flags.addPermissions(['draft']);
@@ -44,7 +44,7 @@ function withDepsDiscussionProposal({ countReviewers }: GetFlagFilterDependencie
     const flags = new TransitionFlags();
     if (
       isProposalAuthor({ proposal, userId }) ||
-      (await hasAccessToSpace({ spaceId: proposal.spaceId, userId, adminOnly: true })).isAdmin
+      (await hasAccessToSpace({ spaceId: proposal.spaceId, userId })).isAdmin
     ) {
       flags.addPermissions(['draft']);
 

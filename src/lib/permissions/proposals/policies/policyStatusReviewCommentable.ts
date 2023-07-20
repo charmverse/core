@@ -17,13 +17,15 @@ const allowedAuthorOperations: ProposalOperation[] = [
 ];
 const allowedAdminOperations: ProposalOperation[] = [...allowedAuthorOperations, 'review', 'edit'];
 const allowedReviewerOperations: ProposalOperation[] = ['view', 'comment', 'review'];
+const allowedSpaceWideProposalPermissions: ProposalOperation[] = ['delete', 'view', 'archive', 'unarchive'];
 
 export function injectPolicyStatusReviewCommentable({ isProposalReviewer }: ProposalPolicyDependencies) {
   return async function policyStatusReviewCommentable({
     resource,
     flags,
     userId,
-    isAdmin
+    isAdmin,
+    preComputedSpacePermissionFlags
   }: ProposalPolicyInput): Promise<ProposalPermissionFlags> {
     const newPermissions = { ...flags };
 
@@ -34,6 +36,13 @@ export function injectPolicyStatusReviewCommentable({ isProposalReviewer }: Prop
     if (isAdmin) {
       typedKeys(flags).forEach((flag) => {
         if (!allowedAdminOperations.includes(flag)) {
+          newPermissions[flag] = false;
+        }
+      });
+      return newPermissions;
+    } else if (preComputedSpacePermissionFlags?.deleteAnyProposal) {
+      typedKeys(flags).forEach((flag) => {
+        if (!allowedSpaceWideProposalPermissions.includes(flag)) {
           newPermissions[flag] = false;
         }
       });

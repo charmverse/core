@@ -7,7 +7,7 @@ export type ProposalResource = Pick<
   'id' | 'createdBy' | 'status' | 'categoryId' | 'spaceId' | 'spaceId' | 'authors' | 'reviewers' | 'archived'
 >;
 
-export type ProposalPolicyInput = PermissionFilteringPolicyFnInput<ProposalResource, ProposalPermissionFlags>;
+export type ProposalPolicyInput = PermissionFilteringPolicyFnInput<ProposalResource, ProposalPermissionFlags, true>;
 export type ProposalPolicyDependencies = {
   isProposalReviewer: IsProposalReviewerFn;
 };
