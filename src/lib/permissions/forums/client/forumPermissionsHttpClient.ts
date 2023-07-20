@@ -1,16 +1,16 @@
-import fetch from '../../../http/fetch';
+import { DELETE, GET, POST } from '../../../http/index';
 import { AbstractPermissionsApiClient } from '../../clients/abstractApiClient.class';
 import type { PermissionsApiClientConstructor } from '../../clients/interfaces';
 import type { PermissionCompute, PermissionResource, Resource } from '../../core/interfaces';
 import type {
   AssignedPostCategoryPermission,
-  MutatedPostSearch,
-  PostCategoryPermissionFlags,
-  PostPermissionFlags,
-  PostSearchToMutate,
   CategoriesToFilter,
+  MutatedPostSearch,
   PostCategoryPermissionAssignment,
-  PostCategoryWithPermissions
+  PostCategoryPermissionFlags,
+  PostCategoryWithPermissions,
+  PostPermissionFlags,
+  PostSearchToMutate
 } from '../interfaces';
 
 import type { PremiumForumPermissionsClient } from './interfaces';
@@ -26,53 +26,36 @@ export class ForumPermissionsHttpClient extends AbstractPermissionsApiClient imp
   }
 
   getPermissionedCategories(userAndCategories: CategoriesToFilter): Promise<PostCategoryWithPermissions[]> {
-    return fetch(`${this.prefix}/get-permissioned-categories`, {
-      method: 'POST',
-      body: JSON.stringify(userAndCategories),
+    return POST(`${this.prefix}/get-permissioned-categories`, userAndCategories, {
       headers: this.jsonHeaders
     });
   }
 
   computePostPermissions(request: PermissionCompute): Promise<PostPermissionFlags> {
-    return fetch(`${this.prefix}/compute-post-permissions?resourceId=${request.resourceId}&userId=${request.userId}`, {
-      method: 'GET'
-    });
+    return GET(`${this.prefix}/compute-post-permissions`, request);
   }
 
   computePostCategoryPermissions(request: PermissionCompute): Promise<PostCategoryPermissionFlags> {
-    return fetch(
-      `${this.prefix}/compute-post-category-permissions?resourceId=${request.resourceId}&userId=${request.userId}`,
-      {
-        method: 'GET'
-      }
-    );
+    return GET(`${this.prefix}/compute-post-category-permissions`, request);
   }
 
   assignDefaultPostCategoryPermissions(postCategory: Resource): Promise<void> {
-    return fetch(`${this.prefix}/assign-default-post-category-permissions`, {
-      method: 'POST',
-      body: JSON.stringify(postCategory)
+    return POST(`${this.prefix}/assign-default-post-category-permissions`, postCategory, {
+      headers: this.jsonHeaders
     });
   }
 
   upsertPostCategoryPermission(request: PostCategoryPermissionAssignment): Promise<AssignedPostCategoryPermission> {
-    return fetch(`${this.prefix}/upsert-post-category-permission`, {
-      method: 'POST',
-      body: JSON.stringify(request)
-    });
+    return POST(`${this.prefix}/upsert-post-category-permission`, request, { headers: this.jsonHeaders });
   }
 
   deletePostCategoryPermission(request: PermissionResource): Promise<void> {
-    return fetch(`${this.prefix}/delete-post-category-permission`, {
-      method: 'DELETE',
-      body: JSON.stringify(request)
-    });
+    return DELETE(`${this.prefix}/delete-post-category-permission`, request, { headers: this.jsonHeaders });
   }
 
   mutatePostCategorySearch(request: PostSearchToMutate): Promise<MutatedPostSearch> {
-    return fetch(`${this.prefix}/mutate-post-category-search`, {
-      method: 'POST',
-      body: JSON.stringify(request)
+    return POST(`${this.prefix}/mutate-post-category-search`, request, {
+      headers: this.jsonHeaders
     });
   }
 }
