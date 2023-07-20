@@ -81,7 +81,7 @@ jobs:
               WEBAPP_WORKFLOW_BRANCH='main'
               PERMISSION_WORKFLOW_BRANCH='main'
             else 
-              if [[ $WEBAPP_WORKFLOW_BRANCH != ${{ github.head_ref }} || $PERMISSION_WORKFLOW_BRANCH != ${{ github.head_ref }} ]]; then
+              if [[ $WEBAPP_WORKFLOW_BRANCH != "${{ github.head_ref }}" || $PERMISSION_WORKFLOW_BRANCH != "${{ github.head_ref }}" ]]; then
                 echo "::warning title=Mismatch in test branch target::Workflow branch env vars is not this current branch. Are you sure they are set correctly??"
                 echo "Setting downstream repo branch to what is set in env."
                 echo "PR head branch: $GITHUB_HEAD_REF_SLUG"
