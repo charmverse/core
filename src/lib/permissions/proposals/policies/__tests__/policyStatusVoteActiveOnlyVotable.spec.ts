@@ -70,7 +70,7 @@ describe('policyStatusVoteActiveOnlyVotable', () => {
       unarchive: true
     });
   });
-  it('should allow author to view, vote make the proposal public', async () => {
+  it('should allow author to view, update vote, vote make the proposal public', async () => {
     const permissions = await policyStatusVoteActiveOnlyVotable({
       flags: fullPermissions,
       isAdmin: false,
@@ -82,7 +82,7 @@ describe('policyStatusVoteActiveOnlyVotable', () => {
       view: true,
       vote: true,
       make_public: true,
-      create_vote: false,
+      create_vote: true,
       comment: false,
       delete: false,
       edit: false,
@@ -116,7 +116,7 @@ describe('policyStatusVoteActiveOnlyVotable', () => {
     });
   });
 
-  it('should allow admin users to view, vote, make the proposal public and delete it', async () => {
+  it('should allow admin users to view, vote, update vote, make the proposal public and delete it', async () => {
     const permissions = await policyStatusVoteActiveOnlyVotable({
       flags: fullPermissions,
       isAdmin: true,
@@ -129,7 +129,7 @@ describe('policyStatusVoteActiveOnlyVotable', () => {
       vote: true,
       make_public: true,
       delete: true,
-      create_vote: false,
+      create_vote: true,
       comment: false,
       edit: false,
       review: false,
