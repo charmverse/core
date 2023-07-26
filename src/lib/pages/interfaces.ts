@@ -88,7 +88,10 @@ export type PageMeta = Pick<
   | 'hasContent'
   | 'galleryImage'
 >;
-type WithPermissions = {
+
+export type PagePermissionData = PagePermission & { sourcePermission: PagePermission | null };
+
+export type WithPermissions = {
   permissions: (PagePermission & { sourcePermission: PagePermission | null })[];
 };
 

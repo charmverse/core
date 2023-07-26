@@ -25,6 +25,7 @@ type PageGenerateArgs = Pick<Page, 'createdBy' | 'spaceId'> &
       | 'proposalId'
       | 'bountyId'
       | 'index'
+      | 'syncWithPageId'
     >
   > &
   OptionalPagePermissionsToGenerate;
@@ -52,7 +53,8 @@ export function generatePage({
   proposalId,
   bountyId,
   deletedAt,
-  index
+  index,
+  syncWithPageId
 }: PageGenerateArgs): Promise<Page> {
   return prisma.page.create({
     data: {
@@ -64,6 +66,7 @@ export function generatePage({
       updatedBy: createdBy,
       content: content ?? emptyDocument,
       contentText: contentText ?? '',
+      syncWithPageId,
       parentId,
       index,
       proposal: proposalId
