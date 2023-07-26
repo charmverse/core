@@ -92,7 +92,7 @@ export type PageMeta = Pick<
 export type PagePermissionData = PagePermission & { sourcePermission: PagePermission | null };
 
 export type WithPermissions = {
-  permissions: (PagePermission & { sourcePermission: PagePermission | null })[];
+  permissions: PagePermissionData[];
 };
 
 export type PageMetaWithPermissions = PageMeta & WithPermissions;
