@@ -68,7 +68,7 @@ jobs:
           # values of this step's output is used in step run-downstream-test-workflows
           # strategy/matrix doesn't permit access to env context. very lame...
 
-          if [[ ${{ github.event_name }} == 'push' && ${{ github.ref }} == 'refs/heads/main' ]]; then
+          if [[ "${{ github.event_name }}" == "push" && "${{ github.ref }}" == "refs/heads/main" ]]; then
             echo "webapp_workflow_branch='main'" >> $GITHUB_OUTPUT
             echo "permissionapi_workflow_branch='main'" >> $GITHUB_OUTPUT
 
@@ -81,7 +81,7 @@ jobs:
               WEBAPP_WORKFLOW_BRANCH='main'
               PERMISSION_WORKFLOW_BRANCH='main'
             else 
-              if [[ $WEBAPP_WORKFLOW_BRANCH != ${{ github.head_ref }} || $PERMISSION_WORKFLOW_BRANCH != ${{ github.head_ref }} ]]; then
+              if [[ $WEBAPP_WORKFLOW_BRANCH != "${{ github.head_ref }}" || $PERMISSION_WORKFLOW_BRANCH != "${{ github.head_ref }}" ]]; then
                 echo "::warning title=Mismatch in test branch target::Workflow branch env vars is not this current branch. Are you sure they are set correctly??"
                 echo "Setting downstream repo branch to what is set in env."
                 echo "PR head branch: $GITHUB_HEAD_REF_SLUG"
@@ -92,16 +92,14 @@ jobs:
             echo "webapp_workflow_branch=$WEBAPP_WORKFLOW_BRANCH" >> $GITHUB_OUTPUT
             echo "permissionapi_workflow_branch=$PERMISSION_WORKFLOW_BRANCH" >> $GITHUB_OUTPUT
           fi
-      # On rerun - upstream would've changed with a version update. 
-      #   So checking out with the head of Pull request Merge 
-      - name: Checkout head of merge on re-run
-        uses: actions/checkout@v3
-        if: github.run_attempt > 1
-        with:   
-          ref: refs/pull/${{ github.event.number }}/merge
+
       - name: Checkout ref of the event that triggered this workflow. (first time run)
         uses: actions/checkout@v3 
-        if: github.run_attempt == 1
+      - name: Checkout head of merge on re-run
+        uses: actions/checkout@v3
+        if: github.event_name != 'push' && github.run_attempt > 1
+        with:   
+          ref: refs/pull/${{ github.event.number }}/merge
       - run: |
           cat package.json
           echo "run attempt ${{github.run_attempt}}"
