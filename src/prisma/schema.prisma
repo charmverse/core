@@ -315,6 +315,7 @@ model Space {
   userActions                 UserSpaceAction[]
   postTags                    PostTag[]
   blockCounts                 BlockCount[]
+  blockQuota                  Int                            @default(0)
 
   @@index([createdBy])
 }
