@@ -148,8 +148,8 @@ describe('policyStatusReviewCommentable', () => {
       delete: true,
       archive: true,
       unarchive: true,
+      comment: true,
       edit: false,
-      comment: false,
       create_vote: false,
       review: false,
       vote: false,
@@ -201,7 +201,7 @@ describe('policyStatusReviewCommentable', () => {
     });
   });
 
-  it('should allow space members to view', async () => {
+  it('should allow space members to view and comment', async () => {
     const permissions = await policyStatusReviewCommentable({
       flags: fullPermissions,
       isAdmin: false,
@@ -211,8 +211,8 @@ describe('policyStatusReviewCommentable', () => {
 
     expect(permissions).toMatchObject<ProposalPermissionFlags>({
       view: true,
+      comment: true,
       make_public: false,
-      comment: false,
       edit: false,
       delete: false,
       create_vote: false,
