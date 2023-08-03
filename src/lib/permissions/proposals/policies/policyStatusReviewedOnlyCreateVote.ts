@@ -1,14 +1,16 @@
 import type { ProposalOperation } from '@prisma/client';
 
+import { uniqueValues } from '../../../utilities/array';
 import { typedKeys } from '../../../utilities/objects';
-import { AvailableProposalPermissions } from '../availableProposalPermissions.class';
 import type { ProposalPermissionFlags } from '../interfaces';
 import { isProposalAuthor } from '../isProposalAuthor';
 
 import type { ProposalPolicyInput } from './interfaces';
 
+const baseOperations: ProposalOperation[] = ['view', 'comment'];
+
 const allowedAuthorOperations: ProposalOperation[] = [
-  'view',
+  ...baseOperations,
   'create_vote',
   'delete',
   'make_public',
@@ -16,7 +18,7 @@ const allowedAuthorOperations: ProposalOperation[] = [
   'unarchive'
 ];
 const allowedAdminOperations: ProposalOperation[] = [...allowedAuthorOperations, 'edit'];
-const allowedSpaceWideProposalPermissions: ProposalOperation[] = ['delete', 'view', 'archive', 'unarchive'];
+const allowedSpaceWideProposalPermissions: ProposalOperation[] = [...baseOperations, 'delete', 'archive', 'unarchive'];
 
 export async function policyStatusReviewedOnlyCreateVote({
   resource,
@@ -31,31 +33,32 @@ export async function policyStatusReviewedOnlyCreateVote({
     return newPermissions;
   }
 
-  if (isProposalAuthor({ proposal: resource, userId })) {
-    typedKeys(flags).forEach((flag) => {
-      if (!allowedAuthorOperations.includes(flag)) {
-        newPermissions[flag] = false;
-      }
-    });
-    return newPermissions;
-  } else if (isAdmin) {
-    typedKeys(flags).forEach((flag) => {
-      if (!allowedAdminOperations.includes(flag)) {
-        newPermissions[flag] = false;
-      }
-    });
-    return newPermissions;
-  } else if (preComputedSpacePermissionFlags?.deleteAnyProposal) {
-    typedKeys(flags).forEach((flag) => {
-      if (!allowedSpaceWideProposalPermissions.includes(flag)) {
-        newPermissions[flag] = false;
+  if (isAdmin) {
+    typedKeys(flags).forEach((op) => {
+      if (!allowedAdminOperations.includes(op)) {
+        newPermissions[op] = false;
       }
     });
     return newPermissions;
   }
-  // At most allow a non author to view the proposal
-  return {
-    ...new AvailableProposalPermissions().empty,
-    view: newPermissions.view === true
-  };
+
+  const operations: ProposalOperation[] = [...baseOperations];
+
+  if (isProposalAuthor({ proposal: resource, userId })) {
+    operations.push(...allowedAuthorOperations);
+  }
+
+  if (preComputedSpacePermissionFlags?.deleteAnyProposal) {
+    operations.push(...allowedSpaceWideProposalPermissions);
+  }
+
+  const allowedOperations = uniqueValues(operations);
+
+  typedKeys(flags).forEach((flag) => {
+    if (!allowedOperations.includes(flag)) {
+      newPermissions[flag] = false;
+    }
+  });
+
+  return newPermissions;
 }
