@@ -7,6 +7,8 @@ import type { ProposalPolicyDependencies, ProposalResource } from './interfaces'
 import { policyArchivedViewOnly } from './policyArchivedViewOnly';
 import { policyStatusDiscussionEditableCommentable } from './policyStatusDiscussionEditableCommentable';
 import { policyStatusDraftNotViewable } from './policyStatusDraftNotViewable';
+import { injectPolicyStatusEvaluationActiveCommentable } from './policyStatusEvaluationActiveCommentable';
+import { policyStatusEvaluationClosedViewOnly } from './policyStatusEvaluationClosedViewOnly';
 import { injectPolicyStatusReviewCommentable } from './policyStatusReviewCommentable';
 import { policyStatusReviewedOnlyCreateVote } from './policyStatusReviewedOnlyCreateVote';
 import { policyStatusVoteActiveOnlyVotable } from './policyStatusVoteActiveOnlyVotable';
@@ -47,6 +49,8 @@ export function getDefaultProposalPermissionPolicies(deps: ProposalPolicyDepende
     policyStatusReviewedOnlyCreateVote,
     policyStatusVoteActiveOnlyVotable,
     policyStatusVoteClosedViewOnly,
+    injectPolicyStatusEvaluationActiveCommentable(deps),
+    policyStatusEvaluationClosedViewOnly,
     policyArchivedViewOnly
   ];
 }
