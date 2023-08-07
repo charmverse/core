@@ -407,6 +407,7 @@ model Page {
   comments            PageComment[]
   apiPageKeys         ApiPageKey[]
   userSpaceActions    UserSpaceAction[]
+  sourceTemplateId       String?       @db.Uuid
 
   @@index([bountyId])
   @@index([cardId])
@@ -1096,7 +1097,6 @@ model Proposal {
   categoryId             String?            @db.Uuid
   category               ProposalCategory?  @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   snapshotProposalExpiry DateTime?
-  sourceTemplateId       String?            @db.Uuid
   Post                   Post[]
   evaluationType         ProposalEvaluationType @default(vote)
   rubricCriteria         ProposalRubricCriteria[] 
@@ -1148,13 +1148,10 @@ model ProposalRubricCriteria {
   parameters  Json
   answers     ProposalRubricCriteriaAnswer[]
 
-  @@unique([title, proposalId])
-
   @@index([proposalId])
 }
 
 model ProposalRubricCriteriaAnswer {
-  id          String   @id   @db.Uuid @default(uuid())
   rubricCriteriaId  String   @db.Uuid
   rubricCriteria  ProposalRubricCriteria   @relation(fields: [rubricCriteriaId], references: [id], onDelete: Cascade)  
   proposalId  String      @db.Uuid

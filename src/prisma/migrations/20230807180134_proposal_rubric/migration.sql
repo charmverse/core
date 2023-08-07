@@ -19,8 +19,10 @@ ALTER TYPE "ProposalStatus" ADD VALUE 'evaluation_active';
 ALTER TYPE "ProposalStatus" ADD VALUE 'evaluation_closed';
 
 -- AlterTable
-ALTER TABLE "Proposal" ADD COLUMN     "evaluationType" "ProposalEvaluationType" NOT NULL DEFAULT 'vote',
-ADD COLUMN     "sourceTemplateId" UUID;
+ALTER TABLE "Page" ADD COLUMN     "sourceTemplateId" UUID;
+
+-- AlterTable
+ALTER TABLE "Proposal" ADD COLUMN     "evaluationType" "ProposalEvaluationType" NOT NULL DEFAULT 'vote';
 
 -- CreateTable
 CREATE TABLE "ProposalRubricCriteria" (
@@ -36,20 +38,14 @@ CREATE TABLE "ProposalRubricCriteria" (
 
 -- CreateTable
 CREATE TABLE "ProposalRubricCriteriaAnswer" (
-    "id" UUID NOT NULL,
     "rubricCriteriaId" UUID NOT NULL,
     "proposalId" UUID NOT NULL,
     "userId" TEXT NOT NULL,
-    "response" JSONB NOT NULL,
-
-    CONSTRAINT "ProposalRubricCriteriaAnswer_pkey" PRIMARY KEY ("id")
+    "response" JSONB NOT NULL
 );
 
 -- CreateIndex
 CREATE INDEX "ProposalRubricCriteria_proposalId_idx" ON "ProposalRubricCriteria"("proposalId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "ProposalRubricCriteria_title_proposalId_key" ON "ProposalRubricCriteria"("title", "proposalId");
 
 -- CreateIndex
 CREATE INDEX "ProposalRubricCriteriaAnswer_proposalId_idx" ON "ProposalRubricCriteriaAnswer"("proposalId");
