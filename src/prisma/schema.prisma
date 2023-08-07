@@ -157,6 +157,9 @@ enum ProposalStatus {
   reviewed
   vote_active
   vote_closed
+  // Separate flow
+  evaluation_active
+  evaluation_closed
 }
 
 enum WorkspaceEventType {
