@@ -68,7 +68,6 @@ describe('policyStatusDraftOnlyViewable', () => {
       make_public: true,
       archive: true,
       unarchive: true,
-      configure_rubric: true,
       evaluate: true
     });
   });
@@ -91,7 +90,6 @@ describe('policyStatusDraftOnlyViewable', () => {
       vote: false,
       archive: true,
       unarchive: true,
-      configure_rubric: false,
       evaluate: false
     });
   });
@@ -115,7 +113,6 @@ describe('policyStatusDraftOnlyViewable', () => {
       vote: false,
       archive: true,
       unarchive: true,
-      configure_rubric: false,
       evaluate: false
     });
   });
@@ -139,7 +136,6 @@ describe('policyStatusDraftOnlyViewable', () => {
       vote: false,
       archive: false,
       unarchive: false,
-      configure_rubric: false,
       evaluate: false
     });
   });
@@ -164,7 +160,6 @@ describe('policyStatusDraftOnlyViewable', () => {
       make_public: false,
       archive: true,
       unarchive: true,
-      configure_rubric: false,
       evaluate: false
     });
   });
@@ -187,7 +182,6 @@ describe('policyStatusDraftOnlyViewable', () => {
       make_public: false,
       archive: false,
       unarchive: false,
-      configure_rubric: false,
       evaluate: false
     });
   });

@@ -60,8 +60,6 @@ describe('generateProposal', () => {
       category: proposalCategory,
       page: expect.any(Object),
       evaluationType: 'vote',
-      rubricAnswers: null,
-      rubricQuestions: null,
       authors: expect.arrayContaining([
         {
           proposalId: generatedProposal.id,
@@ -79,7 +77,8 @@ describe('generateProposal', () => {
           roleId: role.id,
           userId: null
         }
-      ]
+      ],
+      sourceTemplateId: null
     });
 
     const proposalPageFromDb = (await prisma.page.findUnique({

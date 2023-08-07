@@ -1096,10 +1096,11 @@ model Proposal {
   categoryId             String?            @db.Uuid
   category               ProposalCategory?  @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   snapshotProposalExpiry DateTime?
+  sourceTemplateId       String?            @db.Uuid
   Post                   Post[]
   evaluationType         ProposalEvaluationType @default(vote)
-  rubricQuestions        Json? 
-  rubricAnswers          Json?            
+  rubricCriteria         ProposalRubricCriteria[] 
+  rubricAnswers          ProposalRubricCriteriaAnswer[]            
 
   @@index([spaceId])
   @@index([reviewedBy])
@@ -1131,6 +1132,41 @@ model ProposalReviewer {
   @@index([proposalId])
   @@index([roleId])
   @@index([userId])
+}
+
+enum ProposalRubricCriteriaType {
+  range
+}
+
+model ProposalRubricCriteria {
+  id          String   @id   @db.Uuid @default(uuid())
+  title       String
+  description String?
+  proposalId  String      @db.Uuid
+  proposal    Proposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  type        ProposalRubricCriteriaType
+  parameters  Json
+  answers     ProposalRubricCriteriaAnswer[]
+
+  @@unique([title, proposalId])
+
+  @@index([proposalId])
+}
+
+model ProposalRubricCriteriaAnswer {
+  id          String   @id   @db.Uuid @default(uuid())
+  rubricCriteriaId  String   @db.Uuid
+  rubricCriteria  ProposalRubricCriteria   @relation(fields: [rubricCriteriaId], references: [id], onDelete: Cascade)  
+  proposalId  String      @db.Uuid
+  proposal    Proposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  userId      String
+  response    Json
+
+  @@unique([userId, rubricCriteriaId])
+
+  @@index([proposalId])
+
+  @@index([rubricCriteriaId])
 }
 
 model ProfileItem {
@@ -1187,7 +1223,6 @@ enum ProposalOperation {
   make_public
   archive
   unarchive
-  configure_rubric
 }
 
 enum ProposalCategoryPermissionLevel {
