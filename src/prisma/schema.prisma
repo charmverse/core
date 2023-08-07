@@ -157,6 +157,9 @@ enum ProposalStatus {
   reviewed
   vote_active
   vote_closed
+  // Separate flow
+  evaluation_active
+  evaluation_closed
 }
 
 enum WorkspaceEventType {
@@ -404,6 +407,7 @@ model Page {
   comments            PageComment[]
   apiPageKeys         ApiPageKey[]
   userSpaceActions    UserSpaceAction[]
+  sourceTemplateId       String?       @db.Uuid
 
   @@index([bountyId])
   @@index([cardId])
@@ -1071,6 +1075,11 @@ model Comment {
   @@index([userId])
 }
 
+enum ProposalEvaluationType {
+  vote
+  evaluation
+}
+
 model Proposal {
   id                     String             @id @default(uuid()) @db.Uuid
   createdBy              String             @db.Uuid
@@ -1089,6 +1098,9 @@ model Proposal {
   category               ProposalCategory?  @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   snapshotProposalExpiry DateTime?
   Post                   Post[]
+  evaluationType         ProposalEvaluationType @default(vote)
+  rubricCriteria         ProposalRubricCriteria[] 
+  rubricAnswers          ProposalRubricCriteriaAnswer[]            
 
   @@index([spaceId])
   @@index([reviewedBy])
@@ -1120,6 +1132,38 @@ model ProposalReviewer {
   @@index([proposalId])
   @@index([roleId])
   @@index([userId])
+}
+
+enum ProposalRubricCriteriaType {
+  range
+}
+
+model ProposalRubricCriteria {
+  id          String   @id   @db.Uuid @default(uuid())
+  title       String
+  description String?
+  proposalId  String      @db.Uuid
+  proposal    Proposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  type        ProposalRubricCriteriaType
+  parameters  Json
+  answers     ProposalRubricCriteriaAnswer[]
+
+  @@index([proposalId])
+}
+
+model ProposalRubricCriteriaAnswer {
+  rubricCriteriaId  String   @db.Uuid
+  rubricCriteria  ProposalRubricCriteria   @relation(fields: [rubricCriteriaId], references: [id], onDelete: Cascade)  
+  proposalId  String      @db.Uuid
+  proposal    Proposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  userId      String
+  response    Json
+
+  @@unique([userId, rubricCriteriaId])
+
+  @@index([proposalId])
+
+  @@index([rubricCriteriaId])
 }
 
 model ProfileItem {
@@ -1172,6 +1216,7 @@ enum ProposalOperation {
   vote
   comment
   review
+  evaluate
   make_public
   archive
   unarchive

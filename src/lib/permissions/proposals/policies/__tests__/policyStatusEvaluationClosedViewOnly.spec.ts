@@ -6,7 +6,7 @@ import { generateSpaceUser, generateUserAndSpace } from '../../../../testing/use
 import { AvailableSpacePermissions } from '../../../spaces/availableSpacePermissions';
 import { AvailableProposalPermissions } from '../../availableProposalPermissions.class';
 import type { ProposalPermissionFlags } from '../../interfaces';
-import { policyStatusVoteClosedViewOnly } from '../policyStatusVoteClosedViewOnly';
+import { policyStatusEvaluationClosedViewOnly } from '../policyStatusEvaluationClosedViewOnly';
 
 let proposal: ProposalWithUsers;
 let proposalCategory: ProposalCategory;
@@ -34,7 +34,7 @@ beforeAll(async () => {
   proposal = await generateProposal({
     categoryId: proposalCategory.id,
     authors: [proposalAuthor.id],
-    proposalStatus: 'vote_closed',
+    proposalStatus: 'evaluation_closed',
     spaceId: space.id,
     userId: proposalAuthor.id,
     reviewers: [
@@ -48,9 +48,9 @@ beforeAll(async () => {
 
 const fullPermissions = new AvailableProposalPermissions().full;
 
-describe('policyStatusVoteClosedViewOnly', () => {
-  it('should perform a no-op if the status is not vote_closed', async () => {
-    const permissions = await policyStatusVoteClosedViewOnly({
+describe('policyStatusEvaluationClosedViewOnly', () => {
+  it('should perform a no-op if the status is not evaluation_closed', async () => {
+    const permissions = await policyStatusEvaluationClosedViewOnly({
       flags: fullPermissions,
       isAdmin: false,
       resource: { ...proposal, status: 'discussion' },
@@ -73,7 +73,7 @@ describe('policyStatusVoteClosedViewOnly', () => {
   });
 
   it('should allow authors to view, make public, archive and unarchive', async () => {
-    const permissions = await policyStatusVoteClosedViewOnly({
+    const permissions = await policyStatusEvaluationClosedViewOnly({
       flags: fullPermissions,
       isAdmin: false,
       resource: proposal,
@@ -96,7 +96,7 @@ describe('policyStatusVoteClosedViewOnly', () => {
   });
 
   it('should preserve space-wide delete and archive permissions when space wide proposal deletion is allowed', async () => {
-    const permissions = await policyStatusVoteClosedViewOnly({
+    const permissions = await policyStatusEvaluationClosedViewOnly({
       flags: fullPermissions,
       isAdmin: false,
       resource: proposal,
@@ -121,7 +121,7 @@ describe('policyStatusVoteClosedViewOnly', () => {
   });
 
   it('should allow admins to view, make public, delete, archive and unarchive', async () => {
-    const permissions = await policyStatusVoteClosedViewOnly({
+    const permissions = await policyStatusEvaluationClosedViewOnly({
       flags: fullPermissions,
       isAdmin: true,
       resource: proposal,
@@ -147,7 +147,7 @@ describe('policyStatusVoteClosedViewOnly', () => {
     const users = [proposalReviewer, spaceMember];
 
     for (const user of users) {
-      const permissions = await policyStatusVoteClosedViewOnly({
+      const permissions = await policyStatusEvaluationClosedViewOnly({
         flags: fullPermissions,
         isAdmin: false,
         resource: proposal,

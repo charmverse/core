@@ -49,7 +49,7 @@ function withDepsDiscussionProposal({ countReviewers }: GetFlagFilterDependencie
       flags.addPermissions(['draft']);
 
       if (countReviewers({ proposal }) > 0) {
-        flags.addPermissions(['review']);
+        flags.addPermissions([proposal.evaluationType === 'vote' ? 'review' : 'evaluation_active']);
       }
     }
     return flags.operationFlags;
@@ -117,6 +117,8 @@ export function getProposalFlagFilters(
     [ProposalStatus.review]: withDepsInReviewProposal(deps),
     [ProposalStatus.reviewed]: withDepsReviewedProposal(deps),
     [ProposalStatus.vote_active]: () => Promise.resolve(new TransitionFlags().empty),
-    [ProposalStatus.vote_closed]: () => Promise.resolve(new TransitionFlags().empty)
+    [ProposalStatus.vote_closed]: () => Promise.resolve(new TransitionFlags().empty),
+    [ProposalStatus.evaluation_active]: () => Promise.resolve(new TransitionFlags().empty),
+    [ProposalStatus.evaluation_closed]: () => Promise.resolve(new TransitionFlags().empty)
   };
 }

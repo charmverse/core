@@ -1,4 +1,4 @@
-import type { Page, Post, Prisma, ProposalCategory, ProposalStatus } from '@prisma/client';
+import type { Page, Post, Prisma, ProposalCategory, ProposalStatus, ProposalEvaluationType } from '@prisma/client';
 import { v4 } from 'uuid';
 
 import { prisma } from '../../prisma-client';
@@ -55,6 +55,7 @@ export type GenerateProposalInput = {
   proposalStatus?: ProposalStatus;
   title?: string;
   content?: any;
+  evaluationType?: ProposalEvaluationType;
 };
 
 /**
@@ -70,7 +71,8 @@ export async function generateProposal({
   reviewers = [],
   deletedAt = null,
   content,
-  archived
+  archived,
+  evaluationType
 }: GenerateProposalInput): Promise<ProposalWithUsers & { page: Page }> {
   const proposalId = v4();
 
@@ -83,6 +85,7 @@ export async function generateProposal({
       createdBy: userId,
       status: proposalStatus,
       archived,
+      evaluationType,
       space: {
         connect: {
           id: spaceId

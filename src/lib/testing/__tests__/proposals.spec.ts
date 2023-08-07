@@ -59,6 +59,7 @@ describe('generateProposal', () => {
       spaceId: space.id,
       category: proposalCategory,
       page: expect.any(Object),
+      evaluationType: 'vote',
       authors: expect.arrayContaining([
         {
           proposalId: generatedProposal.id,

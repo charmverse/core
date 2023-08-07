@@ -72,7 +72,8 @@ describe('policyStatusReviewCommentable', () => {
       vote: true,
       make_public: true,
       archive: true,
-      unarchive: true
+      unarchive: true,
+      evaluate: true
     });
   });
   it('should allow the author to view, comment, delete, make public, archive and unarchive', async () => {
@@ -93,7 +94,8 @@ describe('policyStatusReviewCommentable', () => {
       review: false,
       vote: false,
       archive: true,
-      unarchive: true
+      unarchive: true,
+      evaluate: false
     });
   });
 
@@ -129,7 +131,8 @@ describe('policyStatusReviewCommentable', () => {
       create_vote: false,
       vote: false,
       archive: true,
-      unarchive: true
+      unarchive: true,
+      evaluate: false
     });
   });
 
@@ -153,7 +156,8 @@ describe('policyStatusReviewCommentable', () => {
       create_vote: false,
       review: false,
       vote: false,
-      make_public: false
+      make_public: false,
+      evaluate: false
     });
   });
 
@@ -175,7 +179,8 @@ describe('policyStatusReviewCommentable', () => {
       create_vote: false,
       vote: false,
       archive: true,
-      unarchive: true
+      unarchive: true,
+      evaluate: false
     });
   });
 
@@ -197,7 +202,8 @@ describe('policyStatusReviewCommentable', () => {
       create_vote: false,
       vote: false,
       archive: false,
-      unarchive: false
+      unarchive: false,
+      evaluate: false
     });
   });
 
@@ -219,7 +225,8 @@ describe('policyStatusReviewCommentable', () => {
       review: false,
       vote: false,
       archive: false,
-      unarchive: false
+      unarchive: false,
+      evaluate: false
     });
   });
 });

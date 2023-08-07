@@ -6,7 +6,8 @@ import { generateSpaceUser, generateUserAndSpace } from '../../../../testing/use
 import { AvailableSpacePermissions } from '../../../spaces/availableSpacePermissions';
 import { AvailableProposalPermissions } from '../../availableProposalPermissions.class';
 import type { ProposalPermissionFlags } from '../../interfaces';
-import { policyStatusReviewedOnlyCreateVote } from '../policyStatusReviewedOnlyCreateVote';
+import { isProposalReviewer } from '../../isProposalReviewer';
+import { injectPolicyStatusEvaluationActiveCommentable } from '../policyStatusEvaluationActiveCommentable';
 
 let proposal: ProposalWithUsers;
 let proposalCategory: ProposalCategory;
@@ -15,6 +16,10 @@ let adminUser: User;
 let proposalAuthor: User;
 let proposalReviewer: User;
 let spaceMember: User;
+
+const policyStatusEvaluationActiveCommentable = injectPolicyStatusEvaluationActiveCommentable({
+  isProposalReviewer
+});
 
 beforeAll(async () => {
   const generated = await generateUserAndSpace({
@@ -34,7 +39,7 @@ beforeAll(async () => {
   proposal = await generateProposal({
     categoryId: proposalCategory.id,
     authors: [proposalAuthor.id],
-    proposalStatus: 'reviewed',
+    proposalStatus: 'evaluation_active',
     spaceId: space.id,
     userId: proposalAuthor.id,
     reviewers: [
@@ -48,9 +53,9 @@ beforeAll(async () => {
 
 const fullPermissions = new AvailableProposalPermissions().full;
 
-describe('policyStatusReviewedOnlyCreateVote', () => {
-  it('should perform a no-op if the status is not reviewed', async () => {
-    const permissions = await policyStatusReviewedOnlyCreateVote({
+describe('policyStatusEvaluationActiveCommentable', () => {
+  it('should perform a no-op if the status is not evaluation_active', async () => {
+    const permissions = await policyStatusEvaluationActiveCommentable({
       flags: fullPermissions,
       isAdmin: false,
       resource: { ...proposal, status: 'draft' },
@@ -71,8 +76,8 @@ describe('policyStatusReviewedOnlyCreateVote', () => {
       evaluate: true
     });
   });
-  it('should allow the author to view, create_vote, delete_vote, make public, archive and unarchive', async () => {
-    const permissions = await policyStatusReviewedOnlyCreateVote({
+  it('should allow the author to view, comment, delete, make public, archive and unarchive', async () => {
+    const permissions = await policyStatusEvaluationActiveCommentable({
       flags: fullPermissions,
       isAdmin: false,
       resource: proposal,
@@ -80,12 +85,12 @@ describe('policyStatusReviewedOnlyCreateVote', () => {
     });
 
     expect(permissions).toMatchObject<ProposalPermissionFlags>({
-      create_vote: true,
       view: true,
-      make_public: true,
       comment: true,
       delete: true,
+      make_public: true,
       edit: false,
+      create_vote: false,
       review: false,
       vote: false,
       archive: true,
@@ -94,8 +99,45 @@ describe('policyStatusReviewedOnlyCreateVote', () => {
     });
   });
 
+  it('should allow a user who is author and reviewer to view, comment, delete, evaluate, make public, archive and unarchive', async () => {
+    const proposalWithSameAuthorReviewer = await generateProposal({
+      categoryId: proposalCategory.id,
+      authors: [proposalAuthor.id],
+      proposalStatus: 'evaluation_active',
+      spaceId: space.id,
+      userId: proposalAuthor.id,
+      reviewers: [
+        {
+          group: 'user',
+          id: proposalAuthor.id
+        }
+      ]
+    });
+
+    const permissions = await policyStatusEvaluationActiveCommentable({
+      flags: fullPermissions,
+      isAdmin: false,
+      resource: proposalWithSameAuthorReviewer,
+      userId: proposalAuthor.id
+    });
+
+    expect(permissions).toMatchObject<ProposalPermissionFlags>({
+      view: true,
+      delete: true,
+      review: false,
+      comment: true,
+      make_public: true,
+      edit: false,
+      create_vote: false,
+      vote: false,
+      archive: true,
+      unarchive: true,
+      evaluate: true
+    });
+  });
+
   it('should preserve space-wide delete and archive permissions when space wide proposal deletion is allowed', async () => {
-    const permissions = await policyStatusReviewedOnlyCreateVote({
+    const permissions = await policyStatusEvaluationActiveCommentable({
       flags: fullPermissions,
       isAdmin: false,
       resource: proposal,
@@ -109,8 +151,8 @@ describe('policyStatusReviewedOnlyCreateVote', () => {
       delete: true,
       archive: true,
       unarchive: true,
-      edit: false,
       comment: true,
+      edit: false,
       create_vote: false,
       review: false,
       vote: false,
@@ -119,8 +161,8 @@ describe('policyStatusReviewedOnlyCreateVote', () => {
     });
   });
 
-  it('should allow the admin to view, delete, edit, create_vote, make public, archive and unarchive', async () => {
-    const permissions = await policyStatusReviewedOnlyCreateVote({
+  it('should allow the admin to view, comment, edit, delete, evaluate, make public, archive and unarchive', async () => {
+    const permissions = await policyStatusEvaluationActiveCommentable({
       flags: fullPermissions,
       isAdmin: true,
       resource: proposal,
@@ -129,21 +171,21 @@ describe('policyStatusReviewedOnlyCreateVote', () => {
 
     expect(permissions).toMatchObject<ProposalPermissionFlags>({
       view: true,
-      delete: true,
-      create_vote: true,
-      make_public: true,
       edit: true,
+      delete: true,
       review: false,
       comment: true,
+      make_public: true,
+      create_vote: false,
       vote: false,
       archive: true,
       unarchive: true,
-      evaluate: false
+      evaluate: true
     });
   });
 
-  it('should allow reviewer to view', async () => {
-    const permissions = await policyStatusReviewedOnlyCreateVote({
+  it('should allow reviewer to view, comment and evaluate', async () => {
+    const permissions = await policyStatusEvaluationActiveCommentable({
       flags: fullPermissions,
       isAdmin: false,
       resource: proposal,
@@ -152,21 +194,21 @@ describe('policyStatusReviewedOnlyCreateVote', () => {
 
     expect(permissions).toMatchObject<ProposalPermissionFlags>({
       view: true,
-      make_public: false,
       comment: true,
+      evaluate: true,
       review: false,
+      make_public: false,
       edit: false,
       delete: false,
       create_vote: false,
       vote: false,
       archive: false,
-      unarchive: false,
-      evaluate: false
+      unarchive: false
     });
   });
 
-  it('should allow space members to view', async () => {
-    const permissions = await policyStatusReviewedOnlyCreateVote({
+  it('should allow space members to view and comment', async () => {
+    const permissions = await policyStatusEvaluationActiveCommentable({
       flags: fullPermissions,
       isAdmin: false,
       resource: proposal,
@@ -175,8 +217,8 @@ describe('policyStatusReviewedOnlyCreateVote', () => {
 
     expect(permissions).toMatchObject<ProposalPermissionFlags>({
       view: true,
-      make_public: false,
       comment: true,
+      make_public: false,
       edit: false,
       delete: false,
       create_vote: false,
