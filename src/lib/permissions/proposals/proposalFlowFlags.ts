@@ -49,7 +49,7 @@ function withDepsDiscussionProposal({ countReviewers }: GetFlagFilterDependencie
       flags.addPermissions(['draft']);
 
       if (countReviewers({ proposal }) > 0) {
-        flags.addPermissions(['review']);
+        flags.addPermissions([proposal.evaluationType === 'vote' ? 'review' : 'evaluation_active']);
       }
     }
     return flags.operationFlags;
