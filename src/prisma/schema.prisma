@@ -1071,6 +1071,11 @@ model Comment {
   @@index([userId])
 }
 
+enum ProposalEvaluationType {
+  vote
+  evaluation
+}
+
 model Proposal {
   id                     String             @id @default(uuid()) @db.Uuid
   createdBy              String             @db.Uuid
@@ -1089,6 +1094,9 @@ model Proposal {
   category               ProposalCategory?  @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   snapshotProposalExpiry DateTime?
   Post                   Post[]
+  evaluationType         ProposalEvaluationType @default(vote)
+  rubricQuestions        Json? 
+  rubricAnswers          Json?            
 
   @@index([spaceId])
   @@index([reviewedBy])
@@ -1172,9 +1180,11 @@ enum ProposalOperation {
   vote
   comment
   review
+  evaluate
   make_public
   archive
   unarchive
+  configure_rubric
 }
 
 enum ProposalCategoryPermissionLevel {

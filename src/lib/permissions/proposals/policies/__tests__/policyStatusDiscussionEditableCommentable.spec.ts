@@ -67,7 +67,9 @@ describe('policyStatusDiscussionEditableCommentable', () => {
       vote: true,
       make_public: true,
       archive: true,
-      unarchive: true
+      unarchive: true,
+      configure_rubric: true,
+      evaluate: true
     });
   });
 
@@ -89,7 +91,9 @@ describe('policyStatusDiscussionEditableCommentable', () => {
       review: false,
       vote: false,
       archive: true,
-      unarchive: true
+      unarchive: true,
+      configure_rubric: false,
+      evaluate: false
     });
   });
 
@@ -113,7 +117,9 @@ describe('policyStatusDiscussionEditableCommentable', () => {
       create_vote: false,
       review: false,
       vote: false,
-      make_public: false
+      make_public: false,
+      configure_rubric: false,
+      evaluate: false
     });
   });
 
@@ -135,7 +141,9 @@ describe('policyStatusDiscussionEditableCommentable', () => {
       review: false,
       vote: false,
       archive: true,
-      unarchive: true
+      unarchive: true,
+      configure_rubric: false,
+      evaluate: false
     });
   });
 
@@ -157,7 +165,9 @@ describe('policyStatusDiscussionEditableCommentable', () => {
       review: false,
       vote: false,
       archive: false,
-      unarchive: false
+      unarchive: false,
+      configure_rubric: false,
+      evaluate: false
     });
   });
 
@@ -179,7 +189,9 @@ describe('policyStatusDiscussionEditableCommentable', () => {
       review: false,
       vote: false,
       archive: false,
-      unarchive: false
+      unarchive: false,
+      configure_rubric: false,
+      evaluate: false
     });
   });
 });
