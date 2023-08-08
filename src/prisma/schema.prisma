@@ -1158,6 +1158,7 @@ model ProposalRubricCriteriaAnswer {
   proposal         Proposal               @relation(fields: [proposalId], references: [id], onDelete: Cascade)
   userId           String
   response         Json
+  comment          String?
 
   @@unique([userId, rubricCriteriaId])
   @@index([proposalId])
