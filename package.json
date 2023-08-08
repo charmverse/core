@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.2.11-rc-rubric-answer-c.0",
+  "version": "0.2.11",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
