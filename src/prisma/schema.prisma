@@ -314,6 +314,8 @@ model Space {
   webhookSigningSecret        String?
   origin                      String?
   hiddenFeatures              Feature[]
+  features                    Json[]
+  memberProfiles              Json[]
   stripeSubscription          StripeSubscription[]
   userActions                 UserSpaceAction[]
   postTags                    PostTag[]
