@@ -87,6 +87,7 @@ export type PageMeta = Pick<
   | 'bountyId'
   | 'hasContent'
   | 'galleryImage'
+  | 'syncWithPageId'
 >;
 
 export type PagePermissionData = PagePermission & { sourcePermission: PagePermission | null };
