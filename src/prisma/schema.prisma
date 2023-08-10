@@ -1227,6 +1227,7 @@ enum ProposalCategoryPermissionLevel {
   view
   view_comment
   view_comment_vote
+  create_comment
   full_access
 }
 
