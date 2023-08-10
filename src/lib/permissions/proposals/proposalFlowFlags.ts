@@ -108,6 +108,20 @@ function withDepsReviewedProposal({ computeProposalPermissions }: GetFlagFilterD
     return flags.operationFlags;
   };
 }
+
+async function evaluationActiveProposal({ proposal, userId }: GetFlagsInput): Promise<ProposalFlowPermissionFlags> {
+  const flags = new TransitionFlags();
+  const { spaceRole } = await hasAccessToSpace({
+    spaceId: proposal.spaceId,
+    userId
+  });
+
+  if (spaceRole?.isAdmin) {
+    flags.addPermissions(['evaluation_closed']);
+  }
+  return flags.operationFlags;
+}
+
 export function getProposalFlagFilters(
   deps: GetFlagFilterDependencies
 ): Record<ProposalStatus, (args: GetFlagsInput) => Promise<ProposalFlowPermissionFlags>> {
@@ -118,7 +132,7 @@ export function getProposalFlagFilters(
     [ProposalStatus.reviewed]: withDepsReviewedProposal(deps),
     [ProposalStatus.vote_active]: () => Promise.resolve(new TransitionFlags().empty),
     [ProposalStatus.vote_closed]: () => Promise.resolve(new TransitionFlags().empty),
-    [ProposalStatus.evaluation_active]: () => Promise.resolve(new TransitionFlags().empty),
+    [ProposalStatus.evaluation_active]: evaluationActiveProposal,
     [ProposalStatus.evaluation_closed]: () => Promise.resolve(new TransitionFlags().empty)
   };
 }
