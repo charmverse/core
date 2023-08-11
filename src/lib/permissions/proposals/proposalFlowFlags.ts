@@ -117,7 +117,9 @@ async function evaluationActiveProposal({ proposal, userId }: GetFlagsInput): Pr
   });
 
   if (spaceRole?.isAdmin) {
-    flags.addPermissions(['evaluation_closed']);
+    flags.addPermissions(['evaluation_closed', 'discussion']);
+  } else if (isProposalAuthor({ proposal, userId })) {
+    flags.addPermissions(['discussion']);
   }
   return flags.operationFlags;
 }
