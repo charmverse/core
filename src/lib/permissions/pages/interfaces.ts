@@ -27,6 +27,7 @@ export type AssignedPagePermission<T extends AssignablePagePermissionGroups = As
     pageId: string;
     assignee: TargetPermissionGroup<T>;
     sourcePermission?: PagePermission | null;
+    allowDiscovery?: boolean | null;
   };
 
 export type PagePermissionUpdate = Pick<PagePermission, 'permissionLevel'> &
