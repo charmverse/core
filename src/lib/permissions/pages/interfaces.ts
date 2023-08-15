@@ -61,5 +61,5 @@ export type PageEventTriggeringPermissions = {
 
 export type PagePermissionMeta = Pick<
   PagePermission,
-  'id' | 'pageId' | 'permissionLevel' | 'permissions' | 'public' | 'roleId' | 'spaceId' | 'userId'
+  'id' | 'pageId' | 'permissionLevel' | 'permissions' | 'public' | 'allowDiscovery' | 'roleId' | 'spaceId' | 'userId'
 >;
