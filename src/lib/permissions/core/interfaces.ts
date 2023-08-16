@@ -4,7 +4,7 @@ export type Resource = {
   resourceId: string;
 };
 
-export type AssignablePermissionGroups = 'user' | 'role' | 'space' | 'public';
+export type AssignablePermissionGroups = 'user' | 'role' | 'space' | 'public' | 'allowDiscovery';
 
 // Public is a pure true / false. We only need to know there is a public group, to know it is true
 export type TargetPermissionGroup<G extends AssignablePermissionGroups = AssignablePermissionGroups> =
