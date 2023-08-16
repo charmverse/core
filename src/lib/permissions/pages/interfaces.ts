@@ -5,18 +5,9 @@ import type { AssignablePermissionGroups, TargetPermissionGroup, UserPermissionF
 
 export type PagePermissionFlags = UserPermissionFlags<PageOperations>;
 
-export type AssignablePagePermissionGroups = Extract<
-  AssignablePermissionGroups,
-  'user' | 'role' | 'space' | 'public' | 'allowDiscovery'
->;
+export type AssignablePagePermissionGroups = Extract<AssignablePermissionGroups, 'user' | 'role' | 'space' | 'public'>;
 
-export const pagePermissionGroups: AssignablePagePermissionGroups[] = [
-  'role',
-  'space',
-  'user',
-  'public',
-  'allowDiscovery'
-];
+export const pagePermissionGroups: AssignablePagePermissionGroups[] = ['role', 'space', 'user', 'public'];
 
 export type PagePermissionAssignmentByValues<
   T extends AssignablePagePermissionGroups = AssignablePagePermissionGroups
