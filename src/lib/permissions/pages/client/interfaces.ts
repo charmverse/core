@@ -1,4 +1,9 @@
-import type { PageMeta, PageMetaWithPermissions, PagesRequest } from '../../../pages/interfaces';
+import type {
+  PageMeta,
+  PageMetaWithPermissions,
+  PagesRequest,
+  UpdatePagePermissionDiscoverabilityRequest
+} from '../../../pages/interfaces';
 import type { PermissionCompute, PermissionResource, Resource } from '../../core/interfaces';
 import type {
   AssignedPagePermission,
@@ -19,4 +24,5 @@ export type PremiumPagePermissionsClient = BasePagePermissionsClient & {
   lockPagePermissionsToBountyCreator: (request: Resource) => Promise<PageMetaWithPermissions>;
   setupPagePermissionsAfterEvent: (request: PageEventTriggeringPermissions) => Promise<PageMetaWithPermissions>;
   isBountyPageEditableByApplicants: (request: Resource) => Promise<{ editable: boolean }>;
+  updatePagePermissionDiscoverability: (request: UpdatePagePermissionDiscoverabilityRequest) => Promise<void>;
 };
