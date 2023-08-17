@@ -102,4 +102,6 @@ export type PageWithPermissions = Page & WithPermissions;
 
 export type PageLifecyleEvent = 'created' | 'repositioned';
 
-export type UpdatePagePermissionDiscoverabilityRequest = Pick<PagePermission, 'allowDiscovery' | 'id'>;
+export type UpdatePagePermissionDiscoverabilityRequest = Pick<PagePermission, 'allowDiscovery'> & {
+  permissionId: string;
+};
