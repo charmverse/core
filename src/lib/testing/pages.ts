@@ -7,7 +7,10 @@ import type { PageNode, PageWithPermissions } from '../pages/interfaces';
 import type { PagePermissionAssignmentByValues } from '../permissions/pages/interfaces';
 
 type OptionalPagePermissionsToGenerate = {
-  pagePermissions?: (PagePermissionAssignmentByValues & { inheritedFromPermission?: string })[];
+  pagePermissions?: (PagePermissionAssignmentByValues & {
+    inheritedFromPermission?: string;
+    allowDiscovery?: boolean;
+  })[];
 };
 
 type PageGenerateArgs = Pick<Page, 'createdBy' | 'spaceId'> &
@@ -104,7 +107,8 @@ export function generatePage({
                     public: permissionInput.assignee.group === 'public' ? true : undefined,
                     roleId: permissionInput.assignee.group === 'role' ? permissionInput.assignee.id : undefined,
                     spaceId: permissionInput.assignee.group === 'space' ? permissionInput.assignee.id : undefined,
-                    userId: permissionInput.assignee.group === 'user' ? permissionInput.assignee.id : undefined
+                    userId: permissionInput.assignee.group === 'user' ? permissionInput.assignee.id : undefined,
+                    allowDiscovery: false
                   } as Omit<Prisma.PagePermissionCreateManyInput, 'pageId'>;
                 })
               }
