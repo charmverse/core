@@ -108,7 +108,7 @@ export function generatePage({
                     roleId: permissionInput.assignee.group === 'role' ? permissionInput.assignee.id : undefined,
                     spaceId: permissionInput.assignee.group === 'space' ? permissionInput.assignee.id : undefined,
                     userId: permissionInput.assignee.group === 'user' ? permissionInput.assignee.id : undefined,
-                    allowDiscovery: false
+                    allowDiscovery: permissionInput.allowDiscovery
                   } as Omit<Prisma.PagePermissionCreateManyInput, 'pageId'>;
                 })
               }
