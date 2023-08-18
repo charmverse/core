@@ -27,6 +27,7 @@ export type AssignedPagePermission<T extends AssignablePagePermissionGroups = As
     pageId: string;
     assignee: TargetPermissionGroup<T>;
     sourcePermission?: PagePermission | null;
+    allowDiscovery?: boolean | null;
   };
 
 export type PagePermissionUpdate = Pick<PagePermission, 'permissionLevel'> &
@@ -61,5 +62,5 @@ export type PageEventTriggeringPermissions = {
 
 export type PagePermissionMeta = Pick<
   PagePermission,
-  'id' | 'pageId' | 'permissionLevel' | 'permissions' | 'public' | 'roleId' | 'spaceId' | 'userId'
+  'id' | 'pageId' | 'permissionLevel' | 'permissions' | 'public' | 'allowDiscovery' | 'roleId' | 'spaceId' | 'userId'
 >;

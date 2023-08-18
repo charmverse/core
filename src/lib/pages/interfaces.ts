@@ -101,3 +101,7 @@ export type PageMetaWithPermissions = PageMeta & WithPermissions;
 export type PageWithPermissions = Page & WithPermissions;
 
 export type PageLifecyleEvent = 'created' | 'repositioned';
+
+export type UpdatePagePermissionDiscoverabilityRequest = Pick<PagePermission, 'allowDiscovery'> & {
+  permissionId: string;
+};

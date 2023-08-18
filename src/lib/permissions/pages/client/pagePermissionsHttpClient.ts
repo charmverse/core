@@ -1,5 +1,10 @@
-import { DELETE, GET, POST } from '../../../http';
-import type { PageMeta, PageMetaWithPermissions, PagesRequest } from '../../../pages/interfaces';
+import { DELETE, GET, POST, PUT } from '../../../http';
+import type {
+  PageMeta,
+  PageMetaWithPermissions,
+  PagesRequest,
+  UpdatePagePermissionDiscoverabilityRequest
+} from '../../../pages/interfaces';
 import { AbstractPermissionsApiClient } from '../../clients/abstractApiClient.class';
 import type { PermissionCompute, PermissionResource, Resource } from '../../core/interfaces';
 import type {
@@ -49,5 +54,9 @@ export class PagePermissionsHttpClient extends AbstractPermissionsApiClient impl
 
   isBountyPageEditableByApplicants(request: Resource): Promise<{ editable: boolean }> {
     return GET(`${this.prefix}/is-bounty-page-editable-by-applicants`, request);
+  }
+
+  updatePagePermissionDiscoverability(request: UpdatePagePermissionDiscoverabilityRequest): Promise<void> {
+    return PUT(`${this.prefix}/update-page-discoverability`, request, { headers: this.jsonHeaders });
   }
 }

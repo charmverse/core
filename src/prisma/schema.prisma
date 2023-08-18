@@ -997,6 +997,8 @@ model PagePermission {
   spaceId                 String?             @db.Uuid
   inheritedFromPermission String?             @db.Uuid
   public                  Boolean?
+  // Specifies if a public page is returned in list operations or is only accessible if you already have the link.
+  allowDiscovery          Boolean?            @default(false)
   sourcePermission        PagePermission?     @relation("InheritedPermissions", fields: [inheritedFromPermission], references: [id], onDelete: Cascade)
   page                    Page                @relation(fields: [pageId], references: [id], onDelete: Cascade)
   role                    Role?               @relation(fields: [roleId], references: [id], onDelete: Cascade)

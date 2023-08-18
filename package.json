@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.3.3",
+  "version": "0.3.6-rc-feat-page-permi.8",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
