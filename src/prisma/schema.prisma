@@ -509,7 +509,7 @@ model UserVote {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
   // choice - old field, left for backward compatibility
-  choice    String
+  choice    String?
   choices   String[] @default([])
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   vote      Vote     @relation(fields: [voteId], references: [id], onDelete: Cascade)
@@ -542,6 +542,7 @@ model Vote {
   createdBy   String        @db.Uuid
   spaceId     String        @db.Uuid
   threshold   Int
+  maxChoices  Int?          @default(1)
   type        VoteType      @default(SingleChoice)
   context     VoteContext   @default(inline)
   author      User          @relation(fields: [createdBy], references: [id], onDelete: Cascade)
