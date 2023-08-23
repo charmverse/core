@@ -48,6 +48,8 @@ describe('generateProposal', () => {
 
     // Evaluate return type
     expect(generatedProposal).toMatchObject<ProposalWithUsers & { page: Page }>({
+      lensPostLink: null,
+      publishToLens: null,
       createdBy: proposalInput.userId,
       id: expect.any(String),
       reviewedAt: null,

@@ -571,6 +571,7 @@ model User {
   emailNotifications        Boolean?                        @default(true)
   emailNewsletter           Boolean?                        @default(false)
   xpsEngineId               String?                         @unique
+  publishToLensDefault      Boolean?                        @default(false)
   applications              Application[]
   blocks                    Block[]
   bounties                  Bounty[]
@@ -1101,6 +1102,8 @@ model Proposal {
   categoryId             String?                        @db.Uuid
   category               ProposalCategory?              @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   snapshotProposalExpiry DateTime?
+  publishToLens          Boolean?
+  lensPostLink           String?
   Post                   Post[]
   evaluationType         ProposalEvaluationType         @default(vote)
   rubricCriteria         ProposalRubricCriteria[]
