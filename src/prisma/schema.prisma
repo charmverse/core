@@ -1102,6 +1102,8 @@ model Proposal {
   categoryId             String?                        @db.Uuid
   category               ProposalCategory?              @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   snapshotProposalExpiry DateTime?
+  publishToLens          Boolean?
+  lensPostLink           String?
   Post                   Post[]
   evaluationType         ProposalEvaluationType         @default(vote)
   rubricCriteria         ProposalRubricCriteria[]
