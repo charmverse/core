@@ -43,6 +43,7 @@ enum VoteStatus {
 enum VoteType {
   Approval
   SingleChoice
+  MultiChoice
 }
 
 enum NotificationChannel {

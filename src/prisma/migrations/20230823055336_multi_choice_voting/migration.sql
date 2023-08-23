@@ -1,3 +1,6 @@
+-- AlterEnum
+ALTER TYPE "VoteType" ADD VALUE 'MultiChoice';
+
 -- AlterTable
 ALTER TABLE "UserVote" ADD COLUMN     "choices" TEXT[] DEFAULT ARRAY[]::TEXT[],
 ALTER COLUMN "choice" DROP NOT NULL;
