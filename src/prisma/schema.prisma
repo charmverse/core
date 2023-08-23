@@ -570,7 +570,7 @@ model User {
   email                     String?
   emailNotifications        Boolean?                        @default(true)
   emailNewsletter           Boolean?                        @default(false)
-  xpsEngineId               String?
+  xpsEngineId               String?                         @unique
   autoLensPublish           Boolean?                        @default(false)
   applications              Application[]
   blocks                    Block[]
