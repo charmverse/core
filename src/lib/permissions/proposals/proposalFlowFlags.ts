@@ -8,6 +8,7 @@ import { hasAccessToSpace } from '../hasAccessToSpace';
 
 import type { ProposalPermissionFlags } from './interfaces';
 import { isProposalAuthor } from './isProposalAuthor';
+import { isProposalReviewer } from './isProposalReviewer';
 
 export type ProposalFlowPermissionFlags = Record<ProposalStatus, boolean>;
 
@@ -120,7 +121,10 @@ async function evaluationActiveProposal({ proposal, userId }: GetFlagsInput): Pr
     flags.addPermissions(['evaluation_closed', 'discussion']);
   } else if (isProposalAuthor({ proposal, userId })) {
     flags.addPermissions(['discussion']);
+  } else if ((await isProposalReviewer({ proposal, userId })) === true) {
+    flags.addPermissions(['discussion']);
   }
+
   return flags.operationFlags;
 }
 
