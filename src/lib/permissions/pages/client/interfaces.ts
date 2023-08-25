@@ -15,6 +15,7 @@ import type {
 export type BasePagePermissionsClient = {
   computePagePermissions: (request: PermissionCompute) => Promise<PagePermissionFlags>;
   getAccessiblePages: (request: PagesRequest) => Promise<PageMeta[]>;
+  getAccessiblePageIds: (request: PagesRequest) => Promise<string[]>;
 };
 
 export type PremiumPagePermissionsClient = BasePagePermissionsClient & {

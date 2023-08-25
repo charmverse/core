@@ -30,6 +30,10 @@ export class PagePermissionsHttpClient extends AbstractPermissionsApiClient impl
     return GET(`${this.prefix}/list`, request);
   }
 
+  getAccessiblePageIds(request: PagesRequest): Promise<string[]> {
+    return GET(`${this.prefix}/list-ids`, request);
+  }
+
   upsertPagePermission(
     request: PagePermissionAssignment<AssignablePagePermissionGroups>
   ): Promise<AssignedPagePermission> {
