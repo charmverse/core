@@ -322,6 +322,7 @@ model Space {
   postTags                    PostTag[]
   blockCounts                 BlockCount[]
   blockQuota                  Int                               @default(0)
+  ProposalBlock               ProposalBlock[]
 
   @@index([createdBy])
 }
@@ -617,6 +618,7 @@ model User {
   verifiedEmails            VerifiedEmail[]
   apiPageKeys               ApiPageKey[]
   spaceActions              UserSpaceAction[]
+  ProposalBlock             ProposalBlock[]
 }
 
 model VerifiedEmail {
@@ -1112,10 +1114,38 @@ model Proposal {
   evaluationType         ProposalEvaluationType         @default(vote)
   rubricCriteria         ProposalRubricCriteria[]
   rubricAnswers          ProposalRubricCriteriaAnswer[]
+  properties             Json?
 
   @@index([spaceId])
   @@index([reviewedBy])
   @@index([categoryId])
+}
+
+enum ProposalBlockType {
+  properties
+  view
+}
+
+model ProposalBlock {
+  id        String            @id @db.Uuid
+  deletedAt DateTime?
+  createdAt DateTime          @default(now())
+  createdBy String            @db.Uuid
+  updatedAt DateTime          @default(now())
+  updatedBy String            @db.Uuid
+  spaceId   String            @db.Uuid
+  parentId  String
+  rootId    String            @db.Uuid
+  schema    Int
+  type      ProposalBlockType
+  title     String
+  fields    Json
+  user      User              @relation(fields: [createdBy], references: [id])
+  space     Space             @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+
+  @@index([rootId])
+  @@index([spaceId])
+  @@index([createdBy])
 }
 
 model ProposalAuthor {

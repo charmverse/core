@@ -79,7 +79,8 @@ describe('generateProposal', () => {
           roleId: role.id,
           userId: null
         }
-      ]
+      ],
+      properties: null
     });
 
     const proposalPageFromDb = (await prisma.page.findUnique({
