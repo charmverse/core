@@ -28,6 +28,11 @@ export type PermissionCompute = {
   userId?: string;
 };
 
+export type BulkPermissionCompute = {
+  resourceIds: string[];
+  userId?: string;
+};
+
 /**
  * Undefined means we don't have a valid compute yet
  *

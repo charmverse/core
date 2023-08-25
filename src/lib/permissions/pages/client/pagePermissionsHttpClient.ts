@@ -6,10 +6,11 @@ import type {
   UpdatePagePermissionDiscoverabilityRequest
 } from '../../../pages/interfaces';
 import { AbstractPermissionsApiClient } from '../../clients/abstractApiClient.class';
-import type { PermissionCompute, PermissionResource, Resource } from '../../core/interfaces';
+import type { BulkPermissionCompute, PermissionCompute, PermissionResource, Resource } from '../../core/interfaces';
 import type {
   AssignablePagePermissionGroups,
   AssignedPagePermission,
+  BulkPagePermissionFlags,
   PageEventTriggeringPermissions,
   PagePermissionAssignment,
   PagePermissionFlags
@@ -24,6 +25,10 @@ export class PagePermissionsHttpClient extends AbstractPermissionsApiClient impl
 
   computePagePermissions(request: PermissionCompute): Promise<PagePermissionFlags> {
     return GET(`${this.prefix}/compute-page-permissions`, request);
+  }
+
+  bulkComputePagePermissions(request: BulkPermissionCompute): Promise<BulkPagePermissionFlags> {
+    return GET(`${this.prefix}/bulk-compute-page-permissions`, request);
   }
 
   getAccessiblePages(request: PagesRequest): Promise<PageMeta[]> {
