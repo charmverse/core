@@ -25,7 +25,7 @@ type ResourceWithSpaceId = { spaceId: string };
  * @type F - The flags returned by the compute method
  */
 // eslint-disable-next-line @typescript-eslint/ban-types
-export type PermissionComputeFn<F> = (request: PermissionComputeWithCachedData) => Promise<F>;
+export type PermissionComputeFn<F, P = {}> = (request: PermissionComputeWithCachedData & P) => Promise<F>;
 
 export type PermissionFilteringPolicyFnInput<R, F, C extends boolean = false> = {
   flags: F;
@@ -62,13 +62,14 @@ type PolicyBuilderInput<R, F> = {
 /**
  * This allows us to build a compute function that will apply permission filtering policies to the result, and keep the inner computation clean of nested if / else patterns
  * @type R - If the resource contains a spaceId, we can auto resolve admin status. In this case, your Permission Filtering Policies can make use of isAdmin
+ * @type P - Additional params the compute function can receive
  */
-export function buildComputePermissionsWithPermissionFilteringPolicies<R, F extends UserPermissionFlags<any>>({
+export function buildComputePermissionsWithPermissionFilteringPolicies<R, F extends UserPermissionFlags<any>, P = {}>({
   computeFn,
   resolver,
   policies,
   computeSpacePermissions
-}: PolicyBuilderInput<R, F>): PermissionComputeFn<F> {
+}: PolicyBuilderInput<R, F>): PermissionComputeFn<F, P> {
   return async (request: PermissionComputeWithCachedData): Promise<F> => {
     const resource = request.preFetchedResource ?? (await resolver({ resourceId: request.resourceId }));
     if (!resource) {
@@ -99,7 +100,8 @@ export function buildComputePermissionsWithPermissionFilteringPolicies<R, F exte
     const flags = await computeFn({
       ...request,
       preComputedSpacePermissionFlags,
-      preComputedSpaceRole: spaceRole
+      preComputedSpaceRole: spaceRole,
+      preFetchedResource: resource
     });
     // After each policy run, we assign the new set of flag to this variable. Flags should never become true after being false as the compute function assigns the max permissions available
     let applicableFlags = flags;
