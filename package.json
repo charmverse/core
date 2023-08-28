@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.3.10-rc-filter-page-not.0",
+  "version": "0.3.11-rc-filter-page-not.0",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",

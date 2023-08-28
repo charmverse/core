@@ -6,7 +6,7 @@ import { BasePermissions } from '../core/basePermissions.class';
 import type { PermissionCompute } from '../core/interfaces';
 import { hasAccessToSpace } from '../hasAccessToSpace';
 
-import type { ProposalPermissionFlags } from './interfaces';
+import type { IsProposalReviewerFn, ProposalPermissionFlags } from './interfaces';
 import { isProposalAuthor } from './isProposalAuthor';
 
 export type ProposalFlowPermissionFlags = Record<ProposalStatus, boolean>;
@@ -20,6 +20,7 @@ export class TransitionFlags extends BasePermissions<ProposalStatus> {
 }
 
 type GetFlagFilterDependencies = {
+  isProposalReviewer: IsProposalReviewerFn;
   computeProposalPermissions: (compute: PermissionCompute) => Promise<ProposalPermissionFlags>;
   countReviewers: (data: { proposal: ProposalWithUsers }) => number;
 };
@@ -109,19 +110,27 @@ function withDepsReviewedProposal({ computeProposalPermissions }: GetFlagFilterD
   };
 }
 
-async function evaluationActiveProposal({ proposal, userId }: GetFlagsInput): Promise<ProposalFlowPermissionFlags> {
-  const flags = new TransitionFlags();
-  const { spaceRole } = await hasAccessToSpace({
-    spaceId: proposal.spaceId,
+function withDepsEvaluationActiveProposal({ isProposalReviewer }: GetFlagFilterDependencies) {
+  return async function evaluationActiveProposal({
+    proposal,
     userId
-  });
+  }: GetFlagsInput): Promise<ProposalFlowPermissionFlags> {
+    const flags = new TransitionFlags();
+    const { spaceRole } = await hasAccessToSpace({
+      spaceId: proposal.spaceId,
+      userId
+    });
 
-  if (spaceRole?.isAdmin) {
-    flags.addPermissions(['evaluation_closed', 'discussion']);
-  } else if (isProposalAuthor({ proposal, userId })) {
-    flags.addPermissions(['discussion']);
-  }
-  return flags.operationFlags;
+    if (spaceRole?.isAdmin) {
+      flags.addPermissions(['evaluation_closed', 'discussion']);
+    } else if (isProposalAuthor({ proposal, userId })) {
+      flags.addPermissions(['discussion']);
+    } else if ((await isProposalReviewer({ proposal, userId })) === true) {
+      flags.addPermissions(['discussion']);
+    }
+
+    return flags.operationFlags;
+  };
 }
 
 export function getProposalFlagFilters(
@@ -134,7 +143,7 @@ export function getProposalFlagFilters(
     [ProposalStatus.reviewed]: withDepsReviewedProposal(deps),
     [ProposalStatus.vote_active]: () => Promise.resolve(new TransitionFlags().empty),
     [ProposalStatus.vote_closed]: () => Promise.resolve(new TransitionFlags().empty),
-    [ProposalStatus.evaluation_active]: evaluationActiveProposal,
+    [ProposalStatus.evaluation_active]: withDepsEvaluationActiveProposal(deps),
     [ProposalStatus.evaluation_closed]: () => Promise.resolve(new TransitionFlags().empty)
   };
 }
