@@ -44,6 +44,8 @@ export type PermissionFilteringPolicyFn<R, F, C extends boolean = false> = (
   input: PermissionFilteringPolicyFnInput<R, F, C>
 ) => F | Promise<F>;
 
+export type ResourceResolver<R> = (input: { resourceId: string }) => R | null | Promise<R | null>;
+
 /**
  * @policies - permission filtering policy functions - each should be a pure function that returns a fresh set of flags rather than mutating the original flags
  * @type R - The shape of the resource passed to the filtering functions
@@ -51,7 +53,7 @@ export type PermissionFilteringPolicyFn<R, F, C extends boolean = false> = (
  * @type C - Whether we should compute space permissions
  */
 type PolicyBuilderInput<R, F> = {
-  resolver: (input: { resourceId: string }) => Promise<R | null>;
+  resolver: ResourceResolver<R>;
   computeFn: PermissionComputeFn<F>;
   policies: PermissionFilteringPolicyFn<R, F>[];
   computeSpacePermissions?: (input: PermissionCompute & PreComputedSpaceRole) => Promise<SpacePermissionFlags>;
@@ -68,7 +70,7 @@ export function buildComputePermissionsWithPermissionFilteringPolicies<R, F exte
   computeSpacePermissions
 }: PolicyBuilderInput<R, F>): PermissionComputeFn<F> {
   return async (request: PermissionComputeWithCachedData): Promise<F> => {
-    const resource = await resolver({ resourceId: request.resourceId });
+    const resource = request.preFetchedResource ?? (await resolver({ resourceId: request.resourceId }));
     if (!resource) {
       throw new DataNotFoundError(`Could not find resource with ID ${request.resourceId}`);
     }

@@ -1,4 +1,4 @@
-import type { SpaceOperation, SpaceRole } from '@prisma/client';
+import type { SpaceOperation, SpaceRole, SpaceRoleToRole } from '@prisma/client';
 
 export type Resource = {
   resourceId: string;
@@ -46,11 +46,22 @@ export type PreComputedSpacePermissionFlags = {
   preComputedSpacePermissionFlags?: UserPermissionFlags<SpaceOperation>;
 };
 
-export type PreComputedPermissionData = PreComputedSpacePermissionFlags & PreComputedSpaceRole;
+export type PreFetchedResource<T = any> = { preFetchedResource?: T };
 
-export type PermissionComputeWithCachedData = PermissionCompute &
+export type PreFetchedPermissions<P = any> = { preFetchedPermissions?: P[] };
+
+export type PreFetchedUserRoleMemberships = { preFetchedUserRoleMemberships?: Pick<SpaceRoleToRole, 'roleId'>[] };
+
+export type PermissionComputeWithCachedData<T = any, P = any> = PermissionCompute &
   PreComputedSpacePermissionFlags &
-  PreComputedSpaceRole;
+  PreComputedSpaceRole &
+  PreFetchedResource<T> &
+  PreFetchedPermissions<P> &
+  PreFetchedUserRoleMemberships;
+
+export type PreComputedPermissionData<T = any> = PreComputedSpacePermissionFlags &
+  PreComputedSpaceRole &
+  PreFetchedResource<T>;
 
 export type SpaceResourcesRequest = {
   spaceId: string;
