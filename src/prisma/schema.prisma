@@ -1114,7 +1114,7 @@ model Proposal {
   evaluationType         ProposalEvaluationType         @default(vote)
   rubricCriteria         ProposalRubricCriteria[]
   rubricAnswers          ProposalRubricCriteriaAnswer[]
-  properties             Json?
+  fields                  Json?
 
   @@index([spaceId])
   @@index([reviewedBy])
