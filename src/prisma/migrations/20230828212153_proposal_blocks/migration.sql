@@ -2,7 +2,7 @@
 CREATE TYPE "ProposalBlockType" AS ENUM ('properties', 'view');
 
 -- AlterTable
-ALTER TABLE "Proposal" ADD COLUMN     "properties" JSONB;
+ALTER TABLE "Proposal" ADD COLUMN     "fields" JSONB;
 
 -- CreateTable
 CREATE TABLE "ProposalBlock" (

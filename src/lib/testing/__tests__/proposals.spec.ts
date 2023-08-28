@@ -80,7 +80,7 @@ describe('generateProposal', () => {
           userId: null
         }
       ],
-      properties: null
+      fields: null
     });
 
     const proposalPageFromDb = (await prisma.page.findUnique({
