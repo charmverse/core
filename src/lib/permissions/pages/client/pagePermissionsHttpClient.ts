@@ -29,7 +29,7 @@ export class PagePermissionsHttpClient extends AbstractPermissionsApiClient impl
   }
 
   bulkComputePagePermissions(request: BulkPagePermissionCompute): Promise<BulkPagePermissionFlags> {
-    return GET(`${this.prefix}/bulk-compute-page-permissions`, request);
+    return POST(`${this.prefix}/bulk-compute-page-permissions`, request);
   }
 
   getAccessiblePages(request: PagesRequest): Promise<PageMeta[]> {
