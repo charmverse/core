@@ -8,7 +8,7 @@ export * from './lib/permissions/spaces/client/interfaces';
 export * from './lib/permissions/forums/interfaces';
 export * from './lib/permissions/forums/availablePostCategoryPermissions.class';
 export * from './lib/permissions/forums/availablePostPermissions.class';
-export { defaultPostPolicies, postResolver } from './lib/permissions/forums/policies/index';
+export * from './lib/permissions/forums/policies/index';
 export * from './lib/permissions/forums/policies/interfaces';
 export * from './lib/permissions/forums/client/interfaces';
 
@@ -28,7 +28,7 @@ export * from './lib/permissions/proposals/client/interfaces';
 export * from './lib/permissions/pages/interfaces';
 export * from './lib/permissions/pages/availablePagePermissions.class';
 export * from './lib/permissions/pages/copyPagePermissions';
-export { defaultPagePolicies, pageResolver } from './lib/permissions/pages/policies/index';
+export * from './lib/permissions/pages/policies/index';
 export * from './lib/permissions/pages/policies/interfaces';
 export * from './lib/permissions/pages/client/interfaces';
 

@@ -14,6 +14,19 @@ import { policyStatusReviewedOnlyCreateVote } from './policyStatusReviewedOnlyCr
 import { policyStatusVoteActiveOnlyVotable } from './policyStatusVoteActiveOnlyVotable';
 import { policyStatusVoteClosedViewOnly } from './policyStatusVoteClosedViewOnly';
 
+export function proposalResourceSelect(): Record<keyof ProposalResource, true> {
+  return {
+    id: true,
+    status: true,
+    categoryId: true,
+    spaceId: true,
+    createdBy: true,
+    authors: true,
+    reviewers: true,
+    archived: true
+  };
+}
+
 export async function proposalResolver({ resourceId }: Resource): Promise<ProposalResource> {
   if (!isUUID(resourceId)) {
     throw new InvalidInputError(`Invalid resource ID provided. Must be a UUID`);

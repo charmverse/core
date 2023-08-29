@@ -1504,6 +1504,8 @@ enum PostCategoryOperation {
   delete_category
   edit_category
   create_post
+  view_posts
+  comment_posts
 }
 
 enum PostOperation {

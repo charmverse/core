@@ -10,6 +10,8 @@ import type { PermissionCompute, PermissionResource, Resource } from '../../core
 import type {
   AssignablePagePermissionGroups,
   AssignedPagePermission,
+  BulkPagePermissionCompute,
+  BulkPagePermissionFlags,
   PageEventTriggeringPermissions,
   PagePermissionAssignment,
   PagePermissionFlags
@@ -26,8 +28,16 @@ export class PagePermissionsHttpClient extends AbstractPermissionsApiClient impl
     return GET(`${this.prefix}/compute-page-permissions`, request);
   }
 
+  bulkComputePagePermissions(request: BulkPagePermissionCompute): Promise<BulkPagePermissionFlags> {
+    return GET(`${this.prefix}/bulk-compute-page-permissions`, request);
+  }
+
   getAccessiblePages(request: PagesRequest): Promise<PageMeta[]> {
     return GET(`${this.prefix}/list`, request);
+  }
+
+  getAccessiblePageIds(request: PagesRequest): Promise<string[]> {
+    return GET(`${this.prefix}/list-ids`, request);
   }
 
   upsertPagePermission(
