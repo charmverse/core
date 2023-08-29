@@ -37,3 +37,16 @@ export function flatArrayMap<T>(obj: { [key: string]: T[] }): T[] {
     return list;
   }, [] as T[]);
 }
+// usage: await asyncSeries([1,2,3], num => Promise.resolve(num));
+export function asyncSeries<T, U>(
+  values: U[],
+  asyncIterator: (val: U) => Promise<T>,
+  index = 0,
+  results: T[] = []
+): Promise<T[]> {
+  if (index >= values.length) return Promise.resolve(results);
+  return asyncIterator(values[index]).then((r) => {
+    results.push(r);
+    return asyncSeries(values, asyncIterator, index + 1, results);
+  });
+}
