@@ -1,4 +1,3 @@
-import { asyncSeries } from 'lib/utilities/array';
 import chunk from 'lodash/chunk';
 
 import { DELETE, GET, POST, PUT } from '../../../http';
@@ -8,6 +7,7 @@ import type {
   PagesRequest,
   UpdatePagePermissionDiscoverabilityRequest
 } from '../../../pages/interfaces';
+import { asyncSeries } from '../../../utilities/array';
 import { AbstractPermissionsApiClient } from '../../clients/abstractApiClient.class';
 import type { PermissionCompute, PermissionResource, Resource } from '../../core/interfaces';
 import type {
