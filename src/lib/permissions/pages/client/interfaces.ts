@@ -4,9 +4,10 @@ import type {
   PagesRequest,
   UpdatePagePermissionDiscoverabilityRequest
 } from '../../../pages/interfaces';
-import type { BulkPermissionCompute, PermissionCompute, PermissionResource, Resource } from '../../core/interfaces';
+import type { PermissionCompute, PermissionResource, Resource } from '../../core/interfaces';
 import type {
   AssignedPagePermission,
+  BulkPagePermissionCompute,
   BulkPagePermissionFlags,
   PageEventTriggeringPermissions,
   PagePermissionAssignment,
@@ -15,7 +16,7 @@ import type {
 
 export type BasePagePermissionsClient = {
   computePagePermissions: (request: PermissionCompute) => Promise<PagePermissionFlags>;
-  bulkComputePagePermissions: (request: BulkPermissionCompute) => Promise<BulkPagePermissionFlags>;
+  bulkComputePagePermissions: (request: BulkPagePermissionCompute) => Promise<BulkPagePermissionFlags>;
   getAccessiblePages: (request: PagesRequest) => Promise<PageMeta[]>;
   getAccessiblePageIds: (request: PagesRequest) => Promise<string[]>;
 };

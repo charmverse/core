@@ -64,7 +64,10 @@ export type PagePermissionMeta = Pick<
   PagePermission,
   'id' | 'pageId' | 'permissionLevel' | 'permissions' | 'public' | 'allowDiscovery' | 'roleId' | 'spaceId' | 'userId'
 >;
-
+export type BulkPagePermissionCompute = {
+  pageIds: string[];
+  userId?: string;
+};
 /**
  * List of permission flags for specific pages
  */
