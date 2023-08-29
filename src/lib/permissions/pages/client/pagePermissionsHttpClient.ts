@@ -39,7 +39,9 @@ export class PagePermissionsHttpClient extends AbstractPermissionsApiClient impl
     );
 
     const computedResult = await asyncSeries(chunkedPageIds, (chunkedRequest: BulkPagePermissionCompute) =>
-      GET<BulkPagePermissionFlags>(`${this.prefix}/bulk-compute-page-permissions`, chunkedRequest)
+      GET<BulkPagePermissionFlags>(`${this.prefix}/bulk-compute-page-permissions`, chunkedRequest, {
+        addBracketsToArrayValues: false
+      })
     ).then((results) => {
       const mergedResults: BulkPagePermissionFlags = {};
 
