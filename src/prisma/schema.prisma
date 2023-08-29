@@ -415,6 +415,7 @@ model Page {
   @@index([bountyId])
   @@index([cardId])
   @@index([createdBy])
+  @@index([deletedAt])
   @@index([parentId])
   @@index([proposalId])
   @@index([spaceId])
@@ -1207,6 +1208,7 @@ model WorkspaceEvent {
   @@index([actorId])
   @@index([spaceId])
   @@index([pageId])
+  @@index([createdAt])
 }
 
 enum ProposalCategoryOperation {
