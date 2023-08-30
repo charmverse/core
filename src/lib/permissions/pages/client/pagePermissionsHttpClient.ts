@@ -1,3 +1,5 @@
+import chunk from 'lodash/chunk';
+
 import { DELETE, GET, POST, PUT } from '../../../http';
 import type {
   PageMeta,
@@ -5,6 +7,7 @@ import type {
   PagesRequest,
   UpdatePagePermissionDiscoverabilityRequest
 } from '../../../pages/interfaces';
+import { asyncSeries } from '../../../utilities/array';
 import { AbstractPermissionsApiClient } from '../../clients/abstractApiClient.class';
 import type { PermissionCompute, PermissionResource, Resource } from '../../core/interfaces';
 import type {
@@ -28,8 +31,28 @@ export class PagePermissionsHttpClient extends AbstractPermissionsApiClient impl
     return GET(`${this.prefix}/compute-page-permissions`, request);
   }
 
-  bulkComputePagePermissions(request: BulkPagePermissionCompute): Promise<BulkPagePermissionFlags> {
-    return GET(`${this.prefix}/bulk-compute-page-permissions`, request);
+  async bulkComputePagePermissions(request: BulkPagePermissionCompute): Promise<BulkPagePermissionFlags> {
+    const pageIds = request.pageIds ?? [];
+
+    const chunkedPageIds = chunk(pageIds, this.getRequestBatchSize).map(
+      (pageIdChunk) => ({ pageIds: pageIdChunk, userId: request.userId }) as BulkPagePermissionCompute
+    );
+
+    const computedResult = await asyncSeries(chunkedPageIds, (chunkedRequest: BulkPagePermissionCompute) =>
+      GET<BulkPagePermissionFlags>(`${this.prefix}/bulk-compute-page-permissions`, chunkedRequest, {
+        addBracketsToArrayValues: false
+      })
+    ).then((results) => {
+      const mergedResults: BulkPagePermissionFlags = {};
+
+      for (const computedPagePermissions of results) {
+        Object.assign(mergedResults, computedPagePermissions);
+      }
+
+      return mergedResults;
+    });
+
+    return computedResult;
   }
 
   getAccessiblePages(request: PagesRequest): Promise<PageMeta[]> {

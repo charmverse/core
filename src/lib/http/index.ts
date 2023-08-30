@@ -5,9 +5,13 @@ type Params = { [key: string]: any };
 export function GET<T = Response>(
   _requestUrl: string,
   data: Params | null | undefined,
-  { headers = {}, credentials = 'include' }: { credentials?: RequestCredentials; headers?: any } = {}
+  {
+    headers = {},
+    credentials = 'include',
+    addBracketsToArrayValues
+  }: { credentials?: RequestCredentials; headers?: any; addBracketsToArrayValues?: boolean } = {}
 ): Promise<T> {
-  const requestUrl = _appendQuery(_requestUrl, data || {});
+  const requestUrl = _appendQuery(_requestUrl, data || {}, addBracketsToArrayValues);
   return fetch<T>(requestUrl, {
     method: 'GET',
     headers: new Headers({
@@ -69,13 +73,13 @@ export function PUT<T>(requestURL: string, data: Params = {}, { headers = {} }: 
   });
 }
 
-function _appendQuery(path: string, data: Params) {
+function _appendQuery(path: string, data: Params, addBracketsToArrayValues: boolean = true) {
   const queryString = Object.keys(data)
     .filter((key) => !!data[key])
     .map((key) => {
       const value = data[key];
       return Array.isArray(value)
-        ? `${value.map((v: string) => `${key}[]=${v}`).join('&')}`
+        ? `${value.map((v: string) => `${key}${addBracketsToArrayValues ? '[]' : ''}=${v}`).join('&')}`
         : `${key}=${encodeURIComponent(value)}`;
     })
     .join('&');
