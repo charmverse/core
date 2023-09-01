@@ -1127,7 +1127,7 @@ enum ProposalBlockType {
 }
 
 model ProposalBlock {
-  id        String            @id @db.Uuid
+  id        String
   deletedAt DateTime?
   createdAt DateTime          @default(now())
   createdBy String            @db.Uuid
@@ -1143,6 +1143,7 @@ model ProposalBlock {
   user      User              @relation(fields: [createdBy], references: [id])
   space     Space             @relation(fields: [spaceId], references: [id], onDelete: Cascade)
 
+  @@unique([id, spaceId])
   @@index([rootId])
   @@index([spaceId])
   @@index([createdBy])
