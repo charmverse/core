@@ -22,7 +22,7 @@ on:
 # Change the below to get your PR CI to run tests against a specific branch
 #   Overrides the input, as inputs always have a default value
 env:
-  WEBAPP_WORKFLOW_BRANCH:
+  WEBAPP_WORKFLOW_BRANCH: synchronize-downstream-test-then-deploy
   PERMISSION_WORKFLOW_BRANCH:
 
 jobs:
@@ -75,22 +75,10 @@ jobs:
           elif [[ ${{ github.event_name }} == 'workflow_dispatch' ]]; then
             echo "webapp_workflow_branch=${{inputs.webapp_branch}}" >> $GITHUB_OUTPUT
             echo "permissionapi_workflow_branch=${{inputs.permissionapi_branch}}" >> $GITHUB_OUTPUT
+
           else
-            if [[ -z $WEBAPP_WORKFLOW_BRANCH || -z $PERMISSION_WORKFLOW_BRANCH ]]; then
-              echo "::notice title=Test branch target::Setting downstream repo test to test against branch main."
-              WEBAPP_WORKFLOW_BRANCH='main'
-              PERMISSION_WORKFLOW_BRANCH='main'
-            else 
-              if [[ $WEBAPP_WORKFLOW_BRANCH != "${{ github.head_ref }}" || $PERMISSION_WORKFLOW_BRANCH != "${{ github.head_ref }}" ]]; then
-                echo "::warning title=Mismatch in test branch target::Workflow branch env vars is not this current branch. Are you sure they are set correctly??"
-                echo "Setting downstream repo branch to what is set in env."
-                echo "PR head branch: $GITHUB_HEAD_REF_SLUG"
-                echo "env WEBAPP_WORKFLOW_BRANCH: $WEBAPP_WORKFLOW_BRANCH"
-                echo "env PERMISSION_WORKFLOW_BRANCH: $PERMISSION_WORKFLOW_BRANCH"
-              fi
-            fi
-            echo "webapp_workflow_branch=$WEBAPP_WORKFLOW_BRANCH" >> $GITHUB_OUTPUT
-            echo "permissionapi_workflow_branch=$PERMISSION_WORKFLOW_BRANCH" >> $GITHUB_OUTPUT
+            echo "webapp_workflow_branch=${WEBAPP_WORKFLOW_BRANCH:-main}" >> $GITHUB_OUTPUT
+            echo "permissionapi_workflow_branch=${PERMISSION_WORKFLOW_BRANCH:-main}" >> $GITHUB_OUTPUT
           fi
 
       - name: Checkout ref of the event that triggered this workflow. (first time run)
