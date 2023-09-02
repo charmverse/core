@@ -119,8 +119,7 @@ jobs:
             Code ${{ github.sha }} labeled version ${{ steps.publish_pkg.outputs.pkg_version }}
 
   run-downstream-test-workflows:
-    if: github.event_name != 'push' && github.ref != 'refs/heads/main'
-    name: Trigger ${{matrix.repo}} testing workflow
+    name: Run tests in ${{matrix.repo}}
     runs-on: ubuntu-latest
     needs: push-package
     permissions:
@@ -199,22 +198,22 @@ jobs:
 
   trigger-pkg-upgrade:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    name: Trigger Core pkg Upgrade on ${{ matrix.repo }}
+    name: Upgrade Core pkg ${{ matrix.repo }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    needs: [push-package, integration-test]
+    needs: [push-package, integration-test, run-downstream-test-workflows]
     strategy:
       max-parallel: 2
-      fail-fast: false
+      fail-fast: true
       matrix:
         include:
           - repo: "app.charmverse.io"
-            workflow_file: "test_and_deploy.yml"
+            workflow_file: "update_core_pkg.yml"
             workflow_payload: |
               { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}" }
           - repo: "permissions.charmverse.io"
-            workflow_file: "test_and_deploy.yml"
+            workflow_file: "update_core_pkg.yml"
             workflow_payload: |
               { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}" }
     steps:
