@@ -1137,7 +1137,7 @@ model ProposalBlock {
   parentId  String
   rootId    String            @db.Uuid
   schema    Int
-  type      ProposalBlockType
+  type      String
   title     String
   fields    Json
   user      User              @relation(fields: [createdBy], references: [id])
