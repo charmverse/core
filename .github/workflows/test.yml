@@ -23,7 +23,7 @@ on:
 #   Overrides the input, as inputs always have a default value
 env:
   WEBAPP_WORKFLOW_BRANCH: synchronize-downstream-test-then-deploy
-  PERMISSION_WORKFLOW_BRANCH:
+  PERMISSION_WORKFLOW_BRANCH: synchronize-downstream-test-then-deploy
 
 jobs:
   build-test-env:
@@ -185,8 +185,8 @@ jobs:
         run: ${{matrix.test_command}}
 
   trigger-pkg-upgrade:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    name: Upgrade Core pkg ${{ matrix.repo }}
+    if: github.event_name == 'push' && github.ref == 'refs/heads/synchronize-downstream-test-then-deploy'  # <<< change before merge
+    name: Bump Core pkg in ${{ matrix.repo }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -213,7 +213,7 @@ jobs:
           github_token: ${{ secrets.WORKFLOW_TRIGGER_PAT }}
           github_user: charmed-bot
           workflow_file_name: ${{ matrix.workflow_file }}
-          ref: "main"
+          ref: synchronize-downstream-test-then-deploy            # <<< change before merge
           client_payload: ${{ matrix.workflow_payload }}
           wait_interval: 10
           propagate_failure: true
