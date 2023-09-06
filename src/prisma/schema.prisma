@@ -1121,11 +1121,6 @@ model Proposal {
   @@index([categoryId])
 }
 
-enum ProposalBlockType {
-  properties
-  view
-}
-
 model ProposalBlock {
   id        String
   deletedAt DateTime?
@@ -1143,7 +1138,7 @@ model ProposalBlock {
   user      User              @relation(fields: [createdBy], references: [id])
   space     Space             @relation(fields: [spaceId], references: [id], onDelete: Cascade)
 
-  @@unique([id, spaceId])
+  @@id([id, spaceId])
   @@index([rootId])
   @@index([spaceId])
   @@index([createdBy])
