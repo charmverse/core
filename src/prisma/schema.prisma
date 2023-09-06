@@ -131,6 +131,7 @@ enum PageOperations {
 
 enum UserSpaceActionType {
   view_page
+  app_loaded
 }
 
 enum SpaceOperation {
@@ -434,8 +435,8 @@ model UserSpaceAction {
   action    UserSpaceActionType
   pageType  String?
   user      User?               @relation(fields: [createdBy], references: [id], onDelete: Cascade)
-  spaceId   String              @db.Uuid
-  space     Space               @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  spaceId   String?              @db.Uuid
+  space     Space?               @relation(fields: [spaceId], references: [id], onDelete: Cascade)
 
   @@index([createdBy, action])
   @@index([spaceId, action])
