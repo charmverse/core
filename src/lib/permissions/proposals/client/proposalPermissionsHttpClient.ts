@@ -44,6 +44,10 @@ export class ProposalPermissionsHttpClient
     return GET(`${this.prefix}/list`, request);
   }
 
+  getAccessibleProposalIds(request: ListProposalsRequest): Promise<string[]> {
+    return GET(`${this.prefix}/list-ids`, request);
+  }
+
   computeProposalPermissions(request: PermissionCompute): Promise<ProposalPermissionFlags> {
     return GET(`${this.prefix}/compute-proposal-permissions`, request);
   }
