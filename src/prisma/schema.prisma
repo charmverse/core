@@ -131,6 +131,7 @@ enum PageOperations {
 
 enum UserSpaceActionType {
   view_page
+  app_loaded
 }
 
 enum SpaceOperation {
@@ -421,21 +422,24 @@ model Page {
   @@index([proposalId])
   @@index([spaceId])
   @@index([title])
+  // Ensure synced proposal databases cannot have duplicate cards for a proposal
+  @@unique([parentId, syncWithPageId])
 }
 
 model UserSpaceAction {
-  id        String              @id @default(uuid()) @db.Uuid
-  createdAt DateTime            @default(now())
-  createdBy String?             @db.Uuid
-  pageId    String?             @db.Uuid
-  page      Page?               @relation(fields: [pageId], references: [id], onDelete: Cascade)
-  postId    String?             @db.Uuid
-  post      Post?               @relation(fields: [postId], references: [id], onDelete: Cascade)
-  action    UserSpaceActionType
-  pageType  String?
-  user      User?               @relation(fields: [createdBy], references: [id], onDelete: Cascade)
-  spaceId   String              @db.Uuid
-  space     Space               @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  id             String              @id @default(uuid()) @db.Uuid
+  createdAt      DateTime            @default(now())
+  createdBy      String?             @db.Uuid
+  distinctUserId String?              @db.Uuid
+  pageId         String?             @db.Uuid
+  page           Page?               @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  postId         String?             @db.Uuid
+  post           Post?               @relation(fields: [postId], references: [id], onDelete: Cascade)
+  action         UserSpaceActionType
+  pageType       String?
+  user           User?               @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  spaceId        String?             @db.Uuid
+  space          Space?              @relation(fields: [spaceId], references: [id], onDelete: Cascade)
 
   @@index([createdBy, action])
   @@index([spaceId, action])
@@ -1125,19 +1129,19 @@ model Proposal {
 model ProposalBlock {
   id        String
   deletedAt DateTime?
-  createdAt DateTime          @default(now())
-  createdBy String            @db.Uuid
-  updatedAt DateTime          @default(now())
-  updatedBy String            @db.Uuid
-  spaceId   String            @db.Uuid
+  createdAt DateTime  @default(now())
+  createdBy String    @db.Uuid
+  updatedAt DateTime  @default(now())
+  updatedBy String    @db.Uuid
+  spaceId   String    @db.Uuid
   parentId  String
-  rootId    String            @db.Uuid
+  rootId    String    @db.Uuid
   schema    Int
   type      String            @default("board")
   title     String
   fields    Json
-  user      User              @relation(fields: [createdBy], references: [id])
-  space     Space             @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [createdBy], references: [id])
+  space     Space     @relation(fields: [spaceId], references: [id], onDelete: Cascade)
 
   @@id([id, spaceId])
   @@index([rootId])
