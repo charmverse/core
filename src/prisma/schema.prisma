@@ -422,6 +422,8 @@ model Page {
   @@index([proposalId])
   @@index([spaceId])
   @@index([title])
+  // Ensure synced proposal databases cannot have duplicate cards for a proposal
+  @@unique([parentId, syncWithPageId])
 }
 
 model UserSpaceAction {
