@@ -11,7 +11,9 @@ on:
     # paths:
     #   - '!.github/**'
   pull_request:
-    branches: ['**', '!synchronize-downstream-test-then-deploy']
+    branches: 
+      - '**'
+      - !synchronize-downstream-test-then-deploy  # <<< remove before merge
   workflow_dispatch:
     inputs:
       webapp_branch:
@@ -24,7 +26,7 @@ on:
 # Change the below to get your PR CI to run tests against a specific branch
 #   Overrides the input, as inputs always have a default value
 env:
-  WEBAPP_WORKFLOW_BRANCH: synchronize-downstream-test-then-deploy
+  WEBAPP_WORKFLOW_BRANCH: synchronize-downstream-test-then-deploy    #<<< remove before merge
   PERMISSION_WORKFLOW_BRANCH: synchronize-downstream-test-then-deploy
 
 jobs:

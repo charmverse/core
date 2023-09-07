@@ -60,7 +60,7 @@ runs:
           npm publish --access=public
           echo "pkg_version=${{ steps.version_main.outputs.newTag }}" >> $GITHUB_OUTPUT
         else
-          npm publish --access=public --tag "pr-${{ github.event.number }}-${{ env.GITHUB_HEAD_REF_SLUG }}"
+          npm publish --access=public --tag "pr-${{ github.event.number }}-${{ env.GITHUB_HEAD_REF_SLUG || env.GITHUB_REF_NAME_SLUG }}"
           echo "pkg_version=${{ steps.version_other_branch.outputs.newTag }}" >> $GITHUB_OUTPUT
         fi 
 
