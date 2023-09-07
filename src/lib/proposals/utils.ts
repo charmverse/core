@@ -1,10 +1,6 @@
-import type { Prisma } from '@prisma/client';
-
 import { InvalidInputError } from '../errors';
 
-export function generateCategoryIdQuery(
-  categoryIds?: string | string[]
-): Prisma.ProposalCategoryWhereInput['id'] | undefined {
+export function generateCategoryIdQuery(categoryIds?: string | string[]): { in: string[] } | undefined {
   if (!categoryIds) {
     return undefined;
   }

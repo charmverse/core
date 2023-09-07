@@ -19,9 +19,8 @@ export type BaseProposalPermissionsClient = {
   computeProposalCategoryPermissions: (request: PermissionCompute) => Promise<ProposalCategoryPermissionFlags>;
   computeProposalFlowPermissions: (request: PermissionCompute) => Promise<ProposalFlowPermissionFlags>;
   getAccessibleProposalCategories: (request: SpaceResourcesRequest) => Promise<ProposalCategoryWithPermissions[]>;
-  getAccessibleProposals: (
-    request: ListProposalsRequest
-  ) => Promise<(ProposalWithUsers | ProposalWithCommentsAndUsers)[]>;
+  getAccessibleProposals: (request: ListProposalsRequest) => Promise<ProposalWithUsers[]>;
+  getAccessibleProposalIds: (request: ListProposalsRequest) => Promise<string[]>;
   getProposalReviewerPool: (request: Resource) => Promise<ProposalReviewerPool>;
 };
 // eslint-disable-next-line @typescript-eslint/ban-types
