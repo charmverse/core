@@ -131,6 +131,7 @@ enum PageOperations {
 
 enum UserSpaceActionType {
   view_page
+  app_loaded
 }
 
 enum SpaceOperation {
