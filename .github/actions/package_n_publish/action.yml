@@ -32,8 +32,10 @@ runs:
         bump-policy: 'last-commit'
         commit-message: 'CI: bumps version to {{version}} in workflow ${{ github.run_id }}'
 
-    - name: Write Version for package of pull request branch 
-      if: github.event_name == 'pull_request' && ( github.event.action == 'opened' || github.event.action == 'synchronize' )
+    - name: Write Version for package of pull request or non-main branch
+      if: |
+        (github.event_name == 'pull_request' && ( github.event.action == 'opened' || github.event.action == 'synchronize' )) ||
+        (github.event_name == 'push' && github.ref != 'refs/heads/main')
       id: version_other_branch
       uses:  'phips28/gh-action-bump-version@master'
       env:
