@@ -5,7 +5,9 @@ name: CI
 
 on:
   push:
-    branches: [main, synchronize-downstream-test-then-deploy]  #<<< remove before merge
+    branches:
+      - main
+      - synchronize-downstream-test-then-deploy  #<<< remove before merge
     # paths:
     #   - '!.github/**'
   pull_request:
