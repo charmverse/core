@@ -11,7 +11,7 @@ on:
     # paths:
     #   - '!.github/**'
   pull_request:
-    branches: ['**']
+    branches: ['**', '!synchronize-downstream-test-then-deploy']
   workflow_dispatch:
     inputs:
       webapp_branch:
