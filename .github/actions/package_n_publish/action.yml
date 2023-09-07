@@ -42,7 +42,7 @@ runs:
         GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
       with:
         version-type: prerelease
-        preid: 'rc-${{ env.GITHUB_HEAD_REF_SLUG }}'
+        preid: 'rc-${{ env.GITHUB_HEAD_REF_SLUG || env.GITHUB_REF_NAME_SLUG }}'
         bump-policy: 'ignore'
 
     - name: Publish package
