@@ -35,7 +35,7 @@ export class PagePermissionsHttpClient extends AbstractPermissionsApiClient impl
     const pageIds = request.pageIds ?? [];
 
     const chunkedPageIds = chunk(pageIds, this.getRequestBatchSize).map(
-      (pageIdChunk) => ({ pageIds: pageIdChunk, userId: request.userId } as BulkPagePermissionCompute)
+      (pageIdChunk) => ({ pageIds: pageIdChunk, userId: request.userId }) as BulkPagePermissionCompute
     );
 
     const computedResult = await asyncSeries(chunkedPageIds, (chunkedRequest: BulkPagePermissionCompute) =>
