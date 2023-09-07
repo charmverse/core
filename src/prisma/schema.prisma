@@ -1092,29 +1092,30 @@ enum ProposalEvaluationType {
 }
 
 model Proposal {
-  id                     String                         @id @default(uuid()) @db.Uuid
-  createdBy              String                         @db.Uuid
-  spaceId                String                         @db.Uuid
+  id                     String                              @id @default(uuid()) @db.Uuid
+  createdBy              String                              @db.Uuid
+  spaceId                String                              @db.Uuid
   status                 ProposalStatus
-  archived               Boolean?                       @default(false)
+  archived               Boolean?                            @default(false)
   authors                ProposalAuthor[]
   reviewers              ProposalReviewer[]
-  space                  Space                          @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  page                   Page?                          @relation("proposal")
-  sourcePage             Page?                          @relation("convertedProposal")
-  reviewedBy             String?                        @db.Uuid
-  reviewer               User?                          @relation(fields: [reviewedBy], references: [id], onDelete: Cascade)
+  space                  Space                               @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  page                   Page?                               @relation("proposal")
+  sourcePage             Page?                               @relation("convertedProposal")
+  reviewedBy             String?                             @db.Uuid
+  reviewer               User?                               @relation(fields: [reviewedBy], references: [id], onDelete: Cascade)
   reviewedAt             DateTime?
-  categoryId             String?                        @db.Uuid
-  category               ProposalCategory?              @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  categoryId             String?                             @db.Uuid
+  category               ProposalCategory?                   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   snapshotProposalExpiry DateTime?
   publishToLens          Boolean?
   lensPostLink           String?
   Post                   Post[]
-  evaluationType         ProposalEvaluationType         @default(vote)
+  evaluationType         ProposalEvaluationType              @default(vote)
   rubricCriteria         ProposalRubricCriteria[]
   rubricAnswers          ProposalRubricCriteriaAnswer[]
   fields                 Json?
+  draftRubricAnswers     DraftProposalRubricCriteriaAnswer[]
 
   @@index([spaceId])
   @@index([reviewedBy])
@@ -1180,19 +1181,34 @@ enum ProposalRubricCriteriaType {
 }
 
 model ProposalRubricCriteria {
-  id          String                         @id @default(uuid()) @db.Uuid
-  title       String
-  description String?
-  proposalId  String                         @db.Uuid
-  proposal    Proposal                       @relation(fields: [proposalId], references: [id], onDelete: Cascade)
-  type        ProposalRubricCriteriaType
-  parameters  Json
-  answers     ProposalRubricCriteriaAnswer[]
+  id           String                              @id @default(uuid()) @db.Uuid
+  title        String
+  description  String?
+  proposalId   String                              @db.Uuid
+  proposal     Proposal                            @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  type         ProposalRubricCriteriaType
+  parameters   Json
+  answers      ProposalRubricCriteriaAnswer[]
+  draftAnswers DraftProposalRubricCriteriaAnswer[]
 
   @@index([proposalId])
 }
 
 model ProposalRubricCriteriaAnswer {
+  rubricCriteriaId String                 @db.Uuid
+  rubricCriteria   ProposalRubricCriteria @relation(fields: [rubricCriteriaId], references: [id], onDelete: Cascade)
+  proposalId       String                 @db.Uuid
+  proposal         Proposal               @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  userId           String
+  response         Json
+  comment          String?
+
+  @@unique([userId, rubricCriteriaId])
+  @@index([proposalId])
+  @@index([rubricCriteriaId])
+}
+
+model DraftProposalRubricCriteriaAnswer {
   rubricCriteriaId String                 @db.Uuid
   rubricCriteria   ProposalRubricCriteria @relation(fields: [rubricCriteriaId], references: [id], onDelete: Cascade)
   proposalId       String                 @db.Uuid
