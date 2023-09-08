@@ -112,6 +112,7 @@ jobs:
 
   run-downstream-test-workflows:
     name: Run tests in ${{matrix.repo}}
+    if: (github.event_name == 'pull_request' && ( github.event.action == 'opened' || github.event.action == 'synchronize' ))
     runs-on: ubuntu-latest
     needs: push-package
     permissions:
@@ -194,7 +195,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    needs: [push-package, integration-test, run-downstream-test-workflows]
+    needs: [push-package, integration-test]
     strategy:
       max-parallel: 2
       fail-fast: true
