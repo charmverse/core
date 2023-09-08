@@ -13,7 +13,7 @@ on:
   pull_request:
     branches: 
       - '**'
-      - !synchronize-downstream-test-then-deploy  # <<< remove before merge
+      - '!synchronize-downstream-test-then-deploy'  # <<< remove before merge
   workflow_dispatch:
     inputs:
       webapp_branch:
