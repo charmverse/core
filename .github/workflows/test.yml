@@ -12,7 +12,6 @@ on:
     #   - '!.github/**'
   pull_request:
     branches: 
-      - '*'
       - '!synchronize-downstream-test-then-deploy'  # <<< remove before merge
   workflow_dispatch:
     inputs:
@@ -66,7 +65,7 @@ jobs:
       webapp_workflow_branch: ${{ steps.set_downstream_repo_branch.outputs.webapp_workflow_branch }}
       permissionapi_workflow_branch: ${{ steps.set_downstream_repo_branch.outputs.permissionapi_workflow_branch }}
     steps:
-      - name: Determine downstream repo branch to run tests against and echo pkg version
+      - name: Determine downstream repo branch to run tests against
         id: set_downstream_repo_branch
         run: |
           # values of this step's output is used in step run-downstream-test-workflows
@@ -84,8 +83,6 @@ jobs:
             echo "webapp_workflow_branch=${WEBAPP_WORKFLOW_BRANCH:-main}" >> $GITHUB_OUTPUT
             echo "permissionapi_workflow_branch=${PERMISSION_WORKFLOW_BRANCH:-main}" >> $GITHUB_OUTPUT
           fi
-          echo "Pkg version before bump - $(cat package.json | jq -r '.version')"
-          echo "run attempt ${{github.run_attempt}}"
 
       - name: Checkout ref of the event that triggered this workflow. (first time run)
         uses: actions/checkout@v3 
@@ -94,6 +91,10 @@ jobs:
         if: github.event_name != 'push' && github.run_attempt > 1
         with:   
           ref: refs/pull/${{ github.event.number }}/merge
+      - name: Print out run attempt and pkg version
+        run: |
+          echo "Pkg version before bump - $(cat package.json | jq -r '.version')"
+          echo "run attempt ${{github.run_attempt}}"
       - name: Restore build cache
         uses: ./.github/actions/build
       - name: Package and publish release candidate pkg
