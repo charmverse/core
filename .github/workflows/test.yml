@@ -12,7 +12,7 @@ on:
     #   - '!.github/**'
   pull_request:
     branches: 
-      - '**'
+      - '*'
       - '!synchronize-downstream-test-then-deploy'  # <<< remove before merge
   workflow_dispatch:
     inputs:
