@@ -211,6 +211,7 @@ jobs:
               { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}" }
     steps:
       - name: Trigger Core pkg update and deploy on repo ${{ matrix.repo }}
+        id: run_downstream_repo_workflow
         uses: convictional/trigger-workflow-and-wait@v1.6.1
         with:
           owner: charmverse
@@ -224,4 +225,15 @@ jobs:
           propagate_failure: true
           trigger_workflow: true
           wait_workflow: true
+      - name: Cancel downstream workflow if the workflow wait has been cancelled
+        if: ${{ cancelled() }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.WORKFLOW_TRIGGER_PAT }}
+        run: |
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            /repos/charmverse/${{ matrix.repo }}/actions/runs/${{ steps.run_downstream_repo_workflow.outputs.workflow_id }}/cancel
+
 
