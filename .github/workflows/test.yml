@@ -249,7 +249,7 @@ jobs:
           description: |
             Please check that webapp and permissions are running same version of core.
             Failed Downstream job URL: ${{ steps.run_downstream_repo_workflow.outputs.workflow_url }}
-          color: "${{ job.status == 'success' ? '2326548' : '16515843' }}"
+          color: "${{ job.status == 'success' && '2326548' || '16515843' }}"
           url: "https://github.com/charmverse/core/actions/runs/${{ github.run_id }}"
           username: GitHub Actions
           avatar_url: "https://github.githubassets.com/images/modules/logos_page/Octocat.png"
