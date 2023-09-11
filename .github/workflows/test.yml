@@ -240,13 +240,14 @@ jobs:
             /repos/charmverse/${{ matrix.repo }}/actions/runs/${{ steps.run_downstream_repo_workflow.outputs.workflow_id }}/cancel
 
       # Discord embed color code: ALERT_RED = 16515843   ALERT_GREEN = 2326548
+      # content: "Hey <@&1027309276454207519>"
       - name: If any downstream deploy failed, notify discord
         if: ${{ failure() && steps.run_downstream_repo_workflow.conclusion == 'failure' }}
         uses: sarisia/actions-status-discord@v1
         with:
           webhook: ${{ secrets.DISCORD_TEST_WEBHOOK }}
           status: ${{ job.status }}
-          content: "Hey <@&1027309276454207519>"
+          content: "Hey @chueychueykin"
           title: "Core upgrade in ${{ matrix.repo }} to version ${{ needs.push-package.outputs.pkg_version }}"
           description: |
             Please check that webapp and permissions are running same version of core.
