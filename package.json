@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.3.26-rc-gitignore.0",
+  "version": "0.3.26",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
