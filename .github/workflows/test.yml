@@ -236,4 +236,16 @@ jobs:
             -H "X-GitHub-Api-Version: 2022-11-28" \
             /repos/charmverse/${{ matrix.repo }}/actions/runs/${{ steps.run_downstream_repo_workflow.outputs.workflow_id }}/cancel
 
-
+#        if: ${{ failure() && steps.run_downstream_repo_workflow.conclusion == 'failure' }}        if: ${{ failure() && steps.run_downstream_repo_workflow.conclusion == 'failure' }}
+      - name: If any downstream deploy failed, notify discord
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_TEST_WEBHOOK }}
+          status: ${{ job.status }}
+          content: "Hey <@&1027309276454207519>"
+          title: "Core upgrade in ${{ matrix.repo }}"
+          description: "Please check that webapp and permissions are running same version of core."
+          color: 16515843
+          url: "https://github.com/charmverse/core/actions/runs/${{ github.run_id }}"
+          username: GitHub Actions
+          avatar_url: "https://github.githubassets.com/images/modules/logos_page/Octocat.png"
