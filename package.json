@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.3.27",
+  "version": "0.3.28-rc-synchronize-dow.0",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
