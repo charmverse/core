@@ -414,6 +414,8 @@ model Page {
   userSpaceActions    UserSpaceAction[]
   sourceTemplateId    String?           @db.Uuid
 
+  // Ensure synced proposal databases cannot have duplicate cards for a proposal
+  @@unique([parentId, syncWithPageId])
   @@index([bountyId])
   @@index([cardId])
   @@index([createdBy])
@@ -422,20 +424,19 @@ model Page {
   @@index([proposalId])
   @@index([spaceId])
   @@index([title])
-  // Ensure synced proposal databases cannot have duplicate cards for a proposal
-  @@unique([parentId, syncWithPageId])
 }
 
 model UserSpaceAction {
   id             String              @id @default(uuid()) @db.Uuid
   createdAt      DateTime            @default(now())
   createdBy      String?             @db.Uuid
-  distinctUserId String?              @db.Uuid
+  distinctUserId String?             @db.Uuid
   pageId         String?             @db.Uuid
   page           Page?               @relation(fields: [pageId], references: [id], onDelete: Cascade)
   postId         String?             @db.Uuid
   post           Post?               @relation(fields: [postId], references: [id], onDelete: Cascade)
   action         UserSpaceActionType
+  meta           Json?
   pageType       String?
   user           User?               @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   spaceId        String?             @db.Uuid
@@ -1137,7 +1138,7 @@ model ProposalBlock {
   parentId  String
   rootId    String    @db.Uuid
   schema    Int
-  type      String            @default("board")
+  type      String    @default("board")
   title     String
   fields    Json
   user      User      @relation(fields: [createdBy], references: [id])
