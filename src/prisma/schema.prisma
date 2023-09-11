@@ -131,6 +131,7 @@ enum PageOperations {
 
 enum UserSpaceActionType {
   view_page
+  app_loaded
 }
 
 enum SpaceOperation {
@@ -413,6 +414,8 @@ model Page {
   userSpaceActions    UserSpaceAction[]
   sourceTemplateId    String?           @db.Uuid
 
+  // Ensure synced proposal databases cannot have duplicate cards for a proposal
+  @@unique([parentId, syncWithPageId])
   @@index([bountyId])
   @@index([cardId])
   @@index([createdBy])
@@ -424,18 +427,20 @@ model Page {
 }
 
 model UserSpaceAction {
-  id        String              @id @default(uuid()) @db.Uuid
-  createdAt DateTime            @default(now())
-  createdBy String?             @db.Uuid
-  pageId    String?             @db.Uuid
-  page      Page?               @relation(fields: [pageId], references: [id], onDelete: Cascade)
-  postId    String?             @db.Uuid
-  post      Post?               @relation(fields: [postId], references: [id], onDelete: Cascade)
-  action    UserSpaceActionType
-  pageType  String?
-  user      User?               @relation(fields: [createdBy], references: [id], onDelete: Cascade)
-  spaceId   String              @db.Uuid
-  space     Space               @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  id             String              @id @default(uuid()) @db.Uuid
+  createdAt      DateTime            @default(now())
+  createdBy      String?             @db.Uuid
+  distinctUserId String?             @db.Uuid
+  pageId         String?             @db.Uuid
+  page           Page?               @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  postId         String?             @db.Uuid
+  post           Post?               @relation(fields: [postId], references: [id], onDelete: Cascade)
+  action         UserSpaceActionType
+  meta           Json?
+  pageType       String?
+  user           User?               @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  spaceId        String?             @db.Uuid
+  space          Space?              @relation(fields: [spaceId], references: [id], onDelete: Cascade)
 
   @@index([createdBy, action])
   @@index([spaceId, action])
@@ -1092,57 +1097,54 @@ enum ProposalEvaluationType {
 }
 
 model Proposal {
-  id                     String                         @id @default(uuid()) @db.Uuid
-  createdBy              String                         @db.Uuid
-  spaceId                String                         @db.Uuid
+  id                     String                              @id @default(uuid()) @db.Uuid
+  createdBy              String                              @db.Uuid
+  spaceId                String                              @db.Uuid
   status                 ProposalStatus
-  archived               Boolean?                       @default(false)
+  archived               Boolean?                            @default(false)
   authors                ProposalAuthor[]
   reviewers              ProposalReviewer[]
-  space                  Space                          @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  page                   Page?                          @relation("proposal")
-  sourcePage             Page?                          @relation("convertedProposal")
-  reviewedBy             String?                        @db.Uuid
-  reviewer               User?                          @relation(fields: [reviewedBy], references: [id], onDelete: Cascade)
+  space                  Space                               @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  page                   Page?                               @relation("proposal")
+  sourcePage             Page?                               @relation("convertedProposal")
+  reviewedBy             String?                             @db.Uuid
+  reviewer               User?                               @relation(fields: [reviewedBy], references: [id], onDelete: Cascade)
   reviewedAt             DateTime?
-  categoryId             String?                        @db.Uuid
-  category               ProposalCategory?              @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  categoryId             String?                             @db.Uuid
+  category               ProposalCategory?                   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   snapshotProposalExpiry DateTime?
   publishToLens          Boolean?
   lensPostLink           String?
   Post                   Post[]
-  evaluationType         ProposalEvaluationType         @default(vote)
+  evaluationType         ProposalEvaluationType              @default(vote)
   rubricCriteria         ProposalRubricCriteria[]
   rubricAnswers          ProposalRubricCriteriaAnswer[]
   fields                 Json?
+  draftRubricAnswers     DraftProposalRubricCriteriaAnswer[]
 
   @@index([spaceId])
   @@index([reviewedBy])
   @@index([categoryId])
 }
 
-enum ProposalBlockType {
-  properties
-  view
-}
-
 model ProposalBlock {
-  id        String            @id @db.Uuid
+  id        String
   deletedAt DateTime?
-  createdAt DateTime          @default(now())
-  createdBy String            @db.Uuid
-  updatedAt DateTime          @default(now())
-  updatedBy String            @db.Uuid
-  spaceId   String            @db.Uuid
+  createdAt DateTime  @default(now())
+  createdBy String    @db.Uuid
+  updatedAt DateTime  @default(now())
+  updatedBy String    @db.Uuid
+  spaceId   String    @db.Uuid
   parentId  String
-  rootId    String            @db.Uuid
+  rootId    String    @db.Uuid
   schema    Int
-  type      ProposalBlockType
+  type      String    @default("board")
   title     String
   fields    Json
-  user      User              @relation(fields: [createdBy], references: [id])
-  space     Space             @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [createdBy], references: [id])
+  space     Space     @relation(fields: [spaceId], references: [id], onDelete: Cascade)
 
+  @@id([id, spaceId])
   @@index([rootId])
   @@index([spaceId])
   @@index([createdBy])
@@ -1180,19 +1182,34 @@ enum ProposalRubricCriteriaType {
 }
 
 model ProposalRubricCriteria {
-  id          String                         @id @default(uuid()) @db.Uuid
-  title       String
-  description String?
-  proposalId  String                         @db.Uuid
-  proposal    Proposal                       @relation(fields: [proposalId], references: [id], onDelete: Cascade)
-  type        ProposalRubricCriteriaType
-  parameters  Json
-  answers     ProposalRubricCriteriaAnswer[]
+  id           String                              @id @default(uuid()) @db.Uuid
+  title        String
+  description  String?
+  proposalId   String                              @db.Uuid
+  proposal     Proposal                            @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  type         ProposalRubricCriteriaType
+  parameters   Json
+  answers      ProposalRubricCriteriaAnswer[]
+  draftAnswers DraftProposalRubricCriteriaAnswer[]
 
   @@index([proposalId])
 }
 
 model ProposalRubricCriteriaAnswer {
+  rubricCriteriaId String                 @db.Uuid
+  rubricCriteria   ProposalRubricCriteria @relation(fields: [rubricCriteriaId], references: [id], onDelete: Cascade)
+  proposalId       String                 @db.Uuid
+  proposal         Proposal               @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  userId           String
+  response         Json
+  comment          String?
+
+  @@unique([userId, rubricCriteriaId])
+  @@index([proposalId])
+  @@index([rubricCriteriaId])
+}
+
+model DraftProposalRubricCriteriaAnswer {
   rubricCriteriaId String                 @db.Uuid
   rubricCriteria   ProposalRubricCriteria @relation(fields: [rubricCriteriaId], references: [id], onDelete: Cascade)
   proposalId       String                 @db.Uuid
