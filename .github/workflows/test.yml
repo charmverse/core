@@ -208,7 +208,9 @@ jobs:
           - repo: "permissions.charmverse.io"
             workflow_file: "update_core_pkg.yml"
             workflow_payload: |
-              { "core_pkg_version": "0.3.27-rc-synchronize-dow.27" }  # <<< remove before merge           
+              { "core_pkg_version": "0.3.27-rc-synchronize-dow.27" }
+
+# <<< remove before merge           
 #              { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}" }
     steps:
       - name: Trigger Core pkg update and deploy on repo ${{ matrix.repo }}
