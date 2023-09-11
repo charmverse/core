@@ -243,8 +243,9 @@ jobs:
           webhook: ${{ secrets.DISCORD_TEST_WEBHOOK }}
           status: ${{ job.status }}
           content: "Hey <@&1027309276454207519>"
-          title: "Core upgrade in ${{ matrix.repo }}"
-          description: "Please check that webapp and permissions are running same version of core."
+          title: "Core upgrade in ${{ matrix.repo }} to version ${{ needs.push-package.outputs.pkg_version }}"
+          description: |
+            Please check that webapp and permissions are running same version of core.
           color: 16515843
           url: "https://github.com/charmverse/core/actions/runs/${{ github.run_id }}"
           username: GitHub Actions
