@@ -237,7 +237,7 @@ jobs:
         if: ${{ failure() && steps.run_downstream_repo_workflow.conclusion == 'failure' }}
         uses: sarisia/actions-status-discord@v1
         with:
-          webhook: ${{ secrets.DISCORD_ALERT_WEBHOOK }}
+          webhook: ${{ secrets.DISCORD_ALERTS_WEBHOOK }}
           status: ${{ job.status }}
           content: "Hey <@&1027309276454207519>"    
           title: "Core upgrade in ${{ matrix.repo }} to version ${{ needs.push-package.outputs.pkg_version }}"
