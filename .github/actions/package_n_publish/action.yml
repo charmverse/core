@@ -32,15 +32,17 @@ runs:
         bump-policy: 'last-commit'
         commit-message: 'CI: bumps version to {{version}} in workflow ${{ github.run_id }}'
 
-    - name: Write Version for package of pull request branch 
-      if: github.event_name == 'pull_request' && ( github.event.action == 'opened' || github.event.action == 'synchronize' )
+    - name: Write Version for package of pull request or non-main branch
+      if: |
+        (github.event_name == 'pull_request' && ( github.event.action == 'opened' || github.event.action == 'synchronize' )) ||
+        (github.event_name == 'push' && github.ref != 'refs/heads/main')
       id: version_other_branch
       uses:  'phips28/gh-action-bump-version@master'
       env:
         GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
       with:
         version-type: prerelease
-        preid: 'rc-${{ env.GITHUB_HEAD_REF_SLUG }}'
+        preid: 'rc-${{ env.GITHUB_HEAD_REF_SLUG || env.GITHUB_REF_NAME_SLUG }}'
         bump-policy: 'ignore'
 
     - name: Publish package
@@ -58,7 +60,7 @@ runs:
           npm publish --access=public
           echo "pkg_version=${{ steps.version_main.outputs.newTag }}" >> $GITHUB_OUTPUT
         else
-          npm publish --access=public --tag "pr-${{ github.event.number }}-${{ env.GITHUB_HEAD_REF_SLUG }}"
+          npm publish --access=public --tag "pr-${{ github.event.number }}-${{ env.GITHUB_HEAD_REF_SLUG || env.GITHUB_REF_NAME_SLUG }}"
           echo "pkg_version=${{ steps.version_other_branch.outputs.newTag }}" >> $GITHUB_OUTPUT
         fi 
 
