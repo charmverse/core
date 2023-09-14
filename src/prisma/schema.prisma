@@ -325,7 +325,6 @@ model Space {
   blockQuota                  Int                               @default(0)
   ProposalBlock               ProposalBlock[]
   userNotifications           UserNotificationRecord[]
-  PageNotification            PageNotification[]
 
   @@index([createdBy])
 }
@@ -632,7 +631,6 @@ model User {
   spaceActions              UserSpaceAction[]
   ProposalBlock             ProposalBlock[]
   notifications             UserNotificationRecord[]
-  PageNotification          PageNotification[]
 }
 
 model VerifiedEmail {
@@ -1680,10 +1678,6 @@ model PageNotification {
   commentId String?                @db.Uuid
   comment   PageComment?           @relation(fields: [commentId], references: [id], onDelete: Cascade)
   mentionId String?
-  Space     Space?                 @relation(fields: [spaceId], references: [id])
-  spaceId   String?                @db.Uuid
-  User      User?                  @relation(fields: [userId], references: [id])
-  userId    String?                @db.Uuid
 }
 
 model CardNotification {
