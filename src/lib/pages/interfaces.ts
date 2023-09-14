@@ -77,6 +77,7 @@ export type PageMeta = Pick<
   | 'headerImage'
   | 'icon'
   | 'path'
+  | 'additionalPaths'
   | 'parentId'
   | 'spaceId'
   | 'type'
