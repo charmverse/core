@@ -1698,7 +1698,7 @@ model UserCardTask {
   cardId           String    @db.Uuid
   card             Block     @relation(fields: [cardId], references: [id], onDelete: Cascade, name: "card")
   commentId        String?   @db.Uuid
-  comment          Block     @relation(fields: [commentId], references: [id], onDelete: Cascade, name: "comment")
+  comment          Block?    @relation(fields: [commentId], references: [id], onDelete: Cascade, name: "comment")
   personPropertyId String?
 }
 
