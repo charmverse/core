@@ -324,6 +324,12 @@ model Space {
   blockCounts                 BlockCount[]
   blockQuota                  Int                               @default(0)
   ProposalBlock               ProposalBlock[]
+  UserBountyTask              UserBountyTask[]
+  UserPageTask                UserPageTask[]
+  UserCardTask                UserCardTask[]
+  UserPostTask                UserPostTask[]
+  UserProposalTask            UserProposalTask[]
+  UserVotelTask               UserVotelTask[]
 
   @@index([createdBy])
 }
@@ -413,6 +419,7 @@ model Page {
   apiPageKeys         ApiPageKey[]
   userSpaceActions    UserSpaceAction[]
   sourceTemplateId    String?           @db.Uuid
+  UserPageTask        UserPageTask[]
 
   // Ensure synced proposal databases cannot have duplicate cards for a proposal
   @@unique([parentId, syncWithPageId])
@@ -461,6 +468,7 @@ model PageComment {
   user            User              @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   votes           PageCommentVote[]
   lensCommentLink String?
+  UserPageTask    UserPageTask[]
 
   @@index([pageId])
 }
@@ -490,22 +498,24 @@ model PageDiff {
 }
 
 model Block {
-  id        String    @id @db.Uuid
-  deletedAt DateTime?
-  createdAt DateTime  @default(now())
-  createdBy String    @db.Uuid
-  updatedAt DateTime  @default(now())
-  updatedBy String    @db.Uuid
-  spaceId   String    @db.Uuid
-  parentId  String
-  rootId    String    @db.Uuid
-  schema    Int
-  type      String
-  title     String
-  fields    Json
-  user      User      @relation(fields: [createdBy], references: [id])
-  space     Space     @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  page      Page?
+  id           String         @id @db.Uuid
+  deletedAt    DateTime?
+  createdAt    DateTime       @default(now())
+  createdBy    String         @db.Uuid
+  updatedAt    DateTime       @default(now())
+  updatedBy    String         @db.Uuid
+  spaceId      String         @db.Uuid
+  parentId     String
+  rootId       String         @db.Uuid
+  schema       Int
+  type         String
+  title        String
+  fields       Json
+  user         User           @relation(fields: [createdBy], references: [id])
+  space        Space          @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  page         Page?
+  commentTasks UserCardTask[] @relation("comment")
+  cardTasks    UserCardTask[] @relation("card")
 
   @@index([rootId])
   @@index([spaceId])
@@ -536,28 +546,29 @@ model VoteOptions {
 }
 
 model Vote {
-  id          String        @id @default(uuid()) @db.Uuid
-  pageId      String?       @db.Uuid
-  postId      String?       @db.Uuid
-  title       String
-  description String?
-  content     Json?
-  contentText String?
-  deadline    DateTime
-  status      VoteStatus
-  createdAt   DateTime      @default(now())
-  createdBy   String        @db.Uuid
-  spaceId     String        @db.Uuid
-  threshold   Int
-  maxChoices  Int?          @default(1)
-  type        VoteType      @default(SingleChoice)
-  context     VoteContext   @default(inline)
-  author      User          @relation(fields: [createdBy], references: [id], onDelete: Cascade)
-  page        Page?         @relation(fields: [pageId], references: [id], onDelete: Cascade)
-  post        Post?         @relation(fields: [postId], references: [id], onDelete: Cascade)
-  space       Space         @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  userVotes   UserVote[]
-  voteOptions VoteOptions[]
+  id            String          @id @default(uuid()) @db.Uuid
+  pageId        String?         @db.Uuid
+  postId        String?         @db.Uuid
+  title         String
+  description   String?
+  content       Json?
+  contentText   String?
+  deadline      DateTime
+  status        VoteStatus
+  createdAt     DateTime        @default(now())
+  createdBy     String          @db.Uuid
+  spaceId       String          @db.Uuid
+  threshold     Int
+  maxChoices    Int?            @default(1)
+  type          VoteType        @default(SingleChoice)
+  context       VoteContext     @default(inline)
+  author        User            @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  page          Page?           @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  post          Post?           @relation(fields: [postId], references: [id], onDelete: Cascade)
+  space         Space           @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  userVotes     UserVote[]
+  voteOptions   VoteOptions[]
+  UserVotelTask UserVotelTask[]
 
   @@index([createdBy])
   @@index([pageId])
@@ -624,6 +635,12 @@ model User {
   apiPageKeys               ApiPageKey[]
   spaceActions              UserSpaceAction[]
   ProposalBlock             ProposalBlock[]
+  UserBountyTask            UserBountyTask[]
+  UserPageTask              UserPageTask[]
+  UserCardTask              UserCardTask[]
+  UserPostTask              UserPostTask[]
+  UserProposalTask          UserProposalTask[]
+  UserVotelTask             UserVotelTask[]
 }
 
 model VerifiedEmail {
@@ -819,6 +836,7 @@ model Bounty {
   permissions       BountyPermission[]
   page              Page?
   customReward      String?
+  UserBountyTask    UserBountyTask[]
 
   @@index([createdBy])
   @@index([spaceId])
@@ -865,6 +883,7 @@ model Application {
   bounty          Bounty            @relation(fields: [bountyId], references: [id], onDelete: Cascade)
   applicant       User              @relation(fields: [createdBy], references: [id])
   transactions    Transaction[]
+  UserBountyTask  UserBountyTask[]
 
   @@unique([bountyId, createdBy])
   @@index([createdBy])
@@ -1121,6 +1140,7 @@ model Proposal {
   rubricAnswers          ProposalRubricCriteriaAnswer[]
   fields                 Json?
   draftRubricAnswers     DraftProposalRubricCriteriaAnswer[]
+  UserProposalTask       UserProposalTask?
 
   @@index([spaceId])
   @@index([reviewedBy])
@@ -1239,16 +1259,17 @@ model ProfileItem {
 }
 
 model WorkspaceEvent {
-  id        String             @id @default(uuid()) @db.Uuid
-  actorId   String?            @db.Uuid
-  actor     User?              @relation(fields: [actorId], references: [id], onDelete: Cascade)
-  type      WorkspaceEventType
-  meta      Json?
-  spaceId   String             @db.Uuid
-  space     Space              @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  pageId    String             @db.Uuid
-  page      Page               @relation(fields: [pageId], references: [id], onDelete: Cascade)
-  createdAt DateTime           @default(now())
+  id               String             @id @default(uuid()) @db.Uuid
+  actorId          String?            @db.Uuid
+  actor            User?              @relation(fields: [actorId], references: [id], onDelete: Cascade)
+  type             WorkspaceEventType
+  meta             Json?
+  spaceId          String             @db.Uuid
+  space            Space              @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  pageId           String             @db.Uuid
+  page             Page               @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  createdAt        DateTime           @default(now())
+  UserProposalTask UserProposalTask[]
 
   @@index([actorId])
   @@index([spaceId])
@@ -1419,6 +1440,7 @@ model Post {
   isDraft            Boolean?                @default(false)
   userSpaceActions   UserSpaceAction[]
   postToPostTags     PostToPostTag[]
+  UserPostTask       UserPostTask[]
 
   @@index([categoryId])
   @@index([path])
@@ -1459,10 +1481,11 @@ model PostComment {
   deletedBy   String?
   parentId    String?
 
-  postId String                  @db.Uuid
-  post   Post                    @relation(fields: [postId], references: [id], onDelete: Cascade)
-  user   User                    @relation(fields: [createdBy], references: [id], onDelete: Cascade)
-  votes  PostCommentUpDownVote[]
+  postId       String                  @db.Uuid
+  post         Post                    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user         User                    @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  votes        PostCommentUpDownVote[]
+  UserPostTask UserPostTask[]
 
   @@index([postId])
 }
@@ -1624,4 +1647,107 @@ model BlockCount {
   details   Json
 
   @@index([spaceId])
+}
+
+model UserBountyTask {
+  id            String       @id @default(uuid()) @db.Uuid
+  createdAt     DateTime     @default(now())
+  createdBy     String       @db.Uuid
+  deletedAt     DateTime?
+  seenAt        DateTime?
+  spaceId       String       @db.Uuid
+  space         Space        @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  userId        String       @db.Uuid
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // bounty task columns
+  bountyId      String       @db.Uuid
+  bounty        Bounty       @relation(fields: [bountyId], references: [id], onDelete: Cascade)
+  applicationId String?      @db.Uuid
+  application   Application? @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+}
+
+model UserPageTask {
+  id        String       @id @default(uuid()) @db.Uuid
+  createdAt DateTime     @default(now())
+  createdBy String       @db.Uuid
+  deletedAt DateTime?
+  seenAt    DateTime?
+  spaceId   String       @db.Uuid
+  space     Space        @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  userId    String       @db.Uuid
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // page task columns
+  pageId    String       @db.Uuid
+  page      Page         @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  commentId String?      @db.Uuid
+  comment   PageComment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  mentionId String?
+}
+
+model UserCardTask {
+  id               String    @id @default(uuid()) @db.Uuid
+  createdAt        DateTime  @default(now())
+  createdBy        String    @db.Uuid
+  deletedAt        DateTime?
+  seenAt           DateTime?
+  spaceId          String    @db.Uuid
+  space            Space     @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  userId           String    @db.Uuid
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // card task columns
+  cardId           String    @db.Uuid
+  card             Block     @relation(fields: [cardId], references: [id], onDelete: Cascade, name: "card")
+  commentId        String?   @db.Uuid
+  comment          Block     @relation(fields: [commentId], references: [id], onDelete: Cascade, name: "comment")
+  personPropertyId String?
+}
+
+model UserPostTask {
+  id        String       @id @default(uuid()) @db.Uuid
+  createdAt DateTime     @default(now())
+  createdBy String       @db.Uuid
+  deletedAt DateTime?
+  seenAt    DateTime?
+  spaceId   String       @db.Uuid
+  space     Space        @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  userId    String       @db.Uuid
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // forum task column
+  postId    String       @db.Uuid
+  post      Post         @relation(fields: [postId], references: [id], onDelete: Cascade)
+  commentId String?      @db.Uuid
+  comment   PostComment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  mentionId String?
+}
+
+model UserProposalTask {
+  id         String         @id @default(uuid()) @db.Uuid
+  createdAt  DateTime       @default(now())
+  createdBy  String         @db.Uuid
+  deletedAt  DateTime?
+  seenAt     DateTime?
+  spaceId    String         @db.Uuid
+  space      Space          @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  userId     String         @db.Uuid
+  user       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // proposal task columns
+  proposalId String         @unique @db.Uuid
+  proposal   Proposal       @relation(fields: [proposalId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  eventId    String         @db.Uuid
+  event      WorkspaceEvent @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model UserVotelTask {
+  id        String    @id @default(uuid()) @db.Uuid
+  createdAt DateTime  @default(now())
+  createdBy String    @db.Uuid
+  deletedAt DateTime?
+  seenAt    DateTime?
+  spaceId   String    @db.Uuid
+  space     Space     @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  userId    String    @db.Uuid
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // vote task columns
+  voteId    String    @db.Uuid
+  vote      Vote      @relation(fields: [voteId], references: [id], onDelete: Cascade)
 }
