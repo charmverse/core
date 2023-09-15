@@ -5,4 +5,4 @@ ALTER TABLE "Page" ADD COLUMN     "additionalPaths" TEXT[] DEFAULT ARRAY[]::TEXT
 CREATE INDEX "Page_path_idx" ON "Page"("path");
 
 -- CreateIndex
-CREATE INDEX "Page_spaceId_additionalPaths_idx" ON "Page"("spaceId", "additionalPaths");
+CREATE INDEX "Page_additionalPaths_idx" ON "Page" USING GIN ("additionalPaths");
