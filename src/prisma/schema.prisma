@@ -428,7 +428,7 @@ model Page {
   @@index([path])
   // https://www.prisma.io/docs/concepts/components/prisma-schema/indexes#configuring-the-access-type-of-indexes-with-type-postgresql
   // https://www.postgresql.org/docs/current/indexes-types.html#INDEXES-TYPES-GIN
-  @@index([additionalPaths], type: Gin)
+  @@index([spaceId, additionalPaths])
 }
 
 model UserSpaceAction {
