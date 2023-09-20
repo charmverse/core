@@ -146,7 +146,7 @@ jobs:
           wait_workflow: true
           comment_downstream_url: ${{ github.event.pull_request.comments_url }}
       - uses: ouzi-dev/commit-status-updater@v2
-        if: always()
+        if: ${{ failure() }}
         with:
           status: ${{ job.status }}
           url: ${{ github.event.pull_request.comments_url }}
