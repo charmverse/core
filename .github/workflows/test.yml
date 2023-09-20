@@ -131,6 +131,7 @@ jobs:
     steps:
       - name: Trigger tests on repo ${{ matrix.repo }}
         uses: convictional/trigger-workflow-and-wait@v1.6.5
+        id: downstream_wf
         with:
           owner: charmverse
           repo: ${{ matrix.repo }}
@@ -144,6 +145,11 @@ jobs:
           trigger_workflow: true
           wait_workflow: true
           comment_downstream_url: ${{ github.event.pull_request.comments_url }}
+      - uses: ouzi-dev/commit-status-updater@v2
+        if: always()
+        with:
+          status: ${{ job.status }}
+          url: ${{ github.event.pull_request.comments_url }}
 
   integration-test:
     name: Run Integration Tests
