@@ -146,10 +146,21 @@ jobs:
           trigger_workflow: true
           wait_workflow: true
           comment_downstream_url: ${{ github.event.pull_request.comments_url }}
-      - uses: ouzi-dev/commit-status-updater@v2
+      - name: Fail the job if job fails
         if: ${{ failure() }}
-        with:
-          status: ${{ job.status }}
+        run: exit 1
+
+  # downstream-jobs-status-report:
+  #   name: Downstream Jobs Status Check
+  #   if: (github.event_name == 'pull_request' && ( github.event.action == 'opened' || github.event.action == 'synchronize' ))
+  #   runs-on: ubuntu-latest
+  #   needs: run-downstream-test-workflows
+  #   permissions:
+  #     pull-requests: write
+  #     statuses: write
+  #   steps:
+  #     - name: Trigger tests on repo ${{ matrix.repo }}
+
 
   integration-test:
     name: Run Integration Tests
