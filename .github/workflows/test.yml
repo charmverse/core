@@ -150,7 +150,6 @@ jobs:
         if: ${{ failure() }}
         with:
           status: ${{ job.status }}
-          url: ${{ github.event.pull_request.comments_url }}
 
   integration-test:
     name: Run Integration Tests
