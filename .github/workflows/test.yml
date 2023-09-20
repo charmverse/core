@@ -112,6 +112,7 @@ jobs:
     needs: push-package
     permissions:
       pull-requests: write
+      statuses: write
     strategy:
       max-parallel: 2
       fail-fast: false
@@ -190,6 +191,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      statuses: write
     needs: [push-package, integration-test]
     strategy:
       max-parallel: 2
