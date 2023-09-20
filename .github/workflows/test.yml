@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
     inputs:
       webapp_branch:
-        description: 'Webapp branch to test against.'
+        description: "Webapp branch to test against."
         required: true
       permissionapi_branch:
         description: "Permissions api branch to test against"
