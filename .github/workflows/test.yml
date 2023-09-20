@@ -21,7 +21,7 @@ on:
 #   Overrides the input, as inputs always have a default value
 env:
   WEBAPP_WORKFLOW_BRANCH:
-  PERMISSION_WORKFLOW_BRANCH:
+  PERMISSION_WORKFLOW_BRANCH: fixing-core-action-status
 
 jobs:
   build-test-env:
@@ -106,7 +106,7 @@ jobs:
             Code ${{ github.sha }} labeled version ${{ steps.publish_pkg.outputs.pkg_version }}
 
   run-downstream-test-workflows:
-    name: Run tests in ${{matrix.repo}}
+    name: Run Tests in ${{matrix.repo}}
     if: (github.event_name == 'pull_request' && ( github.event.action == 'opened' || github.event.action == 'synchronize' ))
     runs-on: ubuntu-latest
     needs: push-package
