@@ -1,8 +1,8 @@
 import type { UserWallet } from '@prisma/client';
-import { isAddress } from 'ethers';
 import { customAlphabet } from 'nanoid';
 import * as dictionaries from 'nanoid-dictionary';
 import { validate } from 'uuid';
+import { isAddress } from 'viem';
 
 export function fancyTrim(_text: string = '', maxLength: number = 40) {
   const text = _text || '';

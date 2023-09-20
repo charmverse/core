@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.3.32",
+  "version": "0.3.33-rc-remove-ethers.0",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
@@ -144,7 +144,6 @@
     "dotenv-cli": "^7.2.1",
     "esbuild": "^0.17.18",
     "esbuild-node-externals": "^1.7.0",
-    "ethers": "^6.2.3",
     "fetch-retry": "^5.0.6",
     "lodash": "^4.17.21",
     "loglevel": "^1.8.1",
@@ -156,7 +155,8 @@
     "tsc-alias": "^1.8.6",
     "undici": "^5.22.1",
     "utf-8-validate": "^5.0.10",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "viem": "^1.11.0"
   },
   "license": "GPLv3"
 }
