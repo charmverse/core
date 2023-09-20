@@ -11,17 +11,17 @@ on:
   workflow_dispatch:
     inputs:
       webapp_branch:
-        description: 'Webapp branch to test against.'
+        description: "Webapp branch to test against."
         required: true
       permissionapi_branch:
-        description: 'Permissions api branch to test against'
+        description: "Permissions api branch to test against"
         required: true
 
 # Change the below to get your PR CI to run tests against a specific branch
 #   Overrides the input, as inputs always have a default value
 env:
   WEBAPP_WORKFLOW_BRANCH:
-  PERMISSION_WORKFLOW_BRANCH:
+  PERMISSION_WORKFLOW_BRANCH: run-tests
 
 jobs:
   build-test-env:
@@ -80,11 +80,11 @@ jobs:
           fi
 
       - name: Checkout ref of the event that triggered this workflow. (first time run)
-        uses: actions/checkout@v3 
+        uses: actions/checkout@v3
       - name: Checkout head of merge on re-run
         uses: actions/checkout@v3
         if: github.event_name != 'push' && github.run_attempt > 1
-        with:   
+        with:
           ref: refs/pull/${{ github.event.number }}/merge
       - name: Print out run attempt and pkg version
         run: |
@@ -239,7 +239,7 @@ jobs:
         with:
           webhook: ${{ secrets.DISCORD_WARNINGS_WEBHOOK }}
           status: ${{ job.status }}
-          content: "Hey <@&1027309276454207519>"    
+          content: "Hey <@&1027309276454207519>"
           title: "Core upgrade in ${{ matrix.repo }} to version ${{ needs.push-package.outputs.pkg_version }}"
           description: |
             Please check that webapp and permissions are running same version of core.
