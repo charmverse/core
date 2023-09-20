@@ -143,7 +143,14 @@
     "@datadog/browser-logs": "^4.42.2",
     "@prisma/client": "4.13.0",
     "async-sema": "^3.1.1",
+<<<<<<< HEAD
     "ethers": "^6.2.3",
+=======
+    "bufferutil": "^4.0.7",
+    "dotenv-cli": "^7.2.1",
+    "esbuild": "^0.17.18",
+    "esbuild-node-externals": "^1.7.0",
+>>>>>>> 8d08743 (replace ethers with viem (#133))
     "fetch-retry": "^5.0.6",
     "lodash": "^4.17.21",
     "loglevel": "^1.8.1",
@@ -152,7 +159,13 @@
     "nanoid-dictionary": "^3.0.0",
     "prisma": "^5.2.0",
     "undici": "^5.22.1",
+<<<<<<< HEAD
     "uuid": "^9.0.0"
+=======
+    "utf-8-validate": "^5.0.10",
+    "uuid": "^9.0.0",
+    "viem": "^1.11.0"
+>>>>>>> 8d08743 (replace ethers with viem (#133))
   },
   "license": "GPLv3"
 }
