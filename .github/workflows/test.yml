@@ -96,12 +96,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
-      - name: Posting pkg version in comment
-        uses: marocchino/sticky-pull-request-comment@v2
-        with:
-          header: Pkg version
-          message: |
-            Code ${{ github.sha }} labeled version ${{ steps.publish_pkg.outputs.pkg_version }}
+      # - name: Posting pkg version in comment
+      #   uses: marocchino/sticky-pull-request-comment@v2
+      #   with:
+      #     header: Pkg version
+      #     message: |
+      #       Code ${{ github.sha }} labeled version ${{ steps.publish_pkg.outputs.pkg_version }}
 
   run-downstream-test-workflows:
     name: Run Tests in ${{matrix.repo}}
@@ -142,7 +142,7 @@ jobs:
           propagate_failure: true
           trigger_workflow: true
           wait_workflow: true
-          comment_downstream_url: ${{ github.event.pull_request.comments_url }}
+#          comment_downstream_url: ${{ github.event.pull_request.comments_url }}
       - name: Fail the job if job fails
         if: ${{ failure() }}
         run: exit 1
