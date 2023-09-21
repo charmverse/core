@@ -107,7 +107,7 @@ jobs:
             Code ${{ github.sha }} labeled version ${{ steps.publish_pkg.outputs.pkg_version }}
 
   run-downstream-test-workflows:
-    name: Run One Tests
+    name: Run Second Tests
     if: (github.event_name == 'pull_request' && ( github.event.action == 'opened' || github.event.action == 'synchronize' ))
     runs-on: ubuntu-latest
     needs: push-package
