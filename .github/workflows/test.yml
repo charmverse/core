@@ -114,7 +114,7 @@ jobs:
     permissions:
       pull-requests: write
       statuses: write
-      contens: write
+      contents: write
     steps:
       - name: just exit 1
         run: exit 1
