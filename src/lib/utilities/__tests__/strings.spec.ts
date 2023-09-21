@@ -1,5 +1,5 @@
 import type { UserWallet } from '@prisma/client';
-import { Wallet, getAddress } from 'ethers';
+import { getAddress } from 'viem';
 
 import { prisma } from '../../../prisma-client';
 import { generatePage } from '../../testing/pages';
@@ -47,7 +47,7 @@ describe('shortWalletAddress', () => {
   });
 
   it('should return a lowercase string', () => {
-    const addressWithMixedCase = Wallet.createRandom().address;
+    const addressWithMixedCase = randomETHWalletAddress();
 
     const shortAddress = shortWalletAddress(addressWithMixedCase);
     expect(!!shortAddress.match(/[A-Z]/)).toBe(false);

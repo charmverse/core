@@ -1,5 +1,9 @@
-import { Wallet } from 'ethers';
+import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts';
 
-export function randomETHWalletAddress() {
-  return Wallet.createRandom().address.toLowerCase();
+export function randomETHWalletAddress(privateKey?: ReturnType<typeof generatePrivateKey>) {
+  return randomETHWallet(privateKey).address.toLowerCase();
+}
+
+export function randomETHWallet(privateKey = generatePrivateKey()) {
+  return privateKeyToAccount(privateKey);
 }
