@@ -114,24 +114,27 @@ jobs:
     permissions:
       pull-requests: write
       statuses: write
+      contens: write
     steps:
-      - name: Trigger tests on repo ${{ matrix.repo }}
-        uses: convictional/trigger-workflow-and-wait@v1.6.5
-        id: downstream_wf
-        with:
-          owner: charmverse
-          repo: permissions.charmverse.io
-          github_token: ${{ secrets.WORKFLOW_TRIGGER_PAT }}
-          github_user: charmed-bot
-          workflow_file_name: "test_core_pkg.yml"
-          ref: "${{ needs.push-package.outputs.permissionapi_workflow_branch }}"
-          client_payload: |
-            { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}" }
-          wait_interval: 10
-          propagate_failure: true
-          trigger_workflow: true
-          wait_workflow: true
-          comment_downstream_url: ${{ github.event.pull_request.comments_url }}
+      - name: just exit 1
+        run: exit 1
+      # - name: Trigger tests on repo ${{ matrix.repo }}
+      #   uses: convictional/trigger-workflow-and-wait@v1.6.5
+      #   id: downstream_wf
+      #   with:
+      #     owner: charmverse
+      #     repo: permissions.charmverse.io
+      #     github_token: ${{ secrets.WORKFLOW_TRIGGER_PAT }}
+      #     github_user: charmed-bot
+      #     workflow_file_name: "test_core_pkg.yml"
+      #     ref: "${{ needs.push-package.outputs.permissionapi_workflow_branch }}"
+      #     client_payload: |
+      #       { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}" }
+      #     wait_interval: 10
+      #     propagate_failure: true
+      #     trigger_workflow: true
+      #     wait_workflow: true
+      #     comment_downstream_url: ${{ github.event.pull_request.comments_url }}
 
   # run-downstream-test-workflows:
   #   name: Run Tests in ${{matrix.repo}}
