@@ -53,9 +53,6 @@ jobs:
     name: Push Release candidate package to allow devs to use to test
     runs-on: ubuntu-latest
     needs: typecheck
-    permissions:
-      contents: write
-      pull-requests: write
     outputs:
       pkg_version: ${{ steps.publish_pkg.outputs.pkg_version }}
       webapp_workflow_branch: ${{ steps.set_downstream_repo_branch.outputs.webapp_workflow_branch }}
@@ -111,10 +108,6 @@ jobs:
     if: (github.event_name == 'pull_request' && ( github.event.action == 'opened' || github.event.action == 'synchronize' ))
     runs-on: ubuntu-latest
     needs: push-package
-    permissions:
-      pull-requests: write
-      statuses: write
-      contents: write
     steps:
       - name: just exit 1
         run: exit 1
@@ -236,9 +229,6 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     name: Bump Core pkg in ${{ matrix.repo }}
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      statuses: write
     needs: [push-package, integration-test]
     strategy:
       max-parallel: 2
