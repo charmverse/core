@@ -143,9 +143,9 @@ jobs:
           trigger_workflow: true
           wait_workflow: true
           comment_downstream_url: ${{ github.event.pull_request.comments_url }}
-  #     - name: Fail the job if job fails
-  #       if: ${{ failure() }}
-  #       run: exit 1
+      - name: Fail the job if job fails
+        if: ${{ failure() }}
+        run: exit 1
 
   # downstream-jobs-status-report:
   #   name: Downstream Jobs Status Check
