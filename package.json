@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.3.29-rc-notification-mo.1",
+  "version": "0.3.31",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
