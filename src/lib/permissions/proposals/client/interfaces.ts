@@ -25,6 +25,7 @@ export type BaseProposalPermissionsClient = {
 };
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type PremiumProposalPermissionsClient = BaseProposalPermissionsClient & {
+  computeBaseProposalPermissions: (request: PermissionCompute) => Promise<ProposalPermissionFlags>;
   assignDefaultProposalCategoryPermissions: (proposalCategory: Resource) => Promise<void>;
   upsertProposalCategoryPermission: (
     assignment: ProposalCategoryPermissionAssignment
