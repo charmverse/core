@@ -1086,18 +1086,19 @@ model Thread {
 }
 
 model Comment {
-  id        String    @id @default(uuid()) @db.Uuid
-  createdAt DateTime  @default(now())
-  threadId  String    @db.Uuid
-  content   Json?
-  userId    String    @db.Uuid
-  pageId    String    @db.Uuid
-  spaceId   String    @db.Uuid
-  updatedAt DateTime?
-  page      Page      @relation(fields: [pageId], references: [id], onDelete: Cascade)
-  space     Space     @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  thread    Thread    @relation(fields: [threadId], references: [id], onDelete: Cascade)
-  user      User      @relation(fields: [userId], references: [id])
+  id               String             @id @default(uuid()) @db.Uuid
+  createdAt        DateTime           @default(now())
+  threadId         String             @db.Uuid
+  content          Json?
+  userId           String             @db.Uuid
+  pageId           String             @db.Uuid
+  spaceId          String             @db.Uuid
+  updatedAt        DateTime?
+  page             Page               @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  space            Space              @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  thread           Thread             @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  user             User               @relation(fields: [userId], references: [id])
+  PageNotification PageNotification[]
 
   @@index([pageId])
   @@index([spaceId])
@@ -1671,6 +1672,7 @@ model BountyNotification {
   bounty                 Bounty                   @relation(fields: [bountyId], references: [id], onDelete: Cascade)
   applicationId          String?                  @db.Uuid
   application            Application?             @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  type                   String
 }
 
 model PageNotification {
@@ -1683,6 +1685,8 @@ model PageNotification {
   commentId              String?                  @db.Uuid
   comment                PageComment?             @relation(fields: [commentId], references: [id], onDelete: Cascade)
   mentionId              String?
+  inlineComment          Comment?                 @relation(fields: [inlineCommentId], references: [id], onDelete: Cascade)
+  inlineCommentId        String                   @db.Uuid
   type                   String
 }
 

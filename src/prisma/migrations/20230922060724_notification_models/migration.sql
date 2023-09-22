@@ -17,7 +17,8 @@ CREATE TABLE "BountyNotification" (
     "id" UUID NOT NULL,
     "notificationMetadataId" UUID NOT NULL,
     "bountyId" UUID NOT NULL,
-    "applicationId" UUID
+    "applicationId" UUID,
+    "type" TEXT NOT NULL
 );
 
 -- CreateTable
@@ -27,6 +28,7 @@ CREATE TABLE "PageNotification" (
     "pageId" UUID NOT NULL,
     "commentId" UUID,
     "mentionId" TEXT,
+    "inlineCommentId" UUID NOT NULL,
     "type" TEXT NOT NULL
 );
 
@@ -110,6 +112,9 @@ ALTER TABLE "PageNotification" ADD CONSTRAINT "PageNotification_pageId_fkey" FOR
 
 -- AddForeignKey
 ALTER TABLE "PageNotification" ADD CONSTRAINT "PageNotification_commentId_fkey" FOREIGN KEY ("commentId") REFERENCES "PageComment"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "PageNotification" ADD CONSTRAINT "PageNotification_inlineCommentId_fkey" FOREIGN KEY ("inlineCommentId") REFERENCES "Comment"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "CardNotification" ADD CONSTRAINT "CardNotification_notificationMetadataId_fkey" FOREIGN KEY ("notificationMetadataId") REFERENCES "UserNotificationMetadata"("id") ON DELETE CASCADE ON UPDATE CASCADE;
