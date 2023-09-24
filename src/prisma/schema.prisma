@@ -454,21 +454,21 @@ model UserSpaceAction {
 }
 
 model PageComment {
-  id              String             @id @default(uuid()) @db.Uuid
-  createdAt       DateTime           @default(now())
-  createdBy       String             @db.Uuid
-  content         Json
-  contentText     String
-  updatedAt       DateTime           @updatedAt
-  deletedAt       DateTime?
-  deletedBy       String?
-  parentId        String?
-  pageId          String             @db.Uuid
-  page            Page               @relation(fields: [pageId], references: [id], onDelete: Cascade)
-  user            User               @relation(fields: [createdBy], references: [id], onDelete: Cascade)
-  votes           PageCommentVote[]
-  lensCommentLink String?
-  notifications   PageNotification[]
+  id                   String                 @id @default(uuid()) @db.Uuid
+  createdAt            DateTime               @default(now())
+  createdBy            String                 @db.Uuid
+  content              Json
+  contentText          String
+  updatedAt            DateTime               @updatedAt
+  deletedAt            DateTime?
+  deletedBy            String?
+  parentId             String?
+  pageId               String                 @db.Uuid
+  page                 Page                   @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  user                 User                   @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  votes                PageCommentVote[]
+  lensCommentLink      String?
+  proposalNotification ProposalNotification[]
 
   @@index([pageId])
 }
@@ -1086,19 +1086,22 @@ model Thread {
 }
 
 model Comment {
-  id               String             @id @default(uuid()) @db.Uuid
-  createdAt        DateTime           @default(now())
-  threadId         String             @db.Uuid
-  content          Json?
-  userId           String             @db.Uuid
-  pageId           String             @db.Uuid
-  spaceId          String             @db.Uuid
-  updatedAt        DateTime?
-  page             Page               @relation(fields: [pageId], references: [id], onDelete: Cascade)
-  space            Space              @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  thread           Thread             @relation(fields: [threadId], references: [id], onDelete: Cascade)
-  user             User               @relation(fields: [userId], references: [id])
-  PageNotification PageNotification[]
+  id                    String                 @id @default(uuid()) @db.Uuid
+  createdAt             DateTime               @default(now())
+  threadId              String                 @db.Uuid
+  content               Json?
+  userId                String                 @db.Uuid
+  pageId                String                 @db.Uuid
+  spaceId               String                 @db.Uuid
+  updatedAt             DateTime?
+  page                  Page                   @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  space                 Space                  @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  thread                Thread                 @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  user                  User                   @relation(fields: [userId], references: [id])
+  pageNotifications     PageNotification[]
+  bountyNotifications   BountyNotification[]
+  cardNotifications     CardNotification[]
+  proposalNotifications ProposalNotification[]
 
   @@index([pageId])
   @@index([spaceId])
@@ -1673,6 +1676,9 @@ model BountyNotification {
   applicationId          String?                  @db.Uuid
   application            Application?             @relation(fields: [applicationId], references: [id], onDelete: Cascade)
   type                   String
+  mentionId              String?
+  inlineComment          Comment?                 @relation(fields: [inlineCommentId], references: [id], onDelete: Cascade)
+  inlineCommentId        String                   @db.Uuid
 }
 
 model PageNotification {
@@ -1682,8 +1688,6 @@ model PageNotification {
   // page task columns
   pageId                 String                   @db.Uuid
   page                   Page                     @relation(fields: [pageId], references: [id], onDelete: Cascade)
-  commentId              String?                  @db.Uuid
-  comment                PageComment?             @relation(fields: [commentId], references: [id], onDelete: Cascade)
   mentionId              String?
   inlineComment          Comment?                 @relation(fields: [inlineCommentId], references: [id], onDelete: Cascade)
   inlineCommentId        String                   @db.Uuid
@@ -1701,6 +1705,9 @@ model CardNotification {
   comment                Block?                   @relation(fields: [commentId], references: [id], onDelete: Cascade, name: "comment")
   personPropertyId       String?
   type                   String
+  inlineComment          Comment?                 @relation(fields: [inlineCommentId], references: [id], onDelete: Cascade)
+  inlineCommentId        String                   @db.Uuid
+  mentionId              String?
 }
 
 model PostNotification {
@@ -1724,6 +1731,11 @@ model ProposalNotification {
   proposalId             String                   @unique @db.Uuid
   proposal               Proposal                 @relation(fields: [proposalId], references: [id])
   type                   String
+  mentionId              String?
+  inlineComment          Comment?                 @relation(fields: [inlineCommentId], references: [id], onDelete: Cascade)
+  inlineCommentId        String                   @db.Uuid
+  commentId              String?                  @db.Uuid
+  comment                PageComment?             @relation(fields: [commentId], references: [id], onDelete: Cascade)
 }
 
 model VoteNotification {
