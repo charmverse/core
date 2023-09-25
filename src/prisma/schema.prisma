@@ -324,6 +324,7 @@ model Space {
   blockCounts                 BlockCount[]
   blockQuota                  Int                               @default(0)
   ProposalBlock               ProposalBlock[]
+  RewardBlock                 RewardBlock[]
 
   @@index([createdBy])
 }
@@ -629,6 +630,7 @@ model User {
   apiPageKeys               ApiPageKey[]
   spaceActions              UserSpaceAction[]
   ProposalBlock             ProposalBlock[]
+  RewardBlock               RewardBlock[]
 }
 
 model VerifiedEmail {
@@ -1133,6 +1135,29 @@ model Proposal {
 }
 
 model ProposalBlock {
+  id        String
+  deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  createdBy String    @db.Uuid
+  updatedAt DateTime  @default(now())
+  updatedBy String    @db.Uuid
+  spaceId   String    @db.Uuid
+  parentId  String
+  rootId    String    @db.Uuid
+  schema    Int
+  type      String    @default("board")
+  title     String
+  fields    Json
+  user      User      @relation(fields: [createdBy], references: [id])
+  space     Space     @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+
+  @@id([id, spaceId])
+  @@index([rootId])
+  @@index([spaceId])
+  @@index([createdBy])
+}
+
+model RewardBlock {
   id        String
   deletedAt DateTime?
   createdAt DateTime  @default(now())
