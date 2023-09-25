@@ -24,7 +24,7 @@ CREATE TABLE "BountyNotification" (
 );
 
 -- CreateTable
-CREATE TABLE "PageNotification" (
+CREATE TABLE "DocumentNotification" (
     "id" UUID NOT NULL,
     "notificationMetadataId" UUID NOT NULL,
     "pageId" UUID NOT NULL,
@@ -78,7 +78,7 @@ CREATE TABLE "VoteNotification" (
 CREATE UNIQUE INDEX "BountyNotification_id_key" ON "BountyNotification"("id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "PageNotification_id_key" ON "PageNotification"("id");
+CREATE UNIQUE INDEX "DocumentNotification_id_key" ON "DocumentNotification"("id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "CardNotification_id_key" ON "CardNotification"("id");
@@ -114,13 +114,13 @@ ALTER TABLE "BountyNotification" ADD CONSTRAINT "BountyNotification_applicationI
 ALTER TABLE "BountyNotification" ADD CONSTRAINT "BountyNotification_inlineCommentId_fkey" FOREIGN KEY ("inlineCommentId") REFERENCES "Comment"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "PageNotification" ADD CONSTRAINT "PageNotification_notificationMetadataId_fkey" FOREIGN KEY ("notificationMetadataId") REFERENCES "UserNotificationMetadata"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "DocumentNotification" ADD CONSTRAINT "DocumentNotification_notificationMetadataId_fkey" FOREIGN KEY ("notificationMetadataId") REFERENCES "UserNotificationMetadata"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "PageNotification" ADD CONSTRAINT "PageNotification_pageId_fkey" FOREIGN KEY ("pageId") REFERENCES "Page"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "DocumentNotification" ADD CONSTRAINT "DocumentNotification_pageId_fkey" FOREIGN KEY ("pageId") REFERENCES "Page"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "PageNotification" ADD CONSTRAINT "PageNotification_inlineCommentId_fkey" FOREIGN KEY ("inlineCommentId") REFERENCES "Comment"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "DocumentNotification" ADD CONSTRAINT "DocumentNotification_inlineCommentId_fkey" FOREIGN KEY ("inlineCommentId") REFERENCES "Comment"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "CardNotification" ADD CONSTRAINT "CardNotification_notificationMetadataId_fkey" FOREIGN KEY ("notificationMetadataId") REFERENCES "UserNotificationMetadata"("id") ON DELETE CASCADE ON UPDATE CASCADE;
