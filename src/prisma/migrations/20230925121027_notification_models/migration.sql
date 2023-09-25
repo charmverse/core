@@ -20,7 +20,9 @@ CREATE TABLE "BountyNotification" (
     "applicationId" UUID,
     "type" TEXT NOT NULL,
     "mentionId" TEXT,
-    "inlineCommentId" UUID NOT NULL
+    "inlineCommentId" UUID NOT NULL,
+
+    CONSTRAINT "BountyNotification_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -30,7 +32,9 @@ CREATE TABLE "DocumentNotification" (
     "pageId" UUID NOT NULL,
     "mentionId" TEXT,
     "inlineCommentId" UUID NOT NULL,
-    "type" TEXT NOT NULL
+    "type" TEXT NOT NULL,
+
+    CONSTRAINT "DocumentNotification_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -38,11 +42,13 @@ CREATE TABLE "CardNotification" (
     "id" UUID NOT NULL,
     "notificationMetadataId" UUID NOT NULL,
     "cardId" UUID NOT NULL,
-    "commentId" UUID,
+    "blockCommentId" UUID,
     "personPropertyId" TEXT,
     "type" TEXT NOT NULL,
     "inlineCommentId" UUID NOT NULL,
-    "mentionId" TEXT
+    "mentionId" TEXT,
+
+    CONSTRAINT "CardNotification_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -52,7 +58,9 @@ CREATE TABLE "PostNotification" (
     "postId" UUID NOT NULL,
     "commentId" UUID,
     "mentionId" TEXT,
-    "type" TEXT NOT NULL
+    "type" TEXT NOT NULL,
+
+    CONSTRAINT "PostNotification_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -63,7 +71,9 @@ CREATE TABLE "ProposalNotification" (
     "type" TEXT NOT NULL,
     "mentionId" TEXT,
     "inlineCommentId" UUID NOT NULL,
-    "commentId" UUID
+    "commentId" UUID,
+
+    CONSTRAINT "ProposalNotification_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -71,29 +81,22 @@ CREATE TABLE "VoteNotification" (
     "id" UUID NOT NULL,
     "notificationMetadataId" UUID NOT NULL,
     "voteId" UUID NOT NULL,
-    "type" TEXT NOT NULL
+    "type" TEXT NOT NULL,
+
+    CONSTRAINT "VoteNotification_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "WebhookMessage" (
+    "id" UUID NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "processed" BOOLEAN NOT NULL DEFAULT false,
+
+    CONSTRAINT "WebhookMessage_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "BountyNotification_id_key" ON "BountyNotification"("id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "DocumentNotification_id_key" ON "DocumentNotification"("id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "CardNotification_id_key" ON "CardNotification"("id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "PostNotification_id_key" ON "PostNotification"("id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "ProposalNotification_id_key" ON "ProposalNotification"("id");
-
--- CreateIndex
 CREATE UNIQUE INDEX "ProposalNotification_proposalId_key" ON "ProposalNotification"("proposalId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "VoteNotification_id_key" ON "VoteNotification"("id");
 
 -- AddForeignKey
 ALTER TABLE "UserNotificationMetadata" ADD CONSTRAINT "UserNotificationMetadata_spaceId_fkey" FOREIGN KEY ("spaceId") REFERENCES "Space"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -129,7 +132,7 @@ ALTER TABLE "CardNotification" ADD CONSTRAINT "CardNotification_notificationMeta
 ALTER TABLE "CardNotification" ADD CONSTRAINT "CardNotification_cardId_fkey" FOREIGN KEY ("cardId") REFERENCES "Block"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "CardNotification" ADD CONSTRAINT "CardNotification_commentId_fkey" FOREIGN KEY ("commentId") REFERENCES "Block"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "CardNotification" ADD CONSTRAINT "CardNotification_blockCommentId_fkey" FOREIGN KEY ("blockCommentId") REFERENCES "Block"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "CardNotification" ADD CONSTRAINT "CardNotification_inlineCommentId_fkey" FOREIGN KEY ("inlineCommentId") REFERENCES "Comment"("id") ON DELETE CASCADE ON UPDATE CASCADE;

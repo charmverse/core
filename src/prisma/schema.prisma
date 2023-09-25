@@ -1701,8 +1701,8 @@ model CardNotification {
   // card task columns
   cardId                 String                   @db.Uuid
   card                   Block                    @relation(fields: [cardId], references: [id], onDelete: Cascade, name: "card")
-  commentId              String?                  @db.Uuid
-  comment                Block?                   @relation(fields: [commentId], references: [id], onDelete: Cascade, name: "comment")
+  blockCommentId         String?                  @db.Uuid
+  blockComment           Block?                   @relation(fields: [blockCommentId], references: [id], onDelete: Cascade, name: "comment")
   personPropertyId       String?
   type                   String
   inlineComment          Comment?                 @relation(fields: [inlineCommentId], references: [id], onDelete: Cascade)
