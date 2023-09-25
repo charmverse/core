@@ -1667,7 +1667,7 @@ model UserNotificationMetadata {
 }
 
 model BountyNotification {
-  id                     String                   @unique @db.Uuid
+  id                     String                   @id @default(uuid()) @db.Uuid
   notificationMetadataId String                   @db.Uuid
   notificationMetadata   UserNotificationMetadata @relation(fields: [notificationMetadataId], references: [id], onDelete: Cascade)
   // bounty task columns
@@ -1682,7 +1682,7 @@ model BountyNotification {
 }
 
 model DocumentNotification {
-  id                     String                   @unique @db.Uuid
+  id                     String                   @id @default(uuid()) @db.Uuid
   notificationMetadataId String                   @db.Uuid
   notificationMetadata   UserNotificationMetadata @relation(fields: [notificationMetadataId], references: [id], onDelete: Cascade)
   // page task columns
@@ -1695,7 +1695,7 @@ model DocumentNotification {
 }
 
 model CardNotification {
-  id                     String                   @unique @db.Uuid
+  id                     String                   @id @default(uuid()) @db.Uuid
   notificationMetadataId String                   @db.Uuid
   notificationMetadata   UserNotificationMetadata @relation(fields: [notificationMetadataId], references: [id], onDelete: Cascade)
   // card task columns
@@ -1711,7 +1711,7 @@ model CardNotification {
 }
 
 model PostNotification {
-  id                     String                   @unique @db.Uuid
+  id                     String                   @id @default(uuid()) @db.Uuid
   notificationMetadataId String                   @db.Uuid
   notificationMetadata   UserNotificationMetadata @relation(fields: [notificationMetadataId], references: [id], onDelete: Cascade)
   // forum task column
@@ -1724,7 +1724,7 @@ model PostNotification {
 }
 
 model ProposalNotification {
-  id                     String                   @unique @db.Uuid
+  id                     String                   @id @default(uuid()) @db.Uuid
   notificationMetadataId String                   @db.Uuid
   notificationMetadata   UserNotificationMetadata @relation(fields: [notificationMetadataId], references: [id], onDelete: Cascade)
   // proposal task columns
@@ -1739,11 +1739,17 @@ model ProposalNotification {
 }
 
 model VoteNotification {
-  id                     String                   @unique @db.Uuid
+  id                     String                   @id @default(uuid()) @db.Uuid
   notificationMetadataId String                   @db.Uuid
   notificationMetadata   UserNotificationMetadata @relation(fields: [notificationMetadataId], references: [id], onDelete: Cascade)
   // vote task columns
   voteId                 String                   @db.Uuid
   vote                   Vote                     @relation(fields: [voteId], references: [id], onDelete: Cascade)
   type                   String
+}
+
+model WebhookMessage {
+  id        String   @id @db.Uuid
+  createdAt DateTime @default(now())
+  processed Boolean  @default(false)
 }
