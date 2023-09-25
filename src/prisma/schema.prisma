@@ -826,6 +826,7 @@ model Bounty {
   permissions       BountyPermission[]
   page              Page?
   customReward      String?
+  fields            Json?
 
   @@index([createdBy])
   @@index([spaceId])
