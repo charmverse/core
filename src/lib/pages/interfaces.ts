@@ -1,7 +1,7 @@
 // These 2 types are used for reducing a list of pages to a tree
 // Generic type A is optional, we can mount additional properties on basic node definitions
 
-import type { Page, PagePermission } from '@prisma/client';
+import type { Page, PagePermission, PageType } from '@prisma/client';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type PageNode<A = {}> = Pick<
@@ -62,6 +62,7 @@ export type PagesRequest = {
   pageIds?: string[];
   search?: string;
   limit?: number;
+  pageType?: PageType;
 };
 // Page without content and contentText props - used for list of pages (on the client)
 export type PageMeta = Pick<
