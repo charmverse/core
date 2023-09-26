@@ -1,5 +1,6 @@
 -- AlterTable
-ALTER TABLE "Bounty" ADD COLUMN     "fields" JSONB;
+ALTER TABLE "Bounty" ADD COLUMN     "dueDate" TIMESTAMP(3),
+ADD COLUMN     "fields" JSONB;
 
 -- CreateTable
 CREATE TABLE "RewardBlock" (

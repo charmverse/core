@@ -811,6 +811,7 @@ model Bounty {
   spaceId           String             @db.Uuid
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @default(now())
+  dueDate           DateTime?
   rewardAmount      Float?
   rewardToken       String?
   status            BountyStatus       @default(open)
