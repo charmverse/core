@@ -1678,7 +1678,7 @@ model BountyNotification {
   type                   String
   mentionId              String?
   inlineComment          Comment?                 @relation(fields: [inlineCommentId], references: [id], onDelete: Cascade)
-  inlineCommentId        String                   @db.Uuid
+  inlineCommentId        String?                  @db.Uuid
 }
 
 model DocumentNotification {
@@ -1690,7 +1690,7 @@ model DocumentNotification {
   page                   Page                     @relation(fields: [pageId], references: [id], onDelete: Cascade)
   mentionId              String?
   inlineComment          Comment?                 @relation(fields: [inlineCommentId], references: [id], onDelete: Cascade)
-  inlineCommentId        String                   @db.Uuid
+  inlineCommentId        String?                  @db.Uuid
   type                   String
 }
 
@@ -1706,7 +1706,7 @@ model CardNotification {
   personPropertyId       String?
   type                   String
   inlineComment          Comment?                 @relation(fields: [inlineCommentId], references: [id], onDelete: Cascade)
-  inlineCommentId        String                   @db.Uuid
+  inlineCommentId        String?                  @db.Uuid
   mentionId              String?
 }
 
@@ -1733,7 +1733,7 @@ model ProposalNotification {
   type                   String
   mentionId              String?
   inlineComment          Comment?                 @relation(fields: [inlineCommentId], references: [id], onDelete: Cascade)
-  inlineCommentId        String                   @db.Uuid
+  inlineCommentId        String?                  @db.Uuid
   commentId              String?                  @db.Uuid
   comment                PageComment?             @relation(fields: [commentId], references: [id], onDelete: Cascade)
 }

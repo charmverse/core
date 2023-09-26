@@ -20,7 +20,7 @@ CREATE TABLE "BountyNotification" (
     "applicationId" UUID,
     "type" TEXT NOT NULL,
     "mentionId" TEXT,
-    "inlineCommentId" UUID NOT NULL,
+    "inlineCommentId" UUID,
 
     CONSTRAINT "BountyNotification_pkey" PRIMARY KEY ("id")
 );
@@ -31,7 +31,7 @@ CREATE TABLE "DocumentNotification" (
     "notificationMetadataId" UUID NOT NULL,
     "pageId" UUID NOT NULL,
     "mentionId" TEXT,
-    "inlineCommentId" UUID NOT NULL,
+    "inlineCommentId" UUID,
     "type" TEXT NOT NULL,
 
     CONSTRAINT "DocumentNotification_pkey" PRIMARY KEY ("id")
@@ -45,7 +45,7 @@ CREATE TABLE "CardNotification" (
     "blockCommentId" UUID,
     "personPropertyId" TEXT,
     "type" TEXT NOT NULL,
-    "inlineCommentId" UUID NOT NULL,
+    "inlineCommentId" UUID,
     "mentionId" TEXT,
 
     CONSTRAINT "CardNotification_pkey" PRIMARY KEY ("id")
@@ -70,7 +70,7 @@ CREATE TABLE "ProposalNotification" (
     "proposalId" UUID NOT NULL,
     "type" TEXT NOT NULL,
     "mentionId" TEXT,
-    "inlineCommentId" UUID NOT NULL,
+    "inlineCommentId" UUID,
     "commentId" UUID,
 
     CONSTRAINT "ProposalNotification_pkey" PRIMARY KEY ("id")
