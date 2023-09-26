@@ -95,9 +95,6 @@ CREATE TABLE "WebhookMessage" (
     CONSTRAINT "WebhookMessage_pkey" PRIMARY KEY ("id")
 );
 
--- CreateIndex
-CREATE UNIQUE INDEX "ProposalNotification_proposalId_key" ON "ProposalNotification"("proposalId");
-
 -- AddForeignKey
 ALTER TABLE "UserNotificationMetadata" ADD CONSTRAINT "UserNotificationMetadata_spaceId_fkey" FOREIGN KEY ("spaceId") REFERENCES "Space"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 

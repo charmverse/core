@@ -1728,7 +1728,7 @@ model ProposalNotification {
   notificationMetadataId String                   @db.Uuid
   notificationMetadata   UserNotificationMetadata @relation(fields: [notificationMetadataId], references: [id], onDelete: Cascade)
   // proposal task columns
-  proposalId             String                   @unique @db.Uuid
+  proposalId             String                   @db.Uuid
   proposal               Proposal                 @relation(fields: [proposalId], references: [id])
   type                   String
   mentionId              String?
