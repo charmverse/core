@@ -45,8 +45,6 @@ CREATE TABLE "CardNotification" (
     "blockCommentId" UUID,
     "personPropertyId" TEXT,
     "type" TEXT NOT NULL,
-    "inlineCommentId" UUID,
-    "mentionId" TEXT,
 
     CONSTRAINT "CardNotification_pkey" PRIMARY KEY ("id")
 );
@@ -88,7 +86,7 @@ CREATE TABLE "VoteNotification" (
 
 -- CreateTable
 CREATE TABLE "WebhookMessage" (
-    "id" UUID NOT NULL,
+    "id" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "processed" BOOLEAN NOT NULL DEFAULT false,
 
@@ -130,9 +128,6 @@ ALTER TABLE "CardNotification" ADD CONSTRAINT "CardNotification_cardId_fkey" FOR
 
 -- AddForeignKey
 ALTER TABLE "CardNotification" ADD CONSTRAINT "CardNotification_blockCommentId_fkey" FOREIGN KEY ("blockCommentId") REFERENCES "Block"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "CardNotification" ADD CONSTRAINT "CardNotification_inlineCommentId_fkey" FOREIGN KEY ("inlineCommentId") REFERENCES "Comment"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "PostNotification" ADD CONSTRAINT "PostNotification_notificationMetadataId_fkey" FOREIGN KEY ("notificationMetadataId") REFERENCES "UserNotificationMetadata"("id") ON DELETE CASCADE ON UPDATE CASCADE;

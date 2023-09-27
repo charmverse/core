@@ -1100,7 +1100,6 @@ model Comment {
   user                  User                   @relation(fields: [userId], references: [id])
   pageNotifications     DocumentNotification[]
   bountyNotifications   BountyNotification[]
-  cardNotifications     CardNotification[]
   proposalNotifications ProposalNotification[]
 
   @@index([pageId])
@@ -1705,9 +1704,6 @@ model CardNotification {
   blockComment           Block?                   @relation(fields: [blockCommentId], references: [id], onDelete: Cascade, name: "comment")
   personPropertyId       String?
   type                   String
-  inlineComment          Comment?                 @relation(fields: [inlineCommentId], references: [id], onDelete: Cascade)
-  inlineCommentId        String?                  @db.Uuid
-  mentionId              String?
 }
 
 model PostNotification {
@@ -1749,7 +1745,7 @@ model VoteNotification {
 }
 
 model WebhookMessage {
-  id        String   @id @db.Uuid
+  id        String   @id
   createdAt DateTime @default(now())
   processed Boolean  @default(false)
 }
