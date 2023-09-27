@@ -1744,7 +1744,7 @@ model VoteNotification {
   type                   String
 }
 
-model WebhookMessage {
+model SQSMessage {
   id        String   @id
   createdAt DateTime @default(now())
   payload   Json?
