@@ -1747,5 +1747,5 @@ model VoteNotification {
 model WebhookMessage {
   id        String   @id
   createdAt DateTime @default(now())
-  processed Boolean  @default(false)
+  payload   Json?
 }
