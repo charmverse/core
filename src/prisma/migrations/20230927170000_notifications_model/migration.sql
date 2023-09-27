@@ -85,12 +85,12 @@ CREATE TABLE "VoteNotification" (
 );
 
 -- CreateTable
-CREATE TABLE "WebhookMessage" (
+CREATE TABLE "SQSMessage" (
     "id" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "processed" BOOLEAN NOT NULL DEFAULT false,
+    "payload" JSONB,
 
-    CONSTRAINT "WebhookMessage_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "SQSMessage_pkey" PRIMARY KEY ("id")
 );
 
 -- AddForeignKey
