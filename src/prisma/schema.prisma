@@ -631,6 +631,7 @@ model User {
   spaceActions              UserSpaceAction[]
   ProposalBlock             ProposalBlock[]
   RewardBlock               RewardBlock[]
+  ApplicationComment        ApplicationComment[]
 }
 
 model VerifiedEmail {
@@ -858,22 +859,23 @@ model BountyPermission {
 }
 
 model Application {
-  id              String            @id @default(uuid()) @db.Uuid
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @default(now())
-  bountyId        String            @db.Uuid
-  createdBy       String            @db.Uuid
-  walletAddress   String?
-  message         String?
-  spaceId         String
-  status          ApplicationStatus @default(applied)
-  submission      String?
-  submissionNodes String?
-  acceptedBy      String?           @db.Uuid
-  reviewedBy      String?           @db.Uuid
-  bounty          Bounty            @relation(fields: [bountyId], references: [id], onDelete: Cascade)
-  applicant       User              @relation(fields: [createdBy], references: [id])
-  transactions    Transaction[]
+  id                 String               @id @default(uuid()) @db.Uuid
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @default(now())
+  bountyId           String               @db.Uuid
+  createdBy          String               @db.Uuid
+  walletAddress      String?
+  message            String?
+  spaceId            String
+  status             ApplicationStatus    @default(applied)
+  submission         String?
+  submissionNodes    String?
+  acceptedBy         String?              @db.Uuid
+  reviewedBy         String?              @db.Uuid
+  bounty             Bounty               @relation(fields: [bountyId], references: [id], onDelete: Cascade)
+  applicant          User                 @relation(fields: [createdBy], references: [id])
+  transactions       Transaction[]
+  ApplicationComment ApplicationComment[]
 
   @@unique([bountyId, createdBy])
   @@index([createdBy])
@@ -1497,6 +1499,24 @@ model PostComment {
   votes  PostCommentUpDownVote[]
 
   @@index([postId])
+}
+
+model ApplicationComment {
+  id          String    @id @default(uuid()) @db.Uuid
+  createdAt   DateTime  @default(now())
+  createdBy   String    @db.Uuid
+  content     Json
+  contentText String
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+  deletedBy   String?       
+  parentId    String?       @db.Uuid
+
+  applicationId String      @db.Uuid
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  user          User        @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+
+  @@index([applicationId])
 }
 
 model PostCommentUpDownVote {
