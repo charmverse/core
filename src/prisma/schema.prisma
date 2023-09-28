@@ -323,8 +323,8 @@ model Space {
   postTags                    PostTag[]
   blockCounts                 BlockCount[]
   blockQuota                  Int                               @default(0)
-  proposalBlocks               ProposalBlock[]
-  rewardBlocks                 RewardBlock[]
+  proposalBlocks              ProposalBlock[]
+  rewardBlocks                RewardBlock[]
   userNotifications           UserNotificationMetadata[]
 
   @@index([createdBy])
@@ -635,8 +635,8 @@ model User {
   verifiedEmails            VerifiedEmail[]
   apiPageKeys               ApiPageKey[]
   spaceActions              UserSpaceAction[]
-  proposalBlocks             ProposalBlock[]
-  rewardBlocks               RewardBlock[]
+  proposalBlocks            ProposalBlock[]
+  rewardBlocks              RewardBlock[]
   ApplicationComment        ApplicationComment[]
   notifications             UserNotificationMetadata[]
 }
@@ -815,10 +815,10 @@ model InviteLink {
 }
 
 model Bounty {
-  createdBy         String             @db.Uuid
-  spaceId           String             @db.Uuid
-  createdAt         DateTime           @default(now())
-  updatedAt         DateTime           @default(now())
+  createdBy         String               @db.Uuid
+  spaceId           String               @db.Uuid
+  createdAt         DateTime             @default(now())
+  updatedAt         DateTime             @default(now())
   dueDate           DateTime?
   rewardAmount      Float?
   rewardToken       String?
@@ -884,7 +884,7 @@ model Application {
   applicant          User                 @relation(fields: [createdBy], references: [id])
   transactions       Transaction[]
   ApplicationComment ApplicationComment[]
-  notifications   BountyNotification[]
+  notifications      BountyNotification[]
 
   @@unique([bountyId, createdBy])
   @@index([createdBy])
@@ -1524,8 +1524,8 @@ model ApplicationComment {
   contentText String
   updatedAt   DateTime  @updatedAt
   deletedAt   DateTime?
-  deletedBy   String?       
-  parentId    String?       @db.Uuid
+  deletedBy   String?
+  parentId    String?   @db.Uuid
 
   applicationId String      @db.Uuid
   application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
