@@ -592,7 +592,7 @@ model User {
   emailNotifications        Boolean?                        @default(true)
   emailNewsletter           Boolean?                        @default(false)
   xpsEngineId               String?                         @unique
-  publishToLensDefault      Boolean?                        @default(true)
+  publishToLensDefault      Boolean?                        @default(false)
   applications              Application[]
   blocks                    Block[]
   bounties                  Bounty[]
