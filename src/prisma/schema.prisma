@@ -323,7 +323,8 @@ model Space {
   postTags                    PostTag[]
   blockCounts                 BlockCount[]
   blockQuota                  Int                               @default(0)
-  ProposalBlock               ProposalBlock[]
+  proposalBlocks              ProposalBlock[]
+  rewardBlocks                RewardBlock[]
   userNotifications           UserNotificationMetadata[]
 
   @@index([createdBy])
@@ -637,6 +638,8 @@ model User {
   ProposalBlock             ProposalBlock[]
   authorNotifications       UserNotificationMetadata[]      @relation("author")
   targetNotifications       UserNotificationMetadata[]      @relation("target")
+  RewardBlock               RewardBlock[]
+  ApplicationComment        ApplicationComment[]
 }
 
 model VerifiedEmail {
@@ -817,6 +820,7 @@ model Bounty {
   spaceId           String               @db.Uuid
   createdAt         DateTime             @default(now())
   updatedAt         DateTime             @default(now())
+  dueDate           DateTime?
   rewardAmount      Float?
   rewardToken       String?
   status            BountyStatus         @default(open)
@@ -832,6 +836,7 @@ model Bounty {
   permissions       BountyPermission[]
   page              Page?
   customReward      String?
+  fields            Json?
   notifications     BountyNotification[]
 
   @@index([createdBy])
@@ -863,23 +868,24 @@ model BountyPermission {
 }
 
 model Application {
-  id              String               @id @default(uuid()) @db.Uuid
-  createdAt       DateTime             @default(now())
-  updatedAt       DateTime             @default(now())
-  bountyId        String               @db.Uuid
-  createdBy       String               @db.Uuid
-  walletAddress   String?
-  message         String?
-  spaceId         String
-  status          ApplicationStatus    @default(applied)
-  submission      String?
-  submissionNodes String?
-  acceptedBy      String?              @db.Uuid
-  reviewedBy      String?              @db.Uuid
-  bounty          Bounty               @relation(fields: [bountyId], references: [id], onDelete: Cascade)
-  applicant       User                 @relation(fields: [createdBy], references: [id])
-  transactions    Transaction[]
-  notifications   BountyNotification[]
+  id                 String               @id @default(uuid()) @db.Uuid
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @default(now())
+  bountyId           String               @db.Uuid
+  createdBy          String               @db.Uuid
+  walletAddress      String?
+  message            String?
+  spaceId            String
+  status             ApplicationStatus    @default(applied)
+  submission         String?
+  submissionNodes    String?
+  acceptedBy         String?              @db.Uuid
+  reviewedBy         String?              @db.Uuid
+  bounty             Bounty               @relation(fields: [bountyId], references: [id], onDelete: Cascade)
+  applicant          User                 @relation(fields: [createdBy], references: [id])
+  transactions       Transaction[]
+  ApplicationComment ApplicationComment[]
+  notifications      BountyNotification[]
 
   @@unique([bountyId, createdBy])
   @@index([createdBy])
@@ -1147,6 +1153,29 @@ model Proposal {
 }
 
 model ProposalBlock {
+  id        String
+  deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  createdBy String    @db.Uuid
+  updatedAt DateTime  @default(now())
+  updatedBy String    @db.Uuid
+  spaceId   String    @db.Uuid
+  parentId  String
+  rootId    String    @db.Uuid
+  schema    Int
+  type      String    @default("board")
+  title     String
+  fields    Json
+  user      User      @relation(fields: [createdBy], references: [id])
+  space     Space     @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+
+  @@id([id, spaceId])
+  @@index([rootId])
+  @@index([spaceId])
+  @@index([createdBy])
+}
+
+model RewardBlock {
   id        String
   deletedAt DateTime?
   createdAt DateTime  @default(now())
@@ -1486,6 +1515,24 @@ model PostComment {
   notifications PostNotification[]
 
   @@index([postId])
+}
+
+model ApplicationComment {
+  id          String    @id @default(uuid()) @db.Uuid
+  createdAt   DateTime  @default(now())
+  createdBy   String    @db.Uuid
+  content     Json
+  contentText String
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+  deletedBy   String?
+  parentId    String?   @db.Uuid
+
+  applicationId String      @db.Uuid
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  user          User        @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+
+  @@index([applicationId])
 }
 
 model PostCommentUpDownVote {
