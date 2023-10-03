@@ -72,7 +72,7 @@ describe('policyStatusEvaluationClosedViewOnly', () => {
     });
   });
 
-  it('should allow authors to view, make public, archive and unarchive', async () => {
+  it('should allow authors to view, comment, make public, archive and unarchive', async () => {
     const permissions = await policyStatusEvaluationClosedViewOnly({
       flags: fullPermissions,
       isAdmin: false,
@@ -85,7 +85,7 @@ describe('policyStatusEvaluationClosedViewOnly', () => {
       vote: false,
       make_public: true,
       create_vote: false,
-      comment: false,
+      comment: true,
       delete: false,
       edit: false,
       review: false,
@@ -120,7 +120,7 @@ describe('policyStatusEvaluationClosedViewOnly', () => {
     });
   });
 
-  it('should allow admins to view, make public, delete, archive and unarchive', async () => {
+  it('should allow admins to view, comment, make public, delete, archive and unarchive', async () => {
     const permissions = await policyStatusEvaluationClosedViewOnly({
       flags: fullPermissions,
       isAdmin: true,
@@ -134,7 +134,7 @@ describe('policyStatusEvaluationClosedViewOnly', () => {
       delete: true,
       vote: false,
       create_vote: false,
-      comment: false,
+      comment: true,
       edit: false,
       review: false,
       archive: true,
@@ -143,7 +143,7 @@ describe('policyStatusEvaluationClosedViewOnly', () => {
     });
   });
 
-  it('should only allow users to view', async () => {
+  it('should allow users to view and comment', async () => {
     const users = [proposalReviewer, spaceMember];
 
     for (const user of users) {
@@ -159,7 +159,7 @@ describe('policyStatusEvaluationClosedViewOnly', () => {
         vote: false,
         make_public: false,
         create_vote: false,
-        comment: false,
+        comment: true,
         delete: false,
         edit: false,
         review: false,
