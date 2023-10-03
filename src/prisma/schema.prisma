@@ -635,10 +635,10 @@ model User {
   verifiedEmails            VerifiedEmail[]
   apiPageKeys               ApiPageKey[]
   spaceActions              UserSpaceAction[]
-  ProposalBlock             ProposalBlock[]
+  proposalBlocks             ProposalBlock[]
+  rewardBlocks               RewardBlock[]
   authorNotifications       UserNotificationMetadata[]      @relation("author")
   targetNotifications       UserNotificationMetadata[]      @relation("target")
-  RewardBlock               RewardBlock[]
   ApplicationComment        ApplicationComment[]
 }
 
