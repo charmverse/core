@@ -323,7 +323,7 @@ model Space {
   postTags                    PostTag[]
   blockCounts                 BlockCount[]
   blockQuota                  Int                               @default(0)
-  ProposalBlock              ProposalBlock[]
+  proposalBlocks              ProposalBlock[]
   rewardBlocks                RewardBlock[]
   userNotifications           UserNotificationMetadata[]
 
