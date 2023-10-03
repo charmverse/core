@@ -593,7 +593,7 @@ model User {
   emailNotifications        Boolean?                        @default(true)
   emailNewsletter           Boolean?                        @default(false)
   xpsEngineId               String?                         @unique
-  publishToLensDefault      Boolean?                        @default(true)
+  publishToLensDefault      Boolean?                        @default(false)
   applications              Application[]
   blocks                    Block[]
   bounties                  Bounty[]
@@ -635,10 +635,11 @@ model User {
   verifiedEmails            VerifiedEmail[]
   apiPageKeys               ApiPageKey[]
   spaceActions              UserSpaceAction[]
-  proposalBlocks            ProposalBlock[]
-  rewardBlocks              RewardBlock[]
+  ProposalBlock             ProposalBlock[]
+  authorNotifications       UserNotificationMetadata[]      @relation("author")
+  targetNotifications       UserNotificationMetadata[]      @relation("target")
+  RewardBlock               RewardBlock[]
   ApplicationComment        ApplicationComment[]
-  notifications             UserNotificationMetadata[]
 }
 
 model VerifiedEmail {
@@ -1697,13 +1698,14 @@ model UserNotificationMetadata {
   id                    String                 @id @default(uuid()) @db.Uuid
   createdAt             DateTime               @default(now())
   createdBy             String                 @db.Uuid
+  author                User                   @relation(fields: [createdBy], references: [id], onDelete: Cascade, name: "author")
   deletedAt             DateTime?
   seenAt                DateTime?
   channel               NotificationChannel?
   spaceId               String                 @db.Uuid
   space                 Space                  @relation(fields: [spaceId], references: [id], onDelete: Cascade)
   userId                String                 @db.Uuid
-  user                  User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user                  User                   @relation(fields: [userId], references: [id], onDelete: Cascade, name: "target")
   bountyNotifications   BountyNotification[]
   documentNotifications DocumentNotification[]
   cardNotifications     CardNotification[]
@@ -1772,7 +1774,7 @@ model ProposalNotification {
   notificationMetadata   UserNotificationMetadata @relation(fields: [notificationMetadataId], references: [id], onDelete: Cascade)
   // proposal task columns
   proposalId             String                   @db.Uuid
-  proposal               Proposal                 @relation(fields: [proposalId], references: [id])
+  proposal               Proposal                 @relation(fields: [proposalId], references: [id], onDelete: Cascade)
   type                   String
   mentionId              String?
   inlineComment          Comment?                 @relation(fields: [inlineCommentId], references: [id], onDelete: Cascade)
