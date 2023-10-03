@@ -6,7 +6,7 @@ import { isProposalAuthor } from '../isProposalAuthor';
 
 import type { ProposalPolicyInput } from './interfaces';
 
-const allowedOperations: ProposalOperation[] = ['view'];
+const allowedOperations: ProposalOperation[] = ['view', 'comment'];
 const allowedAuthorOperations: ProposalOperation[] = [...allowedOperations, 'make_public', 'archive', 'unarchive'];
 const allowedAdminOperations: ProposalOperation[] = [...allowedAuthorOperations, 'delete'];
 const allowedSpaceWideProposalPermissions: ProposalOperation[] = ['delete', 'view', 'archive', 'unarchive'];

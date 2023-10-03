@@ -71,7 +71,7 @@ describe('policyStatusVoteActiveOnlyVotable', () => {
       evaluate: true
     });
   });
-  it('should allow author to view, update vote, vote make the proposal public', async () => {
+  it('should allow author to view, comment, update vote, vote make the proposal public', async () => {
     const permissions = await policyStatusVoteActiveOnlyVotable({
       flags: fullPermissions,
       isAdmin: false,
@@ -84,7 +84,7 @@ describe('policyStatusVoteActiveOnlyVotable', () => {
       vote: true,
       make_public: true,
       create_vote: true,
-      comment: false,
+      comment: true,
       delete: false,
       edit: false,
       review: false,
@@ -133,7 +133,7 @@ describe('policyStatusVoteActiveOnlyVotable', () => {
       make_public: true,
       delete: true,
       create_vote: true,
-      comment: false,
+      comment: true,
       edit: false,
       review: false,
       archive: false,
@@ -142,7 +142,7 @@ describe('policyStatusVoteActiveOnlyVotable', () => {
     });
   });
 
-  it('should only allow users to view and vote', async () => {
+  it('should allow users to view, comment and vote', async () => {
     const users = [proposalReviewer, spaceMember];
 
     for (const user of users) {
@@ -158,7 +158,7 @@ describe('policyStatusVoteActiveOnlyVotable', () => {
         vote: true,
         make_public: false,
         create_vote: false,
-        comment: false,
+        comment: true,
         delete: false,
         edit: false,
         review: false,
