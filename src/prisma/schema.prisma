@@ -635,8 +635,8 @@ model User {
   verifiedEmails            VerifiedEmail[]
   apiPageKeys               ApiPageKey[]
   spaceActions              UserSpaceAction[]
-  proposalBlocks             ProposalBlock[]
-  rewardBlocks               RewardBlock[]
+  proposalBlocks            ProposalBlock[]
+  rewardBlocks              RewardBlock[]
   authorNotifications       UserNotificationMetadata[]      @relation("author")
   targetNotifications       UserNotificationMetadata[]      @relation("target")
   ApplicationComment        ApplicationComment[]
@@ -1706,6 +1706,7 @@ model UserNotificationMetadata {
   space                 Space                  @relation(fields: [spaceId], references: [id], onDelete: Cascade)
   userId                String                 @db.Uuid
   user                  User                   @relation(fields: [userId], references: [id], onDelete: Cascade, name: "target")
+  archived              Boolean?               @default(false)
   bountyNotifications   BountyNotification[]
   documentNotifications DocumentNotification[]
   cardNotifications     CardNotification[]
