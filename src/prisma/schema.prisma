@@ -323,7 +323,7 @@ model Space {
   postTags                    PostTag[]
   blockCounts                 BlockCount[]
   blockQuota                  Int                               @default(0)
-  proposalBlocks              ProposalBlock[]
+  ProposalBlock              ProposalBlock[]
   rewardBlocks                RewardBlock[]
   userNotifications           UserNotificationMetadata[]
 
@@ -636,9 +636,9 @@ model User {
   apiPageKeys               ApiPageKey[]
   spaceActions              UserSpaceAction[]
   proposalBlocks             ProposalBlock[]
+  rewardBlocks               RewardBlock[]
   authorNotifications       UserNotificationMetadata[]      @relation("author")
   targetNotifications       UserNotificationMetadata[]      @relation("target")
-  rewardBlocks               RewardBlock[]
   ApplicationComment        ApplicationComment[]
 }
 
