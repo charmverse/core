@@ -276,6 +276,7 @@ model Space {
   defaultPostCategory         PostCategory?                     @relation(fields: [defaultPostCategoryId], references: [id], name: "defaultPostCategory", onDelete: SetNull)
   defaultPagePermissionGroup  PagePermissionLevel?              @default(full_access)
   defaultPublicPages          Boolean?                          @default(false)
+  notificationPreferences     Json[]
   requireProposalTemplate     Boolean?                          @default(false)
   permissionConfigurationMode SpacePermissionConfigurationMode? @default(custom)
   publicBountyBoard           Boolean?                          @default(false)
@@ -587,6 +588,7 @@ model User {
   avatarChain               Int?
   username                  String
   isBot                     Boolean?                        @default(false)
+  notificationPreferences   Json[]
   path                      String                          @unique
   identityType              IdentityType?
   email                     String?
@@ -635,8 +637,8 @@ model User {
   verifiedEmails            VerifiedEmail[]
   apiPageKeys               ApiPageKey[]
   spaceActions              UserSpaceAction[]
-  proposalBlocks             ProposalBlock[]
-  rewardBlocks               RewardBlock[]
+  proposalBlocks            ProposalBlock[]
+  rewardBlocks              RewardBlock[]
   authorNotifications       UserNotificationMetadata[]      @relation("author")
   targetNotifications       UserNotificationMetadata[]      @relation("target")
   ApplicationComment        ApplicationComment[]
