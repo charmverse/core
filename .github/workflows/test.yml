@@ -193,7 +193,7 @@ jobs:
     needs: [push-package, integration-test]
     strategy:
       max-parallel: 2
-      fail-fast: true
+      fail-fast: false
       matrix:
         include:
           - repo: "app.charmverse.io"
@@ -221,30 +221,30 @@ jobs:
           propagate_failure: true
           trigger_workflow: true
           wait_workflow: true
-      - name: Cancel downstream workflow if the workflow wait has been cancelled
-        if: ${{ cancelled() }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.WORKFLOW_TRIGGER_PAT }}
-        run: |
-          gh api \
-            --method POST \
-            -H "Accept: application/vnd.github+json" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            /repos/charmverse/${{ matrix.repo }}/actions/runs/${{ steps.run_downstream_repo_workflow.outputs.workflow_id }}/cancel
+      # - name: Cancel downstream workflow if the workflow wait has been cancelled
+      #   if: ${{ cancelled() }}
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.WORKFLOW_TRIGGER_PAT }}
+      #   run: |
+      #     gh api \
+      #       --method POST \
+      #       -H "Accept: application/vnd.github+json" \
+      #       -H "X-GitHub-Api-Version: 2022-11-28" \
+      #       /repos/charmverse/${{ matrix.repo }}/actions/runs/${{ steps.run_downstream_repo_workflow.outputs.workflow_id }}/cancel
 
       # Discord embed color code: ALERT_RED = 16515843   ALERT_GREEN = 2326548
-      - name: If any downstream deploy failed, notify discord
-        if: ${{ failure() && steps.run_downstream_repo_workflow.conclusion == 'failure' }}
-        uses: sarisia/actions-status-discord@v1
-        with:
-          webhook: ${{ secrets.DISCORD_WARNINGS_WEBHOOK }}
-          status: ${{ job.status }}
-          content: "Hey <@&1027309276454207519>"    
-          title: "Core upgrade in ${{ matrix.repo }} to version ${{ needs.push-package.outputs.pkg_version }}"
-          description: |
-            Please check that webapp and permissions are running same version of core.
-            Failed Downstream job URL: ${{ steps.run_downstream_repo_workflow.outputs.workflow_url }}
-          color: "${{ job.status == 'success' && '2326548' || '16515843' }}"
-          url: "https://github.com/charmverse/core/actions/runs/${{ github.run_id }}"
-          username: GitHub Actions
-          avatar_url: "https://github.githubassets.com/images/modules/logos_page/Octocat.png"
+      # - name: If any downstream deploy failed, notify discord
+      #   if: ${{ failure() && steps.run_downstream_repo_workflow.conclusion == 'failure' }}
+      #   uses: sarisia/actions-status-discord@v1
+      #   with:
+      #     webhook: ${{ secrets.DISCORD_WARNINGS_WEBHOOK }}
+      #     status: ${{ job.status }}
+      #     content: "Hey <@&1027309276454207519>"    
+      #     title: "Core upgrade in ${{ matrix.repo }} to version ${{ needs.push-package.outputs.pkg_version }}"
+      #     description: |
+      #       Please check that webapp and permissions are running same version of core.
+      #       Failed Downstream job URL: ${{ steps.run_downstream_repo_workflow.outputs.workflow_url }}
+      #     color: "${{ job.status == 'success' && '2326548' || '16515843' }}"
+      #     url: "https://github.com/charmverse/core/actions/runs/${{ github.run_id }}"
+      #     username: GitHub Actions
+      #     avatar_url: "https://github.githubassets.com/images/modules/logos_page/Octocat.png"
