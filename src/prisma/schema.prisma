@@ -1706,7 +1706,7 @@ model UserNotificationMetadata {
   space                 Space                  @relation(fields: [spaceId], references: [id], onDelete: Cascade)
   userId                String                 @db.Uuid
   user                  User                   @relation(fields: [userId], references: [id], onDelete: Cascade, name: "target")
-  archived              Boolean?               @default(false)
+  archivedAt            DateTime?
   bountyNotifications   BountyNotification[]
   documentNotifications DocumentNotification[]
   cardNotifications     CardNotification[]
