@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.5.4-rc-feat-notion-not.0",
+  "version": "0.5.4",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
