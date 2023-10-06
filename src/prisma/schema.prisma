@@ -1699,6 +1699,7 @@ model UserNotificationMetadata {
   author                User                   @relation(fields: [createdBy], references: [id], onDelete: Cascade, name: "author")
   deletedAt             DateTime?
   seenAt                DateTime?
+  archivedAt            DateTime?
   channel               NotificationChannel?
   spaceId               String                 @db.Uuid
   space                 Space                  @relation(fields: [spaceId], references: [id], onDelete: Cascade)
