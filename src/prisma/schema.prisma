@@ -470,7 +470,6 @@ model PageComment {
   user                 User                   @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   votes                PageCommentVote[]
   lensCommentLink      String?
-  proposalNotification ProposalNotification[]
   DocumentNotification DocumentNotification[]
 
   @@index([pageId])
@@ -501,24 +500,23 @@ model PageDiff {
 }
 
 model Block {
-  id                   String             @id @db.Uuid
-  deletedAt            DateTime?
-  createdAt            DateTime           @default(now())
-  createdBy            String             @db.Uuid
-  updatedAt            DateTime           @default(now())
-  updatedBy            String             @db.Uuid
-  spaceId              String             @db.Uuid
-  parentId             String
-  rootId               String             @db.Uuid
-  schema               Int
-  type                 String
-  title                String
-  fields               Json
-  user                 User               @relation(fields: [createdBy], references: [id])
-  space                Space              @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  page                 Page?
-  commentNotifications CardNotification[] @relation("comment")
-  cardNotifications    CardNotification[] @relation("card")
+  id                String             @id @db.Uuid
+  deletedAt         DateTime?
+  createdAt         DateTime           @default(now())
+  createdBy         String             @db.Uuid
+  updatedAt         DateTime           @default(now())
+  updatedBy         String             @db.Uuid
+  spaceId           String             @db.Uuid
+  parentId          String
+  rootId            String             @db.Uuid
+  schema            Int
+  type              String
+  title             String
+  fields            Json
+  user              User               @relation(fields: [createdBy], references: [id])
+  space             Space              @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  page              Page?
+  cardNotifications CardNotification[] @relation("card")
 
   @@index([rootId])
   @@index([spaceId])
@@ -1095,21 +1093,19 @@ model Thread {
 }
 
 model Comment {
-  id                    String                 @id @default(uuid()) @db.Uuid
-  createdAt             DateTime               @default(now())
-  threadId              String                 @db.Uuid
-  content               Json?
-  userId                String                 @db.Uuid
-  pageId                String                 @db.Uuid
-  spaceId               String                 @db.Uuid
-  updatedAt             DateTime?
-  page                  Page                   @relation(fields: [pageId], references: [id], onDelete: Cascade)
-  space                 Space                  @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  thread                Thread                 @relation(fields: [threadId], references: [id], onDelete: Cascade)
-  user                  User                   @relation(fields: [userId], references: [id])
-  pageNotifications     DocumentNotification[]
-  bountyNotifications   BountyNotification[]
-  proposalNotifications ProposalNotification[]
+  id                String                 @id @default(uuid()) @db.Uuid
+  createdAt         DateTime               @default(now())
+  threadId          String                 @db.Uuid
+  content           Json?
+  userId            String                 @db.Uuid
+  pageId            String                 @db.Uuid
+  spaceId           String                 @db.Uuid
+  updatedAt         DateTime?
+  page              Page                   @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  space             Space                  @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  thread            Thread                 @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  user              User                   @relation(fields: [userId], references: [id])
+  pageNotifications DocumentNotification[]
 
   @@index([pageId])
   @@index([spaceId])
@@ -1444,32 +1440,33 @@ model PostCategory {
 }
 
 model Post {
-  createdAt          DateTime                @default(now())
-  updatedAt          DateTime                @updatedAt
-  deletedAt          DateTime?
-  id                 String                  @id @default(uuid()) @db.Uuid
-  title              String
-  content            Json
-  contentText        String
-  path               String                  @unique
-  categoryId         String                  @db.Uuid
-  createdBy          String                  @db.Uuid
-  author             User                    @relation(fields: [createdBy], references: [id], onDelete: Cascade)
-  spaceId            String                  @db.Uuid
-  space              Space                   @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  pinned             Boolean?                @default(false)
-  locked             Boolean?                @default(false)
-  category           PostCategory            @relation(fields: [categoryId], references: [id])
-  comments           PostComment[]
-  upDownVotes        PostUpDownVote[]
-  commentUpDownVotes PostCommentUpDownVote[]
-  proposalId         String?                 @db.Uuid
-  proposal           Proposal?               @relation(fields: [proposalId], references: [id], onDelete: SetNull)
-  votes              Vote[]
-  isDraft            Boolean?                @default(false)
-  userSpaceActions   UserSpaceAction[]
-  postToPostTags     PostToPostTag[]
-  notifications      PostNotification[]
+  createdAt            DateTime                @default(now())
+  updatedAt            DateTime                @updatedAt
+  deletedAt            DateTime?
+  id                   String                  @id @default(uuid()) @db.Uuid
+  title                String
+  content              Json
+  contentText          String
+  path                 String                  @unique
+  categoryId           String                  @db.Uuid
+  createdBy            String                  @db.Uuid
+  author               User                    @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  spaceId              String                  @db.Uuid
+  space                Space                   @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  pinned               Boolean?                @default(false)
+  locked               Boolean?                @default(false)
+  category             PostCategory            @relation(fields: [categoryId], references: [id])
+  comments             PostComment[]
+  upDownVotes          PostUpDownVote[]
+  commentUpDownVotes   PostCommentUpDownVote[]
+  proposalId           String?                 @db.Uuid
+  proposal             Proposal?               @relation(fields: [proposalId], references: [id], onDelete: SetNull)
+  votes                Vote[]
+  isDraft              Boolean?                @default(false)
+  userSpaceActions     UserSpaceAction[]
+  postToPostTags       PostToPostTag[]
+  notifications        PostNotification[]
+  DocumentNotification DocumentNotification[]
 
   @@index([categoryId])
   @@index([path])
@@ -1510,11 +1507,11 @@ model PostComment {
   deletedBy   String?
   parentId    String?
 
-  postId        String                  @db.Uuid
-  post          Post                    @relation(fields: [postId], references: [id], onDelete: Cascade)
-  user          User                    @relation(fields: [createdBy], references: [id], onDelete: Cascade)
-  votes         PostCommentUpDownVote[]
-  notifications PostNotification[]
+  postId               String                  @db.Uuid
+  post                 Post                    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user                 User                    @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  votes                PostCommentUpDownVote[]
+  DocumentNotification DocumentNotification[]
 
   @@index([postId])
 }
@@ -1703,6 +1700,7 @@ model UserNotificationMetadata {
   author                User                   @relation(fields: [createdBy], references: [id], onDelete: Cascade, name: "author")
   deletedAt             DateTime?
   seenAt                DateTime?
+  archivedAt            DateTime?
   channel               NotificationChannel?
   spaceId               String                 @db.Uuid
   space                 Space                  @relation(fields: [spaceId], references: [id], onDelete: Cascade)
@@ -1726,11 +1724,6 @@ model BountyNotification {
   applicationId          String?                  @db.Uuid
   application            Application?             @relation(fields: [applicationId], references: [id], onDelete: Cascade)
   type                   String
-  // mentionId              String?
-  // inlineComment          Comment?                 @relation(fields: [inlineCommentId], references: [id], onDelete: Cascade)
-  // inlineCommentId        String?                  @db.Uuid
-  Comment                Comment?                 @relation(fields: [commentId], references: [id])
-  commentId              String?                  @db.Uuid
 }
 
 model DocumentNotification {
@@ -1738,28 +1731,19 @@ model DocumentNotification {
   notificationMetadataId String                   @db.Uuid
   notificationMetadata   UserNotificationMetadata @relation(fields: [notificationMetadataId], references: [id], onDelete: Cascade)
   // page task columns
-  pageId                 String                   @db.Uuid
-  page                   Page                     @relation(fields: [pageId], references: [id], onDelete: Cascade)
-  commentId              PageComment              @relation(fields: [pageCommentId], references: [id])
+  pageId                 String?                  @db.Uuid
+  page                   Page?                    @relation(fields: [pageId], references: [id], onDelete: Cascade)
   mentionId              String?
   inlineComment          Comment?                 @relation(fields: [inlineCommentId], references: [id], onDelete: Cascade)
   inlineCommentId        String?                  @db.Uuid
   type                   String
-  pageCommentId          String                   @db.Uuid
+  postCommentId          String?                  @db.Uuid
+  postComment            PostComment?             @relation(fields: [postCommentId], references: [id], onDelete: Cascade)
+  pageCommentId          String?                  @db.Uuid
+  pageComment            PageComment?             @relation(fields: [pageCommentId], references: [id], onDelete: Cascade)
+  postId                 String?                  @db.Uuid
+  post                   Post?                    @relation(fields: [postId], references: [id], onDelete: Cascade)
 }
-
-// model DiscussionNotification {
-//   id                     String                   @id @default(uuid()) @db.Uuid
-//   notificationMetadataId String                   @db.Uuid
-//   notificationMetadata   UserNotificationMetadata @relation(fields: [notificationMetadataId], references: [id], onDelete: Cascade)
-//   // page task columns
-//   pageId                 String                   @db.Uuid
-//   page                   Page                     @relation(fields: [pageId], references: [id], onDelete: Cascade)
-//   mentionId              String?
-//   inlineComment          Comment?                 @relation(fields: [inlineCommentId], references: [id], onDelete: Cascade)
-//   inlineCommentId        String?                  @db.Uuid
-//   type                   String
-// }
 
 model CardNotification {
   id                     String                   @id @default(uuid()) @db.Uuid
@@ -1768,8 +1752,6 @@ model CardNotification {
   // card task columns
   cardId                 String                   @db.Uuid
   card                   Block                    @relation(fields: [cardId], references: [id], onDelete: Cascade, name: "card")
-  blockCommentId         String?                  @db.Uuid
-  blockComment           Block?                   @relation(fields: [blockCommentId], references: [id], onDelete: Cascade, name: "comment")
   personPropertyId       String?
   type                   String
 }
@@ -1781,9 +1763,6 @@ model PostNotification {
   // forum task column
   postId                 String                   @db.Uuid
   post                   Post                     @relation(fields: [postId], references: [id], onDelete: Cascade)
-  commentId              String?                  @db.Uuid
-  comment                PostComment?             @relation(fields: [commentId], references: [id], onDelete: Cascade)
-  mentionId              String?
   type                   String
 }
 
@@ -1795,15 +1774,6 @@ model ProposalNotification {
   proposalId             String                   @db.Uuid
   proposal               Proposal                 @relation(fields: [proposalId], references: [id], onDelete: Cascade)
   type                   String
-  // mentionId              String?
-  // inlineComment          Comment?                 @relation(fields: [inlineCommentId], references: [id], onDelete: Cascade)
-  // inlineCommentId        String?                  @db.Uuid
-  // commentId              String?                  @db.Uuid
-  // comment                PageComment?             @relation(fields: [commentId], references: [id], onDelete: Cascade)
-  PageComment            PageComment?             @relation(fields: [pageCommentId], references: [id])
-  pageCommentId          String?                  @db.Uuid
-  Comment                Comment?                 @relation(fields: [commentId], references: [id])
-  commentId              String?                  @db.Uuid
 }
 
 model VoteNotification {
