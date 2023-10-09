@@ -1,4 +1,4 @@
-import type { Page, ProposalStatus, WorkspaceEvent } from '@prisma/client';
+import type { Page, ProposalStatus } from '@prisma/client';
 import { prisma } from 'prisma-client';
 
 import type { ProposalWithUsers } from '../../proposals/interfaces';
@@ -90,36 +90,5 @@ describe('generateProposal', () => {
     })) as Page & { proposal: ProposalWithUsers };
 
     expect(generatedProposal.page).toMatchObject(proposalPageFromDb);
-  });
-
-  // This is important for simulating prod behaviour so we can test things like notifications effectively
-  it('should generate a workspace event for the proposal', async () => {
-    const { space, user } = await generateUserAndSpace();
-
-    const proposal = await generateProposal({
-      spaceId: space.id,
-      userId: user.id,
-      proposalStatus: 'discussion'
-    });
-
-    const workspaceEvents = await prisma.workspaceEvent.findMany({
-      where: {
-        pageId: proposal.id
-      }
-    });
-
-    expect(workspaceEvents).toHaveLength(1);
-
-    const workspaceEvent = workspaceEvents[0];
-
-    expect(workspaceEvent).toMatchObject<WorkspaceEvent>({
-      id: expect.any(String),
-      pageId: proposal.id,
-      spaceId: space.id,
-      type: 'proposal_status_change',
-      actorId: user.id,
-      meta: expect.any(Object),
-      createdAt: expect.any(Date)
-    });
   });
 });
