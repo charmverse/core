@@ -1,5 +1,5 @@
 import type { SubscriptionTier, User } from '@prisma/client';
-import { v4 } from 'uuid';
+import { v4 as uuid } from 'uuid';
 
 import { uid } from '../../lib/utilities/strings';
 import { prisma } from '../../prisma-client';
@@ -40,6 +40,18 @@ export async function generateSpaceUser({
   });
 }
 
+export type IPropertyTemplate = {
+  id: string;
+  name: string;
+  type: string;
+  options?: {
+    id: string;
+    value: string;
+    color?: string;
+  }[];
+  description?: string;
+};
+
 /**
  * By default, all spaces are created as paid spaces in the pro tier
  */
@@ -52,6 +64,7 @@ type CreateUserAndSpaceInput = {
   publicBountyBoard?: boolean;
   publicProposals?: boolean;
   spacePaidTier?: SubscriptionTier;
+  customProposalProperties?: IPropertyTemplate[];
 };
 
 export async function generateUserAndSpace({
@@ -62,9 +75,10 @@ export async function generateUserAndSpace({
   spaceName = 'Example Space',
   publicBountyBoard = false,
   publicProposals = false,
-  spacePaidTier = 'community'
+  spacePaidTier = 'community',
+  customProposalProperties
 }: CreateUserAndSpaceInput = {}) {
-  const userId = v4();
+  const userId = uuid();
   const newUser = await prisma.user.create({
     data: {
       id: userId,
@@ -86,7 +100,7 @@ export async function generateUserAndSpace({
               updatedBy: userId,
               name: spaceName,
               // Adding prefix avoids this being evaluated as uuid
-              domain: `domain-${v4()}`,
+              domain: `domain-${uuid()}`,
               publicBountyBoard,
               publicProposals
             }
@@ -107,9 +121,30 @@ export async function generateUserAndSpace({
 
   const { spaceRoles, ...userResult } = newUser;
 
+  const space = spaceRoles[0].space;
+
+  if (customProposalProperties?.length) {
+    await prisma.proposalBlock.create({
+      data: {
+        type: 'board',
+        spaceId: space.id,
+        createdBy: newUser.id,
+        updatedBy: newUser.id,
+        id: uuid(),
+        parentId: space.id,
+        rootId: space.id,
+        schema: 1,
+        title: 'Content',
+        fields: {
+          cardProperties: customProposalProperties
+        } as any
+      }
+    });
+  }
+
   return {
     user: userResult,
-    space: spaceRoles[0].space
+    space
   };
 }
 export function generateUser(): Promise<User> {

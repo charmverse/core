@@ -1,6 +1,8 @@
 import type { SpaceRole } from 'prisma-client';
 import { prisma } from 'prisma-client';
+import { v4 as uuid } from 'uuid';
 
+import type { IPropertyTemplate } from '../user';
 import { generateUserAndSpace } from '../user';
 
 describe('generateUserAndSpace', () => {
@@ -41,5 +43,34 @@ describe('generateUserAndSpace', () => {
     })) as SpaceRole;
 
     expect(spaceRole.isAdmin).toBe(true);
+  });
+
+  it('should initialise custom proposal schema if requested', async () => {
+    const customProps: IPropertyTemplate[] = [
+      {
+        id: uuid(),
+        name: 'Custom Prop',
+        type: 'select',
+        options: [
+          { id: uuid(), value: 'Green' },
+          { id: uuid(), value: 'Blue' }
+        ]
+      }
+    ];
+
+    const { space } = await generateUserAndSpace({
+      customProposalProperties: customProps
+    });
+
+    const customPropsFromDB = await prisma.proposalBlock.findFirst({
+      where: {
+        type: 'board',
+        spaceId: space.id
+      }
+    });
+
+    expect(customPropsFromDB).toBeDefined();
+
+    expect((customPropsFromDB?.fields as any).cardProperties).toEqual(customProps);
   });
 });
