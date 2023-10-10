@@ -82,7 +82,8 @@ export async function generateForumPost({
   title = 'Test post',
   content,
   contentText,
-  isDraft
+  isDraft,
+  deletedAt
 }: {
   categoryId?: string;
   userId: string;
@@ -92,6 +93,7 @@ export async function generateForumPost({
   content?: any;
   contentText?: string;
   isDraft?: boolean;
+  deletedAt?: null | Date;
 }) {
   if (!categoryId) {
     const category = await generatePostCategory({ spaceId });
@@ -102,6 +104,7 @@ export async function generateForumPost({
       isDraft,
       title,
       path,
+      deletedAt,
       contentText: contentText ?? '',
       content: content ?? {
         type: 'doc',
