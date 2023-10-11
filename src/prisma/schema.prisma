@@ -1743,7 +1743,7 @@ model DocumentNotification {
   pageComment            PageComment?             @relation(fields: [pageCommentId], references: [id], onDelete: Cascade)
   postId                 String?                  @db.Uuid
   post                   Post?                    @relation(fields: [postId], references: [id], onDelete: Cascade)
-  text                   String?
+  content                Json?
 }
 
 model CardNotification {
