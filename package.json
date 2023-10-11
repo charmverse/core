@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.5.10-rc-feat-text-snipp.0",
+  "version": "0.5.10",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
