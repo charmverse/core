@@ -826,6 +826,7 @@ model Bounty {
   id                String               @id @default(uuid()) @db.Uuid
   chainId           Int?
   suggestedBy       String?              @db.Uuid
+  allowMultipleApplications Boolean?      @default(false)
   approveSubmitters Boolean              @default(false)
   submissionsLocked Boolean              @default(false)
   maxSubmissions    Int?                 @default(1)
@@ -885,8 +886,6 @@ model Application {
   transactions       Transaction[]
   ApplicationComment ApplicationComment[]
   notifications      BountyNotification[]
-
-  @@unique([bountyId, createdBy])
   @@index([createdBy])
   @@index([bountyId])
 }
