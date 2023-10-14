@@ -874,6 +874,7 @@ model Application {
   bountyId           String               @db.Uuid
   createdBy          String               @db.Uuid
   walletAddress      String?
+  rewardInfo         String?
   message            String?
   spaceId            String
   status             ApplicationStatus    @default(applied)
