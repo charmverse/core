@@ -237,6 +237,7 @@ enum Feature {
   proposals
   forum
   bounties
+  rewards
 }
 
 enum ApiPageKeyType {
