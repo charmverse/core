@@ -87,6 +87,7 @@ enum BountyPermissionLevel {
 
 enum ApplicationStatus {
   applied
+  application_rejected
   inProgress
   review
   rejected
