@@ -87,6 +87,7 @@ enum BountyPermissionLevel {
 
 enum ApplicationStatus {
   applied
+  submission_rejected
   inProgress
   review
   rejected
@@ -237,6 +238,7 @@ enum Feature {
   proposals
   forum
   bounties
+  rewards
 }
 
 enum ApiPageKeyType {
@@ -826,6 +828,7 @@ model Bounty {
   id                String               @id @default(uuid()) @db.Uuid
   chainId           Int?
   suggestedBy       String?              @db.Uuid
+  allowMultipleApplications Boolean?      @default(false)
   approveSubmitters Boolean              @default(false)
   submissionsLocked Boolean              @default(false)
   maxSubmissions    Int?                 @default(1)
@@ -873,6 +876,7 @@ model Application {
   bountyId           String               @db.Uuid
   createdBy          String               @db.Uuid
   walletAddress      String?
+  rewardInfo         String?
   message            String?
   spaceId            String
   status             ApplicationStatus    @default(applied)
@@ -885,8 +889,6 @@ model Application {
   transactions       Transaction[]
   ApplicationComment ApplicationComment[]
   notifications      BountyNotification[]
-
-  @@unique([bountyId, createdBy])
   @@index([createdBy])
   @@index([bountyId])
 }
