@@ -431,6 +431,7 @@ model Page {
   @@index([spaceId])
   @@index([title])
   @@index([path])
+  @@index([spaceId, type])
   // https://www.prisma.io/docs/concepts/components/prisma-schema/indexes#configuring-the-access-type-of-indexes-with-type-postgresql
   // https://www.postgresql.org/docs/current/indexes-types.html#INDEXES-TYPES-GIN
   @@index([additionalPaths], type: Gin)
@@ -522,6 +523,7 @@ model Block {
   @@index([rootId])
   @@index([spaceId])
   @@index([createdBy])
+  @@index([type])
 }
 
 model UserVote {
@@ -891,6 +893,7 @@ model Application {
   notifications      BountyNotification[]
   @@index([createdBy])
   @@index([bountyId])
+  @@index([spaceId])
 }
 
 model Transaction {

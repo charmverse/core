@@ -29,6 +29,11 @@ describe('generateProposal', () => {
       title: 'Proposal title for testing'
     };
 
+    const customProperties = {
+      first: 1,
+      second: 2
+    };
+
     const proposalInput: GenerateProposalInput = {
       spaceId: space.id,
       userId: user.id,
@@ -36,7 +41,8 @@ describe('generateProposal', () => {
       proposalStatus: 'review',
       reviewers: [{ group: 'role', id: role.id }],
       categoryId: proposalCategory.id,
-      archived: true
+      archived: true,
+      customProperties
     };
 
     const generatedProposal = await generateProposal({
@@ -62,6 +68,9 @@ describe('generateProposal', () => {
       category: proposalCategory,
       page: expect.any(Object),
       evaluationType: 'vote',
+      fields: {
+        properties: customProperties
+      },
       authors: expect.arrayContaining([
         {
           proposalId: generatedProposal.id,
@@ -79,8 +88,7 @@ describe('generateProposal', () => {
           roleId: role.id,
           userId: null
         }
-      ],
-      fields: null
+      ]
     });
 
     const proposalPageFromDb = (await prisma.page.findUnique({
