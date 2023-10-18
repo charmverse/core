@@ -6,8 +6,7 @@ import type { PublicBountyToggle, SpaceDefaultPublicPageToggle, SpacePermissionF
 
 export type BaseSpacePermissionsClient = {
   computeSpacePermissions: (request: PermissionCompute) => Promise<SpacePermissionFlags>;
-
-  listAvailableBounties: (request: SpaceResourcesRequest) => Promise<BountyWithDetails[]>;
+  listAvailableBounties: (request: SpaceResourcesRequest) => Promise<BountyWithDetails[]>; // TODO: remove this after rewards have replaced bounties in webapp
 };
 export type PremiumSpacePermissionsClient = BaseSpacePermissionsClient & {
   toggleSpaceDefaultPublicPage: (request: SpaceDefaultPublicPageToggle) => Promise<Space>;
