@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.6.2",
+  "version": "0.6.3-rc-remove-prisma-d.0",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
@@ -141,7 +141,7 @@
   },
   "dependencies": {
     "@datadog/browser-logs": "^4.42.2",
-    "@prisma/client": "4.13.0",
+    "@prisma/client": "5.4.2",
     "async-sema": "^3.1.1",
     "fetch-retry": "^5.0.6",
     "lodash": "^4.17.21",
@@ -149,7 +149,7 @@
     "luxon": "^3.3.0",
     "nanoid": "^3.3.6",
     "nanoid-dictionary": "^3.0.0",
-    "prisma": "5.2.0",
+    "prisma": "5.4.2",
     "undici": "^5.26.3",
     "utf-8-validate": "^5.0.10",
     "uuid": "^9.0.0",
