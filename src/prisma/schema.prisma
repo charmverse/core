@@ -87,6 +87,7 @@ enum BountyPermissionLevel {
 
 enum ApplicationStatus {
   applied
+  submission_rejected
   inProgress
   review
   rejected
@@ -237,6 +238,7 @@ enum Feature {
   proposals
   forum
   bounties
+  rewards
 }
 
 enum ApiPageKeyType {
@@ -266,7 +268,6 @@ model Space {
   domain                      String                            @unique
   customDomain                String?                           @unique
   isCustomDomainVerified      Boolean?
-  notifyNewProposals          DateTime?                         @default(now())
   paidTier                    SubscriptionTier                  @default(community)
   discordServerId             String?
   defaultVotingDuration       Int?
@@ -430,6 +431,7 @@ model Page {
   @@index([spaceId])
   @@index([title])
   @@index([path])
+  @@index([spaceId, type])
   // https://www.prisma.io/docs/concepts/components/prisma-schema/indexes#configuring-the-access-type-of-indexes-with-type-postgresql
   // https://www.postgresql.org/docs/current/indexes-types.html#INDEXES-TYPES-GIN
   @@index([additionalPaths], type: Gin)
@@ -521,6 +523,7 @@ model Block {
   @@index([rootId])
   @@index([spaceId])
   @@index([createdBy])
+  @@index([type])
 }
 
 model UserVote {
@@ -827,6 +830,7 @@ model Bounty {
   id                String               @id @default(uuid()) @db.Uuid
   chainId           Int?
   suggestedBy       String?              @db.Uuid
+  allowMultipleApplications Boolean?      @default(false)
   approveSubmitters Boolean              @default(false)
   submissionsLocked Boolean              @default(false)
   maxSubmissions    Int?                 @default(1)
@@ -874,6 +878,7 @@ model Application {
   bountyId           String               @db.Uuid
   createdBy          String               @db.Uuid
   walletAddress      String?
+  rewardInfo         String?
   message            String?
   spaceId            String
   status             ApplicationStatus    @default(applied)
@@ -886,10 +891,9 @@ model Application {
   transactions       Transaction[]
   ApplicationComment ApplicationComment[]
   notifications      BountyNotification[]
-
-  @@unique([bountyId, createdBy])
   @@index([createdBy])
   @@index([bountyId])
+  @@index([spaceId])
 }
 
 model Transaction {
@@ -1743,6 +1747,7 @@ model DocumentNotification {
   pageComment            PageComment?             @relation(fields: [pageCommentId], references: [id], onDelete: Cascade)
   postId                 String?                  @db.Uuid
   post                   Post?                    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  content                Json?
 }
 
 model CardNotification {

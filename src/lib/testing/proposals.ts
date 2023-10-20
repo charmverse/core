@@ -56,6 +56,7 @@ export type GenerateProposalInput = {
   title?: string;
   content?: any;
   evaluationType?: ProposalEvaluationType;
+  customProperties?: Record<string, any>;
 };
 
 /**
@@ -72,7 +73,8 @@ export async function generateProposal({
   deletedAt = null,
   content,
   archived,
-  evaluationType
+  evaluationType,
+  customProperties
 }: GenerateProposalInput): Promise<ProposalWithUsers & { page: Page }> {
   const proposalId = v4();
 
@@ -91,6 +93,11 @@ export async function generateProposal({
           id: spaceId
         }
       },
+      fields: customProperties
+        ? {
+            properties: customProperties
+          }
+        : undefined,
       authors: !authors.length
         ? undefined
         : {
