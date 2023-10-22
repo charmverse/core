@@ -30,6 +30,7 @@ type PageGenerateArgs = Pick<Page, 'createdBy' | 'spaceId'> &
       | 'index'
       | 'syncWithPageId'
       | 'additionalPaths'
+      | 'snapshotProposalId'
     >
   > &
   OptionalPagePermissionsToGenerate;
@@ -59,7 +60,8 @@ export function generatePage({
   deletedAt,
   index,
   syncWithPageId,
-  additionalPaths
+  additionalPaths,
+  snapshotProposalId
 }: PageGenerateArgs): Promise<Page> {
   return prisma.page.create({
     data: {
@@ -75,6 +77,7 @@ export function generatePage({
       parentId,
       index,
       additionalPaths,
+      snapshotProposalId,
       proposal: proposalId
         ? {
             connect: {
