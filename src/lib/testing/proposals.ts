@@ -57,6 +57,7 @@ export type GenerateProposalInput = {
   content?: any;
   evaluationType?: ProposalEvaluationType;
   customProperties?: Record<string, any>;
+  snapshotProposalId?: string;
 };
 
 /**
@@ -74,7 +75,8 @@ export async function generateProposal({
   content,
   archived,
   evaluationType,
-  customProperties
+  customProperties,
+  snapshotProposalId
 }: GenerateProposalInput): Promise<ProposalWithUsers & { page: Page }> {
   const proposalId = v4();
 
@@ -130,7 +132,8 @@ export async function generateProposal({
     spaceId,
     deletedAt,
     proposalId,
-    content
+    content,
+    snapshotProposalId
   });
 
   const result = await prisma.proposal.findUniqueOrThrow({
