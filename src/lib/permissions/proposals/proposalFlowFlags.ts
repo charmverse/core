@@ -40,7 +40,7 @@ function withDepsDraftProposal({ countReviewers }: GetFlagFilterDependencies) {
   };
 }
 
-function withDepsDiscussionProposal({ countReviewers }: GetFlagFilterDependencies) {
+function withDepsDiscussionProposal({ countReviewers, isProposalReviewer }: GetFlagFilterDependencies) {
   return async function discussionProposal({ proposal, userId }: GetFlagsInput): Promise<ProposalFlowPermissionFlags> {
     const flags = new TransitionFlags();
     if (
@@ -52,12 +52,15 @@ function withDepsDiscussionProposal({ countReviewers }: GetFlagFilterDependencie
       if (countReviewers({ proposal }) > 0) {
         flags.addPermissions([proposal.evaluationType === 'vote' ? 'review' : 'evaluation_active']);
       }
+    } else if ((await isProposalReviewer({ proposal, userId })) === true) {
+      flags.addPermissions([proposal.evaluationType === 'vote' ? 'review' : 'evaluation_active']);
     }
+
     return flags.operationFlags;
   };
 }
 
-function withDepsInReviewProposal({ computeProposalPermissions }: GetFlagFilterDependencies) {
+function withDepsInReviewProposal({ computeProposalPermissions, isProposalReviewer }: GetFlagFilterDependencies) {
   // Currently coupled to proposal permissions for review action
   // In future, when reviewing action, and review status transition are decoupled, this will need to be updated
   return async function inReviewProposal({ proposal, userId }: GetFlagsInput): Promise<ProposalFlowPermissionFlags> {
@@ -72,7 +75,7 @@ function withDepsInReviewProposal({ computeProposalPermissions }: GetFlagFilterD
       flags.addPermissions(['reviewed']);
     }
 
-    if (isProposalAuthor({ proposal, userId })) {
+    if (isProposalAuthor({ proposal, userId }) || permissions.review) {
       flags.addPermissions(['discussion']);
     }
 
@@ -91,7 +94,7 @@ function withDepsInReviewProposal({ computeProposalPermissions }: GetFlagFilterD
   };
 }
 
-function withDepsReviewedProposal({ computeProposalPermissions }: GetFlagFilterDependencies) {
+function withDepsReviewedProposal({ computeProposalPermissions, isProposalReviewer }: GetFlagFilterDependencies) {
   // Currently coupled to proposal permissions for create_vote action
   // In future, when create_vote action, and vote_active status transition are decoupled, this will need to be updated
   return async function reviewedProposal({ proposal, userId }: GetFlagsInput): Promise<ProposalFlowPermissionFlags> {
@@ -102,7 +105,7 @@ function withDepsReviewedProposal({ computeProposalPermissions }: GetFlagFilterD
       userId
     });
 
-    if (permissions.create_vote) {
+    if (permissions.create_vote || (await isProposalReviewer({ proposal, userId })) === true) {
       flags.addPermissions(['vote_active']);
     }
 
@@ -126,7 +129,7 @@ function withDepsEvaluationActiveProposal({ isProposalReviewer }: GetFlagFilterD
     } else if (isProposalAuthor({ proposal, userId })) {
       flags.addPermissions(['discussion']);
     } else if ((await isProposalReviewer({ proposal, userId })) === true) {
-      flags.addPermissions(['discussion']);
+      flags.addPermissions(['evaluation_closed', 'discussion']);
     }
 
     return flags.operationFlags;
