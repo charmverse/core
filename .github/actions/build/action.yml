@@ -12,7 +12,7 @@ runs:
       uses: actions/cache@v3
       with:
         path: |
-          dist  
+          dist
           .env.test.local
         key: core-${{ runner.os }}-${{ github.sha }}-${{ hashFiles('tsconfig.esm.json') }}-${{ hashFiles('dist/**/*.[jt]s') }}
 
@@ -21,5 +21,4 @@ runs:
       if: steps.cache_build.outputs.cache-hit != 'true'
       run: |
         echo "Cache missed!"
-        npm run prisma:generate
         npm run build
