@@ -2,16 +2,20 @@ import fetch from './fetch';
 
 type Params = { [key: string]: any };
 
+type HttpConfig = { credentials?: RequestCredentials; headers?: any; addBracketsToArrayValues?: boolean };
+
+const httpConfigParams = ['credentials', 'headers', 'addBracketsToArrayValues'];
+
 export function GET<T = Response>(
   _requestUrl: string,
-  data: Params | null | undefined,
-  {
-    headers = {},
-    credentials = 'include',
-    addBracketsToArrayValues
-  }: { credentials?: RequestCredentials; headers?: any; addBracketsToArrayValues?: boolean } = {}
+  data: Params | null | undefined | HttpConfig,
+  config?: HttpConfig
 ): Promise<T> {
-  const requestUrl = _appendQuery(_requestUrl, data || {}, addBracketsToArrayValues);
+  const { credentials = 'include', headers = {}, addBracketsToArrayValues = true } = _getHttpConfig(data, config);
+  const requestData = !config && _isConfigObject(data) ? null : data;
+
+  const requestUrl = _appendQuery(_requestUrl, requestData || {}, addBracketsToArrayValues);
+
   return fetch<T>(requestUrl, {
     method: 'GET',
     headers: new Headers({
@@ -73,6 +77,13 @@ export function PUT<T>(requestURL: string, data: Params = {}, { headers = {} }: 
   });
 }
 
+function _getHttpConfig(data: Params | null | undefined | string, config?: HttpConfig): HttpConfig {
+  // allow passing config as second or 3rd argument
+  const httpConfig = config || _isConfigObject(data) ? (data as HttpConfig) : {};
+
+  return httpConfig;
+}
+
 function _appendQuery(path: string, data: Params, addBracketsToArrayValues: boolean = true) {
   const queryString = Object.keys(data)
     .filter((key) => !!data[key])
@@ -84,4 +95,12 @@ function _appendQuery(path: string, data: Params, addBracketsToArrayValues: bool
     })
     .join('&');
   return `${path}${queryString ? `?${queryString}` : ''}`;
+}
+
+function _isConfigObject(obj: Params | null | undefined | string | HttpConfig): obj is HttpConfig {
+  if (!obj || typeof obj === 'string') {
+    return false;
+  }
+
+  return Object.keys(obj).every((key) => httpConfigParams.includes(key));
 }
