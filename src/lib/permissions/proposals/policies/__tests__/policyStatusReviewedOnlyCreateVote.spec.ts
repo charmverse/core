@@ -6,7 +6,8 @@ import { generateSpaceUser, generateUserAndSpace } from '../../../../testing/use
 import { AvailableSpacePermissions } from '../../../spaces/availableSpacePermissions';
 import { AvailableProposalPermissions } from '../../availableProposalPermissions.class';
 import type { ProposalPermissionFlags } from '../../interfaces';
-import { policyStatusReviewedOnlyCreateVote } from '../policyStatusReviewedOnlyCreateVote';
+import { isProposalReviewer } from '../../isProposalReviewer';
+import { injectPolicyStatusReviewedOnlyCreateVote } from '../policyStatusReviewedOnlyCreateVote';
 
 let proposal: ProposalWithUsers;
 let proposalCategory: ProposalCategory;
@@ -15,6 +16,10 @@ let adminUser: User;
 let proposalAuthor: User;
 let proposalReviewer: User;
 let spaceMember: User;
+
+const policyStatusReviewedOnlyCreateVote = injectPolicyStatusReviewedOnlyCreateVote({
+  isProposalReviewer
+});
 
 beforeAll(async () => {
   const generated = await generateUserAndSpace({
@@ -142,7 +147,7 @@ describe('policyStatusReviewedOnlyCreateVote', () => {
     });
   });
 
-  it('should allow reviewer to view', async () => {
+  it('should allow reviewer to view and create_vote', async () => {
     const permissions = await policyStatusReviewedOnlyCreateVote({
       flags: fullPermissions,
       isAdmin: false,
@@ -157,7 +162,7 @@ describe('policyStatusReviewedOnlyCreateVote', () => {
       review: false,
       edit: false,
       delete: false,
-      create_vote: false,
+      create_vote: true,
       vote: false,
       archive: false,
       unarchive: false,
