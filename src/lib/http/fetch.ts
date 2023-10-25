@@ -40,7 +40,7 @@ export async function transformResponse(response: Response) {
   });
 }
 
-export default function fetchWrapper<T>(url: RequestInfo, init?: RequestInitWithRetry): Promise<T> {
+export default function fetchWrapper<T>(url: Parameters<typeof fetch>[0], init?: RequestInitWithRetry): Promise<T> {
   return fetchAndRetry(url, init)
     .then((r) => transformResponse(r as unknown as Response)) //  as Promise<T>
     .catch((e) => {
