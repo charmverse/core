@@ -10,7 +10,7 @@ import { policyStatusDraftNotViewable } from './policyStatusDraftNotViewable';
 import { injectPolicyStatusEvaluationActiveCommentable } from './policyStatusEvaluationActiveCommentable';
 import { policyStatusEvaluationClosedViewOnly } from './policyStatusEvaluationClosedViewOnly';
 import { injectPolicyStatusReviewCommentable } from './policyStatusReviewCommentable';
-import { policyStatusReviewedOnlyCreateVote } from './policyStatusReviewedOnlyCreateVote';
+import { injectPolicyStatusReviewedOnlyCreateVote } from './policyStatusReviewedOnlyCreateVote';
 import { policyStatusVoteActiveOnlyVotable } from './policyStatusVoteActiveOnlyVotable';
 import { policyStatusVoteClosedViewOnly } from './policyStatusVoteClosedViewOnly';
 
@@ -59,7 +59,7 @@ export function getDefaultProposalPermissionPolicies(deps: ProposalPolicyDepende
     policyStatusDraftNotViewable,
     policyStatusDiscussionEditableCommentable,
     injectPolicyStatusReviewCommentable(deps),
-    policyStatusReviewedOnlyCreateVote,
+    injectPolicyStatusReviewedOnlyCreateVote(deps),
     policyStatusVoteActiveOnlyVotable,
     policyStatusVoteClosedViewOnly,
     injectPolicyStatusEvaluationActiveCommentable(deps),
