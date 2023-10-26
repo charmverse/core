@@ -106,7 +106,11 @@ function withDepsReviewedProposal({ computeProposalPermissions, isProposalReview
     });
 
     if (permissions.create_vote || (await isProposalReviewer({ proposal, userId })) === true) {
-      flags.addPermissions(['review', 'vote_active']);
+      flags.addPermissions(['vote_active']);
+    }
+
+    if ((await isProposalReviewer({ proposal, userId })) === true) {
+      flags.addPermissions(['review']);
     }
 
     return flags.operationFlags;
