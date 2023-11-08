@@ -19,7 +19,7 @@ export class TransitionFlags extends BasePermissions<ProposalStatus> {
   }
 }
 
-type GetFlagFilterDependencies = {
+export type GetFlagFilterDependencies = {
   isProposalReviewer: IsProposalReviewerFn;
   computeProposalPermissions: (compute: PermissionCompute) => Promise<ProposalPermissionFlags>;
   countReviewers: (data: { proposal: ProposalWithUsers }) => number;
@@ -31,7 +31,6 @@ function withDepsDraftProposal({ countReviewers }: GetFlagFilterDependencies) {
     const { isAdmin } = await hasAccessToSpace({ spaceId: proposal.spaceId, userId });
 
     if (isProposalAuthor({ proposal, userId }) || isAdmin) {
-      flags.addPermissions(['draft']);
       if (countReviewers({ proposal })) {
         flags.addPermissions(['discussion']);
       }
@@ -133,6 +132,25 @@ function withDepsEvaluationActiveProposal({ isProposalReviewer }: GetFlagFilterD
   };
 }
 
+function withDepsEvaluationClosedProposal({ isProposalReviewer }: GetFlagFilterDependencies) {
+  return async function evaluationActiveProposal({
+    proposal,
+    userId
+  }: GetFlagsInput): Promise<ProposalFlowPermissionFlags> {
+    const flags = new TransitionFlags();
+    const { spaceRole } = await hasAccessToSpace({
+      spaceId: proposal.spaceId,
+      userId
+    });
+
+    if (spaceRole?.isAdmin || (await isProposalReviewer({ proposal, userId })) === true) {
+      flags.addPermissions(['evaluation_active']);
+    }
+
+    return flags.operationFlags;
+  };
+}
+
 export function getProposalFlagFilters(
   deps: GetFlagFilterDependencies
 ): Record<ProposalStatus, (args: GetFlagsInput) => Promise<ProposalFlowPermissionFlags>> {
@@ -144,6 +162,6 @@ export function getProposalFlagFilters(
     [ProposalStatus.vote_active]: () => Promise.resolve(new TransitionFlags().empty),
     [ProposalStatus.vote_closed]: () => Promise.resolve(new TransitionFlags().empty),
     [ProposalStatus.evaluation_active]: withDepsEvaluationActiveProposal(deps),
-    [ProposalStatus.evaluation_closed]: () => Promise.resolve(new TransitionFlags().empty)
+    [ProposalStatus.evaluation_closed]: withDepsEvaluationClosedProposal(deps)
   };
 }
