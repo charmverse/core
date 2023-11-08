@@ -59,24 +59,13 @@ function withDepsDiscussionProposal({ countReviewers, isProposalReviewer }: GetF
   };
 }
 
-function withDepsInReviewProposal({ computeProposalPermissions }: GetFlagFilterDependencies) {
+function withDepsInReviewProposal({ isProposalReviewer }: GetFlagFilterDependencies) {
   // Currently coupled to proposal permissions for review action
   // In future, when reviewing action, and review status transition are decoupled, this will need to be updated
   return async function inReviewProposal({ proposal, userId }: GetFlagsInput): Promise<ProposalFlowPermissionFlags> {
     const flags = new TransitionFlags();
 
-    const permissions = await computeProposalPermissions({
-      resourceId: proposal.id,
-      userId
-    });
-
-    if (permissions.review) {
-      flags.addPermissions(['reviewed']);
-    }
-
-    if (isProposalAuthor({ proposal, userId }) || permissions.review) {
-      flags.addPermissions(['discussion']);
-    }
+    const isReviewer = await isProposalReviewer({ proposal, userId });
 
     const isAdmin = (
       await hasAccessToSpace({
@@ -89,6 +78,11 @@ function withDepsInReviewProposal({ computeProposalPermissions }: GetFlagFilterD
       flags.addPermissions(['discussion', 'reviewed']);
     }
 
+    if (isProposalAuthor({ proposal, userId })) {
+      flags.addPermissions(['discussion']);
+    } else if (isReviewer) {
+      flags.addPermissions(['reviewed', 'discussion']);
+    }
     return flags.operationFlags;
   };
 }
@@ -99,17 +93,13 @@ function withDepsReviewedProposal({ computeProposalPermissions, isProposalReview
   return async function reviewedProposal({ proposal, userId }: GetFlagsInput): Promise<ProposalFlowPermissionFlags> {
     const flags = new TransitionFlags();
 
-    const permissions = await computeProposalPermissions({
-      resourceId: proposal.id,
-      userId
-    });
+    const isAdmin = (await hasAccessToSpace({ spaceId: proposal.spaceId, userId })).spaceRole?.isAdmin;
 
-    if (permissions.create_vote || (await isProposalReviewer({ proposal, userId })) === true) {
-      flags.addPermissions(['vote_active']);
-    }
-
+    if (isAdmin) {
+      flags.addPermissions(['review', 'vote_active']);
+    } else if (isProposalAuthor({ proposal, userId })) flags.addPermissions(['vote_active']);
     if ((await isProposalReviewer({ proposal, userId })) === true) {
-      flags.addPermissions(['review']);
+      flags.addPermissions(['review', 'vote_active']);
     }
 
     return flags.operationFlags;
