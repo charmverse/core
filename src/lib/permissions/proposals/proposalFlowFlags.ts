@@ -72,7 +72,7 @@ function withDepsInReviewProposal({ isProposalReviewer }: GetFlagFilterDependenc
         spaceId: proposal.spaceId,
         userId
       })
-    ).isAdmin;
+    ).spaceRole?.isAdmin;
 
     if (isAdmin) {
       flags.addPermissions(['discussion', 'reviewed']);
