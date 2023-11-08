@@ -95,7 +95,7 @@ beforeAll(async () => {
   });
 });
 describe('getProposalFlagFilters', () => {
-  it('should allow discussion state for draft proposals if user author or admin', async () => {
+  it('should allow discussion state for draft proposals if user is author or admin', async () => {
     const proposalStatus: ProposalStatus = 'draft';
 
     const getFlags = proposalFlowFlagFilters[proposalStatus];
