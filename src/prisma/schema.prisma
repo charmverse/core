@@ -1,7 +1,7 @@
 generator client {
   provider        = "prisma-client-js"
   binaryTargets   = ["debian-openssl-1.1.x", "linux-musl", "darwin", "native", "rhel-openssl-1.0.x"]
-  previewFeatures = ["fullTextSearch", "extendedWhereUnique"]
+  previewFeatures = ["fullTextSearch"]
 }
 
 datasource db {
@@ -328,6 +328,7 @@ model Space {
   proposalBlocks              ProposalBlock[]
   rewardBlocks                RewardBlock[]
   userNotifications           UserNotificationMetadata[]
+  blacklistedSpaceUsers       BlacklistedSpaceUser[]
 
   @@index([createdBy])
 }
@@ -643,6 +644,7 @@ model User {
   authorNotifications       UserNotificationMetadata[]      @relation("author")
   targetNotifications       UserNotificationMetadata[]      @relation("target")
   ApplicationComment        ApplicationComment[]
+  blacklistedSpaceUsers     BlacklistedSpaceUser[]
 }
 
 model VerifiedEmail {
@@ -819,29 +821,29 @@ model InviteLink {
 }
 
 model Bounty {
-  createdBy         String               @db.Uuid
-  spaceId           String               @db.Uuid
-  createdAt         DateTime             @default(now())
-  updatedAt         DateTime             @default(now())
-  dueDate           DateTime?
-  rewardAmount      Float?
-  rewardToken       String?
-  status            BountyStatus         @default(open)
-  id                String               @id @default(uuid()) @db.Uuid
-  chainId           Int?
-  suggestedBy       String?              @db.Uuid
-  allowMultipleApplications Boolean?      @default(false)
-  approveSubmitters Boolean              @default(false)
-  submissionsLocked Boolean              @default(false)
-  maxSubmissions    Int?                 @default(1)
-  author            User                 @relation(fields: [createdBy], references: [id])
-  space             Space                @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  applications      Application[]
-  permissions       BountyPermission[]
-  page              Page?
-  customReward      String?
-  fields            Json?
-  notifications     BountyNotification[]
+  createdBy                 String               @db.Uuid
+  spaceId                   String               @db.Uuid
+  createdAt                 DateTime             @default(now())
+  updatedAt                 DateTime             @default(now())
+  dueDate                   DateTime?
+  rewardAmount              Float?
+  rewardToken               String?
+  status                    BountyStatus         @default(open)
+  id                        String               @id @default(uuid()) @db.Uuid
+  chainId                   Int?
+  suggestedBy               String?              @db.Uuid
+  allowMultipleApplications Boolean?             @default(false)
+  approveSubmitters         Boolean              @default(false)
+  submissionsLocked         Boolean              @default(false)
+  maxSubmissions            Int?                 @default(1)
+  author                    User                 @relation(fields: [createdBy], references: [id])
+  space                     Space                @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  applications              Application[]
+  permissions               BountyPermission[]
+  page                      Page?
+  customReward              String?
+  fields                    Json?
+  notifications             BountyNotification[]
 
   @@index([createdBy])
   @@index([spaceId])
@@ -891,6 +893,7 @@ model Application {
   transactions       Transaction[]
   ApplicationComment ApplicationComment[]
   notifications      BountyNotification[]
+
   @@index([createdBy])
   @@index([bountyId])
   @@index([spaceId])
@@ -1795,4 +1798,17 @@ model SQSMessage {
   id        String   @id
   createdAt DateTime @default(now())
   payload   Json?
+}
+
+model BlacklistedSpaceUser {
+  userId          String   @db.Uuid
+  spaceId         String   @db.Uuid
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  space           Space    @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  discordId       String?
+  walletAddresses String[]
+  emails          String[]
+  createdAt       DateTime @default(now())
+
+  @@unique([userId, spaceId])
 }
