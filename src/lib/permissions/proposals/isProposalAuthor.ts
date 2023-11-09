@@ -13,5 +13,5 @@ export function isProposalAuthor({
     return false;
   }
 
-  return proposal.authors.some((a) => a.userId === userId) || proposal.createdBy === userId;
+  return proposal.createdBy === userId || proposal.authors.some((a) => a.userId === userId);
 }
