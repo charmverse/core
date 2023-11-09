@@ -97,7 +97,7 @@ beforeAll(async () => {
   });
 });
 describe('getProposalFlagFilters', () => {
-  it('should allow discussion state for draft proposals if user is author or admin', async () => {
+  it('should allow going forward to discussion for draft proposals if user is author or admin', async () => {
     const proposalStatus: ProposalStatus = 'draft';
 
     const getFlags = proposalFlowFlagFilters[proposalStatus];
@@ -133,7 +133,7 @@ describe('getProposalFlagFilters', () => {
     expect(memberFlags).toMatchObject(new TransitionFlags().empty);
   });
 
-  it('should allow draft for discussion proposals if user is author or admin, and review if user is author, admin or reviewer', async () => {
+  it('should allow going forward to review if user is author, admin or reviewer for discussion proposals, and going back to draft if user is author or admin', async () => {
     const proposalStatus: ProposalStatus = 'discussion';
 
     const getFlags = proposalFlowFlagFilters[proposalStatus];
@@ -171,7 +171,7 @@ describe('getProposalFlagFilters', () => {
     expect(memberFlags).toMatchObject(new TransitionFlags().empty);
   });
 
-  it('should allow discussion for review proposals if user is author, admin or reviewer, as well as reviewed if user is reviewer or admin', async () => {
+  it('should allow going forward to reviewed if user is reviewer or admin for review proposals and going back to discussion if user is author, admin or reviewer', async () => {
     const proposalStatus: ProposalStatus = 'review';
 
     const getFlags = proposalFlowFlagFilters[proposalStatus];
@@ -211,7 +211,7 @@ describe('getProposalFlagFilters', () => {
     expect(memberFlags).toMatchObject(new TransitionFlags().empty);
   });
 
-  it('should allow vote_active for reviewed proposals if user is author, admin or reviewer, and review if user is admin or reviewer', async () => {
+  it('should allow going forward to vote_active for reviewed proposals if user is author, admin or reviewer, and back to review if user is admin or reviewer', async () => {
     const proposalStatus: ProposalStatus = 'reviewed';
 
     const getFlags = proposalFlowFlagFilters[proposalStatus];
@@ -321,7 +321,7 @@ describe('getProposalFlagFilters', () => {
   });
 
   describe('getProposalFlagFilters - rubric evaluations', () => {
-    it('should allow draft for discussion proposals if user is author or admin, and evaluation_active if user is author, admin or reviewer', async () => {
+    it('should allow going forward to evaluation_active if user is author, admin or reviewer for discussion proposals, and going back to draft if user is author or admin ', async () => {
       const proposalStatus: ProposalStatus = 'discussion';
 
       const getFlags = proposalFlowFlagFilters[proposalStatus];
@@ -364,7 +364,7 @@ describe('getProposalFlagFilters', () => {
       expect(memberFlags).toMatchObject(new TransitionFlags().empty);
     });
 
-    it('should allow discussion for evaluation_active proposals if user is author, admin or reviewer, as well as evaluation_closed if user is admin or reviewer', async () => {
+    it('should allow going forward to evaluation_closed if user is admin or reviewer for evaluation_active proposals, and going back to discussion if user is author, admin or reviewer', async () => {
       const proposalStatus: ProposalStatus = 'evaluation_active';
 
       const getFlags = proposalFlowFlagFilters[proposalStatus];
@@ -406,7 +406,7 @@ describe('getProposalFlagFilters', () => {
       expect(memberFlags).toMatchObject(new TransitionFlags().empty);
     });
 
-    it('should allow evaluation_active for evaluation_closed proposals if user is admin or reviewer', async () => {
+    it('should allow going back to evaluation_active for evaluation_closed proposals if user is admin or reviewer', async () => {
       const proposalStatus: ProposalStatus = 'evaluation_closed';
 
       const getFlags = proposalFlowFlagFilters[proposalStatus];
