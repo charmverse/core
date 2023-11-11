@@ -1081,18 +1081,19 @@ model SpacePermission {
 }
 
 model Thread {
-  id        String    @id @default(uuid()) @db.Uuid
-  createdAt DateTime  @default(now())
-  pageId    String    @db.Uuid
-  context   String
-  userId    String    @db.Uuid
-  resolved  Boolean
-  spaceId   String    @db.Uuid
-  updatedAt DateTime?
-  page      Page      @relation(fields: [pageId], references: [id], onDelete: Cascade)
-  space     Space     @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  user      User      @relation(fields: [userId], references: [id])
-  comments  Comment[]
+  id           String    @id @default(uuid()) @db.Uuid
+  createdAt    DateTime  @default(now())
+  pageId       String    @db.Uuid
+  context      String
+  userId       String    @db.Uuid
+  resolved     Boolean
+  spaceId      String    @db.Uuid
+  updatedAt    DateTime?
+  page         Page      @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  space        Space     @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  user         User      @relation(fields: [userId], references: [id])
+  comments     Comment[]
+  accessGroups Json[]    @default([])
 
   @@index([pageId])
   @@index([spaceId])
