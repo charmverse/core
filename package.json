@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.9.6-rc-prisma-export.0",
+  "version": "0.9.6",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
