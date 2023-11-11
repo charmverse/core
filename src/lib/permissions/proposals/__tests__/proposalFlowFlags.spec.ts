@@ -15,6 +15,7 @@ import { getProposalFlagFilters, TransitionFlags } from '../proposalFlowFlags';
 let proposalAuthor: User;
 let admin: User;
 let reviewerUser: User;
+let authorAndReviewerUser: User;
 let spaceMember: User;
 let space: Space;
 let proposalCategory: ProposalCategory;
@@ -26,6 +27,7 @@ beforeAll(async () => {
   admin = await generateSpaceUser({ isAdmin: true, spaceId: space.id });
   reviewerUser = await generateSpaceUser({ isAdmin: false, spaceId: space.id });
   spaceMember = await generateSpaceUser({ isAdmin: false, spaceId: space.id });
+  authorAndReviewerUser = await generateSpaceUser({ isAdmin: false, spaceId: space.id });
 
   // Generate a mock proposal linked to the space
   proposalCategory = await generateProposalCategory({
@@ -95,7 +97,7 @@ beforeAll(async () => {
   });
 });
 describe('getProposalFlagFilters', () => {
-  it('should allow discussion state for draft proposals if user is author or admin', async () => {
+  it('should allow going forward to discussion for draft proposals if user is author or admin', async () => {
     const proposalStatus: ProposalStatus = 'draft';
 
     const getFlags = proposalFlowFlagFilters[proposalStatus];
@@ -105,7 +107,11 @@ describe('getProposalFlagFilters', () => {
       userId: proposalAuthor.id,
       categoryId: proposalCategory.id,
       proposalStatus,
-      reviewers: [{ group: 'user', id: reviewerUser.id }]
+      authors: [authorAndReviewerUser.id],
+      reviewers: [
+        { group: 'user', id: reviewerUser.id },
+        { group: 'user', id: authorAndReviewerUser.id }
+      ]
     });
 
     // Check for author permissions
@@ -119,11 +125,15 @@ describe('getProposalFlagFilters', () => {
     const reviewerFlags = await getFlags({ userId: reviewerUser.id, proposal });
     expect(reviewerFlags).toMatchObject(new TransitionFlags().empty);
 
+    // Check to make sure user who is author and reviewer inherits both permission sets
+    const authorAndReviewerFlags = await getFlags({ userId: authorAndReviewerUser.id, proposal });
+    expect(authorAndReviewerFlags).toMatchObject(new TransitionFlags().addPermissions(['discussion']).operationFlags);
+
     const memberFlags = await getFlags({ userId: spaceMember.id, proposal });
     expect(memberFlags).toMatchObject(new TransitionFlags().empty);
   });
 
-  it('should allow draft for discussion proposals if user is author or admin, and review if user is author, admin or reviewer', async () => {
+  it('should allow going forward to review if user is author, admin or reviewer for discussion proposals, and going back to draft if user is author or admin', async () => {
     const proposalStatus: ProposalStatus = 'discussion';
 
     const getFlags = proposalFlowFlagFilters[proposalStatus];
@@ -133,7 +143,11 @@ describe('getProposalFlagFilters', () => {
       userId: proposalAuthor.id,
       categoryId: proposalCategory.id,
       proposalStatus,
-      reviewers: [{ group: 'user', id: reviewerUser.id }]
+      authors: [authorAndReviewerUser.id],
+      reviewers: [
+        { group: 'user', id: reviewerUser.id },
+        { group: 'user', id: authorAndReviewerUser.id }
+      ]
     });
 
     // Check for author permissions
@@ -147,11 +161,17 @@ describe('getProposalFlagFilters', () => {
     const reviewerFlags = await getFlags({ userId: reviewerUser.id, proposal });
     expect(reviewerFlags).toMatchObject(new TransitionFlags().addPermissions(['review']).operationFlags);
 
+    // Check to make sure user who is author and reviewer inherits both permission sets
+    const authorAndReviewerFlags = await getFlags({ userId: authorAndReviewerUser.id, proposal });
+    expect(authorAndReviewerFlags).toMatchObject(
+      new TransitionFlags().addPermissions(['draft', 'review']).operationFlags
+    );
+
     const memberFlags = await getFlags({ userId: spaceMember.id, proposal });
     expect(memberFlags).toMatchObject(new TransitionFlags().empty);
   });
 
-  it('should allow discussion for review proposals if user is author, admin or reviewer, as well as reviewed if user is reviewer or admin', async () => {
+  it('should allow going forward to reviewed if user is reviewer or admin for review proposals and going back to discussion if user is author, admin or reviewer', async () => {
     const proposalStatus: ProposalStatus = 'review';
 
     const getFlags = proposalFlowFlagFilters[proposalStatus];
@@ -161,7 +181,11 @@ describe('getProposalFlagFilters', () => {
       userId: proposalAuthor.id,
       categoryId: proposalCategory.id,
       proposalStatus,
-      reviewers: [{ group: 'user', id: reviewerUser.id }]
+      authors: [authorAndReviewerUser.id],
+      reviewers: [
+        { group: 'user', id: reviewerUser.id },
+        { group: 'user', id: authorAndReviewerUser.id }
+      ]
     });
 
     // Check for author permissions
@@ -177,11 +201,17 @@ describe('getProposalFlagFilters', () => {
       new TransitionFlags().addPermissions(['discussion', 'reviewed']).operationFlags
     );
 
+    // Check to make sure user who is author and reviewer inherits both permission sets
+    const authorAndReviewerFlags = await getFlags({ userId: authorAndReviewerUser.id, proposal });
+    expect(authorAndReviewerFlags).toMatchObject(
+      new TransitionFlags().addPermissions(['discussion', 'reviewed']).operationFlags
+    );
+
     const memberFlags = await getFlags({ userId: spaceMember.id, proposal });
     expect(memberFlags).toMatchObject(new TransitionFlags().empty);
   });
 
-  it('should allow vote_active for reviewed proposals if user is author, admin or reviewer, and review if user is admin or reviewer', async () => {
+  it('should allow going forward to vote_active for reviewed proposals if user is author, admin or reviewer, and back to review if user is admin or reviewer', async () => {
     const proposalStatus: ProposalStatus = 'reviewed';
 
     const getFlags = proposalFlowFlagFilters[proposalStatus];
@@ -191,7 +221,11 @@ describe('getProposalFlagFilters', () => {
       userId: proposalAuthor.id,
       categoryId: proposalCategory.id,
       proposalStatus,
-      reviewers: [{ group: 'user', id: reviewerUser.id }]
+      authors: [authorAndReviewerUser.id],
+      reviewers: [
+        { group: 'user', id: reviewerUser.id },
+        { group: 'user', id: authorAndReviewerUser.id }
+      ]
     });
 
     // Check for author permissions
@@ -204,6 +238,11 @@ describe('getProposalFlagFilters', () => {
 
     const reviewerFlags = await getFlags({ userId: reviewerUser.id, proposal });
     expect(reviewerFlags).toMatchObject(new TransitionFlags().addPermissions(['vote_active', 'review']).operationFlags);
+
+    const authorAndReviewerFlags = await getFlags({ userId: authorAndReviewerUser.id, proposal });
+    expect(authorAndReviewerFlags).toMatchObject(
+      new TransitionFlags().addPermissions(['review', 'vote_active']).operationFlags
+    );
 
     const memberFlags = await getFlags({ userId: spaceMember.id, proposal });
     expect(memberFlags).toMatchObject(new TransitionFlags().empty);
@@ -220,7 +259,11 @@ describe('getProposalFlagFilters', () => {
       userId: proposalAuthor.id,
       categoryId: proposalCategory.id,
       proposalStatus,
-      reviewers: [{ group: 'user', id: reviewerUser.id }]
+      authors: [authorAndReviewerUser.id],
+      reviewers: [
+        { group: 'user', id: reviewerUser.id },
+        { group: 'user', id: authorAndReviewerUser.id }
+      ]
     });
 
     // Check for author permissions
@@ -233,6 +276,9 @@ describe('getProposalFlagFilters', () => {
 
     const reviewerFlags = await getFlags({ userId: reviewerUser.id, proposal });
     expect(reviewerFlags).toMatchObject(new TransitionFlags().empty);
+
+    const authorAndReviewerFlags = await getFlags({ userId: authorAndReviewerUser.id, proposal });
+    expect(authorAndReviewerFlags).toMatchObject(new TransitionFlags().empty);
 
     const memberFlags = await getFlags({ userId: spaceMember.id, proposal });
     expect(memberFlags).toMatchObject(new TransitionFlags().empty);
@@ -249,7 +295,11 @@ describe('getProposalFlagFilters', () => {
       userId: proposalAuthor.id,
       categoryId: proposalCategory.id,
       proposalStatus,
-      reviewers: [{ group: 'user', id: reviewerUser.id }]
+      authors: [authorAndReviewerUser.id],
+      reviewers: [
+        { group: 'user', id: reviewerUser.id },
+        { group: 'user', id: authorAndReviewerUser.id }
+      ]
     });
 
     // Check for author permissions
@@ -263,12 +313,15 @@ describe('getProposalFlagFilters', () => {
     const reviewerFlags = await getFlags({ userId: reviewerUser.id, proposal });
     expect(reviewerFlags).toMatchObject(new TransitionFlags().empty);
 
+    const authorAndReviewerFlags = await getFlags({ userId: authorAndReviewerUser.id, proposal });
+    expect(authorAndReviewerFlags).toMatchObject(new TransitionFlags().empty);
+
     const memberFlags = await getFlags({ userId: spaceMember.id, proposal });
     expect(memberFlags).toMatchObject(new TransitionFlags().empty);
   });
 
   describe('getProposalFlagFilters - rubric evaluations', () => {
-    it('should allow draft for discussion proposals if user is author or admin, and evaluation_active if user is author, admin or reviewer', async () => {
+    it('should allow going forward to evaluation_active if user is author, admin or reviewer for discussion proposals, and going back to draft if user is author or admin ', async () => {
       const proposalStatus: ProposalStatus = 'discussion';
 
       const getFlags = proposalFlowFlagFilters[proposalStatus];
@@ -279,7 +332,11 @@ describe('getProposalFlagFilters', () => {
         categoryId: proposalCategory.id,
         proposalStatus,
         evaluationType: 'rubric',
-        reviewers: [{ group: 'user', id: reviewerUser.id }]
+        authors: [authorAndReviewerUser.id],
+        reviewers: [
+          { group: 'user', id: reviewerUser.id },
+          { group: 'user', id: authorAndReviewerUser.id }
+        ]
       });
 
       // Check for author permissions
@@ -297,11 +354,17 @@ describe('getProposalFlagFilters', () => {
       const reviewerFlags = await getFlags({ userId: reviewerUser.id, proposal });
       expect(reviewerFlags).toMatchObject(new TransitionFlags().addPermissions(['evaluation_active']).operationFlags);
 
+      // Check to make sure user who is author and reviewer inherits both permission sets
+      const authorAndReviewerFlags = await getFlags({ userId: authorAndReviewerUser.id, proposal });
+      expect(authorAndReviewerFlags).toMatchObject(
+        new TransitionFlags().addPermissions(['draft', 'evaluation_active']).operationFlags
+      );
+
       const memberFlags = await getFlags({ userId: spaceMember.id, proposal });
       expect(memberFlags).toMatchObject(new TransitionFlags().empty);
     });
 
-    it('should allow discussion for evaluation_active proposals if user is author, admin or reviewer, as well as evaluation_closed if user is admin or reviewer', async () => {
+    it('should allow going forward to evaluation_closed if user is admin or reviewer for evaluation_active proposals, and going back to discussion if user is author, admin or reviewer', async () => {
       const proposalStatus: ProposalStatus = 'evaluation_active';
 
       const getFlags = proposalFlowFlagFilters[proposalStatus];
@@ -311,7 +374,11 @@ describe('getProposalFlagFilters', () => {
         userId: proposalAuthor.id,
         categoryId: proposalCategory.id,
         proposalStatus,
-        reviewers: [{ group: 'user', id: reviewerUser.id }]
+        authors: [authorAndReviewerUser.id],
+        reviewers: [
+          { group: 'user', id: reviewerUser.id },
+          { group: 'user', id: authorAndReviewerUser.id }
+        ]
       });
 
       // Check for author permissions
@@ -329,11 +396,17 @@ describe('getProposalFlagFilters', () => {
         new TransitionFlags().addPermissions(['discussion', 'evaluation_closed']).operationFlags
       );
 
+      // Check to make sure user who is author and reviewer inherits both permission sets
+      const authorAndReviewerFlags = await getFlags({ userId: authorAndReviewerUser.id, proposal });
+      expect(authorAndReviewerFlags).toMatchObject(
+        new TransitionFlags().addPermissions(['discussion', 'evaluation_closed']).operationFlags
+      );
+
       const memberFlags = await getFlags({ userId: spaceMember.id, proposal });
       expect(memberFlags).toMatchObject(new TransitionFlags().empty);
     });
 
-    it('should allow evaluation_active for evaluation_closed proposals if user is admin or reviewer', async () => {
+    it('should allow going back to evaluation_active for evaluation_closed proposals if user is admin or reviewer', async () => {
       const proposalStatus: ProposalStatus = 'evaluation_closed';
 
       const getFlags = proposalFlowFlagFilters[proposalStatus];
@@ -343,7 +416,11 @@ describe('getProposalFlagFilters', () => {
         userId: proposalAuthor.id,
         categoryId: proposalCategory.id,
         proposalStatus,
-        reviewers: [{ group: 'user', id: reviewerUser.id }]
+        authors: [authorAndReviewerUser.id],
+        reviewers: [
+          { group: 'user', id: reviewerUser.id },
+          { group: 'user', id: authorAndReviewerUser.id }
+        ]
       });
 
       // Check for author permissions
@@ -356,6 +433,12 @@ describe('getProposalFlagFilters', () => {
 
       const reviewerFlags = await getFlags({ userId: reviewerUser.id, proposal });
       expect(reviewerFlags).toMatchObject(new TransitionFlags().addPermissions(['evaluation_active']).operationFlags);
+
+      // Check to make sure user who is author and reviewer inherits both permission sets
+      const authorAndReviewerFlags = await getFlags({ userId: authorAndReviewerUser.id, proposal });
+      expect(authorAndReviewerFlags).toMatchObject(
+        new TransitionFlags().addPermissions(['evaluation_active']).operationFlags
+      );
 
       const memberFlags = await getFlags({ userId: spaceMember.id, proposal });
       expect(memberFlags).toMatchObject(new TransitionFlags().empty);
