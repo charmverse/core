@@ -181,11 +181,11 @@ jobs:
       matrix:
         include:
           - repo: "app.charmverse.io"
-            workflow_file: "update_core_pkg.yml"
+            workflow_file: "test_and_deploy.yml"
             workflow_payload: |
               { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}" }
           - repo: "permissions.charmverse.io"
-            workflow_file: "update_core_pkg.yml"
+            workflow_file: "test_and_deploy.yml"
             workflow_payload: |
               { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}" }
 
