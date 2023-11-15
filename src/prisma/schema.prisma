@@ -1535,9 +1535,10 @@ model ApplicationComment {
   deletedBy   String?
   parentId    String?   @db.Uuid
 
-  applicationId String      @db.Uuid
-  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
-  user          User        @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  applicationId String                 @db.Uuid
+  application   Application            @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  user          User                   @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  notifications DocumentNotification[]
 
   @@index([applicationId])
 }
@@ -1752,6 +1753,8 @@ model DocumentNotification {
   postId                 String?                  @db.Uuid
   post                   Post?                    @relation(fields: [postId], references: [id], onDelete: Cascade)
   content                Json?
+  applicationCommentId   String?                  @db.Uuid
+  applicationComment     ApplicationComment?      @relation(fields: [applicationCommentId], references: [id], onDelete: Cascade)
 }
 
 model CardNotification {
