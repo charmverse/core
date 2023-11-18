@@ -645,6 +645,7 @@ model User {
   targetNotifications       UserNotificationMetadata[]      @relation("target")
   ApplicationComment        ApplicationComment[]
   blacklistedSpaceUsers     BlacklistedSpaceUser[]
+  blacklistedUser           BlacklistedUser[]
 }
 
 model VerifiedEmail {
@@ -1815,4 +1816,13 @@ model BlacklistedSpaceUser {
   createdAt       DateTime @default(now())
 
   @@unique([userId, spaceId])
+}
+
+model BlacklistedUser {
+  userId          String   @id @db.Uuid
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  discordId       String?
+  walletAddresses String[]
+  emails          String[]
+  createdAt       DateTime @default(now())
 }
