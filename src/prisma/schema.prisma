@@ -553,29 +553,30 @@ model VoteOptions {
 }
 
 model Vote {
-  id            String             @id @default(uuid()) @db.Uuid
-  pageId        String?            @db.Uuid
-  postId        String?            @db.Uuid
+  id            String              @id @default(uuid()) @db.Uuid
+  pageId        String?             @db.Uuid
+  postId        String?             @db.Uuid
   title         String
   description   String?
   content       Json?
   contentText   String?
   deadline      DateTime
   status        VoteStatus
-  createdAt     DateTime           @default(now())
-  createdBy     String             @db.Uuid
-  spaceId       String             @db.Uuid
+  createdAt     DateTime            @default(now())
+  createdBy     String              @db.Uuid
+  spaceId       String              @db.Uuid
   threshold     Int
-  maxChoices    Int?               @default(1)
-  type          VoteType           @default(SingleChoice)
-  context       VoteContext        @default(inline)
-  author        User               @relation(fields: [createdBy], references: [id], onDelete: Cascade)
-  page          Page?              @relation(fields: [pageId], references: [id], onDelete: Cascade)
-  post          Post?              @relation(fields: [postId], references: [id], onDelete: Cascade)
-  space         Space              @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  maxChoices    Int?                @default(1)
+  type          VoteType            @default(SingleChoice)
+  context       VoteContext         @default(inline)
+  author        User                @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  page          Page?               @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  post          Post?               @relation(fields: [postId], references: [id], onDelete: Cascade)
+  space         Space               @relation(fields: [spaceId], references: [id], onDelete: Cascade)
   userVotes     UserVote[]
   voteOptions   VoteOptions[]
   notifications VoteNotification[]
+  evaluation    ProposalEvaluation?
 
   @@index([createdBy])
   @@index([pageId])
@@ -1182,6 +1183,8 @@ model ProposalEvaluation {
 
   snapshotId     String?
   snapshotExpiry DateTime?
+  voteId         String?   @unique @db.Uuid
+  vote           Vote?     @relation(fields: [voteId], references: [id], onDelete: Cascade)
 }
 
 model ProposalBlock {
