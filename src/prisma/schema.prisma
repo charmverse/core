@@ -329,6 +329,7 @@ model Space {
   rewardBlocks                RewardBlock[]
   userNotifications           UserNotificationMetadata[]
   blacklistedSpaceUsers       BlacklistedSpaceUser[]
+  additionalBlockQuotas       AdditionalBlockQuota[]
 
   @@index([createdBy])
 }
@@ -1825,4 +1826,11 @@ model BlacklistedUser {
   walletAddresses String[]
   emails          String[]
   createdAt       DateTime @default(now())
+}
+
+model AdditionalBlockQuota {
+  spaceId    String   @id @db.Uuid
+  space      Space    @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  expiration DateTime
+  blockCount Int
 }
