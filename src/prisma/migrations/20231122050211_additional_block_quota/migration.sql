@@ -1,10 +1,12 @@
 -- CreateTable
 CREATE TABLE "AdditionalBlockQuota" (
+    "id" UUID NOT NULL,
     "spaceId" UUID NOT NULL,
     "expiration" TIMESTAMP(3) NOT NULL,
     "blockCount" INTEGER NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "AdditionalBlockQuota_pkey" PRIMARY KEY ("spaceId")
+    CONSTRAINT "AdditionalBlockQuota_pkey" PRIMARY KEY ("id")
 );
 
 -- AddForeignKey
