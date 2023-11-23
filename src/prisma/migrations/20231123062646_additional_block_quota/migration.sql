@@ -2,7 +2,7 @@
 CREATE TABLE "AdditionalBlockQuota" (
     "id" UUID NOT NULL,
     "spaceId" UUID NOT NULL,
-    "expiration" TIMESTAMP(3) NOT NULL,
+    "expiresAt" TIMESTAMP(3),
     "blockCount" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
