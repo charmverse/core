@@ -86,7 +86,8 @@ describe('generateProposal', () => {
           id: expect.any(String),
           proposalId: generatedProposal.id,
           roleId: role.id,
-          userId: null
+          userId: null,
+          evaluationId: null
         }
       ]
     });
