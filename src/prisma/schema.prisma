@@ -332,12 +332,12 @@ model Space {
   userNotifications           UserNotificationMetadata[]
   blacklistedSpaceUsers       BlacklistedSpaceUser[]
   additionalBlockQuotas       AdditionalBlockQuota[]
-  spaceProposalWorklows       SpaceProposalWorklow[]
+  spaceProposalWorkflows      SpaceProposalWorkflow[]
 
   @@index([createdBy])
 }
 
-model SpaceProposalWorklow {
+model SpaceProposalWorkflow {
   id          String @id @default(uuid()) @db.Uuid
   spaceId     String @db.Uuid
   space       Space  @relation(fields: [spaceId], references: [id], onDelete: Cascade)
