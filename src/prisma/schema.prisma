@@ -332,18 +332,9 @@ model Space {
   userNotifications           UserNotificationMetadata[]
   blacklistedSpaceUsers       BlacklistedSpaceUser[]
   additionalBlockQuotas       AdditionalBlockQuota[]
-  spaceProposalWorkflows      SpaceProposalWorkflow[]
+  proposalWorkflowTemplates   ProposalWorkflowTemplate[]
 
   @@index([createdBy])
-}
-
-model SpaceProposalWorkflow {
-  id          String @id @default(uuid()) @db.Uuid
-  spaceId     String @db.Uuid
-  space       Space  @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  index       Int
-  title       String
-  evaluations Json[] // mirrors the ProposalEvaluation schema
 }
 
 model StripeSubscription {
@@ -1172,6 +1163,15 @@ model Proposal {
   @@index([spaceId])
   @@index([reviewedBy])
   @@index([categoryId])
+}
+
+model ProposalWorkflowTemplate {
+  id          String @id @default(uuid()) @db.Uuid
+  spaceId     String @db.Uuid
+  space       Space  @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  index       Int
+  title       String
+  evaluations Json[] // mirrors the ProposalEvaluation schema
 }
 
 enum ProposalEvaluationResult {
