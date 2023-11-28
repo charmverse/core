@@ -332,7 +332,7 @@ model Space {
   userNotifications           UserNotificationMetadata[]
   blacklistedSpaceUsers       BlacklistedSpaceUser[]
   additionalBlockQuotas       AdditionalBlockQuota[]
-  SpaceProposalWorklow        SpaceProposalWorklow[]
+  spaceProposalWorklows       SpaceProposalWorklow[]
 
   @@index([createdBy])
 }
