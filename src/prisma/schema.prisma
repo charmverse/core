@@ -332,8 +332,16 @@ model Space {
   userNotifications           UserNotificationMetadata[]
   blacklistedSpaceUsers       BlacklistedSpaceUser[]
   additionalBlockQuotas       AdditionalBlockQuota[]
+  SpaceProposalWorklow        SpaceProposalWorklow[]
 
   @@index([createdBy])
+}
+
+model SpaceProposalWorklow {
+  id          String @id @default(uuid()) @db.Uuid
+  spaceId     String @db.Uuid
+  space       Space  @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  evaluations Json[] // mirrors the ProposalEvaluation schema
 }
 
 model StripeSubscription {
@@ -1173,7 +1181,8 @@ model ProposalEvaluation {
   id                 String                              @id @db.Uuid
   proposalId         String                              @db.Uuid
   proposal           Proposal                            @relation(fields: [proposalId], references: [id], onDelete: Cascade)
-  index              Int // tells us what ordertype: 'vote' | 'evaluation' | 'pass_fail';
+  index              Int // tells us what order
+  title              String
   evaluationType     ProposalEvaluationType              @default(vote)
   rubricCriteria     ProposalRubricCriteria[]
   rubricAnswers      ProposalRubricCriteriaAnswer[]
