@@ -341,6 +341,7 @@ model SpaceProposalWorklow {
   id          String @id @default(uuid()) @db.Uuid
   spaceId     String @db.Uuid
   space       Space  @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  title       String
   evaluations Json[] // mirrors the ProposalEvaluation schema
 }
 
