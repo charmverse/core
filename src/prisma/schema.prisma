@@ -713,6 +713,7 @@ model UserDetails {
   user        User    @relation(fields: [id], references: [id], onDelete: Cascade)
   timezone    String?
   locale      String?
+  name        String?
 }
 
 model TelegramUser {
