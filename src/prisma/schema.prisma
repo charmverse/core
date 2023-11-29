@@ -910,6 +910,8 @@ model Transaction {
   application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
 
   @@index([applicationId])
+
+  @@unique([safeTxHash])
 }
 
 model TokenGate {
