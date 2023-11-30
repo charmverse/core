@@ -1181,7 +1181,7 @@ enum ProposalEvaluationResult {
 }
 
 model ProposalEvaluation {
-  id                 String                              @id @db.Uuid
+  id                 String                              @id @default(uuid()) @db.Uuid
   proposalId         String                              @db.Uuid
   proposal           Proposal                            @relation(fields: [proposalId], references: [id], onDelete: Cascade)
   index              Int // tells us what order
