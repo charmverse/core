@@ -1186,7 +1186,7 @@ model ProposalEvaluation {
   proposal           Proposal                            @relation(fields: [proposalId], references: [id], onDelete: Cascade)
   index              Int // tells us what order
   title              String
-  evaluationType     ProposalEvaluationType              @default(vote)
+  type               ProposalEvaluationType
   rubricCriteria     ProposalRubricCriteria[]
   rubricAnswers      ProposalRubricCriteriaAnswer[]
   draftRubricAnswers DraftProposalRubricCriteriaAnswer[]
