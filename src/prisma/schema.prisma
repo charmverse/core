@@ -1191,6 +1191,7 @@ model ProposalEvaluation {
   rubricAnswers      ProposalRubricCriteriaAnswer[]
   draftRubricAnswers DraftProposalRubricCriteriaAnswer[]
   result             ProposalEvaluationResult?
+  completedAt        DateTime?
 
   reviewers ProposalReviewer[]
 
