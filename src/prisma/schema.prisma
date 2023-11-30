@@ -1313,15 +1313,15 @@ model ProposalRubricCriteriaAnswer {
 }
 
 model DraftProposalRubricCriteriaAnswer {
-  rubricCriteriaId     String                 @db.Uuid
-  rubricCriteria       ProposalRubricCriteria @relation(fields: [rubricCriteriaId], references: [id], onDelete: Cascade)
-  proposalId           String                 @db.Uuid
-  proposal             Proposal               @relation(fields: [proposalId], references: [id], onDelete: Cascade)
-  userId               String
-  response             Json
-  comment              String?
-  ProposalEvaluation   ProposalEvaluation?    @relation(fields: [proposalEvaluationId], references: [id])
-  proposalEvaluationId String?                @db.Uuid
+  rubricCriteriaId String                 @db.Uuid
+  rubricCriteria   ProposalRubricCriteria @relation(fields: [rubricCriteriaId], references: [id], onDelete: Cascade)
+  proposalId       String                 @db.Uuid
+  proposal         Proposal               @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  userId           String
+  response         Json
+  comment          String?
+  evaluation       ProposalEvaluation?    @relation(fields: [evaluationId], references: [id])
+  evaluationId     String?                @db.Uuid
 
   @@unique([userId, rubricCriteriaId])
   @@index([proposalId])
