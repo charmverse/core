@@ -1159,7 +1159,7 @@ model Proposal {
   fields                 Json?
   draftRubricAnswers     DraftProposalRubricCriteriaAnswer[]
   notifications          ProposalNotification[]
-  ProposalEvaluation     ProposalEvaluation[]
+  evaluations            ProposalEvaluation[]
 
   @@index([spaceId])
   @@index([reviewedBy])
