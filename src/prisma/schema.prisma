@@ -1239,6 +1239,7 @@ enum ProposalRubricCriteriaType {
 
 model ProposalRubricCriteria {
   id           String                              @id @default(uuid()) @db.Uuid
+  index        Int                                 @default(-1)
   title        String
   description  String?
   proposalId   String                              @db.Uuid
