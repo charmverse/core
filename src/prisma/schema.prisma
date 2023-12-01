@@ -1399,6 +1399,7 @@ model MemberProperty {
   memberPropertyValues MemberPropertyValue[]
   permissions          MemberPropertyPermission[]
   enabledViews         VisibilityView[]           @default([gallery, table, profile])
+  required             Boolean                    @default(false)
 
   @@index([spaceId])
 }
