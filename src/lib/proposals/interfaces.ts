@@ -1,4 +1,4 @@
-import type { Page, PageComment, Proposal, ProposalAuthor, ProposalReviewer } from '@prisma/client';
+import type { Bounty, Page, PageComment, Proposal, ProposalAuthor, ProposalReviewer } from '@prisma/client';
 
 import type { AssignablePermissionGroups } from '../permissions/core/interfaces';
 
@@ -24,6 +24,7 @@ export interface ProposalWithCategory extends Proposal {
 export interface ProposalWithUsers extends Proposal, ProposalWithCategory {
   authors: ProposalAuthor[];
   reviewers: ProposalReviewer[];
+  rewardIds?: string[] | null;
 }
 
 export interface ProposalWithCommentsAndUsers extends ProposalWithUsers {
