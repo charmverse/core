@@ -846,8 +846,8 @@ model Bounty {
   customReward              String?
   fields                    Json?
   notifications             BountyNotification[]
-  proposalId               String?               @db.Uuid
-  proposal                 Proposal?             @relation(fields: [proposalId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  proposalId                String?              @db.Uuid
+  proposal                  Proposal?            @relation(fields: [proposalId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
   @@index([createdBy])
   @@index([spaceId])
@@ -921,7 +921,8 @@ model TokenGate {
   createdAt        DateTime          @default(now())
   createdBy        String            @db.Uuid
   spaceId          String            @db.Uuid
-  conditions       Json
+  conditions       Json?
+  lock             Json?
   resourceId       Json
   userRole         String?
   accessTypes      String[]          @default([])
