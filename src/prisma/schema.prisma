@@ -846,6 +846,8 @@ model Bounty {
   customReward              String?
   fields                    Json?
   notifications             BountyNotification[]
+  proposalId               String?               @db.Uuid
+  proposal                 Proposal?             @relation(fields: [proposalId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
   @@index([createdBy])
   @@index([spaceId])
@@ -1154,6 +1156,7 @@ model Proposal {
   fields                 Json?
   draftRubricAnswers     DraftProposalRubricCriteriaAnswer[]
   notifications          ProposalNotification[]
+  rewards                Bounty[]
 
   @@index([spaceId])
   @@index([reviewedBy])
@@ -1161,15 +1164,15 @@ model Proposal {
 }
 
 model ProposalBlock {
+  createdBy String    @db.Uuid
+  updatedBy String    @db.Uuid
+  spaceId   String    @db.Uuid
+  rootId    String    @db.Uuid
   id        String
   deletedAt DateTime?
   createdAt DateTime  @default(now())
-  createdBy String    @db.Uuid
   updatedAt DateTime  @default(now())
-  updatedBy String    @db.Uuid
-  spaceId   String    @db.Uuid
   parentId  String
-  rootId    String    @db.Uuid
   schema    Int
   type      String    @default("board")
   title     String
