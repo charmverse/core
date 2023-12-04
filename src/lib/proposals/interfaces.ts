@@ -24,7 +24,7 @@ export interface ProposalWithCategory extends Proposal {
 export interface ProposalWithUsers extends Proposal, ProposalWithCategory {
   authors: ProposalAuthor[];
   reviewers: ProposalReviewer[];
-  rewards?: Bounty[] | null;
+  rewardIds?: string[] | null;
 }
 
 export interface ProposalWithCommentsAndUsers extends ProposalWithUsers {
