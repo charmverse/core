@@ -11,8 +11,6 @@ import type {
 
 import type { AssignablePermissionGroups } from '../permissions/core/interfaces';
 
-// Workflows
-
 export interface ProposalReviewerInput {
   group: Extract<AssignablePermissionGroups, 'role' | 'user'>;
   id: string;
@@ -35,6 +33,7 @@ export interface ProposalWithCategory extends Proposal {
 export interface ProposalWithUsers extends Proposal, ProposalWithCategory {
   authors: ProposalAuthor[];
   reviewers: ProposalReviewer[];
+  rewardIds?: string[] | null;
 }
 
 export interface ProposalWithCommentsAndUsers extends ProposalWithUsers {
@@ -55,13 +54,12 @@ export type ListProposalsRequest = {
 
 // Workflows - the evaluations and permissions are stored in Json for ease of use
 
-type EvaluationPermission = Pick<ProposalEvaluationPermission, 'id' | 'operation' | 'roleId' | 'userId' | 'systemRole'>;
+type PermissionJson = Pick<ProposalEvaluationPermission, 'id' | 'operation' | 'roleId' | 'userId' | 'systemRole'>;
 
 type EvaluationJson = Pick<ProposalEvaluation, 'id' | 'title' | 'type'> & {
-  permissions: EvaluationPermission[];
+  permissions: PermissionJson[];
 };
 
-// handle JSON types
 export type ProposalWorkflowTyped = Omit<ProposalWorkflow, 'evaluations'> & {
   evaluations: EvaluationJson[];
 };
