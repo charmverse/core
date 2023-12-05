@@ -57,7 +57,7 @@ export type ListProposalsRequest = {
 type PermissionJson = Pick<ProposalEvaluationPermission, 'operation'> &
   Partial<Pick<ProposalEvaluationPermission, 'roleId' | 'userId' | 'systemRole'>>;
 
-type EvaluationJson = Pick<ProposalEvaluation, 'id' | 'title' | 'type'> & {
+type EvaluationJson = Pick<ProposalEvaluation, 'title' | 'type'> & {
   permissions: PermissionJson[];
 };
 
