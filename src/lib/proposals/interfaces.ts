@@ -1,6 +1,18 @@
-import type { Page, PageComment, Proposal, ProposalAuthor, ProposalReviewer } from '@prisma/client';
+import type {
+  ProposalEvaluationType,
+  ProposalEvaluationWorkflow,
+  ProposalSystemRole,
+  ProposalEvaluationPermission,
+  Page,
+  PageComment,
+  Proposal,
+  ProposalAuthor,
+  ProposalReviewer
+} from '@prisma/client';
 
 import type { AssignablePermissionGroups } from '../permissions/core/interfaces';
+
+// Workflows
 
 export interface ProposalReviewerInput {
   group: Extract<AssignablePermissionGroups, 'role' | 'user'>;
@@ -40,4 +52,20 @@ export type ListProposalsRequest = {
   spaceId: string;
   categoryIds?: ProposalCategoryQuery;
   onlyAssigned?: boolean;
+};
+
+// Workflows - the evaluations and permissions are stored in Json for ease of use
+
+type EvaluationPermission = Pick<ProposalEvaluationPermission, 'id' | 'operation' | 'roleId' | 'userId' | 'systemRole'>;
+
+type WorkflowEvaluationJson = {
+  id: string;
+  title: string;
+  type: ProposalEvaluationType;
+  permissions: EvaluationPermission[];
+};
+
+// handle JSON types
+export type ProposalEvaluationWorkflowTyped = Omit<ProposalEvaluationWorkflow, 'evaluations'> & {
+  evaluations: WorkflowEvaluationJson[];
 };

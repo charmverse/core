@@ -4,6 +4,9 @@
   - You are about to drop the column `proposalOperations` on the `ProposalCategoryPermission` table. All the data in the column will be lost.
 
 */
+-- CreateEnum
+CREATE TYPE "ProposalSystemRole" AS ENUM ('author', 'space_member', 'current_reviewer', 'all_reviewers');
+
 -- AlterEnum
 ALTER TYPE "ProposalOperation" ADD VALUE 'move';
 
@@ -26,6 +29,7 @@ CREATE TABLE "ProposalEvaluationPermission" (
     "evaluationId" UUID NOT NULL,
     "roleId" UUID,
     "userId" UUID,
+    "systemRole" "ProposalSystemRole",
 
     CONSTRAINT "ProposalEvaluationPermission_pkey" PRIMARY KEY ("id")
 );

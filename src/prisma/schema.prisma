@@ -1189,15 +1189,23 @@ enum ProposalEvaluationResult {
   fail
 }
 
+enum ProposalSystemRole {
+  author
+  space_member
+  current_reviewer
+  all_reviewers
+}
+
 model ProposalEvaluationPermission {
-  id           String             @id @default(uuid()) @db.Uuid
+  id           String              @id @default(uuid()) @db.Uuid
   operation    ProposalOperation
-  evaluationId String             @db.Uuid
-  evaluation   ProposalEvaluation @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
-  roleId       String?            @db.Uuid
-  userId       String?            @db.Uuid
-  role         Role?              @relation(fields: [roleId], references: [id], onDelete: Cascade)
-  reviewer     User?              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  evaluationId String              @db.Uuid
+  evaluation   ProposalEvaluation  @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
+  roleId       String?             @db.Uuid
+  userId       String?             @db.Uuid
+  role         Role?               @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  reviewer     User?               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  systemRole   ProposalSystemRole?
 
   @@index([evaluationId])
 }
