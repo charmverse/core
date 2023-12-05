@@ -68,7 +68,8 @@ describe('policyStatusDraftOnlyViewable', () => {
       make_public: true,
       archive: true,
       unarchive: true,
-      evaluate: true
+      evaluate: true,
+      move: false
     });
   });
   it('should allow the author to view, edit, comment, delete, make public, archive and unarchive', async () => {
@@ -90,7 +91,8 @@ describe('policyStatusDraftOnlyViewable', () => {
       vote: false,
       archive: true,
       unarchive: true,
-      evaluate: false
+      evaluate: false,
+      move: false
     });
   });
 
@@ -113,7 +115,8 @@ describe('policyStatusDraftOnlyViewable', () => {
       vote: false,
       archive: true,
       unarchive: true,
-      evaluate: false
+      evaluate: false,
+      move: false
     });
   });
 
@@ -136,7 +139,8 @@ describe('policyStatusDraftOnlyViewable', () => {
       vote: false,
       archive: false,
       unarchive: false,
-      evaluate: false
+      evaluate: false,
+      move: false
     });
   });
   it('should preserve space-wide delete and archive permissions when space wide proposal deletion is allowed', async () => {
@@ -160,7 +164,8 @@ describe('policyStatusDraftOnlyViewable', () => {
       make_public: false,
       archive: true,
       unarchive: true,
-      evaluate: false
+      evaluate: false,
+      move: false
     });
   });
   it('should not allow space members to view the proposal', async () => {
@@ -182,7 +187,8 @@ describe('policyStatusDraftOnlyViewable', () => {
       make_public: false,
       archive: false,
       unarchive: false,
-      evaluate: false
+      evaluate: false,
+      move: false
     });
   });
 });

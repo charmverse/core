@@ -68,7 +68,8 @@ describe('policyStatusEvaluationClosedViewOnly', () => {
       make_public: true,
       archive: true,
       unarchive: true,
-      evaluate: true
+      evaluate: true,
+      move: false
     });
   });
 
@@ -91,7 +92,8 @@ describe('policyStatusEvaluationClosedViewOnly', () => {
       review: false,
       archive: true,
       unarchive: true,
-      evaluate: false
+      evaluate: false,
+      move: false
     });
   });
 
@@ -116,7 +118,8 @@ describe('policyStatusEvaluationClosedViewOnly', () => {
       review: false,
       vote: false,
       make_public: false,
-      evaluate: false
+      evaluate: false,
+      move: false
     });
   });
 
@@ -139,7 +142,8 @@ describe('policyStatusEvaluationClosedViewOnly', () => {
       review: false,
       archive: true,
       unarchive: true,
-      evaluate: false
+      evaluate: false,
+      move: false
     });
   });
 
@@ -165,7 +169,8 @@ describe('policyStatusEvaluationClosedViewOnly', () => {
         review: false,
         archive: false,
         unarchive: false,
-        evaluate: false
+        evaluate: false,
+        move: true
       });
     }
   });

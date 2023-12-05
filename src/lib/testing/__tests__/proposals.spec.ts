@@ -53,44 +53,42 @@ describe('generateProposal', () => {
     expect(generatedProposal.id).toEqual(generatedProposal.page.id);
 
     // Evaluate return type
-    expect(generatedProposal).toMatchObject<ProposalWithUsers & { page: Page }>({
-      lensPostLink: null,
-      publishToLens: null,
-      createdBy: proposalInput.userId,
-      id: expect.any(String),
-      reviewedAt: null,
-      reviewedBy: null,
-      status: proposalInput.proposalStatus as ProposalStatus,
-      snapshotProposalExpiry: null,
-      archived: proposalInput.archived as boolean,
-      categoryId: proposalInput.categoryId as string,
-      spaceId: space.id,
-      category: proposalCategory,
-      page: expect.any(Object),
-      evaluationType: 'vote',
-      fields: {
-        properties: customProperties
-      },
-      authors: expect.arrayContaining([
-        {
-          proposalId: generatedProposal.id,
-          userId: user.id
+    expect(generatedProposal).toMatchObject<ProposalWithUsers & { page: Page }>(
+      expect.objectContaining({
+        createdBy: proposalInput.userId,
+        id: expect.any(String),
+        status: proposalInput.proposalStatus as ProposalStatus,
+        snapshotProposalExpiry: null,
+        archived: proposalInput.archived as boolean,
+        categoryId: proposalInput.categoryId as string,
+        spaceId: space.id,
+        category: proposalCategory,
+        page: expect.any(Object),
+        evaluationType: 'vote',
+        fields: {
+          properties: customProperties
         },
-        {
-          proposalId: generatedProposal.id,
-          userId: otherUser.id
-        }
-      ]),
-      reviewers: [
-        {
-          id: expect.any(String),
-          proposalId: generatedProposal.id,
-          roleId: role.id,
-          userId: null,
-          evaluationId: null
-        }
-      ]
-    });
+        authors: expect.arrayContaining([
+          {
+            proposalId: generatedProposal.id,
+            userId: user.id
+          },
+          {
+            proposalId: generatedProposal.id,
+            userId: otherUser.id
+          }
+        ]),
+        reviewers: [
+          {
+            id: expect.any(String),
+            proposalId: generatedProposal.id,
+            roleId: role.id,
+            userId: null,
+            evaluationId: null
+          }
+        ]
+      })
+    );
 
     const proposalPageFromDb = (await prisma.page.findUnique({
       where: {
