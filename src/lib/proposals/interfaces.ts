@@ -54,7 +54,7 @@ export type ListProposalsRequest = {
 
 // Workflows - the evaluations and permissions are stored in Json for ease of use
 
-type PermissionJson = Pick<ProposalEvaluationPermission, 'id' | 'operation'> &
+type PermissionJson = Pick<ProposalEvaluationPermission, 'operation'> &
   Partial<Pick<ProposalEvaluationPermission, 'roleId' | 'userId' | 'systemRole'>>;
 
 type EvaluationJson = Pick<ProposalEvaluation, 'id' | 'title' | 'type'> & {
