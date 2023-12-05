@@ -332,7 +332,7 @@ model Space {
   userNotifications           UserNotificationMetadata[]
   blacklistedSpaceUsers       BlacklistedSpaceUser[]
   additionalBlockQuotas       AdditionalBlockQuota[]
-  proposalEvaluationWorkflows ProposalEvaluationWorkflow[]
+  proposalWorkflows           ProposalWorkflow[]
 
   @@index([createdBy])
 }
@@ -1163,15 +1163,15 @@ model Proposal {
   draftRubricAnswers     DraftProposalRubricCriteriaAnswer[]
   notifications          ProposalNotification[]
   evaluations            ProposalEvaluation[]
-  evaluationWorkflowId   String?                             @db.Uuid
-  evaluationWorkflow     ProposalEvaluationWorkflow?         @relation(fields: [evaluationWorkflowId], references: [id], onDelete: SetNull)
+  workflowId             String?                             @db.Uuid
+  workflow               ProposalWorkflow?                   @relation(fields: [workflowId], references: [id], onDelete: SetNull)
 
   @@index([spaceId])
   @@index([reviewedBy])
   @@index([categoryId])
 }
 
-model ProposalEvaluationWorkflow {
+model ProposalWorkflow {
   id          String     @id @default(uuid()) @db.Uuid
   createdAt   DateTime   @default(now())
   spaceId     String     @db.Uuid

@@ -1,7 +1,6 @@
 import type {
-  ProposalEvaluationType,
-  ProposalEvaluationWorkflow,
-  ProposalSystemRole,
+  ProposalEvaluation,
+  ProposalWorkflow,
   ProposalEvaluationPermission,
   Page,
   PageComment,
@@ -58,14 +57,11 @@ export type ListProposalsRequest = {
 
 type EvaluationPermission = Pick<ProposalEvaluationPermission, 'id' | 'operation' | 'roleId' | 'userId' | 'systemRole'>;
 
-type WorkflowEvaluationJson = {
-  id: string;
-  title: string;
-  type: ProposalEvaluationType;
+type EvaluationJson = Pick<ProposalEvaluation, 'id' | 'title' | 'type'> & {
   permissions: EvaluationPermission[];
 };
 
 // handle JSON types
-export type ProposalEvaluationWorkflowTyped = Omit<ProposalEvaluationWorkflow, 'evaluations'> & {
-  evaluations: WorkflowEvaluationJson[];
+export type ProposalWorkflowTyped = Omit<ProposalWorkflow, 'evaluations'> & {
+  evaluations: EvaluationJson[];
 };
