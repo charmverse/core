@@ -216,6 +216,9 @@ enum MemberPropertyType {
   join_date
   linked_in
   github
+  google
+  telegram
+  wallet
 }
 
 enum MemberPropertyPermissionLevel {
@@ -846,8 +849,8 @@ model Bounty {
   customReward              String?
   fields                    Json?
   notifications             BountyNotification[]
-  proposalId               String?               @db.Uuid
-  proposal                 Proposal?             @relation(fields: [proposalId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  proposalId                String?              @db.Uuid
+  proposal                  Proposal?            @relation(fields: [proposalId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
   @@index([createdBy])
   @@index([spaceId])
@@ -1403,6 +1406,7 @@ model MemberProperty {
   permissions          MemberPropertyPermission[]
   enabledViews         VisibilityView[]           @default([gallery, table, profile])
   required             Boolean                    @default(false)
+  primaryIdentity      Boolean                    @default(false)
 
   @@index([spaceId])
 }
