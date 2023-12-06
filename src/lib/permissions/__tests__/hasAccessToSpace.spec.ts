@@ -64,6 +64,7 @@ describe('hasAccessToSpace', () => {
       onboarded: expect.any(Boolean),
       spaceId: space.id,
       tokenGateId: null,
+      unlockProtocolGateId: null,
       userId: adminUser.id
     });
   });
@@ -83,6 +84,7 @@ describe('hasAccessToSpace', () => {
       onboarded: expect.any(Boolean),
       spaceId: space.id,
       tokenGateId: null,
+      unlockProtocolGateId: null,
       userId: memberUser.id
     });
   });
@@ -103,7 +105,8 @@ describe('hasAccessToSpace', () => {
       onboarded: expect.any(Boolean),
       spaceId: space.id,
       tokenGateId: null,
-      userId: guestUser.id
+      userId: guestUser.id,
+      unlockProtocolGateId: null
     });
   });
 
@@ -174,6 +177,7 @@ describe('hasAccessToSpace', () => {
       onboarded: true,
       spaceId: uuid(),
       tokenGateId: null,
+      unlockProtocolGateId: null,
       userId: uuid()
     };
     await expect(

@@ -330,6 +330,7 @@ model Space {
   userNotifications           UserNotificationMetadata[]
   blacklistedSpaceUsers       BlacklistedSpaceUser[]
   additionalBlockQuotas       AdditionalBlockQuota[]
+  unlockProtocolGate          UnlockProtocolGate[]
 
   @@index([createdBy])
 }
@@ -761,16 +762,18 @@ model FavoritePage {
 }
 
 model UserTokenGate {
-  id                     String     @id @default(uuid()) @db.Uuid
-  spaceId                String     @db.Uuid
-  userId                 String     @db.Uuid
+  id                     String              @id @default(uuid()) @db.Uuid
+  spaceId                String              @db.Uuid
+  userId                 String              @db.Uuid
   tokenGateConnectedDate DateTime?
   jwt                    String?
-  tokenGateId            String?    @db.Uuid
-  tokenGate              TokenGate? @relation(fields: [tokenGateId], references: [id], onDelete: SetNull)
-  space                  Space      @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  user                   User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  grantedRoles           String[]   @default([])
+  tokenGateId            String?             @db.Uuid
+  tokenGate              TokenGate?          @relation(fields: [tokenGateId], references: [id], onDelete: SetNull)
+  space                  Space               @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  user                   User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  grantedRoles           String[]            @default([])
+  unlockProtocolGate     UnlockProtocolGate? @relation(fields: [unlockProtocolGateId], references: [id])
+  unlockProtocolGateId   String?             @db.Uuid
 
   @@unique([tokenGateId, userId, spaceId], name: "tokenGateUserSpace")
   @@index([spaceId])
@@ -779,19 +782,21 @@ model UserTokenGate {
 }
 
 model SpaceRole {
-  spaceId         String            @db.Uuid
-  userId          String            @db.Uuid
-  id              String            @id @default(uuid()) @db.Uuid
-  isAdmin         Boolean           @default(false)
-  isGuest         Boolean           @default(false)
-  createdAt       DateTime          @default(now())
-  space           Space             @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  spaceRoleToRole SpaceRoleToRole[]
-  tokenGate       TokenGate?        @relation(fields: [tokenGateId], references: [id])
-  tokenGateId     String?           @db.Uuid
-  joinedViaLink   Boolean?
-  onboarded       Boolean           @default(false)
+  spaceId              String              @db.Uuid
+  userId               String              @db.Uuid
+  id                   String              @id @default(uuid()) @db.Uuid
+  isAdmin              Boolean             @default(false)
+  isGuest              Boolean             @default(false)
+  createdAt            DateTime            @default(now())
+  space                Space               @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  user                 User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  spaceRoleToRole      SpaceRoleToRole[]
+  tokenGate            TokenGate?          @relation(fields: [tokenGateId], references: [id])
+  tokenGateId          String?             @db.Uuid
+  joinedViaLink        Boolean?
+  onboarded            Boolean             @default(false)
+  UnlockProtocolGate   UnlockProtocolGate? @relation(fields: [unlockProtocolGateId], references: [id])
+  unlockProtocolGateId String?             @db.Uuid
 
   @@unique([spaceId, userId], name: "spaceUser")
   @@index([spaceId])
@@ -921,9 +926,24 @@ model TokenGate {
   createdAt        DateTime          @default(now())
   createdBy        String            @db.Uuid
   spaceId          String            @db.Uuid
-  conditions       Json?
-  lock             Json?
+  conditions       Json
   resourceId       Json
+  userRole         String?
+  accessTypes      String[]          @default([])
+  space            Space             @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  tokenGateToRoles TokenGateToRole[]
+  userTokenGates   UserTokenGate[]
+  spaceRoles       SpaceRole[]
+
+  @@index([spaceId])
+}
+
+model UnlockProtocolGate {
+  id               String            @id @default(uuid()) @db.Uuid
+  createdAt        DateTime          @default(now())
+  createdBy        String            @db.Uuid
+  spaceId          String            @db.Uuid
+  lock             Json
   userRole         String?
   accessTypes      String[]          @default([])
   space            Space             @relation(fields: [spaceId], references: [id], onDelete: Cascade)
@@ -994,12 +1014,14 @@ model Role {
 }
 
 model TokenGateToRole {
-  id          String    @id @default(uuid()) @db.Uuid
-  createdAt   DateTime  @default(now())
-  tokenGateId String    @db.Uuid
-  roleId      String    @db.Uuid
-  role        Role      @relation(fields: [roleId], references: [id], onDelete: Cascade)
-  tokenGate   TokenGate @relation(fields: [tokenGateId], references: [id], onDelete: Cascade)
+  id                   String              @id @default(uuid()) @db.Uuid
+  createdAt            DateTime            @default(now())
+  tokenGateId          String              @db.Uuid
+  roleId               String              @db.Uuid
+  role                 Role                @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  tokenGate            TokenGate           @relation(fields: [tokenGateId], references: [id], onDelete: Cascade)
+  UnlockProtocolGate   UnlockProtocolGate? @relation(fields: [unlockProtocolGateId], references: [id])
+  unlockProtocolGateId String?             @db.Uuid
 
   @@unique([tokenGateId, roleId])
   @@index([tokenGateId])
