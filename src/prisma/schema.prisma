@@ -939,18 +939,19 @@ model TokenGate {
 }
 
 model UnlockProtocolGate {
-  id               String            @id @default(uuid()) @db.Uuid
-  createdAt        DateTime          @default(now())
-  createdBy        String            @db.Uuid
-  spaceId          String            @db.Uuid
-  contract         String
-  chainId          Int
-  userRole         String?
-  accessTypes      String[]          @default([])
-  space            Space             @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  tokenGateToRoles TokenGateToRole[]
-  userTokenGates   UserTokenGate[]
-  spaceRoles       SpaceRole[]
+  id                         String                     @id @default(uuid()) @db.Uuid
+  createdAt                  DateTime                   @default(now())
+  createdBy                  String                     @db.Uuid
+  spaceId                    String                     @db.Uuid
+  contract                   String
+  chainId                    Int
+  userRole                   String?
+  accessTypes                String[]                   @default([])
+  space                      Space                      @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  userTokenGates             UserTokenGate[]
+  spaceRoles                 SpaceRole[]
+  unlockProtocolGateToRoleId String
+  unlockProtocolGateToRole   UnlockProtocolGateToRole[]
 
   @@index([spaceId])
 }
@@ -1009,23 +1010,35 @@ model Role {
   memberPropertyPermissions   MemberPropertyPermission[]
   postCategoryPermissions     PostCategoryPermission[]
   proposalCategoryPermissions ProposalCategoryPermission[]
+  UnlockProtocolGateToRole    UnlockProtocolGateToRole[]
 
   @@unique([spaceId, name])
   @@index([spaceId])
 }
 
 model TokenGateToRole {
-  id                   String              @id @default(uuid()) @db.Uuid
-  createdAt            DateTime            @default(now())
-  tokenGateId          String              @db.Uuid
-  roleId               String              @db.Uuid
-  role                 Role                @relation(fields: [roleId], references: [id], onDelete: Cascade)
-  tokenGate            TokenGate           @relation(fields: [tokenGateId], references: [id], onDelete: Cascade)
-  UnlockProtocolGate   UnlockProtocolGate? @relation(fields: [unlockProtocolGateId], references: [id])
-  unlockProtocolGateId String?             @db.Uuid
+  id          String    @id @default(uuid()) @db.Uuid
+  createdAt   DateTime  @default(now())
+  tokenGateId String    @db.Uuid
+  roleId      String    @db.Uuid
+  role        Role      @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  tokenGate   TokenGate @relation(fields: [tokenGateId], references: [id], onDelete: Cascade)
 
   @@unique([tokenGateId, roleId])
   @@index([tokenGateId])
+  @@index([roleId])
+}
+
+model UnlockProtocolGateToRole {
+  id                   String             @id @default(uuid()) @db.Uuid
+  createdAt            DateTime           @default(now())
+  roleId               String             @db.Uuid
+  role                 Role               @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  unlockProtocolGateId String             @db.Uuid
+  UnlockProtocolGate   UnlockProtocolGate @relation(fields: [unlockProtocolGateId], references: [id], onDelete: Cascade)
+
+  @@unique([unlockProtocolGateId, roleId])
+  @@index([unlockProtocolGateId])
   @@index([roleId])
 }
 
