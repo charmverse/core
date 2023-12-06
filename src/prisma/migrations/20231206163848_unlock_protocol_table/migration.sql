@@ -13,7 +13,8 @@ CREATE TABLE "UnlockProtocolGate" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "createdBy" UUID NOT NULL,
     "spaceId" UUID NOT NULL,
-    "lock" JSONB NOT NULL,
+    "contract" TEXT NOT NULL,
+    "chainId" INTEGER NOT NULL,
     "userRole" TEXT,
     "accessTypes" TEXT[] DEFAULT ARRAY[]::TEXT[],
 

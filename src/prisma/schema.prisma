@@ -943,7 +943,8 @@ model UnlockProtocolGate {
   createdAt        DateTime          @default(now())
   createdBy        String            @db.Uuid
   spaceId          String            @db.Uuid
-  lock             Json
+  contract         String
+  chainId          Int
   userRole         String?
   accessTypes      String[]          @default([])
   space            Space             @relation(fields: [spaceId], references: [id], onDelete: Cascade)
