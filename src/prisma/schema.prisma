@@ -1304,8 +1304,6 @@ model ProposalReviewer {
   evaluationId String?             @db.Uuid
   evaluation   ProposalEvaluation? @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, proposalId], name: "userId_proposalId")
-  @@unique([roleId, proposalId], name: "roleId_proposalId")
   @@index([proposalId])
   @@index([roleId])
   @@index([userId])
