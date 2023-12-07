@@ -102,7 +102,8 @@ describe('generateProposal', () => {
             proposalId: generatedProposal.id,
             roleId: role.id,
             userId: null,
-            evaluationId: null
+            evaluationId: null,
+            systemRole: null
           }
         ]
       })

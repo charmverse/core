@@ -51,7 +51,7 @@ const fullPermissions = new AvailableProposalPermissions().full;
 describe('policyArchivedViewOnly', () => {
   it('should perform a no-op if proposal is not archived', async () => {
     const permissions = await policyArchivedViewOnly({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: false,
       resource: { ...proposal, archived: false },
       userId: proposalAuthor.id
@@ -75,7 +75,7 @@ describe('policyArchivedViewOnly', () => {
 
   it('should allow authors to view, make public, delete, archive and unarchive', async () => {
     const permissions = await policyArchivedViewOnly({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: false,
       resource: proposal,
       userId: proposalAuthor.id
@@ -99,7 +99,7 @@ describe('policyArchivedViewOnly', () => {
 
   it('should preserve space-wide delete and archive permissions when space wide proposal deletion is allowed', async () => {
     const permissions = await policyArchivedViewOnly({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: false,
       resource: proposal,
       userId: spaceMember.id,
@@ -125,7 +125,7 @@ describe('policyArchivedViewOnly', () => {
 
   it('should allow admins to view, make public and delete', async () => {
     const permissions = await policyArchivedViewOnly({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: true,
       resource: proposal,
       userId: adminUser.id
@@ -152,7 +152,7 @@ describe('policyArchivedViewOnly', () => {
 
     for (const user of users) {
       const permissions = await policyArchivedViewOnly({
-        flags: fullPermissions,
+        flags: { ...fullPermissions, move: false },
         isAdmin: false,
         resource: proposal,
         userId: user.id

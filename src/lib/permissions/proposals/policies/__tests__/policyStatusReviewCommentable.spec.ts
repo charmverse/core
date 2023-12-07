@@ -56,7 +56,7 @@ const fullPermissions = new AvailableProposalPermissions().full;
 describe('policyStatusReviewCommentable', () => {
   it('should perform a no-op if the status is not review', async () => {
     const permissions = await policyStatusReviewCommentable({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: false,
       resource: { ...proposal, status: 'draft' },
       userId: proposalAuthor.id
@@ -79,7 +79,7 @@ describe('policyStatusReviewCommentable', () => {
   });
   it('should allow the author to view, comment, delete, make public, archive and unarchive', async () => {
     const permissions = await policyStatusReviewCommentable({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: false,
       resource: proposal,
       userId: proposalAuthor.id
@@ -117,7 +117,7 @@ describe('policyStatusReviewCommentable', () => {
     });
 
     const permissions = await policyStatusReviewCommentable({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: false,
       resource: proposalWithSameAuthorReviewer,
       userId: proposalAuthor.id
@@ -141,7 +141,7 @@ describe('policyStatusReviewCommentable', () => {
 
   it('should preserve space-wide delete and archive permissions when space wide proposal deletion is allowed', async () => {
     const permissions = await policyStatusReviewCommentable({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: false,
       resource: proposal,
       userId: spaceMember.id,
@@ -167,7 +167,7 @@ describe('policyStatusReviewCommentable', () => {
 
   it('should allow the admin to view, comment, edit, delete, review, make public, archive and unarchive', async () => {
     const permissions = await policyStatusReviewCommentable({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: true,
       resource: proposal,
       userId: adminUser.id
@@ -191,7 +191,7 @@ describe('policyStatusReviewCommentable', () => {
 
   it('should allow reviewer to view, comment and review', async () => {
     const permissions = await policyStatusReviewCommentable({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: false,
       resource: proposal,
       userId: proposalReviewer.id
@@ -215,7 +215,7 @@ describe('policyStatusReviewCommentable', () => {
 
   it('should allow space members to view and comment', async () => {
     const permissions = await policyStatusReviewCommentable({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: false,
       resource: proposal,
       userId: spaceMember.id

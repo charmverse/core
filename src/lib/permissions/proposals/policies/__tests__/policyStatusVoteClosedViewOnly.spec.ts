@@ -51,7 +51,7 @@ const fullPermissions = new AvailableProposalPermissions().full;
 describe('policyStatusVoteClosedViewOnly', () => {
   it('should perform a no-op if the status is not vote_closed', async () => {
     const permissions = await policyStatusVoteClosedViewOnly({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: false,
       resource: { ...proposal, status: 'discussion' },
       userId: proposalAuthor.id
@@ -75,7 +75,7 @@ describe('policyStatusVoteClosedViewOnly', () => {
 
   it('should allow authors to view, comment, make public, archive and unarchive', async () => {
     const permissions = await policyStatusVoteClosedViewOnly({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: false,
       resource: proposal,
       userId: proposalAuthor.id
@@ -99,7 +99,7 @@ describe('policyStatusVoteClosedViewOnly', () => {
 
   it('should preserve space-wide delete and archive permissions when space wide proposal deletion is allowed', async () => {
     const permissions = await policyStatusVoteClosedViewOnly({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: false,
       resource: proposal,
       userId: spaceMember.id,
@@ -125,7 +125,7 @@ describe('policyStatusVoteClosedViewOnly', () => {
 
   it('should allow admins to view, comment, make public, delete, archive and unarchive', async () => {
     const permissions = await policyStatusVoteClosedViewOnly({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: true,
       resource: proposal,
       userId: adminUser.id
@@ -152,7 +152,7 @@ describe('policyStatusVoteClosedViewOnly', () => {
 
     for (const user of users) {
       const permissions = await policyStatusVoteClosedViewOnly({
-        flags: fullPermissions,
+        flags: { ...fullPermissions, move: false },
         isAdmin: false,
         resource: proposal,
         userId: user.id
