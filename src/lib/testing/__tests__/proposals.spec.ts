@@ -4,6 +4,7 @@ import type {
   ProposalEvaluation,
   ProposalEvaluationPermission,
   ProposalReviewer,
+  ProposalRubricCriteria,
   ProposalStatus,
   Role,
   Space,
@@ -116,7 +117,7 @@ describe('generateProposal', () => {
     expect(generatedProposal.page).toMatchObject(proposalPageFromDb);
   });
 
-  it('should create the evaluation steps correctly along with attached permissions', async () => {
+  it('should create the evaluation steps correctly along with attached permissions and rubric criteria', async () => {
     const proposalPageInput: Pick<GenerateProposalInput, 'deletedAt' | 'title' | 'content'> = {
       deletedAt: new Date(),
       content: { type: 'doc', content: [] },
@@ -283,12 +284,6 @@ describe('generateProposal', () => {
     const createdPassFailStep = createdEvaluationSteps.find((step) => step.type === 'pass_fail') as ProposalEvaluation;
     const createdVoteStep = createdEvaluationSteps.find((step) => step.type === 'vote') as ProposalEvaluation;
 
-    const createdRubricCritera = await prisma.proposalRubricCriteria.findMany({
-      where: {
-        proposalId: proposal.id
-      }
-    });
-
     const createdPermissions = await prisma.proposalEvaluationPermission.findMany({
       where: {
         evaluationId: {
@@ -344,6 +339,27 @@ describe('generateProposal', () => {
 
     expect(createdPermissions).toMatchObject(
       expect.arrayContaining<ProposalEvaluationPermission>(expectedPermissionsResult)
+    );
+
+    const createdRubricCritera = await prisma.proposalRubricCriteria.findMany({
+      where: {
+        proposalId: proposal.id
+      }
+    });
+
+    expect(createdRubricCritera).toMatchObject(
+      expect.arrayContaining<ProposalRubricCriteria>([
+        {
+          description: rubricStep.rubricCriteria![0].description as string,
+          evaluationId: createdRubricStep.id,
+          id: expect.any(String),
+          index: 0,
+          parameters: expect.any(Object),
+          proposalId: proposal.id,
+          title: rubricStep.rubricCriteria![0].title as string,
+          type: 'range'
+        }
+      ])
     );
   });
 

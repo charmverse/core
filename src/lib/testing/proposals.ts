@@ -62,7 +62,7 @@ export type ProposalEvaluationTestInput = Partial<
 > & {
   evaluationType: ProposalEvaluationType;
   rubricCriteria?: Partial<
-    Pick<Prisma.ProposalRubricCriteriaCreateManyInput, 'title' | 'description' | 'parameters' | 'type'>
+    Pick<Prisma.ProposalRubricCriteriaCreateManyInput, 'title' | 'description' | 'parameters'>
   >[];
   reviewers: ({ group: Extract<ProposalSystemRole, 'space_member'> } | TargetPermissionGroup<'role' | 'user'>)[];
   permissions: {
@@ -184,6 +184,21 @@ export async function generateProposal({
       index
     }));
 
+    const evaluationRubricsToCreate = evaluationInputsWithIdAndIndex.flatMap((input, index) =>
+      (input.rubricCriteria ?? []).map(
+        (criteria) =>
+          ({
+            parameters: criteria.parameters ?? {},
+            proposalId,
+            title: criteria.title,
+            type: 'range',
+            description: criteria.description,
+            evaluationId: input.id,
+            index
+          }) as Prisma.ProposalRubricCriteriaCreateManyInput
+      )
+    );
+
     const evaluationPermissionsToCreate: Prisma.ProposalEvaluationPermissionCreateManyInput[] =
       evaluationInputsWithIdAndIndex.flatMap((input) =>
         input.permissions.map(
@@ -239,6 +254,9 @@ export async function generateProposal({
       }),
       prisma.proposalReviewer.createMany({
         data: evaluationReviewersToCreate
+      }),
+      prisma.proposalRubricCriteria.createMany({
+        data: evaluationRubricsToCreate
       })
     ]);
   }
