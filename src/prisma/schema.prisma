@@ -65,6 +65,7 @@ enum NotificationType {
 enum BountyStatus {
   suggestion
   open
+  inProgress
   complete
   paid
 }
