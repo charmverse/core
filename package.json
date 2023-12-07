@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.12.1-rc-feat-support-un.2",
+  "version": "0.12.1-rc-feat-support-un.3",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
