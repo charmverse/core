@@ -793,10 +793,10 @@ model SpaceRole {
   spaceRoleToRole      SpaceRoleToRole[]
   tokenGate            TokenGate?          @relation(fields: [tokenGateId], references: [id])
   tokenGateId          String?             @db.Uuid
+  unlockProtocolGate   UnlockProtocolGate? @relation(fields: [unlockProtocolGateId], references: [id])
+  unlockProtocolGateId String?             @db.Uuid
   joinedViaLink        Boolean?
   onboarded            Boolean             @default(false)
-  UnlockProtocolGate   UnlockProtocolGate? @relation(fields: [unlockProtocolGateId], references: [id])
-  unlockProtocolGateId String?             @db.Uuid
 
   @@unique([spaceId, userId], name: "spaceUser")
   @@index([spaceId])
@@ -939,19 +939,18 @@ model TokenGate {
 }
 
 model UnlockProtocolGate {
-  id                         String                     @id @default(uuid()) @db.Uuid
-  createdAt                  DateTime                   @default(now())
-  createdBy                  String                     @db.Uuid
-  spaceId                    String                     @db.Uuid
-  contract                   String
-  chainId                    Int
-  userRole                   String?
-  accessTypes                String[]                   @default([])
-  space                      Space                      @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  userTokenGates             UserTokenGate[]
-  spaceRoles                 SpaceRole[]
-  unlockProtocolGateToRoleId String
-  unlockProtocolGateToRole   UnlockProtocolGateToRole[]
+  id                        String                     @id @default(uuid()) @db.Uuid
+  createdAt                 DateTime                   @default(now())
+  createdBy                 String                     @db.Uuid
+  spaceId                   String                     @db.Uuid
+  contract                  String
+  chainId                   Int
+  userRole                  String?
+  accessTypes               String[]                   @default([])
+  space                     Space                      @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  unlockProtocolGateToRoles UnlockProtocolGateToRole[]
+  userTokenGates            UserTokenGate[]
+  spaceRoles                SpaceRole[]
 
   @@index([spaceId])
 }
@@ -1005,12 +1004,12 @@ model Role {
   spacePermissions            SpacePermission[]
   spaceRolesToRole            SpaceRoleToRole[]
   tokenGateToRoles            TokenGateToRole[]
+  unlockProtocolGateToRoles   UnlockProtocolGateToRole[]
   proposalReviewer            ProposalReviewer[]
   inviteLinkToRoles           InviteLinkToRole[]
   memberPropertyPermissions   MemberPropertyPermission[]
   postCategoryPermissions     PostCategoryPermission[]
   proposalCategoryPermissions ProposalCategoryPermission[]
-  UnlockProtocolGateToRole    UnlockProtocolGateToRole[]
 
   @@unique([spaceId, name])
   @@index([spaceId])
@@ -1035,7 +1034,7 @@ model UnlockProtocolGateToRole {
   roleId               String             @db.Uuid
   role                 Role               @relation(fields: [roleId], references: [id], onDelete: Cascade)
   unlockProtocolGateId String             @db.Uuid
-  UnlockProtocolGate   UnlockProtocolGate @relation(fields: [unlockProtocolGateId], references: [id], onDelete: Cascade)
+  unlockProtocolGate   UnlockProtocolGate @relation(fields: [unlockProtocolGateId], references: [id], onDelete: Cascade)
 
   @@unique([unlockProtocolGateId, roleId])
   @@index([unlockProtocolGateId])

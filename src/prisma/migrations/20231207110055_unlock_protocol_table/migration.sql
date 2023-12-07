@@ -14,7 +14,6 @@ CREATE TABLE "UnlockProtocolGate" (
     "chainId" INTEGER NOT NULL,
     "userRole" TEXT,
     "accessTypes" TEXT[] DEFAULT ARRAY[]::TEXT[],
-    "unlockProtocolGateToRoleId" TEXT NOT NULL,
 
     CONSTRAINT "UnlockProtocolGate_pkey" PRIMARY KEY ("id")
 );
