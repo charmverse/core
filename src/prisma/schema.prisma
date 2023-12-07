@@ -1299,6 +1299,8 @@ model ProposalReviewer {
   proposal     Proposal            @relation(fields: [proposalId], references: [id], onDelete: Cascade)
   roleId       String?             @db.Uuid
   userId       String?             @db.Uuid
+  // This should only use the all_members value of system role
+  systemRole    ProposalSystemRole?
   role         Role?               @relation(fields: [roleId], references: [id], onDelete: Cascade)
   reviewer     User?               @relation(fields: [userId], references: [id], onDelete: Cascade)
   evaluationId String?             @db.Uuid
