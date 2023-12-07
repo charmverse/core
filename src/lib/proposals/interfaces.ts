@@ -1,4 +1,13 @@
-import type { Bounty, Page, PageComment, Proposal, ProposalAuthor, ProposalReviewer } from '@prisma/client';
+import type {
+  ProposalEvaluation,
+  ProposalWorkflow,
+  ProposalEvaluationPermission,
+  Page,
+  PageComment,
+  Proposal,
+  ProposalAuthor,
+  ProposalReviewer
+} from '@prisma/client';
 
 import type { AssignablePermissionGroups } from '../permissions/core/interfaces';
 
@@ -41,4 +50,18 @@ export type ListProposalsRequest = {
   spaceId: string;
   categoryIds?: ProposalCategoryQuery;
   onlyAssigned?: boolean;
+};
+
+// Workflows - the evaluations and permissions are stored in Json for ease of use
+
+type PermissionJson = Pick<ProposalEvaluationPermission, 'operation'> &
+  Partial<Pick<ProposalEvaluationPermission, 'roleId' | 'userId' | 'systemRole'>>;
+
+// we keep the id for JSON because it makes easy to manage sorting the list of evaluations in React
+export type WorkflowEvaluationJson = Pick<ProposalEvaluation, 'id' | 'title' | 'type'> & {
+  permissions: PermissionJson[];
+};
+
+export type ProposalWorkflowTyped = Omit<ProposalWorkflow, 'evaluations'> & {
+  evaluations: WorkflowEvaluationJson[];
 };

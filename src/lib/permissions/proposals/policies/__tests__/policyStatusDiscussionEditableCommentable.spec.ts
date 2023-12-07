@@ -51,7 +51,7 @@ const fullPermissions = new AvailableProposalPermissions().full;
 describe('policyStatusDiscussionEditableCommentable', () => {
   it('should perform a no-op if the status is not discussion', async () => {
     const permissions = await policyStatusDiscussionEditableCommentable({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: false,
       resource: { ...proposal, status: 'draft' },
       userId: proposalAuthor.id
@@ -68,13 +68,14 @@ describe('policyStatusDiscussionEditableCommentable', () => {
       make_public: true,
       archive: true,
       unarchive: true,
-      evaluate: true
+      evaluate: true,
+      move: false
     });
   });
 
   it('should allow the author to view, edit, comment, delete, make public, archive and unarchive', async () => {
     const permissions = await policyStatusDiscussionEditableCommentable({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: false,
       resource: proposal,
       userId: proposalAuthor.id
@@ -91,13 +92,14 @@ describe('policyStatusDiscussionEditableCommentable', () => {
       vote: false,
       archive: true,
       unarchive: true,
-      evaluate: false
+      evaluate: false,
+      move: false
     });
   });
 
   it('should preserve space-wide delete and archive permissions when space wide proposal deletion is allowed', async () => {
     const permissions = await policyStatusDiscussionEditableCommentable({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: false,
       resource: proposal,
       userId: spaceMember.id,
@@ -116,13 +118,14 @@ describe('policyStatusDiscussionEditableCommentable', () => {
       review: false,
       vote: false,
       make_public: false,
-      evaluate: false
+      evaluate: false,
+      move: false
     });
   });
 
   it('should return same level of permissions as the author for an admin', async () => {
     const permissions = await policyStatusDiscussionEditableCommentable({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: true,
       resource: proposal,
       userId: adminUser.id
@@ -139,13 +142,14 @@ describe('policyStatusDiscussionEditableCommentable', () => {
       vote: false,
       archive: true,
       unarchive: true,
-      evaluate: false
+      evaluate: false,
+      move: false
     });
   });
 
   it('should only provide view and comment permissions for the reviewer', async () => {
     const permissions = await policyStatusDiscussionEditableCommentable({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: false,
       resource: proposal,
       userId: proposalReviewer.id
@@ -162,13 +166,14 @@ describe('policyStatusDiscussionEditableCommentable', () => {
       vote: false,
       archive: false,
       unarchive: false,
-      evaluate: false
+      evaluate: false,
+      move: false
     });
   });
 
   it('should return only view and comment permissions for the space members', async () => {
     const permissions = await policyStatusDiscussionEditableCommentable({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: false,
       resource: proposal,
       userId: spaceMember.id
@@ -185,7 +190,8 @@ describe('policyStatusDiscussionEditableCommentable', () => {
       vote: false,
       archive: false,
       unarchive: false,
-      evaluate: false
+      evaluate: false,
+      move: false
     });
   });
 });

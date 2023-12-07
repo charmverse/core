@@ -56,7 +56,7 @@ const fullPermissions = new AvailableProposalPermissions().full;
 describe('policyStatusReviewedOnlyCreateVote', () => {
   it('should perform a no-op if the status is not reviewed', async () => {
     const permissions = await policyStatusReviewedOnlyCreateVote({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: false,
       resource: { ...proposal, status: 'draft' },
       userId: proposalAuthor.id
@@ -73,12 +73,13 @@ describe('policyStatusReviewedOnlyCreateVote', () => {
       make_public: true,
       archive: true,
       unarchive: true,
-      evaluate: true
+      evaluate: true,
+      move: false
     });
   });
   it('should allow the author to view, create_vote, delete_vote, make public, archive and unarchive', async () => {
     const permissions = await policyStatusReviewedOnlyCreateVote({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: false,
       resource: proposal,
       userId: proposalAuthor.id
@@ -95,13 +96,14 @@ describe('policyStatusReviewedOnlyCreateVote', () => {
       vote: false,
       archive: true,
       unarchive: true,
-      evaluate: false
+      evaluate: false,
+      move: false
     });
   });
 
   it('should preserve space-wide delete and archive permissions when space wide proposal deletion is allowed', async () => {
     const permissions = await policyStatusReviewedOnlyCreateVote({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: false,
       resource: proposal,
       userId: spaceMember.id,
@@ -120,13 +122,14 @@ describe('policyStatusReviewedOnlyCreateVote', () => {
       review: false,
       vote: false,
       make_public: false,
-      evaluate: false
+      evaluate: false,
+      move: false
     });
   });
 
   it('should allow the admin to view, delete, edit, create_vote, make public, archive and unarchive', async () => {
     const permissions = await policyStatusReviewedOnlyCreateVote({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: true,
       resource: proposal,
       userId: adminUser.id
@@ -143,13 +146,14 @@ describe('policyStatusReviewedOnlyCreateVote', () => {
       vote: false,
       archive: true,
       unarchive: true,
-      evaluate: false
+      evaluate: false,
+      move: false
     });
   });
 
   it('should allow reviewer to view and create_vote', async () => {
     const permissions = await policyStatusReviewedOnlyCreateVote({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: false,
       resource: proposal,
       userId: proposalReviewer.id
@@ -166,13 +170,14 @@ describe('policyStatusReviewedOnlyCreateVote', () => {
       vote: false,
       archive: false,
       unarchive: false,
-      evaluate: false
+      evaluate: false,
+      move: false
     });
   });
 
   it('should allow space members to view', async () => {
     const permissions = await policyStatusReviewedOnlyCreateVote({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: false,
       resource: proposal,
       userId: spaceMember.id
@@ -189,7 +194,8 @@ describe('policyStatusReviewedOnlyCreateVote', () => {
       vote: false,
       archive: false,
       unarchive: false,
-      evaluate: false
+      evaluate: false,
+      move: false
     });
   });
 });

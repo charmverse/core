@@ -51,7 +51,7 @@ const fullPermissions = new AvailableProposalPermissions().full;
 describe('policyStatusVoteActiveOnlyVotable', () => {
   it('should perform a no-op if the status is not vote_active', async () => {
     const permissions = await policyStatusVoteActiveOnlyVotable({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: false,
       resource: { ...proposal, status: 'discussion' },
       userId: proposalAuthor.id
@@ -68,12 +68,13 @@ describe('policyStatusVoteActiveOnlyVotable', () => {
       make_public: true,
       archive: true,
       unarchive: true,
-      evaluate: true
+      evaluate: true,
+      move: false
     });
   });
   it('should allow author to view, comment, update vote, vote make the proposal public', async () => {
     const permissions = await policyStatusVoteActiveOnlyVotable({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: false,
       resource: proposal,
       userId: proposalAuthor.id
@@ -90,13 +91,14 @@ describe('policyStatusVoteActiveOnlyVotable', () => {
       review: false,
       archive: false,
       unarchive: false,
-      evaluate: false
+      evaluate: false,
+      move: false
     });
   });
 
   it('should preserve space-wide delete permissions when space wide proposal deletion is allowed', async () => {
     const permissions = await policyStatusVoteActiveOnlyVotable({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: false,
       resource: proposal,
       userId: spaceMember.id,
@@ -115,13 +117,14 @@ describe('policyStatusVoteActiveOnlyVotable', () => {
       review: false,
       vote: false,
       make_public: false,
-      evaluate: false
+      evaluate: false,
+      move: false
     });
   });
 
   it('should allow admin users to view, vote, update vote, make the proposal public and delete it', async () => {
     const permissions = await policyStatusVoteActiveOnlyVotable({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: true,
       resource: proposal,
       userId: adminUser.id
@@ -138,7 +141,8 @@ describe('policyStatusVoteActiveOnlyVotable', () => {
       review: false,
       archive: false,
       unarchive: false,
-      evaluate: false
+      evaluate: false,
+      move: false
     });
   });
 
@@ -147,7 +151,7 @@ describe('policyStatusVoteActiveOnlyVotable', () => {
 
     for (const user of users) {
       const permissions = await policyStatusVoteActiveOnlyVotable({
-        flags: fullPermissions,
+        flags: { ...fullPermissions, move: false },
         isAdmin: false,
         resource: proposal,
         userId: user.id
@@ -164,7 +168,8 @@ describe('policyStatusVoteActiveOnlyVotable', () => {
         review: false,
         archive: false,
         unarchive: false,
-        evaluate: false
+        evaluate: false,
+        move: false
       });
     }
   });
