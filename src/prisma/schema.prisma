@@ -586,72 +586,72 @@ model Vote {
 }
 
 model User {
-  id                           String                          @id @default(uuid()) @db.Uuid
-  createdAt                    DateTime                        @default(now())
-  updatedAt                    DateTime                        @default(now())
-  deletedAt                    DateTime?
-  avatar                       String?
-  avatarContract               String?
-  avatarTokenId                String?
-  avatarChain                  Int?
-  username                     String
-  isBot                        Boolean?                        @default(false)
-  path                         String                          @unique
-  identityType                 IdentityType?
-  email                        String?
-  emailNotifications           Boolean?                        @default(true)
-  emailNewsletter              Boolean?                        @default(false)
-  xpsEngineId                  String?                         @unique
-  publishToLensDefault         Boolean?                        @default(false)
-  applications                 Application[]
-  blocks                       Block[]
-  bounties                     Bounty[]
-  bountyPermissions            BountyPermission[]
-  comments                     Comment[]
-  discordUser                  DiscordUser?
-  favorites                    FavoritePage[]
-  inviteLinks                  InviteLink[]
-  posts                        Post[]
-  pages                        Page[]
-  permissions                  PagePermission[]
-  poaps                        Poap[]
-  spacesCreated                Space[]
-  spacePermissions             SpacePermission[]
-  spaceRoles                   SpaceRole[]
-  spacesOrder                  String[]
-  telegramUser                 TelegramUser?
-  threads                      Thread[]
-  profile                      UserDetails?
-  gnosisSafes                  UserGnosisSafe[]
-  userNotifications            UserNotification[]
-  notificationState            UserNotificationState?
-  userVotes                    UserVote[]
-  initiatedVotes               Vote[]
-  profileItems                 ProfileItem[]
-  proposalsAuthored            ProposalAuthor[]
-  proposalsReviewed            ProposalReviewer[]
-  reviewedProposals            Proposal[]
-  workspaceEvents              WorkspaceEvent[]
-  wallets                      UserWallet[]
-  memberPropertyValues         MemberPropertyValue[]
-  spaceNotificationSettings    UserSpaceNotificationSettings[]
-  userTokenGates               UserTokenGate[]
-  unstoppableDomains           UnstoppableDomain[]
-  postComments                 PostComment[]
-  googleAccounts               GoogleAccount[]
-  GoogleCredential             GoogleCredential[]
-  PageComment                  PageComment[]
-  verifiedEmails               VerifiedEmail[]
-  apiPageKeys                  ApiPageKey[]
-  spaceActions                 UserSpaceAction[]
-  proposalBlocks               ProposalBlock[]
-  rewardBlocks                 RewardBlock[]
-  authorNotifications          UserNotificationMetadata[]      @relation("author")
-  targetNotifications          UserNotificationMetadata[]      @relation("target")
-  ApplicationComment           ApplicationComment[]
-  blacklistedSpaceUsers        BlacklistedSpaceUser[]
-  blacklistedUser              BlacklistedUser[]
-  ProposalEvaluationPermission ProposalEvaluationPermission[]
+  id                            String                          @id @default(uuid()) @db.Uuid
+  createdAt                     DateTime                        @default(now())
+  updatedAt                     DateTime                        @default(now())
+  deletedAt                     DateTime?
+  avatar                        String?
+  avatarContract                String?
+  avatarTokenId                 String?
+  avatarChain                   Int?
+  username                      String
+  isBot                         Boolean?                        @default(false)
+  path                          String                          @unique
+  identityType                  IdentityType?
+  email                         String?
+  emailNotifications            Boolean?                        @default(true)
+  emailNewsletter               Boolean?                        @default(false)
+  xpsEngineId                   String?                         @unique
+  publishToLensDefault          Boolean?                        @default(false)
+  applications                  Application[]
+  blocks                        Block[]
+  bounties                      Bounty[]
+  bountyPermissions             BountyPermission[]
+  comments                      Comment[]
+  discordUser                   DiscordUser?
+  favorites                     FavoritePage[]
+  inviteLinks                   InviteLink[]
+  posts                         Post[]
+  pages                         Page[]
+  permissions                   PagePermission[]
+  poaps                         Poap[]
+  spacesCreated                 Space[]
+  spacePermissions              SpacePermission[]
+  spaceRoles                    SpaceRole[]
+  spacesOrder                   String[]
+  telegramUser                  TelegramUser?
+  threads                       Thread[]
+  profile                       UserDetails?
+  gnosisSafes                   UserGnosisSafe[]
+  userNotifications             UserNotification[]
+  notificationState             UserNotificationState?
+  userVotes                     UserVote[]
+  initiatedVotes                Vote[]
+  profileItems                  ProfileItem[]
+  proposalsAuthored             ProposalAuthor[]
+  proposalsReviewed             ProposalReviewer[]
+  reviewedProposals             Proposal[]
+  workspaceEvents               WorkspaceEvent[]
+  wallets                       UserWallet[]
+  memberPropertyValues          MemberPropertyValue[]
+  spaceNotificationSettings     UserSpaceNotificationSettings[]
+  userTokenGates                UserTokenGate[]
+  unstoppableDomains            UnstoppableDomain[]
+  postComments                  PostComment[]
+  googleAccounts                GoogleAccount[]
+  GoogleCredential              GoogleCredential[]
+  PageComment                   PageComment[]
+  verifiedEmails                VerifiedEmail[]
+  apiPageKeys                   ApiPageKey[]
+  spaceActions                  UserSpaceAction[]
+  proposalBlocks                ProposalBlock[]
+  rewardBlocks                  RewardBlock[]
+  authorNotifications           UserNotificationMetadata[]      @relation("author")
+  targetNotifications           UserNotificationMetadata[]      @relation("target")
+  ApplicationComment            ApplicationComment[]
+  blacklistedSpaceUsers         BlacklistedSpaceUser[]
+  blacklistedUser               BlacklistedUser[]
+  proposalEvaluationPermissions ProposalEvaluationPermission[]
 }
 
 model VerifiedEmail {
@@ -973,26 +973,26 @@ model UserGnosisSafe {
 }
 
 model Role {
-  id                           String                         @id @default(uuid()) @db.Uuid
-  createdAt                    DateTime                       @default(now())
-  createdBy                    String                         @db.Uuid
-  externalId                   String?
-  name                         String
-  spaceId                      String                         @db.Uuid
-  source                       RoleSource?
-  sourceId                     String?
-  space                        Space                          @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  bountyPermissions            BountyPermission[]
-  permissions                  PagePermission[]
-  spacePermissions             SpacePermission[]
-  spaceRolesToRole             SpaceRoleToRole[]
-  tokenGateToRoles             TokenGateToRole[]
-  proposalReviewer             ProposalReviewer[]
-  inviteLinkToRoles            InviteLinkToRole[]
-  memberPropertyPermissions    MemberPropertyPermission[]
-  postCategoryPermissions      PostCategoryPermission[]
-  proposalCategoryPermissions  ProposalCategoryPermission[]
-  ProposalEvaluationPermission ProposalEvaluationPermission[]
+  id                            String                         @id @default(uuid()) @db.Uuid
+  createdAt                     DateTime                       @default(now())
+  createdBy                     String                         @db.Uuid
+  externalId                    String?
+  name                          String
+  spaceId                       String                         @db.Uuid
+  source                        RoleSource?
+  sourceId                      String?
+  space                         Space                          @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  bountyPermissions             BountyPermission[]
+  permissions                   PagePermission[]
+  spacePermissions              SpacePermission[]
+  spaceRolesToRole              SpaceRoleToRole[]
+  tokenGateToRoles              TokenGateToRole[]
+  proposalReviewer              ProposalReviewer[]
+  inviteLinkToRoles             InviteLinkToRole[]
+  memberPropertyPermissions     MemberPropertyPermission[]
+  postCategoryPermissions       PostCategoryPermission[]
+  proposalCategoryPermissions   ProposalCategoryPermission[]
+  proposalEvaluationPermissions ProposalEvaluationPermission[]
 
   @@unique([spaceId, name])
   @@index([spaceId])
@@ -1300,7 +1300,7 @@ model ProposalReviewer {
   roleId       String?             @db.Uuid
   userId       String?             @db.Uuid
   // This should only use the all_members value of system role
-  systemRole    ProposalSystemRole?
+  systemRole   ProposalSystemRole?
   role         Role?               @relation(fields: [roleId], references: [id], onDelete: Cascade)
   reviewer     User?               @relation(fields: [userId], references: [id], onDelete: Cascade)
   evaluationId String?             @db.Uuid
