@@ -251,7 +251,8 @@ describe('generateProposal', () => {
           snapshotId: null,
           title: expect.any(String),
           type: 'rubric',
-          voteId: null
+          voteId: null,
+          decidedBy: null
         },
         {
           completedAt: passFailStep.completedAt as Date,
@@ -263,7 +264,8 @@ describe('generateProposal', () => {
           snapshotId: null,
           title: expect.any(String),
           type: 'pass_fail',
-          voteId: null
+          voteId: null,
+          decidedBy: null
         },
         {
           completedAt: null,
@@ -275,7 +277,8 @@ describe('generateProposal', () => {
           snapshotId: voteStep.snapshotId as string,
           title: expect.any(String),
           type: 'vote',
-          voteId: voteStep.voteId as string
+          voteId: voteStep.voteId as string,
+          decidedBy: null
         }
       ])
     );

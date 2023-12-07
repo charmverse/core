@@ -652,6 +652,7 @@ model User {
   blacklistedSpaceUsers         BlacklistedSpaceUser[]
   blacklistedUser               BlacklistedUser[]
   proposalEvaluationPermissions ProposalEvaluationPermission[]
+  decidedProposalEvaluations    ProposalEvaluation[]
 }
 
 model VerifiedEmail {
@@ -1222,6 +1223,8 @@ model ProposalEvaluation {
   completedAt        DateTime?
   snapshotId         String?
   snapshotExpiry     DateTime?
+  decidedBy          String?                             @db.Uuid
+  decider            User?                               @relation(fields: [decidedBy], references: [id], onDelete: SetNull)
   proposalId         String                              @db.Uuid
   proposal           Proposal                            @relation(fields: [proposalId], references: [id], onDelete: Cascade)
   voteId             String?                             @unique @db.Uuid

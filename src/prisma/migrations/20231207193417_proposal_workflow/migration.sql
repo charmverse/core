@@ -85,6 +85,7 @@ CREATE TABLE "ProposalEvaluation" (
     "completedAt" TIMESTAMP(3),
     "snapshotId" TEXT,
     "snapshotExpiry" TIMESTAMP(3),
+    "decidedBy" UUID,
     "proposalId" UUID NOT NULL,
     "voteId" UUID,
     "result" "ProposalEvaluationResult",
@@ -118,6 +119,9 @@ ALTER TABLE "ProposalEvaluationPermission" ADD CONSTRAINT "ProposalEvaluationPer
 
 -- AddForeignKey
 ALTER TABLE "ProposalEvaluationPermission" ADD CONSTRAINT "ProposalEvaluationPermission_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ProposalEvaluation" ADD CONSTRAINT "ProposalEvaluation_decidedBy_fkey" FOREIGN KEY ("decidedBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "ProposalEvaluation" ADD CONSTRAINT "ProposalEvaluation_proposalId_fkey" FOREIGN KEY ("proposalId") REFERENCES "Proposal"("id") ON DELETE CASCADE ON UPDATE CASCADE;
