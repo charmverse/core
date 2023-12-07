@@ -1,8 +1,4 @@
-import type {
-  ListProposalsRequest,
-  ProposalWithCommentsAndUsers,
-  ProposalWithUsers
-} from '../../../proposals/interfaces';
+import type { ListProposalsRequest, ProposalWithUsers } from '../../../proposals/interfaces';
 import type { PermissionCompute, PermissionResource, Resource, SpaceResourcesRequest } from '../../core/interfaces';
 import type {
   AssignedProposalCategoryPermission,
@@ -18,6 +14,8 @@ export type BaseProposalPermissionsClient = {
   computeProposalPermissions: (request: PermissionCompute) => Promise<ProposalPermissionFlags>;
   computeProposalCategoryPermissions: (request: PermissionCompute) => Promise<ProposalCategoryPermissionFlags>;
   computeProposalFlowPermissions: (request: PermissionCompute) => Promise<ProposalFlowPermissionFlags>;
+  // This will be the new method used for proposals with evaluation step
+  computeProposalWorkflowPermissions: (request: PermissionCompute) => Promise<ProposalPermissionFlags>;
   getAccessibleProposalCategories: (request: SpaceResourcesRequest) => Promise<ProposalCategoryWithPermissions[]>;
   getAccessibleProposals: (request: ListProposalsRequest) => Promise<ProposalWithUsers[]>;
   getAccessibleProposalIds: (request: ListProposalsRequest) => Promise<string[]>;

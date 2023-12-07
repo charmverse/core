@@ -27,6 +27,12 @@ ALTER TYPE "ProposalOperation" ADD VALUE 'move';
 -- AlterEnum
 ALTER TYPE "ProposalStatus" ADD VALUE 'published';
 
+-- DropIndex
+DROP INDEX "ProposalReviewer_roleId_proposalId_key";
+
+-- DropIndex
+DROP INDEX "ProposalReviewer_userId_proposalId_key";
+
 -- AlterTable
 ALTER TABLE "DraftProposalRubricCriteriaAnswer" ADD COLUMN     "evaluationId" UUID;
 
@@ -37,7 +43,8 @@ ALTER TABLE "Proposal" ADD COLUMN     "workflowId" UUID;
 ALTER TABLE "ProposalCategoryPermission" DROP COLUMN "proposalOperations";
 
 -- AlterTable
-ALTER TABLE "ProposalReviewer" ADD COLUMN     "evaluationId" UUID;
+ALTER TABLE "ProposalReviewer" ADD COLUMN     "evaluationId" UUID,
+ADD COLUMN     "systemRole" "ProposalSystemRole";
 
 -- AlterTable
 ALTER TABLE "ProposalRubricCriteria" ADD COLUMN     "evaluationId" UUID;
