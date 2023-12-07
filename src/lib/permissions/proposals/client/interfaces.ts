@@ -15,7 +15,7 @@ export type BaseProposalPermissionsClient = {
   computeProposalCategoryPermissions: (request: PermissionCompute) => Promise<ProposalCategoryPermissionFlags>;
   computeProposalFlowPermissions: (request: PermissionCompute) => Promise<ProposalFlowPermissionFlags>;
   // This will be the new method used for proposals with evaluation step
-  computeProposalWorkflowPermissions: (request: PermissionCompute) => Promise<ProposalPermissionFlags>;
+  computeProposalEvaluationPermissions: (request: PermissionCompute) => Promise<ProposalPermissionFlags>;
   getAccessibleProposalCategories: (request: SpaceResourcesRequest) => Promise<ProposalCategoryWithPermissions[]>;
   getAccessibleProposals: (request: ListProposalsRequest) => Promise<ProposalWithUsers[]>;
   getAccessibleProposalIds: (request: ListProposalsRequest) => Promise<string[]>;

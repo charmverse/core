@@ -52,7 +52,7 @@ export class ProposalPermissionsHttpClient
     return GET(`${this.prefix}/compute-proposal-permissions`, request);
   }
 
-  computeProposalWorkflowPermissions(request: PermissionCompute): Promise<ProposalPermissionFlags> {
+  computeProposalEvaluationPermissions(request: PermissionCompute): Promise<ProposalPermissionFlags> {
     return GET(`${this.prefix}/compute-proposal-workflow-permissions`, request);
   }
 
