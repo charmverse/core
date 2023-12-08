@@ -1,3 +1,6 @@
+-- CreateEnum
+CREATE TYPE "PrimaryMemberIdentity" AS ENUM ('google', 'wallet', 'discord', 'telegram');
+
 -- AlterEnum
 -- This migration adds more than one value to an enum.
 -- With PostgreSQL versions 11 and earlier, this is not possible
@@ -11,4 +14,4 @@ ALTER TYPE "MemberPropertyType" ADD VALUE 'telegram';
 ALTER TYPE "MemberPropertyType" ADD VALUE 'wallet';
 
 -- AlterTable
-ALTER TABLE "MemberProperty" ADD COLUMN     "primaryIdentity" BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE "Space" ADD COLUMN     "primaryMemberIdentity" "PrimaryMemberIdentity";

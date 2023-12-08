@@ -261,6 +261,13 @@ enum SubscriptionPeriod {
   annual
 }
 
+enum PrimaryMemberIdentity {
+  google
+  wallet
+  discord
+  telegram
+}
+
 model Space {
   id                          String                            @id @default(uuid()) @db.Uuid
   deletedAt                   DateTime?
@@ -287,6 +294,7 @@ model Space {
   publicBountyBoard           Boolean?                          @default(false)
   publicProposals             Boolean?                          @default(false)
   xpsEngineId                 String?                           @unique
+  primaryMemberIdentity       PrimaryMemberIdentity?
   author                      User                              @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   blocks                      Block[]
   bounties                    Bounty[]
@@ -1491,7 +1499,6 @@ model MemberProperty {
   permissions          MemberPropertyPermission[]
   enabledViews         VisibilityView[]           @default([gallery, table, profile])
   required             Boolean                    @default(false)
-  primaryIdentity      Boolean                    @default(false)
 
   @@index([spaceId])
 }
