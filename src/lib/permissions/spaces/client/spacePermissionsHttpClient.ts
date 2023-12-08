@@ -1,9 +1,8 @@
 import type { Space } from '@prisma/client';
 
-import type { BountyWithDetails } from '../../../bounties/interfaces';
 import { GET, POST } from '../../../http';
 import { AbstractPermissionsApiClient } from '../../clients/abstractApiClient.class';
-import type { PermissionCompute, SpaceResourcesRequest } from '../../core/interfaces';
+import type { PermissionCompute } from '../../core/interfaces';
 import type { PublicBountyToggle, SpaceDefaultPublicPageToggle, SpacePermissionFlags } from '../interfaces';
 
 import type { PremiumSpacePermissionsClient } from './interfaces';
@@ -15,10 +14,6 @@ export class SpacePermissionsHttpClient extends AbstractPermissionsApiClient imp
 
   computeSpacePermissions(request: PermissionCompute): Promise<SpacePermissionFlags> {
     return GET(`${this.prefix}/compute-space-permissions`, request);
-  }
-
-  listAvailableBounties(request: SpaceResourcesRequest): Promise<BountyWithDetails[]> {
-    return GET(`${this.prefix}/list-available-bounties`, request);
   }
 
   toggleSpaceDefaultPublicPage(request: SpaceDefaultPublicPageToggle): Promise<Space> {

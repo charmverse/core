@@ -51,7 +51,7 @@ const fullPermissions = new AvailableProposalPermissions().full;
 describe('policyArchivedViewOnly', () => {
   it('should perform a no-op if proposal is not archived', async () => {
     const permissions = await policyArchivedViewOnly({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: false,
       resource: { ...proposal, archived: false },
       userId: proposalAuthor.id
@@ -68,13 +68,14 @@ describe('policyArchivedViewOnly', () => {
       make_public: true,
       archive: true,
       unarchive: true,
-      evaluate: true
+      evaluate: true,
+      move: false
     });
   });
 
   it('should allow authors to view, make public, delete, archive and unarchive', async () => {
     const permissions = await policyArchivedViewOnly({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: false,
       resource: proposal,
       userId: proposalAuthor.id
@@ -91,13 +92,14 @@ describe('policyArchivedViewOnly', () => {
       review: false,
       archive: true,
       unarchive: true,
-      evaluate: false
+      evaluate: false,
+      move: false
     });
   });
 
   it('should preserve space-wide delete and archive permissions when space wide proposal deletion is allowed', async () => {
     const permissions = await policyArchivedViewOnly({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: false,
       resource: proposal,
       userId: spaceMember.id,
@@ -116,13 +118,14 @@ describe('policyArchivedViewOnly', () => {
       review: false,
       vote: false,
       make_public: false,
-      evaluate: false
+      evaluate: false,
+      move: false
     });
   });
 
   it('should allow admins to view, make public and delete', async () => {
     const permissions = await policyArchivedViewOnly({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: true,
       resource: proposal,
       userId: adminUser.id
@@ -139,7 +142,8 @@ describe('policyArchivedViewOnly', () => {
       review: false,
       archive: true,
       unarchive: true,
-      evaluate: false
+      evaluate: false,
+      move: false
     });
   });
 
@@ -148,7 +152,7 @@ describe('policyArchivedViewOnly', () => {
 
     for (const user of users) {
       const permissions = await policyArchivedViewOnly({
-        flags: fullPermissions,
+        flags: { ...fullPermissions, move: false },
         isAdmin: false,
         resource: proposal,
         userId: user.id
@@ -165,7 +169,8 @@ describe('policyArchivedViewOnly', () => {
         review: false,
         archive: false,
         unarchive: false,
-        evaluate: false
+        evaluate: false,
+        move: false
       });
     }
   });

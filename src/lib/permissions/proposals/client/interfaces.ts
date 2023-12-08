@@ -1,8 +1,4 @@
-import type {
-  ListProposalsRequest,
-  ProposalWithCommentsAndUsers,
-  ProposalWithUsers
-} from '../../../proposals/interfaces';
+import type { ListProposalsRequest, ProposalWithUsers } from '../../../proposals/interfaces';
 import type { PermissionCompute, PermissionResource, Resource, SpaceResourcesRequest } from '../../core/interfaces';
 import type {
   AssignedProposalCategoryPermission,
@@ -25,6 +21,8 @@ export type BaseProposalPermissionsClient = {
 };
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type PremiumProposalPermissionsClient = BaseProposalPermissionsClient & {
+  // This will be the new method used for proposals with evaluation step
+  computeProposalEvaluationPermissions: (request: PermissionCompute) => Promise<ProposalPermissionFlags>;
   computeBaseProposalPermissions: (request: PermissionCompute) => Promise<ProposalPermissionFlags>;
   assignDefaultProposalCategoryPermissions: (proposalCategory: Resource) => Promise<void>;
   upsertProposalCategoryPermission: (

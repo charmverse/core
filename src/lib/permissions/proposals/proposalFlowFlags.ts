@@ -19,7 +19,7 @@ export class TransitionFlags extends BasePermissions<ProposalStatus> {
   }
 }
 
-type GetFlagFilterDependencies = {
+export type GetFlagFilterDependencies = {
   isProposalReviewer: IsProposalReviewerFn;
   computeProposalPermissions: (compute: PermissionCompute) => Promise<ProposalPermissionFlags>;
   countReviewers: (data: { proposal: ProposalWithUsers }) => number;
@@ -28,10 +28,12 @@ type GetFlagFilterDependencies = {
 function withDepsDraftProposal({ countReviewers }: GetFlagFilterDependencies) {
   return async function draftProposal({ proposal, userId }: GetFlagsInput): Promise<ProposalFlowPermissionFlags> {
     const flags = new TransitionFlags();
-    const { isAdmin } = await hasAccessToSpace({ spaceId: proposal.spaceId, userId });
 
-    if (isProposalAuthor({ proposal, userId }) || isAdmin) {
-      flags.addPermissions(['draft']);
+    if (
+      isProposalAuthor({ proposal, userId }) ||
+      (await hasAccessToSpace({ spaceId: proposal.spaceId, userId })).spaceRole?.isAdmin
+    ) {
+      // Reviewers must be assigned before a proposal can be submitted
       if (countReviewers({ proposal })) {
         flags.addPermissions(['discussion']);
       }
@@ -52,7 +54,9 @@ function withDepsDiscussionProposal({ countReviewers, isProposalReviewer }: GetF
       if (countReviewers({ proposal }) > 0) {
         flags.addPermissions([proposal.evaluationType === 'vote' ? 'review' : 'evaluation_active']);
       }
-    } else if ((await isProposalReviewer({ proposal, userId })) === true) {
+    }
+
+    if ((await isProposalReviewer({ proposal, userId })) === true) {
       flags.addPermissions([proposal.evaluationType === 'vote' ? 'review' : 'evaluation_active']);
     }
 
@@ -60,33 +64,28 @@ function withDepsDiscussionProposal({ countReviewers, isProposalReviewer }: GetF
   };
 }
 
-function withDepsInReviewProposal({ computeProposalPermissions }: GetFlagFilterDependencies) {
+function withDepsInReviewProposal({ isProposalReviewer }: GetFlagFilterDependencies) {
   // Currently coupled to proposal permissions for review action
   // In future, when reviewing action, and review status transition are decoupled, this will need to be updated
   return async function inReviewProposal({ proposal, userId }: GetFlagsInput): Promise<ProposalFlowPermissionFlags> {
     const flags = new TransitionFlags();
 
-    const permissions = await computeProposalPermissions({
-      resourceId: proposal.id,
-      userId
-    });
-
-    if (permissions.review) {
-      flags.addPermissions(['reviewed']);
+    if (
+      (
+        await hasAccessToSpace({
+          spaceId: proposal.spaceId,
+          userId
+        })
+      ).spaceRole?.isAdmin === true
+    ) {
+      flags.addPermissions(['discussion', 'reviewed']);
     }
 
-    if (isProposalAuthor({ proposal, userId }) || permissions.review) {
+    if (isProposalAuthor({ proposal, userId })) {
       flags.addPermissions(['discussion']);
     }
 
-    const isAdmin = (
-      await hasAccessToSpace({
-        spaceId: proposal.spaceId,
-        userId
-      })
-    ).isAdmin;
-
-    if (isAdmin) {
+    if ((await isProposalReviewer({ proposal, userId })) === true) {
       flags.addPermissions(['discussion', 'reviewed']);
     }
 
@@ -94,18 +93,20 @@ function withDepsInReviewProposal({ computeProposalPermissions }: GetFlagFilterD
   };
 }
 
-function withDepsReviewedProposal({ computeProposalPermissions, isProposalReviewer }: GetFlagFilterDependencies) {
+function withDepsReviewedProposal({ isProposalReviewer }: GetFlagFilterDependencies) {
   // Currently coupled to proposal permissions for create_vote action
   // In future, when create_vote action, and vote_active status transition are decoupled, this will need to be updated
   return async function reviewedProposal({ proposal, userId }: GetFlagsInput): Promise<ProposalFlowPermissionFlags> {
     const flags = new TransitionFlags();
 
-    const permissions = await computeProposalPermissions({
-      resourceId: proposal.id,
-      userId
-    });
+    if ((await hasAccessToSpace({ spaceId: proposal.spaceId, userId })).spaceRole?.isAdmin) {
+      flags.addPermissions(['review', 'vote_active']);
+    }
 
-    if (permissions.create_vote || (await isProposalReviewer({ proposal, userId })) === true) {
+    if (isProposalAuthor({ proposal, userId })) {
+      flags.addPermissions(['vote_active']);
+    }
+    if ((await isProposalReviewer({ proposal, userId })) === true) {
       flags.addPermissions(['review', 'vote_active']);
     }
 
@@ -119,17 +120,47 @@ function withDepsEvaluationActiveProposal({ isProposalReviewer }: GetFlagFilterD
     userId
   }: GetFlagsInput): Promise<ProposalFlowPermissionFlags> {
     const flags = new TransitionFlags();
-    const { spaceRole } = await hasAccessToSpace({
-      spaceId: proposal.spaceId,
-      userId
-    });
 
-    if (spaceRole?.isAdmin) {
+    if (
+      (
+        await hasAccessToSpace({
+          spaceId: proposal.spaceId,
+          userId
+        })
+      ).isAdmin
+    ) {
       flags.addPermissions(['evaluation_closed', 'discussion']);
-    } else if (isProposalAuthor({ proposal, userId })) {
+    }
+
+    if (isProposalAuthor({ proposal, userId })) {
       flags.addPermissions(['discussion']);
-    } else if ((await isProposalReviewer({ proposal, userId })) === true) {
+    }
+
+    if ((await isProposalReviewer({ proposal, userId })) === true) {
       flags.addPermissions(['evaluation_closed', 'discussion']);
+    }
+
+    return flags.operationFlags;
+  };
+}
+
+function withDepsEvaluationClosedProposal({ isProposalReviewer }: GetFlagFilterDependencies) {
+  return async function evaluationActiveProposal({
+    proposal,
+    userId
+  }: GetFlagsInput): Promise<ProposalFlowPermissionFlags> {
+    const flags = new TransitionFlags();
+
+    if (
+      (
+        await hasAccessToSpace({
+          spaceId: proposal.spaceId,
+          userId
+        })
+      ).spaceRole?.isAdmin ||
+      (await isProposalReviewer({ proposal, userId })) === true
+    ) {
+      flags.addPermissions(['evaluation_active']);
     }
 
     return flags.operationFlags;
@@ -147,6 +178,7 @@ export function getProposalFlagFilters(
     [ProposalStatus.vote_active]: () => Promise.resolve(new TransitionFlags().empty),
     [ProposalStatus.vote_closed]: () => Promise.resolve(new TransitionFlags().empty),
     [ProposalStatus.evaluation_active]: withDepsEvaluationActiveProposal(deps),
-    [ProposalStatus.evaluation_closed]: () => Promise.resolve(new TransitionFlags().empty)
+    [ProposalStatus.evaluation_closed]: withDepsEvaluationClosedProposal(deps),
+    [ProposalStatus.published]: withDepsEvaluationClosedProposal(deps)
   };
 }

@@ -56,7 +56,7 @@ const fullPermissions = new AvailableProposalPermissions().full;
 describe('policyStatusEvaluationActiveCommentable', () => {
   it('should perform a no-op if the status is not evaluation_active', async () => {
     const permissions = await policyStatusEvaluationActiveCommentable({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: false,
       resource: { ...proposal, status: 'draft' },
       userId: proposalAuthor.id
@@ -73,12 +73,13 @@ describe('policyStatusEvaluationActiveCommentable', () => {
       make_public: true,
       archive: true,
       unarchive: true,
-      evaluate: true
+      evaluate: true,
+      move: false
     });
   });
   it('should allow the author to view, comment, delete, make public, archive and unarchive', async () => {
     const permissions = await policyStatusEvaluationActiveCommentable({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: false,
       resource: proposal,
       userId: proposalAuthor.id
@@ -95,7 +96,8 @@ describe('policyStatusEvaluationActiveCommentable', () => {
       vote: false,
       archive: true,
       unarchive: true,
-      evaluate: false
+      evaluate: false,
+      move: false
     });
   });
 
@@ -115,7 +117,7 @@ describe('policyStatusEvaluationActiveCommentable', () => {
     });
 
     const permissions = await policyStatusEvaluationActiveCommentable({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: false,
       resource: proposalWithSameAuthorReviewer,
       userId: proposalAuthor.id
@@ -132,13 +134,14 @@ describe('policyStatusEvaluationActiveCommentable', () => {
       vote: false,
       archive: true,
       unarchive: true,
-      evaluate: true
+      evaluate: true,
+      move: false
     });
   });
 
   it('should preserve space-wide delete and archive permissions when space wide proposal deletion is allowed', async () => {
     const permissions = await policyStatusEvaluationActiveCommentable({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: false,
       resource: proposal,
       userId: spaceMember.id,
@@ -157,13 +160,14 @@ describe('policyStatusEvaluationActiveCommentable', () => {
       review: false,
       vote: false,
       make_public: false,
-      evaluate: false
+      evaluate: false,
+      move: false
     });
   });
 
   it('should allow the admin to view, comment, edit, delete, evaluate, make public, archive and unarchive', async () => {
     const permissions = await policyStatusEvaluationActiveCommentable({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: true,
       resource: proposal,
       userId: adminUser.id
@@ -180,13 +184,14 @@ describe('policyStatusEvaluationActiveCommentable', () => {
       vote: false,
       archive: true,
       unarchive: true,
-      evaluate: true
+      evaluate: true,
+      move: false
     });
   });
 
   it('should allow reviewer to view, comment and evaluate', async () => {
     const permissions = await policyStatusEvaluationActiveCommentable({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: false,
       resource: proposal,
       userId: proposalReviewer.id
@@ -203,13 +208,14 @@ describe('policyStatusEvaluationActiveCommentable', () => {
       create_vote: false,
       vote: false,
       archive: false,
-      unarchive: false
+      unarchive: false,
+      move: false
     });
   });
 
   it('should allow space members to view and comment', async () => {
     const permissions = await policyStatusEvaluationActiveCommentable({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: false,
       resource: proposal,
       userId: spaceMember.id
@@ -226,7 +232,8 @@ describe('policyStatusEvaluationActiveCommentable', () => {
       vote: false,
       archive: false,
       unarchive: false,
-      evaluate: false
+      evaluate: false,
+      move: false
     });
   });
 });
