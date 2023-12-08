@@ -51,7 +51,7 @@ const fullPermissions = new AvailableProposalPermissions().full;
 describe('policyStatusDraftOnlyViewable', () => {
   it('should perform a no-op if the status is not draft', async () => {
     const permissions = await policyStatusDraftNotViewable({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: false,
       resource: { ...proposal, status: 'discussion' },
       userId: proposalAuthor.id
@@ -68,12 +68,13 @@ describe('policyStatusDraftOnlyViewable', () => {
       make_public: true,
       archive: true,
       unarchive: true,
-      evaluate: true
+      evaluate: true,
+      move: false
     });
   });
   it('should allow the author to view, edit, comment, delete, make public, archive and unarchive', async () => {
     const permissions = await policyStatusDraftNotViewable({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: false,
       resource: proposal,
       userId: proposalAuthor.id
@@ -90,13 +91,14 @@ describe('policyStatusDraftOnlyViewable', () => {
       vote: false,
       archive: true,
       unarchive: true,
-      evaluate: false
+      evaluate: false,
+      move: false
     });
   });
 
   it('should return same level of permissions as the author for an admin', async () => {
     const permissions = await policyStatusDraftNotViewable({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: true,
       resource: proposal,
       userId: adminUser.id
@@ -113,13 +115,14 @@ describe('policyStatusDraftOnlyViewable', () => {
       vote: false,
       archive: true,
       unarchive: true,
-      evaluate: false
+      evaluate: false,
+      move: false
     });
   });
 
   it('should not allow the reviewer to view the proposal', async () => {
     const permissions = await policyStatusDraftNotViewable({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: false,
       resource: proposal,
       userId: proposalReviewer.id
@@ -136,12 +139,13 @@ describe('policyStatusDraftOnlyViewable', () => {
       vote: false,
       archive: false,
       unarchive: false,
-      evaluate: false
+      evaluate: false,
+      move: false
     });
   });
   it('should preserve space-wide delete and archive permissions when space wide proposal deletion is allowed', async () => {
     const permissions = await policyStatusDraftNotViewable({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: false,
       resource: proposal,
       userId: spaceMember.id,
@@ -160,12 +164,13 @@ describe('policyStatusDraftOnlyViewable', () => {
       make_public: false,
       archive: true,
       unarchive: true,
-      evaluate: false
+      evaluate: false,
+      move: false
     });
   });
   it('should not allow space members to view the proposal', async () => {
     const permissions = await policyStatusDraftNotViewable({
-      flags: fullPermissions,
+      flags: { ...fullPermissions, move: false },
       isAdmin: false,
       resource: proposal,
       userId: spaceMember.id
@@ -182,7 +187,8 @@ describe('policyStatusDraftOnlyViewable', () => {
       make_public: false,
       archive: false,
       unarchive: false,
-      evaluate: false
+      evaluate: false,
+      move: false
     });
   });
 });

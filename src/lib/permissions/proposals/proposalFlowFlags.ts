@@ -178,6 +178,7 @@ export function getProposalFlagFilters(
     [ProposalStatus.vote_active]: () => Promise.resolve(new TransitionFlags().empty),
     [ProposalStatus.vote_closed]: () => Promise.resolve(new TransitionFlags().empty),
     [ProposalStatus.evaluation_active]: withDepsEvaluationActiveProposal(deps),
-    [ProposalStatus.evaluation_closed]: withDepsEvaluationClosedProposal(deps)
+    [ProposalStatus.evaluation_closed]: withDepsEvaluationClosedProposal(deps),
+    [ProposalStatus.published]: withDepsEvaluationClosedProposal(deps)
   };
 }
