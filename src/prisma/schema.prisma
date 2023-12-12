@@ -935,7 +935,7 @@ model TokenGate {
   resourceId       Json
   userRole         String?
   accessTypes      String[]          @default([])
-  type             TokenGateType
+  type             TokenGateType     @default(lit)
   space            Space             @relation(fields: [spaceId], references: [id], onDelete: Cascade)
   tokenGateToRoles TokenGateToRole[]
   userTokenGates   UserTokenGate[]
