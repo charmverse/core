@@ -258,6 +258,11 @@ enum SubscriptionPeriod {
   annual
 }
 
+enum TokenGateType {
+  lit
+  unlock
+}
+
 model Space {
   id                          String                            @id @default(uuid()) @db.Uuid
   deletedAt                   DateTime?
@@ -930,6 +935,7 @@ model TokenGate {
   resourceId       Json
   userRole         String?
   accessTypes      String[]          @default([])
+  type             TokenGateType     @default(lit)
   space            Space             @relation(fields: [spaceId], references: [id], onDelete: Cascade)
   tokenGateToRoles TokenGateToRole[]
   userTokenGates   UserTokenGate[]
