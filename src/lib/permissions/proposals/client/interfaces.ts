@@ -6,6 +6,7 @@ import type {
   ProposalCategoryPermissionFlags,
   ProposalCategoryWithPermissions,
   ProposalPermissionFlags,
+  ProposalPermissionsSwitch,
   ProposalReviewerPool
 } from '../interfaces';
 import type { ProposalFlowPermissionFlags } from '../proposalFlowFlags';
@@ -15,8 +16,8 @@ export type BaseProposalPermissionsClient = {
   computeProposalCategoryPermissions: (request: PermissionCompute) => Promise<ProposalCategoryPermissionFlags>;
   computeProposalFlowPermissions: (request: PermissionCompute) => Promise<ProposalFlowPermissionFlags>;
   getAccessibleProposalCategories: (request: SpaceResourcesRequest) => Promise<ProposalCategoryWithPermissions[]>;
-  getAccessibleProposals: (request: ListProposalsRequest) => Promise<ProposalWithUsers[]>;
-  getAccessibleProposalIds: (request: ListProposalsRequest) => Promise<string[]>;
+  getAccessibleProposals: (request: ListProposalsRequest & ProposalPermissionsSwitch) => Promise<ProposalWithUsers[]>;
+  getAccessibleProposalIds: (request: ListProposalsRequest & ProposalPermissionsSwitch) => Promise<string[]>;
   getProposalReviewerPool: (request: Resource) => Promise<ProposalReviewerPool>;
 };
 // eslint-disable-next-line @typescript-eslint/ban-types

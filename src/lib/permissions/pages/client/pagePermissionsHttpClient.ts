@@ -1,8 +1,8 @@
 import chunk from 'lodash/chunk';
+import type { ProposalPermissionsSwitch } from 'permissions';
 
 import { DELETE, GET, POST, PUT } from '../../../http';
 import type {
-  PageMeta,
   PageMetaWithPermissions,
   PagesRequest,
   UpdatePagePermissionDiscoverabilityRequest
@@ -31,7 +31,9 @@ export class PagePermissionsHttpClient extends AbstractPermissionsApiClient impl
     return GET(`${this.prefix}/compute-page-permissions`, request);
   }
 
-  async bulkComputePagePermissions(request: BulkPagePermissionCompute): Promise<BulkPagePermissionFlags> {
+  async bulkComputePagePermissions(
+    request: BulkPagePermissionCompute & ProposalPermissionsSwitch
+  ): Promise<BulkPagePermissionFlags> {
     const pageIds = request.pageIds ?? [];
 
     const chunkedPageIds = chunk(pageIds, this.getRequestBatchSize).map(
@@ -53,10 +55,6 @@ export class PagePermissionsHttpClient extends AbstractPermissionsApiClient impl
     });
 
     return computedResult;
-  }
-
-  getAccessiblePages(request: PagesRequest): Promise<PageMeta[]> {
-    return GET(`${this.prefix}/list`, request);
   }
 
   getAccessiblePageIds(request: PagesRequest): Promise<string[]> {
