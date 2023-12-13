@@ -31,6 +31,8 @@ enum IdentityType {
   UnstoppableDomain
   Google
   VerifiedEmail
+  Lens
+  Farcaster
 }
 
 enum VoteStatus {
@@ -261,13 +263,6 @@ enum SubscriptionPeriod {
   annual
 }
 
-enum PrimaryMemberIdentity {
-  google
-  wallet
-  discord
-  telegram
-}
-
 model Space {
   id                          String                            @id @default(uuid()) @db.Uuid
   deletedAt                   DateTime?
@@ -294,7 +289,7 @@ model Space {
   publicBountyBoard           Boolean?                          @default(false)
   publicProposals             Boolean?                          @default(false)
   xpsEngineId                 String?                           @unique
-  primaryMemberIdentity       PrimaryMemberIdentity?
+  primaryMemberIdentity       IdentityType?
   author                      User                              @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   blocks                      Block[]
   bounties                    Bounty[]
