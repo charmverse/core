@@ -31,6 +31,8 @@ enum IdentityType {
   UnstoppableDomain
   Google
   VerifiedEmail
+  Lens
+  Farcaster
 }
 
 enum VoteStatus {
@@ -217,6 +219,9 @@ enum MemberPropertyType {
   join_date
   linked_in
   github
+  google
+  telegram
+  wallet
 }
 
 enum MemberPropertyPermissionLevel {
@@ -289,6 +294,7 @@ model Space {
   publicBountyBoard           Boolean?                          @default(false)
   publicProposals             Boolean?                          @default(false)
   xpsEngineId                 String?                           @unique
+  primaryMemberIdentity       IdentityType?
   author                      User                              @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   blocks                      Block[]
   bounties                    Bounty[]
