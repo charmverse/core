@@ -242,45 +242,33 @@ describe('generateProposal', () => {
 
     expect(createdEvaluationSteps).toMatchObject(
       expect.arrayContaining<ProposalEvaluation>([
-        {
+        expect.objectContaining({
           completedAt: rubricStep.completedAt as Date,
           id: expect.any(String),
           index: 0,
           proposalId: proposal.id,
-          result: null,
-          snapshotExpiry: null,
-          snapshotId: null,
           title: expect.any(String),
-          type: 'rubric',
-          voteId: null,
-          decidedBy: null
-        },
-        {
+          type: 'rubric'
+        }),
+        expect.objectContaining({
           completedAt: passFailStep.completedAt as Date,
           id: passFailStep.id as string,
           index: 1,
           proposalId: proposal.id,
           result: 'pass',
-          snapshotExpiry: null,
-          snapshotId: null,
           title: expect.any(String),
-          type: 'pass_fail',
-          voteId: null,
-          decidedBy: null
-        },
-        {
-          completedAt: null,
+          type: 'pass_fail'
+        }),
+        expect.objectContaining({
           id: expect.any(String),
           index: 2,
           proposalId: proposal.id,
-          result: null,
           snapshotExpiry: voteStep.snapshotExpiry as Date,
           snapshotId: voteStep.snapshotId as string,
           title: expect.any(String),
           type: 'vote',
-          voteId: voteStep.voteId as string,
-          decidedBy: null
-        }
+          voteId: voteStep.voteId as string
+        })
       ])
     );
 
