@@ -212,7 +212,6 @@ enum MemberPropertyType {
   role
   profile_pic
   timezone
-  name
   discord
   twitter
   bio
