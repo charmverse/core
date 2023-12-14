@@ -258,3 +258,7 @@ export function escapeTsQueryCharactersAndFormatPrismaSearch(text: string): stri
 export function sortUuids(uuids: string[]): string[] {
   return uuids.sort((a, b) => a.localeCompare(b));
 }
+
+export function extractUuids<T extends { id: string }>(items: T[]): string[] {
+  return items.map((item) => item.id);
+}

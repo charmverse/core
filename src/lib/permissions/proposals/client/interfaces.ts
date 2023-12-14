@@ -1,4 +1,4 @@
-import type { ListProposalsRequest, ProposalWithUsers } from '../../../proposals/interfaces';
+import type { ListProposalsRequest } from '../../../proposals/interfaces';
 import type { PermissionCompute, PermissionResource, Resource, SpaceResourcesRequest } from '../../core/interfaces';
 import type {
   AssignedProposalCategoryPermission,
@@ -16,7 +16,6 @@ export type BaseProposalPermissionsClient = {
   computeProposalCategoryPermissions: (request: PermissionCompute) => Promise<ProposalCategoryPermissionFlags>;
   computeProposalFlowPermissions: (request: PermissionCompute) => Promise<ProposalFlowPermissionFlags>;
   getAccessibleProposalCategories: (request: SpaceResourcesRequest) => Promise<ProposalCategoryWithPermissions[]>;
-  getAccessibleProposals: (request: ListProposalsRequest & ProposalPermissionsSwitch) => Promise<ProposalWithUsers[]>;
   getAccessibleProposalIds: (request: ListProposalsRequest & ProposalPermissionsSwitch) => Promise<string[]>;
   getProposalReviewerPool: (request: Resource) => Promise<ProposalReviewerPool>;
 };

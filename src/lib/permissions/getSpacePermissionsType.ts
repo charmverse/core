@@ -21,12 +21,14 @@ export type PermissionsEngine = 'free' | 'premium';
 export type SpaceSubscriptionInfo = {
   spaceId: string;
   tier: SubscriptionTier;
+  permissionType: PermissionsEngine;
 };
 
 function getEngine(input: Pick<Space, 'paidTier' | 'id'>): SpaceSubscriptionInfo {
   return {
     spaceId: input.id,
-    tier: input.paidTier ?? 'community'
+    tier: input.paidTier,
+    permissionType: input.paidTier === 'free' ? 'free' : 'premium'
   };
 }
 
@@ -319,7 +321,7 @@ export type GetPermissionClient = {
   resourceIdType: ResourceIdEntity;
 };
 
-export async function checkSpaceSpaceSubscriptionInfo({
+export async function getSpacePermissionsType({
   resourceId,
   resourceIdType
 }: GetPermissionClient): Promise<SpaceSubscriptionInfo> {
