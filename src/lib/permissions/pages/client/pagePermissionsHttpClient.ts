@@ -75,7 +75,7 @@ export class PagePermissionsHttpClient extends AbstractPermissionsApiClient impl
     return GET(`${this.prefix}/page-permissions-list`, request);
   }
 
-  setupPagePermissionsAfterEvent(request: PageEventTriggeringPermissions): Promise<PageMetaWithPermissions> {
+  setupPagePermissionsAfterEvent(request: PageEventTriggeringPermissions): Promise<void> {
     return POST(`${this.prefix}/setup-page-permissions-after-event`, request, { headers: this.jsonHeaders });
   }
 

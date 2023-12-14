@@ -28,7 +28,7 @@ export type PremiumPagePermissionsClient = BasePagePermissionsClient & {
   deletePagePermission: (request: PermissionResource) => Promise<void>;
   listPagePermissions: (request: Resource) => Promise<AssignedPagePermission[]>;
   lockPagePermissionsToBountyCreator: (request: Resource) => Promise<PageMetaWithPermissions>;
-  setupPagePermissionsAfterEvent: (request: PageEventTriggeringPermissions) => Promise<PageMetaWithPermissions>;
+  setupPagePermissionsAfterEvent: (request: PageEventTriggeringPermissions) => Promise<void>;
   isBountyPageEditableByApplicants: (request: Resource) => Promise<{ editable: boolean }>;
   updatePagePermissionDiscoverability: (request: UpdatePagePermissionDiscoverabilityRequest) => Promise<void>;
 };
