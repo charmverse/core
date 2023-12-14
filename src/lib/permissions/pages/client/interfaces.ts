@@ -20,11 +20,11 @@ export type BasePagePermissionsClient = {
   bulkComputePagePermissions: (
     request: BulkPagePermissionCompute & ProposalPermissionsSwitch
   ) => Promise<BulkPagePermissionFlags>;
-  getAccessiblePageIds: (request: PagesRequest & ProposalPermissionsSwitch) => Promise<string[]>;
 };
 
 export type PremiumPagePermissionsClient = BasePagePermissionsClient & {
   upsertPagePermission: (request: PagePermissionAssignment) => Promise<AssignedPagePermission>;
+  getAccessiblePageIds: (request: PagesRequest & ProposalPermissionsSwitch) => Promise<string[]>;
   deletePagePermission: (request: PermissionResource) => Promise<void>;
   listPagePermissions: (request: Resource) => Promise<AssignedPagePermission[]>;
   lockPagePermissionsToBountyCreator: (request: Resource) => Promise<PageMetaWithPermissions>;
