@@ -1181,6 +1181,7 @@ model Proposal {
   workflowId             String?                             @db.Uuid
   workflow               ProposalWorkflow?                   @relation(fields: [workflowId], references: [id], onDelete: SetNull)
   rewards                Bounty[]
+  formFields             ProposalFormField[]
 
   @@index([spaceId])
   @@index([reviewedBy])
@@ -1938,4 +1939,47 @@ model AdditionalBlockQuota {
   expiresAt  DateTime?
   blockCount Int
   createdAt  DateTime  @default(now())
+}
+
+enum ProposalFormFieldType {
+  text
+  text_multiline
+  number
+  email
+  phone
+  url
+  select
+  multiselect
+  wallet
+  date
+  person
+  label
+}
+
+model ProposalFormField {
+  id            String                   @id @default(uuid()) @db.Uuid
+  type          ProposalFormFieldType
+  index         Int                      @default(-1)
+  name          String
+  description   String?
+  required      Boolean                  @default(false)
+  private       Boolean                  @default(false)
+  proposalId    String                   @db.Uuid
+  proposal      Proposal                 @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  options       Json?
+  parentFieldId String?                  @db.Uuid
+  parentField   ProposalFormField?       @relation("parentProposalFormField", fields: [parentFieldId], references: [id])
+  fieldValues   ProposalFormFieldValue[]
+  childFields   ProposalFormField[]      @relation("parentProposalFormField")
+
+  @@index([proposalId])
+}
+
+model ProposalFormFieldValue {
+  id      String            @id @default(uuid()) @db.Uuid
+  fieldId String            @db.Uuid
+  field   ProposalFormField @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+  value   Json
+
+  @@index([fieldId])
 }
