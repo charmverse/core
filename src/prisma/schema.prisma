@@ -1181,7 +1181,8 @@ model Proposal {
   workflowId             String?                             @db.Uuid
   workflow               ProposalWorkflow?                   @relation(fields: [workflowId], references: [id], onDelete: SetNull)
   rewards                Bounty[]
-  formFields             ProposalFormField[]
+  formId                 String?                             @db.Uuid
+  form                   Form?                               @relation(fields: [formId], references: [id], onDelete: Cascade)
 
   @@index([spaceId])
   @@index([reviewedBy])
@@ -1941,9 +1942,15 @@ model AdditionalBlockQuota {
   createdAt  DateTime  @default(now())
 }
 
-enum ProposalFormFieldType {
-  text
-  text_multiline
+model Form {
+  id         String      @id @default(uuid()) @db.Uuid
+  formFields FormField[]
+  proposal   Proposal[]
+}
+
+enum FormFieldType {
+  short_text
+  long_text
   number
   email
   phone
@@ -1956,29 +1963,26 @@ enum ProposalFormFieldType {
   label
 }
 
-model ProposalFormField {
-  id            String                   @id @default(uuid()) @db.Uuid
-  type          ProposalFormFieldType
-  index         Int                      @default(-1)
+model FormField {
+  id            String           @id @default(uuid()) @db.Uuid
+  type          FormFieldType
+  index         Int              @default(-1)
   name          String
   description   String?
-  required      Boolean                  @default(false)
-  private       Boolean                  @default(false)
-  proposalId    String                   @db.Uuid
-  proposal      Proposal                 @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  required      Boolean          @default(false)
+  private       Boolean          @default(false)
   options       Json?
-  parentFieldId String?                  @db.Uuid
-  parentField   ProposalFormField?       @relation("parentProposalFormField", fields: [parentFieldId], references: [id])
-  fieldValues   ProposalFormFieldValue[]
-  childFields   ProposalFormField[]      @relation("parentProposalFormField")
-
-  @@index([proposalId])
+  parentFieldId String?          @db.Uuid
+  formId        String           @db.Uuid
+  form          Form             @relation(fields: [formId], references: [id], onDelete: Cascade)
+  fieldValues   FormFieldValue[]
 }
 
-model ProposalFormFieldValue {
-  id      String            @id @default(uuid()) @db.Uuid
-  fieldId String            @db.Uuid
-  field   ProposalFormField @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+model FormFieldValue {
+  id      String        @id @default(uuid()) @db.Uuid
+  fieldId String        @db.Uuid
+  field   FormField     @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+  type    FormFieldType
   value   Json
 
   @@index([fieldId])
