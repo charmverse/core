@@ -28,17 +28,18 @@ CREATE TABLE "FormField" (
 );
 
 -- CreateTable
-CREATE TABLE "FormFieldValue" (
+CREATE TABLE "FormFieldAnswer" (
     "id" UUID NOT NULL,
     "fieldId" UUID NOT NULL,
     "type" "FormFieldType" NOT NULL,
     "value" JSONB NOT NULL,
+    "proposalId" UUID NOT NULL,
 
-    CONSTRAINT "FormFieldValue_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "FormFieldAnswer_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
-CREATE INDEX "FormFieldValue_fieldId_idx" ON "FormFieldValue"("fieldId");
+CREATE INDEX "FormFieldAnswer_fieldId_idx" ON "FormFieldAnswer"("fieldId");
 
 -- AddForeignKey
 ALTER TABLE "Proposal" ADD CONSTRAINT "Proposal_formId_fkey" FOREIGN KEY ("formId") REFERENCES "Form"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -47,4 +48,7 @@ ALTER TABLE "Proposal" ADD CONSTRAINT "Proposal_formId_fkey" FOREIGN KEY ("formI
 ALTER TABLE "FormField" ADD CONSTRAINT "FormField_formId_fkey" FOREIGN KEY ("formId") REFERENCES "Form"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "FormFieldValue" ADD CONSTRAINT "FormFieldValue_fieldId_fkey" FOREIGN KEY ("fieldId") REFERENCES "FormField"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "FormFieldAnswer" ADD CONSTRAINT "FormFieldAnswer_fieldId_fkey" FOREIGN KEY ("fieldId") REFERENCES "FormField"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "FormFieldAnswer" ADD CONSTRAINT "FormFieldAnswer_proposalId_fkey" FOREIGN KEY ("proposalId") REFERENCES "Proposal"("id") ON DELETE CASCADE ON UPDATE CASCADE;
