@@ -254,3 +254,7 @@ export function escapeTsQueryCharactersAndFormatPrismaSearch(text: string): stri
     return undefined;
   }
 }
+
+export function sortUuids(uuids: string[]): string[] {
+  return uuids.sort((a, b) => a.localeCompare(b));
+}

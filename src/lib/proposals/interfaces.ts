@@ -1,12 +1,12 @@
 import type {
-  ProposalEvaluation,
-  ProposalWorkflow,
-  ProposalEvaluationPermission,
   Page,
   PageComment,
   Proposal,
   ProposalAuthor,
-  ProposalReviewer
+  ProposalEvaluation,
+  ProposalEvaluationPermission,
+  ProposalReviewer,
+  ProposalWorkflow
 } from '@prisma/client';
 
 import type { AssignablePermissionGroups } from '../permissions/core/interfaces';

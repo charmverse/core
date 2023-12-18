@@ -1,5 +1,6 @@
+import type { ProposalPermissionsSwitch } from 'permissions';
+
 import type {
-  PageMeta,
   PageMetaWithPermissions,
   PagesRequest,
   UpdatePagePermissionDiscoverabilityRequest
@@ -15,18 +16,19 @@ import type {
 } from '../interfaces';
 
 export type BasePagePermissionsClient = {
-  computePagePermissions: (request: PermissionCompute) => Promise<PagePermissionFlags>;
-  bulkComputePagePermissions: (request: BulkPagePermissionCompute) => Promise<BulkPagePermissionFlags>;
-  getAccessiblePages: (request: PagesRequest) => Promise<PageMeta[]>;
-  getAccessiblePageIds: (request: PagesRequest) => Promise<string[]>;
+  computePagePermissions: (request: PermissionCompute & ProposalPermissionsSwitch) => Promise<PagePermissionFlags>;
+  bulkComputePagePermissions: (
+    request: BulkPagePermissionCompute & ProposalPermissionsSwitch
+  ) => Promise<BulkPagePermissionFlags>;
 };
 
 export type PremiumPagePermissionsClient = BasePagePermissionsClient & {
   upsertPagePermission: (request: PagePermissionAssignment) => Promise<AssignedPagePermission>;
+  getAccessiblePageIds: (request: PagesRequest & ProposalPermissionsSwitch) => Promise<string[]>;
   deletePagePermission: (request: PermissionResource) => Promise<void>;
   listPagePermissions: (request: Resource) => Promise<AssignedPagePermission[]>;
   lockPagePermissionsToBountyCreator: (request: Resource) => Promise<PageMetaWithPermissions>;
-  setupPagePermissionsAfterEvent: (request: PageEventTriggeringPermissions) => Promise<PageMetaWithPermissions>;
+  setupPagePermissionsAfterEvent: (request: PageEventTriggeringPermissions) => Promise<void>;
   isBountyPageEditableByApplicants: (request: Resource) => Promise<{ editable: boolean }>;
   updatePagePermissionDiscoverability: (request: UpdatePagePermissionDiscoverabilityRequest) => Promise<void>;
 };

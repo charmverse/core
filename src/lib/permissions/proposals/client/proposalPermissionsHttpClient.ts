@@ -40,10 +40,6 @@ export class ProposalPermissionsHttpClient
     return GET(`${this.prefix}/categories`, request);
   }
 
-  getAccessibleProposals(request: ListProposalsRequest): Promise<(ProposalWithUsers | ProposalWithCommentsAndUsers)[]> {
-    return GET(`${this.prefix}/list`, request);
-  }
-
   getAccessibleProposalIds(request: ListProposalsRequest): Promise<string[]> {
     return GET(`${this.prefix}/list-ids`, request);
   }
