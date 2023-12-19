@@ -38,4 +38,4 @@ export { getPermissionAssignee } from './lib/permissions/core/getPermissionAssig
 export * from './lib/permissions/core/policies';
 
 export * from './lib/permissions/permissionsApiClient.class';
-export * from './lib/permissions/getSpacePermissionsType';
+export * from './lib/permissions/getSpaceInfoViaResource';

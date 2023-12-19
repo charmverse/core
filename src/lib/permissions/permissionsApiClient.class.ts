@@ -1,7 +1,7 @@
 import type { PermissionsApiClientConstructor } from './clients/interfaces';
 import { ForumPermissionsHttpClient } from './forums/client/forumPermissionsHttpClient';
 import type { BaseForumPermissionsClient, PremiumForumPermissionsClient } from './forums/client/interfaces';
-import type { BasePagePermissionsClient, PremiumPagePermissionsClient } from './pages/client/interfaces';
+import type { PagePermissionsClient } from './pages/client/interfaces';
 import { PagePermissionsHttpClient } from './pages/client/pagePermissionsHttpClient';
 import type { BaseProposalPermissionsClient, PremiumProposalPermissionsClient } from './proposals/client/interfaces';
 import { ProposalPermissionsHttpClient } from './proposals/client/proposalPermissionsHttpClient';
@@ -11,14 +11,13 @@ import { SpacePermissionsHttpClient } from './spaces/client/spacePermissionsHttp
 export type PermissionsClient = {
   forum: BaseForumPermissionsClient;
   proposals: BaseProposalPermissionsClient;
-  pages: BasePagePermissionsClient;
   spaces: BaseSpacePermissionsClient;
 };
 
 export type PremiumPermissionsClient = {
   forum: PremiumForumPermissionsClient;
   proposals: PremiumProposalPermissionsClient;
-  pages: PremiumPagePermissionsClient;
+  pages: PagePermissionsClient;
   spaces: PremiumSpacePermissionsClient;
 };
 
@@ -27,7 +26,7 @@ export class PermissionsApiClient implements PremiumPermissionsClient {
 
   proposals: PremiumProposalPermissionsClient;
 
-  pages: PremiumPagePermissionsClient;
+  pages: PagePermissionsClient;
 
   spaces: PremiumSpacePermissionsClient;
 

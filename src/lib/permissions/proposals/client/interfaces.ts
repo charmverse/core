@@ -12,9 +12,6 @@ import type {
 import type { ProposalFlowPermissionFlags } from '../proposalFlowFlags';
 
 export type BaseProposalPermissionsClient = {
-  computeProposalPermissions: (
-    request: PermissionCompute & ProposalPermissionsSwitch
-  ) => Promise<ProposalPermissionFlags>;
   computeProposalCategoryPermissions: (request: PermissionCompute) => Promise<ProposalCategoryPermissionFlags>;
   computeProposalFlowPermissions: (request: PermissionCompute) => Promise<ProposalFlowPermissionFlags>;
   getAccessibleProposalCategories: (request: SpaceResourcesRequest) => Promise<ProposalCategoryWithPermissions[]>;
@@ -22,6 +19,9 @@ export type BaseProposalPermissionsClient = {
 };
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type PremiumProposalPermissionsClient = BaseProposalPermissionsClient & {
+  computeProposalPermissions: (
+    request: PermissionCompute & ProposalPermissionsSwitch
+  ) => Promise<ProposalPermissionFlags>;
   // This will be the new method used for proposals with evaluation step
   getAccessibleProposalIds: (request: ListProposalsRequest & ProposalPermissionsSwitch) => Promise<string[]>;
   computeBaseProposalPermissions: (request: PermissionCompute) => Promise<ProposalPermissionFlags>;
