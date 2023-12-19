@@ -9,7 +9,7 @@ describe('getCurrentEvaluation()', () => {
       { index: 0, result: 'pass' }
     ]);
 
-    expect(result.index).toBe(2);
+    expect(result?.index).toBe(2);
   });
 
   it('should stop at an evaluation which is marked as failed', () => {
@@ -20,7 +20,7 @@ describe('getCurrentEvaluation()', () => {
       { index: 0, result: 'pass' }
     ]);
 
-    expect(result.index).toBe(2);
+    expect(result?.index).toBe(2);
   });
 
   it('should return the final evaluation if all evaluations passed', () => {
@@ -31,6 +31,6 @@ describe('getCurrentEvaluation()', () => {
       { index: 0, result: 'pass' }
     ]);
 
-    expect(result.index).toBe(3);
+    expect(result?.index).toBe(3);
   });
 });
