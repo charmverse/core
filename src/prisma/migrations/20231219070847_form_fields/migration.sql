@@ -17,7 +17,7 @@ CREATE TABLE "FormField" (
     "type" "FormFieldType" NOT NULL,
     "index" INTEGER NOT NULL DEFAULT -1,
     "name" TEXT NOT NULL,
-    "description" TEXT,
+    "description" JSONB,
     "required" BOOLEAN NOT NULL DEFAULT false,
     "private" BOOLEAN NOT NULL DEFAULT false,
     "options" JSONB,

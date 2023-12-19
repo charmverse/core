@@ -1969,7 +1969,7 @@ model FormField {
   type          FormFieldType
   index         Int               @default(-1)
   name          String
-  description   String?
+  description   Json?
   required      Boolean           @default(false)
   private       Boolean           @default(false)
   options       Json?
