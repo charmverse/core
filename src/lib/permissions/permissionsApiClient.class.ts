@@ -5,20 +5,19 @@ import type { PagePermissionsClient } from './pages/client/interfaces';
 import { PagePermissionsHttpClient } from './pages/client/pagePermissionsHttpClient';
 import type { BaseProposalPermissionsClient, PremiumProposalPermissionsClient } from './proposals/client/interfaces';
 import { ProposalPermissionsHttpClient } from './proposals/client/proposalPermissionsHttpClient';
-import type { BaseSpacePermissionsClient, PremiumSpacePermissionsClient } from './spaces/client/interfaces';
+import type { SpacePermissionsClient } from './spaces/client/interfaces';
 import { SpacePermissionsHttpClient } from './spaces/client/spacePermissionsHttpClient';
 
 export type PermissionsClient = {
   forum: BaseForumPermissionsClient;
   proposals: BaseProposalPermissionsClient;
-  spaces: BaseSpacePermissionsClient;
 };
 
 export type PremiumPermissionsClient = {
   forum: PremiumForumPermissionsClient;
   proposals: PremiumProposalPermissionsClient;
   pages: PagePermissionsClient;
-  spaces: PremiumSpacePermissionsClient;
+  spaces: SpacePermissionsClient;
 };
 
 export class PermissionsApiClient implements PremiumPermissionsClient {
@@ -28,7 +27,7 @@ export class PermissionsApiClient implements PremiumPermissionsClient {
 
   pages: PagePermissionsClient;
 
-  spaces: PremiumSpacePermissionsClient;
+  spaces: SpacePermissionsClient;
 
   constructor(params: PermissionsApiClientConstructor) {
     this.forum = new ForumPermissionsHttpClient(params);

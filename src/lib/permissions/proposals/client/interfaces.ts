@@ -24,7 +24,9 @@ export type PremiumProposalPermissionsClient = BaseProposalPermissionsClient & {
   ) => Promise<ProposalPermissionFlags>;
   // This will be the new method used for proposals with evaluation step
   getAccessibleProposalIds: (request: ListProposalsRequest & ProposalPermissionsSwitch) => Promise<string[]>;
-  computeBaseProposalPermissions: (request: PermissionCompute) => Promise<ProposalPermissionFlags>;
+  computeBaseProposalPermissions: (
+    request: PermissionCompute & ProposalPermissionsSwitch
+  ) => Promise<ProposalPermissionFlags>;
   assignDefaultProposalCategoryPermissions: (proposalCategory: Resource) => Promise<void>;
   upsertProposalCategoryPermission: (
     assignment: ProposalCategoryPermissionAssignment
