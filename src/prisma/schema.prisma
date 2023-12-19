@@ -1965,18 +1965,17 @@ enum FormFieldType {
 }
 
 model FormField {
-  id            String            @id @default(uuid()) @db.Uuid
-  type          FormFieldType
-  index         Int               @default(-1)
-  name          String
-  description   Json?
-  required      Boolean           @default(false)
-  private       Boolean           @default(false)
-  options       Json?
-  parentFieldId String?           @db.Uuid
-  formId        String            @db.Uuid
-  form          Form              @relation(fields: [formId], references: [id], onDelete: Cascade)
-  answers       FormFieldAnswer[]
+  id          String            @id @default(uuid()) @db.Uuid
+  type        FormFieldType
+  index       Int               @default(-1)
+  name        String
+  description Json?
+  required    Boolean           @default(false)
+  private     Boolean           @default(false)
+  options     Json?
+  formId      String            @db.Uuid
+  form        Form              @relation(fields: [formId], references: [id], onDelete: Cascade)
+  answers     FormFieldAnswer[]
 }
 
 model FormFieldAnswer {

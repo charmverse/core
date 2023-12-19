@@ -21,7 +21,6 @@ CREATE TABLE "FormField" (
     "required" BOOLEAN NOT NULL DEFAULT false,
     "private" BOOLEAN NOT NULL DEFAULT false,
     "options" JSONB,
-    "parentFieldId" UUID,
     "formId" UUID NOT NULL,
 
     CONSTRAINT "FormField_pkey" PRIMARY KEY ("id")
