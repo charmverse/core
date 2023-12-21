@@ -22,7 +22,7 @@ export function generateCategoryIdQuery(categoryIds?: string | string[]): { in: 
  * */
 export function getCurrentEvaluation<
   T extends Pick<ProposalEvaluation, 'index' | 'result'> = Pick<ProposalEvaluation, 'index' | 'result'>
->(evaluations: T[]): T {
+>(evaluations: T[]): T | undefined {
   const sortedEvaluations = sortBy(evaluations, 'index');
   const currentEvaluation = sortedEvaluations.find((evaluation) => evaluation.result === 'fail' || !evaluation.result);
 
