@@ -18,16 +18,30 @@ import type { Resource } from './core/interfaces';
 
 export type PermissionsEngine = 'free' | 'premium';
 
+type SpaceMetaFields = Pick<Space, 'id' | 'paidTier' | 'domain'>;
+
+function spaceSelect() {
+  return {
+    select: {
+      id: true,
+      paidTier: true,
+      domain: true
+    } as Record<keyof SpaceMetaFields, boolean>
+  };
+}
+
 export type SpaceSubscriptionInfo = {
   spaceId: string;
+  domain: string;
   tier: SubscriptionTier;
   permissionType: PermissionsEngine;
 };
 
-function getEngine(input: Pick<Space, 'paidTier' | 'id'>): SpaceSubscriptionInfo {
+function getEngine(input: SpaceMetaFields): SpaceSubscriptionInfo {
   return {
     spaceId: input.id,
     tier: input.paidTier,
+    domain: input.domain,
     permissionType: input.paidTier === 'free' ? 'free' : 'premium'
   };
 }
@@ -38,12 +52,7 @@ async function isPostSpaceOptedIn({ resourceId }: Resource): Promise<SpaceSubscr
       id: resourceId
     },
     select: {
-      space: {
-        select: {
-          id: true,
-          paidTier: true
-        }
-      }
+      space: spaceSelect()
     }
   });
 
@@ -60,12 +69,7 @@ async function isPostCategorySpaceOptedIn({ resourceId }: Resource): Promise<Spa
       id: resourceId
     },
     select: {
-      space: {
-        select: {
-          id: true,
-          paidTier: true
-        }
-      }
+      space: spaceSelect()
     }
   });
 
@@ -81,10 +85,7 @@ async function isSpaceOptedIn({ resourceId }: Resource): Promise<SpaceSubscripti
     where: {
       id: resourceId
     },
-    select: {
-      id: true,
-      paidTier: true
-    }
+    ...spaceSelect()
   });
 
   if (!space) {
@@ -102,12 +103,7 @@ async function isPostCategoryPermissionSpaceOptedIn({ resourceId }: Resource): P
     select: {
       postCategory: {
         select: {
-          space: {
-            select: {
-              id: true,
-              paidTier: true
-            }
-          }
+          space: spaceSelect()
         }
       }
     }
@@ -126,12 +122,7 @@ async function isProposalSpaceOptedIn({ resourceId }: Resource): Promise<SpaceSu
       id: resourceId
     },
     select: {
-      space: {
-        select: {
-          id: true,
-          paidTier: true
-        }
-      }
+      space: spaceSelect()
     }
   });
 
@@ -148,12 +139,7 @@ async function isProposalCategorySpaceOptedIn({ resourceId }: Resource): Promise
       id: resourceId
     },
     select: {
-      space: {
-        select: {
-          id: true,
-          paidTier: true
-        }
-      }
+      space: spaceSelect()
     }
   });
 
@@ -172,12 +158,7 @@ async function isProposalCategoryPermissionSpaceOptedIn({ resourceId }: Resource
     select: {
       proposalCategory: {
         select: {
-          space: {
-            select: {
-              id: true,
-              paidTier: true
-            }
-          }
+          space: spaceSelect()
         }
       }
     }
@@ -196,12 +177,7 @@ async function isPageSpaceOptedIn({ resourceId }: Resource): Promise<SpaceSubscr
       id: resourceId
     },
     select: {
-      space: {
-        select: {
-          id: true,
-          paidTier: true
-        }
-      }
+      space: spaceSelect()
     }
   });
 
@@ -219,12 +195,7 @@ async function isPagePermissionSpaceOptedIn({ resourceId }: Resource): Promise<S
     select: {
       page: {
         select: {
-          space: {
-            select: {
-              id: true,
-              paidTier: true
-            }
-          }
+          space: spaceSelect()
         }
       }
     }
@@ -243,12 +214,7 @@ async function isBountySpaceOptedIn({ resourceId }: Resource): Promise<SpaceSubs
       id: resourceId
     },
     select: {
-      space: {
-        select: {
-          id: true,
-          paidTier: true
-        }
-      }
+      space: spaceSelect()
     }
   });
 
@@ -265,12 +231,7 @@ async function isVoteSpaceOptedIn({ resourceId }: Resource): Promise<SpaceSubscr
       id: resourceId
     },
     select: {
-      space: {
-        select: {
-          id: true,
-          paidTier: true
-        }
-      }
+      space: spaceSelect()
     }
   });
 
@@ -287,12 +248,7 @@ async function isRoleSpaceOptedIn({ resourceId }: Resource): Promise<SpaceSubscr
       id: resourceId
     },
     select: {
-      space: {
-        select: {
-          id: true,
-          paidTier: true
-        }
-      }
+      space: spaceSelect()
     }
   });
 
@@ -321,7 +277,7 @@ export type GetPermissionClient = {
   resourceIdType: ResourceIdEntity;
 };
 
-export async function getSpacePermissionsType({
+export async function getSpaceInfoViaResource({
   resourceId,
   resourceIdType
 }: GetPermissionClient): Promise<SpaceSubscriptionInfo> {

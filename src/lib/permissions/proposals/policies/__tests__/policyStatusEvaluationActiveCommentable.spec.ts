@@ -1,15 +1,16 @@
 import type { ProposalCategory, Space, User } from '@prisma/client';
 
-import type { ProposalWithUsers } from '../../../../proposals/interfaces';
+import { proposalResolver } from '..';
 import { generateProposal, generateProposalCategory } from '../../../../testing/proposals';
 import { generateSpaceUser, generateUserAndSpace } from '../../../../testing/user';
 import { AvailableSpacePermissions } from '../../../spaces/availableSpacePermissions';
 import { AvailableProposalPermissions } from '../../availableProposalPermissions.class';
 import type { ProposalPermissionFlags } from '../../interfaces';
 import { isProposalReviewer } from '../../isProposalReviewer';
+import type { ProposalResource } from '../interfaces';
 import { injectPolicyStatusEvaluationActiveCommentable } from '../policyStatusEvaluationActiveCommentable';
 
-let proposal: ProposalWithUsers;
+let proposal: ProposalResource;
 let proposalCategory: ProposalCategory;
 let space: Space;
 let adminUser: User;
@@ -48,7 +49,7 @@ beforeAll(async () => {
         id: proposalReviewer.id
       }
     ]
-  });
+  }).then((_proposal) => proposalResolver({ resourceId: _proposal.id }));
 });
 
 const fullPermissions = new AvailableProposalPermissions().full;
@@ -114,7 +115,7 @@ describe('policyStatusEvaluationActiveCommentable', () => {
           id: proposalAuthor.id
         }
       ]
-    });
+    }).then((_proposal) => proposalResolver({ resourceId: _proposal.id }));
 
     const permissions = await policyStatusEvaluationActiveCommentable({
       flags: { ...fullPermissions, move: false },
