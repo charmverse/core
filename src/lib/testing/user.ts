@@ -61,6 +61,7 @@ type CreateUserAndSpaceInput = {
   isGuest?: boolean;
   onboarded?: boolean;
   spaceName?: string;
+  domain?: string;
   publicBountyBoard?: boolean;
   publicProposals?: boolean;
   spacePaidTier?: SubscriptionTier;
@@ -73,6 +74,7 @@ export async function generateUserAndSpace({
   isGuest,
   onboarded = true,
   spaceName = 'Example Space',
+  domain,
   publicBountyBoard = false,
   publicProposals = false,
   spacePaidTier = 'community',
@@ -100,7 +102,7 @@ export async function generateUserAndSpace({
               updatedBy: userId,
               name: spaceName,
               // Adding prefix avoids this being evaluated as uuid
-              domain: `domain-${uuid()}`,
+              domain: domain ?? `domain-${uuid()}`,
               publicBountyBoard,
               publicProposals
             }

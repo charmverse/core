@@ -14,7 +14,7 @@ import { injectPolicyStatusReviewedOnlyCreateVote } from './policyStatusReviewed
 import { policyStatusVoteActiveOnlyVotable } from './policyStatusVoteActiveOnlyVotable';
 import { policyStatusVoteClosedViewOnly } from './policyStatusVoteClosedViewOnly';
 
-export function proposalResourceSelect(): Record<keyof ProposalResource, true> {
+export function proposalResourceSelect() {
   return {
     id: true,
     status: true,
@@ -23,7 +23,18 @@ export function proposalResourceSelect(): Record<keyof ProposalResource, true> {
     createdBy: true,
     authors: true,
     reviewers: true,
-    archived: true
+    archived: true,
+    evaluations: {
+      include: {
+        permissions: true,
+        reviewers: true
+      }
+    },
+    space: {
+      select: {
+        publicProposals: true
+      }
+    }
   };
 }
 
@@ -33,16 +44,7 @@ export async function proposalResolver({ resourceId }: Resource): Promise<Propos
   }
   const proposal = await prisma.proposal.findUnique({
     where: { id: resourceId },
-    select: {
-      id: true,
-      status: true,
-      categoryId: true,
-      spaceId: true,
-      createdBy: true,
-      authors: true,
-      reviewers: true,
-      archived: true
-    }
+    select: proposalResourceSelect()
   });
 
   if (!proposal) {

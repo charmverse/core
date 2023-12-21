@@ -15,14 +15,11 @@ import type {
   PagePermissionFlags
 } from '../interfaces';
 
-export type BasePagePermissionsClient = {
+export type PagePermissionsClient = {
   computePagePermissions: (request: PermissionCompute & ProposalPermissionsSwitch) => Promise<PagePermissionFlags>;
   bulkComputePagePermissions: (
     request: BulkPagePermissionCompute & ProposalPermissionsSwitch
   ) => Promise<BulkPagePermissionFlags>;
-};
-
-export type PremiumPagePermissionsClient = BasePagePermissionsClient & {
   upsertPagePermission: (request: PagePermissionAssignment) => Promise<AssignedPagePermission>;
   getAccessiblePageIds: (request: PagesRequest & ProposalPermissionsSwitch) => Promise<string[]>;
   deletePagePermission: (request: PermissionResource) => Promise<void>;

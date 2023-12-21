@@ -5,9 +5,9 @@ import { AbstractPermissionsApiClient } from '../../clients/abstractApiClient.cl
 import type { PermissionCompute } from '../../core/interfaces';
 import type { PublicBountyToggle, SpaceDefaultPublicPageToggle, SpacePermissionFlags } from '../interfaces';
 
-import type { PremiumSpacePermissionsClient } from './interfaces';
+import type { SpacePermissionsClient } from './interfaces';
 
-export class SpacePermissionsHttpClient extends AbstractPermissionsApiClient implements PremiumSpacePermissionsClient {
+export class SpacePermissionsHttpClient extends AbstractPermissionsApiClient implements SpacePermissionsClient {
   private get prefix() {
     return `${this.baseUrl}/api/spaces`;
   }

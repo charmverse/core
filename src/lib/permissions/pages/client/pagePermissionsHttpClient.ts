@@ -20,9 +20,9 @@ import type {
   PagePermissionFlags
 } from '../interfaces';
 
-import type { PremiumPagePermissionsClient } from './interfaces';
+import type { PagePermissionsClient } from './interfaces';
 
-export class PagePermissionsHttpClient extends AbstractPermissionsApiClient implements PremiumPagePermissionsClient {
+export class PagePermissionsHttpClient extends AbstractPermissionsApiClient implements PagePermissionsClient {
   private get prefix() {
     return `${this.baseUrl}/api/pages`;
   }
