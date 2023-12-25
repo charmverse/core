@@ -48,7 +48,6 @@ export type ProposalCategoryQuery = string | string[] | undefined;
 export type ListProposalsRequest = {
   userId?: string;
   spaceId: string;
-  categoryIds?: ProposalCategoryQuery;
   onlyAssigned?: boolean;
 };
 
