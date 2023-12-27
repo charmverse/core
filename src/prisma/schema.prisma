@@ -145,6 +145,7 @@ enum SpaceOperation {
   deleteAnyPage
   deleteAnyBounty
   deleteAnyProposal
+  createProposals
 }
 
 enum ProfileItemType {
