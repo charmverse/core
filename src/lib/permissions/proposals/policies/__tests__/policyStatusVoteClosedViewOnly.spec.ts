@@ -1,7 +1,7 @@
 import type { ProposalCategory, Space, User } from '@prisma/client';
 
 import { proposalResolver } from '..';
-import { generateProposal, generateProposalCategory } from '../../../../testing/proposals';
+import { generateProposal } from '../../../../testing/proposals';
 import { generateSpaceUser, generateUserAndSpace } from '../../../../testing/user';
 import { AvailableSpacePermissions } from '../../../spaces/availableSpacePermissions';
 import { AvailableProposalPermissions } from '../../availableProposalPermissions.class';
@@ -28,12 +28,7 @@ beforeAll(async () => {
   spaceMember = await generateSpaceUser({ isAdmin: false, spaceId: space.id });
   proposalReviewer = await generateSpaceUser({ isAdmin: false, spaceId: space.id });
 
-  proposalCategory = await generateProposalCategory({
-    spaceId: space.id
-  });
-
   proposal = await generateProposal({
-    categoryId: proposalCategory.id,
     authors: [proposalAuthor.id],
     proposalStatus: 'vote_closed',
     spaceId: space.id,

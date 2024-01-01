@@ -1,9 +1,9 @@
 // File: __tests__/getProposalFlagFilters.test.ts
 
-import type { ProposalCategory, ProposalStatus, Space, User } from '@prisma/client';
+import type { ProposalStatus, Space, User } from '@prisma/client';
 
 import { prisma } from '../../../../prisma-client';
-import { generateProposal, generateProposalCategory } from '../../../testing/proposals';
+import { generateProposal } from '../../../testing/proposals';
 import { generateSpaceUser, generateUserAndSpace } from '../../../testing/user';
 import { hasAccessToSpace } from '../../hasAccessToSpace';
 import { AvailableProposalPermissions } from '../availableProposalPermissions.class';
@@ -18,7 +18,6 @@ let reviewerUser: User;
 let authorAndReviewerUser: User;
 let spaceMember: User;
 let space: Space;
-let proposalCategory: ProposalCategory;
 let proposalFlowFlagFilters: Record<ProposalStatus, (args: GetFlagsInput) => Promise<ProposalFlowPermissionFlags>>;
 
 beforeAll(async () => {
@@ -28,12 +27,6 @@ beforeAll(async () => {
   reviewerUser = await generateSpaceUser({ isAdmin: false, spaceId: space.id });
   spaceMember = await generateSpaceUser({ isAdmin: false, spaceId: space.id });
   authorAndReviewerUser = await generateSpaceUser({ isAdmin: false, spaceId: space.id });
-
-  // Generate a mock proposal linked to the space
-  proposalCategory = await generateProposalCategory({
-    spaceId: space.id,
-    proposalCategoryPermissions: [{ assignee: { group: 'space', id: space.id }, permissionLevel: 'full_access' }]
-  });
 
   proposalFlowFlagFilters = await getProposalFlagFilters({
     isProposalReviewer,
@@ -45,7 +38,6 @@ beforeAll(async () => {
         select: {
           id: true,
           status: true,
-          categoryId: true,
           spaceId: true,
           createdBy: true,
           authors: true,
@@ -105,7 +97,6 @@ describe('getProposalFlagFilters', () => {
     const proposal = await generateProposal({
       spaceId: space.id,
       userId: proposalAuthor.id,
-      categoryId: proposalCategory.id,
       proposalStatus,
       authors: [authorAndReviewerUser.id],
       reviewers: [
@@ -141,7 +132,6 @@ describe('getProposalFlagFilters', () => {
     const proposal = await generateProposal({
       spaceId: space.id,
       userId: proposalAuthor.id,
-      categoryId: proposalCategory.id,
       proposalStatus,
       authors: [authorAndReviewerUser.id],
       reviewers: [
@@ -179,7 +169,6 @@ describe('getProposalFlagFilters', () => {
     const proposal = await generateProposal({
       spaceId: space.id,
       userId: proposalAuthor.id,
-      categoryId: proposalCategory.id,
       proposalStatus,
       authors: [authorAndReviewerUser.id],
       reviewers: [
@@ -219,7 +208,6 @@ describe('getProposalFlagFilters', () => {
     const proposal = await generateProposal({
       spaceId: space.id,
       userId: proposalAuthor.id,
-      categoryId: proposalCategory.id,
       proposalStatus,
       authors: [authorAndReviewerUser.id],
       reviewers: [
@@ -257,7 +245,6 @@ describe('getProposalFlagFilters', () => {
     const proposal = await generateProposal({
       spaceId: space.id,
       userId: proposalAuthor.id,
-      categoryId: proposalCategory.id,
       proposalStatus,
       authors: [authorAndReviewerUser.id],
       reviewers: [
@@ -293,7 +280,6 @@ describe('getProposalFlagFilters', () => {
     const proposal = await generateProposal({
       spaceId: space.id,
       userId: proposalAuthor.id,
-      categoryId: proposalCategory.id,
       proposalStatus,
       authors: [authorAndReviewerUser.id],
       reviewers: [
@@ -329,7 +315,6 @@ describe('getProposalFlagFilters', () => {
       const proposal = await generateProposal({
         spaceId: space.id,
         userId: proposalAuthor.id,
-        categoryId: proposalCategory.id,
         proposalStatus,
         evaluationType: 'rubric',
         authors: [authorAndReviewerUser.id],
@@ -372,7 +357,6 @@ describe('getProposalFlagFilters', () => {
       const proposal = await generateProposal({
         spaceId: space.id,
         userId: proposalAuthor.id,
-        categoryId: proposalCategory.id,
         proposalStatus,
         authors: [authorAndReviewerUser.id],
         reviewers: [
@@ -414,7 +398,6 @@ describe('getProposalFlagFilters', () => {
       const proposal = await generateProposal({
         spaceId: space.id,
         userId: proposalAuthor.id,
-        categoryId: proposalCategory.id,
         proposalStatus,
         authors: [authorAndReviewerUser.id],
         reviewers: [
