@@ -1,4 +1,4 @@
-import type { ProposalCategory, Space, User } from '@prisma/client';
+import type { Space, User } from '@prisma/client';
 
 import { proposalResolver } from '..';
 import { generateProposal } from '../../../../testing/proposals';
@@ -10,7 +10,6 @@ import type { ProposalResource } from '../interfaces';
 import { policyStatusVoteClosedViewOnly } from '../policyStatusVoteClosedViewOnly';
 
 let proposal: ProposalResource;
-let proposalCategory: ProposalCategory;
 let space: Space;
 let adminUser: User;
 let proposalAuthor: User;
