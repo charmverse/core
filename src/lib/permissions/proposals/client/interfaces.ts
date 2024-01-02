@@ -1,10 +1,9 @@
 import type { ListProposalsRequest } from '../../../proposals/interfaces';
-import type { PermissionCompute, Resource } from '../../core/interfaces';
-import type { ProposalPermissionFlags, ProposalPermissionsSwitch, ProposalReviewerPool } from '../interfaces';
+import type { PermissionCompute } from '../../core/interfaces';
+import type { ProposalPermissionFlags, ProposalPermissionsSwitch } from '../interfaces';
 
-export type BaseProposalPermissionsClient = {
-  getProposalReviewerPool: (request: Resource) => Promise<ProposalReviewerPool>;
-};
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type BaseProposalPermissionsClient = {};
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type PremiumProposalPermissionsClient = BaseProposalPermissionsClient & {
   computeProposalPermissions: (
