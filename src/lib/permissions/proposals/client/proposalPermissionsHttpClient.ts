@@ -4,7 +4,6 @@ import { AbstractPermissionsApiClient } from '../../clients/abstractApiClient.cl
 import type { PermissionsApiClientConstructor } from '../../clients/interfaces';
 import type { PermissionCompute, Resource } from '../../core/interfaces';
 import type { ProposalPermissionFlags, ProposalReviewerPool } from '../interfaces';
-import type { ProposalFlowPermissionFlags } from '../proposalFlowFlags';
 
 import type { PremiumProposalPermissionsClient } from './interfaces';
 
@@ -39,9 +38,5 @@ export class ProposalPermissionsHttpClient
 
   computeBaseProposalPermissions(request: PermissionCompute): Promise<ProposalPermissionFlags> {
     return GET(`${this.prefix}/compute-base-proposal-permissions`, request);
-  }
-
-  computeProposalFlowPermissions(request: PermissionCompute): Promise<ProposalFlowPermissionFlags> {
-    return GET(`${this.prefix}/compute-proposal-flow-permissions`, request);
   }
 }
