@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.16.3",
+  "version": "0.16.4-rc-feat-remove-pro.0",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
