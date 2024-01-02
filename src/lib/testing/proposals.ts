@@ -336,10 +336,6 @@ export async function generateProposalTemplate({
   reviewers,
   categoryId
 }: GenerateProposalInput): Promise<ProposalWithUsers> {
-  if (!categoryId) {
-    throw new InvalidInputError('Proposal category is required');
-  }
-
   const proposal = await generateProposal({
     categoryId,
     spaceId,
