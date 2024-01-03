@@ -1,7 +1,7 @@
-import type { ProposalCategory, Space, User } from '@prisma/client';
+import type { Space, User } from '@prisma/client';
 
 import { proposalResolver } from '..';
-import { generateProposal, generateProposalCategory } from '../../../../testing/proposals';
+import { generateProposal } from '../../../../testing/proposals';
 import { generateSpaceUser, generateUserAndSpace } from '../../../../testing/user';
 import { AvailableSpacePermissions } from '../../../spaces/availableSpacePermissions';
 import { AvailableProposalPermissions } from '../../availableProposalPermissions.class';
@@ -11,7 +11,6 @@ import type { ProposalResource } from '../interfaces';
 import { injectPolicyStatusReviewCommentable } from '../policyStatusReviewCommentable';
 
 let proposal: ProposalResource;
-let proposalCategory: ProposalCategory;
 let space: Space;
 let adminUser: User;
 let proposalAuthor: User;
@@ -33,12 +32,7 @@ beforeAll(async () => {
   spaceMember = await generateSpaceUser({ isAdmin: false, spaceId: space.id });
   proposalReviewer = await generateSpaceUser({ isAdmin: false, spaceId: space.id });
 
-  proposalCategory = await generateProposalCategory({
-    spaceId: space.id
-  });
-
   proposal = await generateProposal({
-    categoryId: proposalCategory.id,
     authors: [proposalAuthor.id],
     proposalStatus: 'review',
     spaceId: space.id,
@@ -104,7 +98,6 @@ describe('policyStatusReviewCommentable', () => {
 
   it('should allow a user who is author and reviewer to view, comment, delete, review, make public, archive and unarchive', async () => {
     const proposalWithSameAuthorReviewer = await generateProposal({
-      categoryId: proposalCategory.id,
       authors: [proposalAuthor.id],
       proposalStatus: 'review',
       spaceId: space.id,
