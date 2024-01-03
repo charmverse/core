@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.16.3-rc-simplify-evalua.0",
+  "version": "0.16.3-rc-simplify-evalua.1",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
