@@ -1,4 +1,12 @@
-import type { Page, Post, Prisma, ProposalCategory, ProposalStatus, ProposalEvaluationType } from '@prisma/client';
+import type {
+  Page,
+  Post,
+  Prisma,
+  ProposalCategory,
+  ProposalEvaluation,
+  ProposalStatus,
+  ProposalEvaluationType
+} from '@prisma/client';
 import { ProposalSystemRole } from '@prisma/client';
 import type { TargetPermissionGroup } from 'permissions';
 import { v4 as uuid } from 'uuid';
@@ -7,7 +15,12 @@ import { prisma } from '../../prisma-client';
 import { randomThemeColor } from '../branding/colors';
 import { InvalidInputError } from '../errors';
 import type { ProposalCategoryPermissionAssignment } from '../permissions/proposals/interfaces';
-import type { ProposalReviewerInput, ProposalWithUsers, PermissionJson } from '../proposals/interfaces';
+import type {
+  ProposalReviewerInput,
+  ProposalWithUsers,
+  PermissionJson,
+  WorkflowEvaluationJson
+} from '../proposals/interfaces';
 
 import { generatePage } from './pages';
 
@@ -80,6 +93,9 @@ export type GenerateProposalInput = {
   evaluationInputs?: ProposalEvaluationTestInput[];
 };
 
+type TypedEvaluation = ProposalEvaluation & { permissions: PermissionJson[] };
+type GenerateProposalResponse = ProposalWithUsers & { page: Page; evaluations: TypedEvaluation[] };
+
 /**
  * Creates a proposal with the linked authors and reviewers
  *
@@ -100,7 +116,7 @@ export async function generateProposal({
   customProperties,
   snapshotProposalId,
   evaluationInputs
-}: GenerateProposalInput): Promise<ProposalWithUsers & { page: Page }> {
+}: GenerateProposalInput): Promise<GenerateProposalResponse> {
   if (reviewers && evaluationInputs) {
     throw new InvalidInputError(
       'Cannot define both reviewers and evaluationInputs. Reviewers are a legacy feature. For new proposal tests, you should use the evaluation inputs field'
@@ -243,12 +259,17 @@ export async function generateProposal({
     include: {
       category: true,
       authors: true,
+      evaluations: {
+        include: {
+          permissions: true
+        }
+      },
       reviewers: true,
       page: true
     }
   });
 
-  return result as ProposalWithUsers & { page: Page };
+  return result as GenerateProposalResponse;
 }
 export async function convertPostToProposal({
   post,

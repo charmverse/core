@@ -18,7 +18,7 @@
     }
   },
   "editor.codeActionsOnSave": {
-    "source.organizeImports": false
+    "source.organizeImports": "never"
   },
   "editor.detectIndentation": false,
   "editor.tabSize": 2,
@@ -28,5 +28,10 @@
   "typescript.tsdk": "node_modules/typescript/lib",
   "[prisma]": {
     "editor.defaultFormatter": "Prisma.prisma"
+  },
+  "[javascript][typescript][typescriptreact]": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "explicit"
+    }
   }
 }
