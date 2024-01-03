@@ -48,6 +48,12 @@ export class ProposalPermissionsHttpClient
     return GET(`${this.prefix}/compute-proposal-permissions`, request);
   }
 
+  computeAllProposalEvaluationPermissions(
+    request: PermissionCompute
+  ): Promise<Record<string, ProposalPermissionFlags>> {
+    return GET(`${this.prefix}/compute-all-proposal-evaluation-permissions`, request);
+  }
+
   computeProposalEvaluationPermissions(request: PermissionCompute): Promise<ProposalPermissionFlags> {
     return GET(`${this.prefix}/compute-proposal-evaluation-permissions`, request);
   }
