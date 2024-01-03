@@ -17,7 +17,7 @@ import { InvalidInputError } from '../../errors';
 import type { ProposalWithUsers } from '../../proposals/interfaces';
 import { generateRole } from '../members';
 import type { GenerateProposalInput, ProposalEvaluationTestInput } from '../proposals';
-import { generateProposalCategory, generateProposal } from '../proposals';
+import { generateProposal } from '../proposals';
 import { generateSpaceUser, generateUserAndSpace } from '../user';
 
 describe('generateProposal', () => {
@@ -31,9 +31,6 @@ describe('generateProposal', () => {
     role = await generateRole({
       spaceId: space.id,
       createdBy: user.id
-    });
-    proposalCategory = await generateProposalCategory({
-      spaceId: space.id
     });
   });
   it('should generate a proposal with specific parameters, and return the extended proposal and page data', async () => {
@@ -58,7 +55,6 @@ describe('generateProposal', () => {
       authors: [user.id, otherUser.id],
       proposalStatus: 'review',
       reviewers: [{ group: 'role', id: role.id }],
-      categoryId: proposalCategory.id,
       archived: true,
       customProperties
     };
@@ -78,7 +74,6 @@ describe('generateProposal', () => {
         status: proposalInput.proposalStatus as ProposalStatus,
         snapshotProposalExpiry: null,
         archived: proposalInput.archived as boolean,
-        categoryId: proposalInput.categoryId as string,
         spaceId: space.id,
         category: proposalCategory,
         page: expect.any(Object),
@@ -185,7 +180,6 @@ describe('generateProposal', () => {
       userId: user.id,
       authors: [user.id],
       proposalStatus: 'review',
-      categoryId: proposalCategory.id,
       archived: true,
       customProperties,
       // These 2 fields should not be provided together. This allows us to migrate testing towards the new proposal model while maintaining retrocompatibility
@@ -372,7 +366,6 @@ describe('generateProposal', () => {
       userId: user.id,
       authors: [user.id],
       proposalStatus: 'review',
-      categoryId: proposalCategory.id,
       archived: true,
       customProperties,
       // These 2 fields should not be provided together. This allows us to migrate testing towards the new proposal model while maintaining retrocompatibility

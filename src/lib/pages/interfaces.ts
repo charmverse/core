@@ -89,6 +89,7 @@ export type PageMeta = Pick<
   | 'hasContent'
   | 'galleryImage'
   | 'syncWithPageId'
+  | 'sourceTemplateId'
 >;
 
 export type PagePermissionData = PagePermission & { sourcePermission: PagePermission | null };

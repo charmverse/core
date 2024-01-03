@@ -1,5 +1,3 @@
-import type { ProposalPermissionsSwitch } from 'permissions';
-
 import type {
   PageMetaWithPermissions,
   PagesRequest,
@@ -16,12 +14,10 @@ import type {
 } from '../interfaces';
 
 export type PagePermissionsClient = {
-  computePagePermissions: (request: PermissionCompute & ProposalPermissionsSwitch) => Promise<PagePermissionFlags>;
-  bulkComputePagePermissions: (
-    request: BulkPagePermissionCompute & ProposalPermissionsSwitch
-  ) => Promise<BulkPagePermissionFlags>;
+  computePagePermissions: (request: PermissionCompute) => Promise<PagePermissionFlags>;
+  bulkComputePagePermissions: (request: BulkPagePermissionCompute) => Promise<BulkPagePermissionFlags>;
   upsertPagePermission: (request: PagePermissionAssignment) => Promise<AssignedPagePermission>;
-  getAccessiblePageIds: (request: PagesRequest & ProposalPermissionsSwitch) => Promise<string[]>;
+  getAccessiblePageIds: (request: PagesRequest) => Promise<string[]>;
   deletePagePermission: (request: PermissionResource) => Promise<void>;
   listPagePermissions: (request: Resource) => Promise<AssignedPagePermission[]>;
   lockPagePermissionsToBountyCreator: (request: Resource) => Promise<PageMetaWithPermissions>;
