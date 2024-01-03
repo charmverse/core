@@ -5,9 +5,11 @@ import type {
   ProposalAuthor,
   ProposalEvaluation,
   ProposalEvaluationPermission,
+  ProposalEvaluationType,
   ProposalReviewer,
   ProposalWorkflow
 } from '@prisma/client';
+import type { ProposalPermissionFlags } from 'permissions';
 
 import type { AssignablePermissionGroups } from '../permissions/core/interfaces';
 
@@ -34,6 +36,12 @@ export interface ProposalWithUsers extends Proposal, ProposalWithCategory {
   authors: ProposalAuthor[];
   reviewers: ProposalReviewer[];
   rewardIds?: string[] | null;
+}
+
+export interface ProposalWithUsersLite extends ProposalWithUsers {
+  currentEvaluationId?: string;
+  evaluationType: ProposalEvaluationType;
+  permissions: ProposalPermissionFlags;
 }
 
 export interface ProposalWithCommentsAndUsers extends ProposalWithUsers {
