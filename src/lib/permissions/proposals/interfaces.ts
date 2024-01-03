@@ -66,12 +66,3 @@ export type ProposalReviewerPool = {
   userIds: string[];
   roleIds: string[];
 };
-
-/**
- * This is an interim type while we switch over from the category to evaluation-based permissions
- *
- * Pass true to opt in a permission compute request into the new system
- */
-export type ProposalPermissionsSwitch = {
-  useProposalEvaluationPermissions?: boolean;
-};
