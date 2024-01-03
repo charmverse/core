@@ -45,8 +45,7 @@ beforeAll(async () => {
     userId: proposalAuthor.id,
     reviewers: [
       {
-        group: 'user',
-        id: proposalReviewer.id
+        userId: proposalReviewer.id
       }
     ]
   }).then((_proposal) => proposalResolver({ resourceId: _proposal.id }));

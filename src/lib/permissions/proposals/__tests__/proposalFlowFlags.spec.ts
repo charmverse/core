@@ -108,10 +108,7 @@ describe('getProposalFlagFilters', () => {
       categoryId: proposalCategory.id,
       proposalStatus,
       authors: [authorAndReviewerUser.id],
-      reviewers: [
-        { group: 'user', id: reviewerUser.id },
-        { group: 'user', id: authorAndReviewerUser.id }
-      ]
+      reviewers: [{ userId: reviewerUser.id }, { userId: authorAndReviewerUser.id }]
     });
 
     // Check for author permissions
@@ -144,10 +141,7 @@ describe('getProposalFlagFilters', () => {
       categoryId: proposalCategory.id,
       proposalStatus,
       authors: [authorAndReviewerUser.id],
-      reviewers: [
-        { group: 'user', id: reviewerUser.id },
-        { group: 'user', id: authorAndReviewerUser.id }
-      ]
+      reviewers: [{ userId: reviewerUser.id }, { userId: authorAndReviewerUser.id }]
     });
 
     // Check for author permissions
@@ -182,10 +176,7 @@ describe('getProposalFlagFilters', () => {
       categoryId: proposalCategory.id,
       proposalStatus,
       authors: [authorAndReviewerUser.id],
-      reviewers: [
-        { group: 'user', id: reviewerUser.id },
-        { group: 'user', id: authorAndReviewerUser.id }
-      ]
+      reviewers: [{ userId: reviewerUser.id }, { userId: authorAndReviewerUser.id }]
     });
 
     // Check for author permissions
@@ -222,10 +213,7 @@ describe('getProposalFlagFilters', () => {
       categoryId: proposalCategory.id,
       proposalStatus,
       authors: [authorAndReviewerUser.id],
-      reviewers: [
-        { group: 'user', id: reviewerUser.id },
-        { group: 'user', id: authorAndReviewerUser.id }
-      ]
+      reviewers: [{ userId: reviewerUser.id }, { userId: authorAndReviewerUser.id }]
     });
 
     // Check for author permissions
@@ -260,10 +248,7 @@ describe('getProposalFlagFilters', () => {
       categoryId: proposalCategory.id,
       proposalStatus,
       authors: [authorAndReviewerUser.id],
-      reviewers: [
-        { group: 'user', id: reviewerUser.id },
-        { group: 'user', id: authorAndReviewerUser.id }
-      ]
+      reviewers: [{ userId: reviewerUser.id }, { userId: authorAndReviewerUser.id }]
     });
 
     // Check for author permissions
@@ -296,10 +281,7 @@ describe('getProposalFlagFilters', () => {
       categoryId: proposalCategory.id,
       proposalStatus,
       authors: [authorAndReviewerUser.id],
-      reviewers: [
-        { group: 'user', id: reviewerUser.id },
-        { group: 'user', id: authorAndReviewerUser.id }
-      ]
+      reviewers: [{ userId: reviewerUser.id }, { userId: authorAndReviewerUser.id }]
     });
 
     // Check for author permissions
@@ -333,10 +315,7 @@ describe('getProposalFlagFilters', () => {
         proposalStatus,
         evaluationType: 'rubric',
         authors: [authorAndReviewerUser.id],
-        reviewers: [
-          { group: 'user', id: reviewerUser.id },
-          { group: 'user', id: authorAndReviewerUser.id }
-        ]
+        reviewers: [{ userId: reviewerUser.id }, { userId: authorAndReviewerUser.id }]
       });
 
       // Check for author permissions
@@ -375,10 +354,7 @@ describe('getProposalFlagFilters', () => {
         categoryId: proposalCategory.id,
         proposalStatus,
         authors: [authorAndReviewerUser.id],
-        reviewers: [
-          { group: 'user', id: reviewerUser.id },
-          { group: 'user', id: authorAndReviewerUser.id }
-        ]
+        reviewers: [{ userId: reviewerUser.id }, { userId: authorAndReviewerUser.id }]
       });
 
       // Check for author permissions
@@ -417,10 +393,7 @@ describe('getProposalFlagFilters', () => {
         categoryId: proposalCategory.id,
         proposalStatus,
         authors: [authorAndReviewerUser.id],
-        reviewers: [
-          { group: 'user', id: reviewerUser.id },
-          { group: 'user', id: authorAndReviewerUser.id }
-        ]
+        reviewers: [{ userId: reviewerUser.id }, { userId: authorAndReviewerUser.id }]
       });
 
       // Check for author permissions

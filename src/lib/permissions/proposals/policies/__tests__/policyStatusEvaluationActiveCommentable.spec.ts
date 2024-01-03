@@ -45,8 +45,7 @@ beforeAll(async () => {
     userId: proposalAuthor.id,
     reviewers: [
       {
-        group: 'user',
-        id: proposalReviewer.id
+        userId: proposalReviewer.id
       }
     ]
   }).then((_proposal) => proposalResolver({ resourceId: _proposal.id }));
@@ -111,8 +110,7 @@ describe('policyStatusEvaluationActiveCommentable', () => {
       userId: proposalAuthor.id,
       reviewers: [
         {
-          group: 'user',
-          id: proposalAuthor.id
+          userId: proposalAuthor.id
         }
       ]
     }).then((_proposal) => proposalResolver({ resourceId: _proposal.id }));

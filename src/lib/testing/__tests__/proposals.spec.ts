@@ -57,7 +57,7 @@ describe('generateProposal', () => {
       userId: user.id,
       authors: [user.id, otherUser.id],
       proposalStatus: 'review',
-      reviewers: [{ group: 'role', id: role.id }],
+      reviewers: [{ roleId: role.id }],
       categoryId: proposalCategory.id,
       archived: true,
       customProperties

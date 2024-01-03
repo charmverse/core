@@ -9,12 +9,7 @@ import type {
   ProposalWorkflow
 } from '@prisma/client';
 
-import type { AssignablePermissionGroups } from '../permissions/core/interfaces';
-
-export interface ProposalReviewerInput {
-  group: Extract<AssignablePermissionGroups, 'role' | 'user'>;
-  id: string;
-}
+export type ProposalReviewerInput = Partial<Pick<ProposalReviewer, 'userId' | 'roleId' | 'systemRole'>>;
 
 export interface NewProposalCategory {
   title: string;

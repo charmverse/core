@@ -140,12 +140,7 @@ export async function generateProposal({
         ? undefined
         : {
             createMany: {
-              data: (reviewers ?? []).map((r) => {
-                return {
-                  userId: r.group === 'user' ? r.id : undefined,
-                  roleId: r.group === 'role' ? r.id : undefined
-                };
-              })
+              data: reviewers
             }
           }
     }
