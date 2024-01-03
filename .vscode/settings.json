@@ -17,9 +17,6 @@
       "source.fixAll.eslint": true
     }
   },
-  "editor.codeActionsOnSave": {
-    "source.organizeImports": "never"
-  },
   "editor.detectIndentation": false,
   "editor.tabSize": 2,
   "jestrunner.jestCommand": "dotenv -e .env.test.local -- node --experimental-vm-modules 'node_modules/.bin/jest'",
