@@ -144,7 +144,7 @@ describe('generateProposal', () => {
     const evaluationSteps: ProposalEvaluationTestInput[] = [
       {
         completedAt: new Date(),
-        evaluationType: 'rubric',
+        type: 'rubric',
         rubricCriteria: [{ title: 'Vibe', description: 'How vibey is this proposal?' }],
         permissions: [
           { systemRole: 'current_reviewer', operation: 'comment' },
@@ -159,7 +159,7 @@ describe('generateProposal', () => {
         // The method should take the provided uuid or assign a new one automatically if missing
         id: uuid(),
         completedAt: new Date(),
-        evaluationType: 'pass_fail',
+        type: 'pass_fail',
         result: 'pass',
         permissions: [
           { systemRole: 'current_reviewer', operation: 'comment' },
@@ -169,7 +169,7 @@ describe('generateProposal', () => {
       },
       {
         title: 'Final vote',
-        evaluationType: 'vote',
+        type: 'vote',
         permissions: [{ systemRole: 'current_reviewer', operation: 'comment' }],
         reviewers: [{ group: 'space_member' }],
         snapshotId: uuid(),

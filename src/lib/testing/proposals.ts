@@ -49,10 +49,9 @@ export type ProposalWithUsersAndPageMeta = ProposalWithUsers & { page: Pick<Page
 export type ProposalEvaluationTestInput = Partial<
   Pick<
     Prisma.ProposalEvaluationCreateManyInput,
-    'id' | 'title' | 'completedAt' | 'snapshotExpiry' | 'snapshotId' | 'result' | 'voteId'
+    'id' | 'title' | 'completedAt' | 'snapshotExpiry' | 'snapshotId' | 'result' | 'voteId' | 'type'
   >
 > & {
-  evaluationType: ProposalEvaluationType;
   rubricCriteria?: Partial<
     Pick<Prisma.ProposalRubricCriteriaCreateManyInput, 'title' | 'description' | 'parameters'>
   >[];
@@ -219,8 +218,8 @@ export async function generateProposal({
               id: input.id,
               index: input.index,
               proposalId,
-              title: input.title ?? input.evaluationType,
-              type: input.evaluationType,
+              title: input.title ?? input.type,
+              type: input.type,
               completedAt: input.completedAt,
               result: input.result,
               snapshotExpiry: input.snapshotExpiry,
