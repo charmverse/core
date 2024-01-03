@@ -147,8 +147,8 @@ describe('generateProposal', () => {
         evaluationType: 'rubric',
         rubricCriteria: [{ title: 'Vibe', description: 'How vibey is this proposal?' }],
         permissions: [
-          { assignee: { group: 'current_reviewer' }, operation: 'comment' },
-          { assignee: { group: 'author' }, operation: 'edit' }
+          { systemRole: 'current_reviewer', operation: 'comment' },
+          { systemRole: 'author', operation: 'edit' }
         ],
         reviewers: [
           { group: 'role', id: role.id },
@@ -162,15 +162,15 @@ describe('generateProposal', () => {
         evaluationType: 'pass_fail',
         result: 'pass',
         permissions: [
-          { assignee: { group: 'current_reviewer' }, operation: 'comment' },
-          { assignee: { group: 'current_reviewer' }, operation: 'move' }
+          { systemRole: 'current_reviewer', operation: 'comment' },
+          { systemRole: 'current_reviewer', operation: 'move' }
         ],
         reviewers: [{ group: 'role', id: role.id }]
       },
       {
         title: 'Final vote',
         evaluationType: 'vote',
-        permissions: [{ assignee: { group: 'current_reviewer' }, operation: 'comment' }],
+        permissions: [{ systemRole: 'current_reviewer', operation: 'comment' }],
         reviewers: [{ group: 'space_member' }],
         snapshotId: uuid(),
         snapshotExpiry: new Date(),

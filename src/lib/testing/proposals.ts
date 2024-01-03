@@ -1,12 +1,4 @@
-import type {
-  Page,
-  Post,
-  Prisma,
-  ProposalCategory,
-  ProposalStatus,
-  ProposalEvaluationType,
-  ProposalOperation
-} from '@prisma/client';
+import type { Page, Post, Prisma, ProposalCategory, ProposalStatus, ProposalEvaluationType } from '@prisma/client';
 import { ProposalSystemRole } from '@prisma/client';
 import type { TargetPermissionGroup } from 'permissions';
 import { v4 as uuid } from 'uuid';
@@ -15,7 +7,7 @@ import { prisma } from '../../prisma-client';
 import { randomThemeColor } from '../branding/colors';
 import { InvalidInputError } from '../errors';
 import type { ProposalCategoryPermissionAssignment } from '../permissions/proposals/interfaces';
-import type { ProposalReviewerInput, ProposalWithUsers } from '../proposals/interfaces';
+import type { ProposalReviewerInput, ProposalWithUsers, PermissionJson } from '../proposals/interfaces';
 
 import { generatePage } from './pages';
 
@@ -65,10 +57,7 @@ export type ProposalEvaluationTestInput = Partial<
     Pick<Prisma.ProposalRubricCriteriaCreateManyInput, 'title' | 'description' | 'parameters'>
   >[];
   reviewers: ({ group: Extract<ProposalSystemRole, 'space_member'> } | TargetPermissionGroup<'role' | 'user'>)[];
-  permissions: {
-    assignee: { group: ProposalSystemRole } | TargetPermissionGroup<'role' | 'user'>;
-    operation: Extract<ProposalOperation, 'edit' | 'view' | 'move' | 'comment'>;
-  }[];
+  permissions: PermissionJson[];
 };
 
 /**
@@ -201,18 +190,10 @@ export async function generateProposal({
 
     const evaluationPermissionsToCreate: Prisma.ProposalEvaluationPermissionCreateManyInput[] =
       evaluationInputsWithIdAndIndex.flatMap((input) =>
-        input.permissions.map(
-          (evaluationPermission) =>
-            ({
-              evaluationId: input.id,
-              operation: evaluationPermission.operation,
-              roleId: evaluationPermission.assignee.group === 'role' ? evaluationPermission.assignee.id : undefined,
-              userId: evaluationPermission.assignee.group === 'user' ? evaluationPermission.assignee.id : undefined,
-              systemRole: ProposalSystemRole[evaluationPermission.assignee.group as ProposalSystemRole]
-                ? evaluationPermission.assignee.group
-                : undefined
-            }) as Prisma.ProposalEvaluationPermissionCreateManyInput
-        )
+        input.permissions.map((evaluationPermission) => ({
+          ...evaluationPermission,
+          evaluationId: input.id
+        }))
       );
 
     const evaluationReviewersToCreate: Prisma.ProposalReviewerCreateManyInput[] =
