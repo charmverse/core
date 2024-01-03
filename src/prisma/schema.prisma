@@ -266,6 +266,7 @@ enum SubscriptionPeriod {
 enum TokenGateType {
   lit
   unlock
+  hypersub
 }
 
 model Space {
