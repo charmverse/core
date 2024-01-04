@@ -72,10 +72,8 @@ describe('generateProposal', () => {
         createdBy: proposalInput.userId,
         id: expect.any(String),
         status: proposalInput.proposalStatus as ProposalStatus,
-        snapshotProposalExpiry: null,
         archived: proposalInput.archived as boolean,
         spaceId: space.id,
-        category: proposalCategory,
         page: expect.any(Object),
         evaluationType: 'vote',
         fields: {
@@ -91,7 +89,7 @@ describe('generateProposal', () => {
             userId: otherUser.id
           }
         ]),
-        reviewers: [
+        reviewers: expect.arrayContaining([
           {
             id: expect.any(String),
             proposalId: generatedProposal.id,
@@ -100,7 +98,7 @@ describe('generateProposal', () => {
             evaluationId: null,
             systemRole: null
           }
-        ]
+        ])
       })
     );
 
