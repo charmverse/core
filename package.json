@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.20.0",
+  "version": "0.20.1-rc-update-prisma-c.0",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
