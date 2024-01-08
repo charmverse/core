@@ -1,11 +1,20 @@
-import type { Page, Post, Prisma, ProposalStatus, ProposalEvaluationType, ProposalOperation } from '@prisma/client';
+import type {
+  Page,
+  Post,
+  Prisma,
+  ProposalEvaluation,
+  ProposalEvaluationType,
+  ProposalOperation,
+  ProposalReviewer,
+  ProposalStatus
+} from '@prisma/client';
 import { ProposalSystemRole } from '@prisma/client';
 import type { TargetPermissionGroup } from 'permissions';
 import { v4 as uuid } from 'uuid';
 
 import { prisma } from '../../prisma-client';
 import { InvalidInputError } from '../errors';
-import type { ProposalReviewerInput, ProposalWithUsers } from '../proposals/interfaces';
+import type { PermissionJson, ProposalReviewerInput, ProposalWithUsers } from '../proposals/interfaces';
 
 import { generatePage } from './pages';
 
@@ -27,7 +36,6 @@ export type ProposalEvaluationTestInput = Partial<
     operation: Extract<ProposalOperation, 'edit' | 'view' | 'move' | 'comment'>;
   }[];
 };
-
 /**
  * @reviewers - Valid only for old tests, use `evaluationInputs` instead to define reviewers and permissions
  for that step
@@ -48,6 +56,9 @@ export type GenerateProposalInput = {
   evaluationInputs?: ProposalEvaluationTestInput[];
 };
 
+type TypedEvaluation = ProposalEvaluation & { permissions: PermissionJson[]; reviewers: ProposalReviewer[] };
+type GenerateProposalResponse = ProposalWithUsers & { page: Page; evaluations: TypedEvaluation[] };
+
 /**
  * Creates a proposal with the linked authors and reviewers
  *
@@ -67,7 +78,7 @@ export async function generateProposal({
   customProperties,
   snapshotProposalId,
   evaluationInputs
-}: GenerateProposalInput): Promise<ProposalWithUsers & { page: Page }> {
+}: GenerateProposalInput): Promise<GenerateProposalResponse> {
   if (reviewers && evaluationInputs) {
     throw new InvalidInputError(
       'Cannot define both reviewers and evaluationInputs. Reviewers are a legacy feature. For new proposal tests, you should use the evaluation inputs field'
@@ -221,12 +232,19 @@ export async function generateProposal({
       category: true,
       authors: true,
       reviewers: true,
-      page: true
+      page: true,
+      evaluations: {
+        include: {
+          permissions: true,
+          reviewers: true
+        }
+      }
     }
   });
 
-  return result as ProposalWithUsers & { page: Page };
+  return result as GenerateProposalResponse;
 }
+
 export async function convertPostToProposal({ post, userId }: { post: Post; userId: string }) {
   await prisma.post.update({
     where: { id: post.id },

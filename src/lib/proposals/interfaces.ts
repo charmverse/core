@@ -37,7 +37,7 @@ export type ListProposalsRequest = {
 
 // Workflows - the evaluations and permissions are stored in Json for ease of use
 
-type PermissionJson = Pick<ProposalEvaluationPermission, 'operation'> &
+export type PermissionJson = Pick<ProposalEvaluationPermission, 'operation'> &
   Partial<Pick<ProposalEvaluationPermission, 'roleId' | 'userId' | 'systemRole'>>;
 
 // we keep the id for JSON because it makes easy to manage sorting the list of evaluations in React
