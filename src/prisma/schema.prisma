@@ -1222,26 +1222,27 @@ model ProposalEvaluationPermission {
 }
 
 model ProposalEvaluation {
-  id                 String                              @id @default(uuid()) @db.Uuid
-  index              Int // tells us what order
-  title              String
-  type               ProposalEvaluationType
-  completedAt        DateTime?
-  snapshotId         String?
-  snapshotExpiry     DateTime?
-  decidedBy          String?                             @db.Uuid
-  decider            User?                               @relation(fields: [decidedBy], references: [id], onDelete: SetNull)
-  proposalId         String                              @db.Uuid
-  proposal           Proposal                            @relation(fields: [proposalId], references: [id], onDelete: Cascade)
-  voteSettings       Json?
-  voteId             String?                             @unique @db.Uuid
-  vote               Vote?                               @relation(fields: [voteId], references: [id], onDelete: SetNull)
-  rubricCriteria     ProposalRubricCriteria[]
-  rubricAnswers      ProposalRubricCriteriaAnswer[]
-  draftRubricAnswers DraftProposalRubricCriteriaAnswer[]
-  result             ProposalEvaluationResult?
-  reviewers          ProposalReviewer[]
-  permissions        ProposalEvaluationPermission[]
+  id                   String                              @id @default(uuid()) @db.Uuid
+  index                Int // tells us what order
+  title                String
+  type                 ProposalEvaluationType
+  completedAt          DateTime?
+  snapshotId           String?
+  snapshotExpiry       DateTime?
+  decidedBy            String?                             @db.Uuid
+  decider              User?                               @relation(fields: [decidedBy], references: [id], onDelete: SetNull)
+  proposalId           String                              @db.Uuid
+  proposal             Proposal                            @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  voteSettings         Json?
+  voteId               String?                             @unique @db.Uuid
+  vote                 Vote?                               @relation(fields: [voteId], references: [id], onDelete: SetNull)
+  rubricCriteria       ProposalRubricCriteria[]
+  rubricAnswers        ProposalRubricCriteriaAnswer[]
+  draftRubricAnswers   DraftProposalRubricCriteriaAnswer[]
+  result               ProposalEvaluationResult?
+  reviewers            ProposalReviewer[]
+  permissions          ProposalEvaluationPermission[]
+  proposalNotification ProposalNotification[]
 
   @@index([proposalId])
 }
@@ -1886,6 +1887,8 @@ model ProposalNotification {
   proposalId             String                   @db.Uuid
   proposal               Proposal                 @relation(fields: [proposalId], references: [id], onDelete: Cascade)
   type                   String
+  evaluationId           String?                  @db.Uuid
+  evaluation             ProposalEvaluation?      @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
 }
 
 model VoteNotification {
