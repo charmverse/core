@@ -1997,11 +1997,11 @@ model FormFieldAnswer {
 }
 
 model UserOTP {
-  id           String @id @default(uuid()) @db.Uuid
+  id           String  @id @default(uuid()) @db.Uuid
   secret       String
-  recoveryCode String
-  userId       String @unique @db.Uuid
-  user         User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recoveryCode String?
+  userId       String  @unique @db.Uuid
+  user         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }
