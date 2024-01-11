@@ -666,6 +666,7 @@ model User {
   blacklistedUser               BlacklistedUser[]
   proposalEvaluationPermissions ProposalEvaluationPermission[]
   decidedProposalEvaluations    ProposalEvaluation[]
+  userOTP                       UserOTP?
 }
 
 model VerifiedEmail {
@@ -1993,4 +1994,14 @@ model FormFieldAnswer {
   proposal   Proposal      @relation(fields: [proposalId], references: [id], onDelete: Cascade)
 
   @@index([fieldId])
+}
+
+model UserOTP {
+  id           String @id @default(uuid()) @db.Uuid
+  secret       String
+  recoveryCode String
+  userId       String @unique @db.Uuid
+  user         User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
