@@ -1999,6 +1999,7 @@ model FormFieldAnswer {
 model UserOTP {
   id             String       @id @default(uuid()) @db.Uuid
   createdAt      DateTime     @default(now())
+  deletedAt      DateTime?
   activatedAt    DateTime?
   secret         String
   userId         String       @unique @db.Uuid
@@ -2013,6 +2014,7 @@ model RecoveryCode {
   id        String    @id @default(uuid()) @db.Uuid
   createdAt DateTime  @default(now())
   usedAt    DateTime?
+  deletedAt DateTime?
   code      String
   userOtp   UserOTP?
 }
