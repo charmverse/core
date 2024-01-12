@@ -157,15 +157,6 @@ enum ProfileItemType {
 
 enum ProposalStatus {
   draft
-  discussion
-  review
-  reviewed
-  vote_active
-  vote_closed
-  // Separate flow
-  evaluation_active
-  evaluation_closed
-  // New flow
   published
 }
 
