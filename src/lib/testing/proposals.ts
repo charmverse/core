@@ -23,7 +23,7 @@ export type ProposalWithUsersAndPageMeta = ProposalWithUsers & { page: Pick<Page
 export type ProposalEvaluationTestInput = Partial<
   Pick<
     Prisma.ProposalEvaluationCreateManyInput,
-    'id' | 'title' | 'completedAt' | 'snapshotExpiry' | 'snapshotId' | 'result' | 'voteId'
+    'id' | 'title' | 'completedAt' | 'snapshotExpiry' | 'snapshotId' | 'result' | 'voteId' | 'voteSettings'
   >
 > & {
   evaluationType: ProposalEvaluationType;
