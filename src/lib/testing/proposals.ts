@@ -20,12 +20,7 @@ import { generatePage } from './pages';
 
 export type ProposalWithUsersAndPageMeta = ProposalWithUsers & { page: Pick<Page, 'title' | 'path'> };
 
-export type ProposalEvaluationTestInput = Partial<
-  Pick<
-    Prisma.ProposalEvaluationCreateManyInput,
-    'id' | 'title' | 'completedAt' | 'snapshotExpiry' | 'snapshotId' | 'result' | 'voteId' | 'voteSettings'
-  >
-> & {
+export type ProposalEvaluationTestInput = Partial<Prisma.ProposalEvaluationCreateManyInput> & {
   evaluationType: ProposalEvaluationType;
   rubricCriteria?: Partial<
     Pick<Prisma.ProposalRubricCriteriaCreateManyInput, 'title' | 'description' | 'parameters'>
@@ -76,6 +71,7 @@ export async function generateProposal({
   deletedAt = null,
   content,
   archived,
+  evaluationType,
   customProperties,
   snapshotProposalId,
   sourceTemplateId,
@@ -150,7 +146,19 @@ export async function generateProposal({
     sourceTemplateId
   });
 
-  if (evaluationInputs) {
+  if (evaluationInputs || evaluationType) {
+    evaluationInputs = evaluationType
+      ? [
+          {
+            id: uuid(),
+            index: 0,
+            evaluationType,
+            title: evaluationType,
+            reviewers: reviewers || [],
+            permissions: []
+          }
+        ]
+      : [];
     const evaluationInputsWithIdAndIndex = evaluationInputs.map((input, index) => ({
       ...input,
       id: input.id ?? uuid(),
