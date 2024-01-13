@@ -54,6 +54,8 @@ export type GenerateProposalInput = {
   customProperties?: Record<string, any>;
   snapshotProposalId?: string;
   evaluationInputs?: ProposalEvaluationTestInput[];
+  sourceTemplateId?: string;
+  workflowId?: string;
 };
 
 type TypedEvaluation = ProposalEvaluation & { permissions: PermissionJson[]; reviewers: ProposalReviewer[] };
@@ -74,10 +76,11 @@ export async function generateProposal({
   deletedAt = null,
   content,
   archived,
-  evaluationType,
   customProperties,
   snapshotProposalId,
-  evaluationInputs
+  sourceTemplateId,
+  evaluationInputs,
+  workflowId
 }: GenerateProposalInput): Promise<GenerateProposalResponse> {
   if (reviewers && evaluationInputs) {
     throw new InvalidInputError(
@@ -93,7 +96,6 @@ export async function generateProposal({
       createdBy: userId,
       status: proposalStatus,
       archived,
-      evaluationType,
       space: {
         connect: {
           id: spaceId
@@ -122,7 +124,14 @@ export async function generateProposal({
                 };
               })
             }
+          },
+      workflow: workflowId
+        ? {
+            connect: {
+              id: workflowId
+            }
           }
+        : undefined
     }
   });
 
@@ -137,7 +146,8 @@ export async function generateProposal({
     deletedAt,
     proposalId,
     content,
-    snapshotProposalId
+    snapshotProposalId,
+    sourceTemplateId
   });
 
   if (evaluationInputs) {
