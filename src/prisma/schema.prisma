@@ -1,6 +1,6 @@
 generator client {
   provider        = "prisma-client-js"
-  binaryTargets   = ["debian-openssl-3.0.x", "linux-musl", "darwin", "native", "rhel-openssl-1.0.x"]
+  binaryTargets   = ["debian-openssl-1.1.x", "linux-musl", "darwin", "native", "rhel-openssl-1.0.x"]
   previewFeatures = ["fullTextSearch"]
 }
 
@@ -269,6 +269,11 @@ enum TokenGateType {
   hypersub
 }
 
+enum IssueCredentialEvent {
+  proposal_created
+  proposal_approved
+}
+
 model Space {
   id                          String                            @id @default(uuid()) @db.Uuid
   deletedAt                   DateTime?
@@ -297,6 +302,7 @@ model Space {
   publicProposals             Boolean?                          @default(false)
   xpsEngineId                 String?                           @unique
   primaryMemberIdentity       IdentityType?
+  credentialEvents            IssueCredentialEvent[]            @default([])
   author                      User                              @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   blocks                      Block[]
   bounties                    Bounty[]
@@ -345,6 +351,7 @@ model Space {
   blacklistedSpaceUsers       BlacklistedSpaceUser[]
   additionalBlockQuotas       AdditionalBlockQuota[]
   proposalWorkflows           ProposalWorkflow[]
+  CredentialTemplate          CredentialTemplate[]
 
   @@index([createdBy])
 }
@@ -1153,38 +1160,40 @@ enum ProposalEvaluationType {
 }
 
 model Proposal {
-  id                 String                              @id @default(uuid()) @db.Uuid
-  createdBy          String                              @db.Uuid
-  spaceId            String                              @db.Uuid
-  status             ProposalStatus
-  archived           Boolean?                            @default(false)
-  authors            ProposalAuthor[]
-  reviewers          ProposalReviewer[]
-  space              Space                               @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  page               Page?                               @relation("proposal")
-  sourcePage         Page?                               @relation("convertedProposal")
-  reviewedBy         String?                             @db.Uuid
-  reviewer           User?                               @relation(fields: [reviewedBy], references: [id], onDelete: Cascade)
-  reviewedAt         DateTime?
-  categoryId         String?                             @db.Uuid
-  category           ProposalCategory?                   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  publishToLens      Boolean?
-  lensPostLink       String?
-  Post               Post[]
-  evaluationType     ProposalEvaluationType              @default(vote)
-  rubricCriteria     ProposalRubricCriteria[]
-  rubricAnswers      ProposalRubricCriteriaAnswer[]
-  fields             Json?
-  draftRubricAnswers DraftProposalRubricCriteriaAnswer[]
-  notifications      ProposalNotification[]
-  evaluations        ProposalEvaluation[]
+  id                   String                              @id @default(uuid()) @db.Uuid
+  createdBy            String                              @db.Uuid
+  spaceId              String                              @db.Uuid
+  status               ProposalStatus
+  archived             Boolean?                            @default(false)
+  authors              ProposalAuthor[]
+  reviewers            ProposalReviewer[]
+  space                Space                               @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  page                 Page?                               @relation("proposal")
+  sourcePage           Page?                               @relation("convertedProposal")
+  reviewedBy           String?                             @db.Uuid
+  reviewer             User?                               @relation(fields: [reviewedBy], references: [id], onDelete: Cascade)
+  reviewedAt           DateTime?
+  categoryId           String?                             @db.Uuid
+  category             ProposalCategory?                   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  publishToLens        Boolean?
+  lensPostLink         String?
+  Post                 Post[]
+  evaluationType       ProposalEvaluationType              @default(vote)
+  rubricCriteria       ProposalRubricCriteria[]
+  rubricAnswers        ProposalRubricCriteriaAnswer[]
+  fields               Json?
+  draftRubricAnswers   DraftProposalRubricCriteriaAnswer[]
+  notifications        ProposalNotification[]
+  evaluations          ProposalEvaluation[]
   // we only reference workflows for proposal templates
-  workflowId         String?                             @db.Uuid
-  workflow           ProposalWorkflow?                   @relation(fields: [workflowId], references: [id], onDelete: SetNull)
-  rewards            Bounty[]
-  formId             String?                             @db.Uuid
-  form               Form?                               @relation(fields: [formId], references: [id], onDelete: Cascade)
-  formAnswers        FormFieldAnswer[]
+  workflowId           String?                             @db.Uuid
+  workflow             ProposalWorkflow?                   @relation(fields: [workflowId], references: [id], onDelete: SetNull)
+  rewards              Bounty[]
+  formId               String?                             @db.Uuid
+  form                 Form?                               @relation(fields: [formId], references: [id], onDelete: Cascade)
+  formAnswers          FormFieldAnswer[]
+  credentialTemplateId String?                             @db.Uuid
+  credentialTemplate   CredentialTemplate?                 @relation(fields: [credentialTemplateId], references: [id], onDelete: SetNull)
 
   @@index([spaceId])
   @@index([reviewedBy])
@@ -1992,4 +2001,21 @@ model FormFieldAnswer {
   proposal   Proposal      @relation(fields: [proposalId], references: [id], onDelete: Cascade)
 
   @@index([fieldId])
+}
+
+enum CredentialType {
+  proposal
+}
+
+model CredentialTemplate {
+  id            String         @id @default(uuid()) @db.Uuid
+  spaceId       String         @db.Uuid
+  name          String
+  organization  String         
+  description   String?        @default("")
+  schemaType    CredentialType
+  schemaAddress String
+  createdAt     DateTime       @default(now())
+  space         Space          @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  Proposal      Proposal[]
 }
