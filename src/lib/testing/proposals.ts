@@ -158,7 +158,7 @@ export async function generateProposal({
             permissions: []
           }
         ]
-      : [];
+      : evaluationInputs || [];
     const evaluationInputsWithIdAndIndex = evaluationInputs.map((input, index) => ({
       ...input,
       id: input.id ?? uuid(),
