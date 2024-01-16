@@ -75,7 +75,6 @@ describe('generateProposal', () => {
         archived: proposalInput.archived as boolean,
         spaceId: space.id,
         page: expect.any(Object),
-        evaluationType: 'vote',
         fields: {
           properties: customProperties
         },
