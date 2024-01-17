@@ -4,27 +4,23 @@ import { v4 as uuid } from 'uuid';
 import { uid } from '../../lib/utilities/strings';
 import { prisma } from '../../prisma-client';
 
-import { randomETHWalletAddress } from './random';
-
 export async function generateSpaceUser({
   spaceId,
   isAdmin,
-  isGuest
+  isGuest,
+  wallet
 }: {
   spaceId: string;
   isAdmin?: boolean;
   isGuest?: boolean;
+  wallet?: string;
 }): Promise<User> {
   return prisma.user.create({
     data: {
       path: uid(),
       identityType: 'Discord',
       username: 'Username',
-      wallets: {
-        create: {
-          address: randomETHWalletAddress()
-        }
-      },
+      wallets: wallet ? { create: { address: wallet } } : undefined,
       spaceRoles: {
         create: {
           space: {
@@ -67,6 +63,7 @@ type CreateUserAndSpaceInput = {
   spacePaidTier?: SubscriptionTier;
   customProposalProperties?: IPropertyTemplate[];
   spaceCredentialEvents?: CredentialEventType[];
+  wallet?: string;
 };
 
 export async function generateUserAndSpace({
@@ -80,7 +77,8 @@ export async function generateUserAndSpace({
   publicProposals = false,
   spacePaidTier = 'community',
   customProposalProperties,
-  spaceCredentialEvents
+  spaceCredentialEvents,
+  wallet
 }: CreateUserAndSpaceInput = {}) {
   const userId = uuid();
   const newUser = await prisma.user.create({
@@ -113,6 +111,13 @@ export async function generateUserAndSpace({
         }
       },
       path: uid(),
+      wallets: wallet
+        ? {
+            create: {
+              address: wallet
+            }
+          }
+        : undefined,
       ...user
     },
     include: {
