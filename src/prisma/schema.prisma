@@ -260,7 +260,7 @@ enum TokenGateType {
   hypersub
 }
 
-enum IssueCredentialEvent {
+enum CredentialEventType {
   proposal_created
   proposal_approved
 }
@@ -293,7 +293,7 @@ model Space {
   publicProposals             Boolean?                          @default(false)
   xpsEngineId                 String?                           @unique
   primaryMemberIdentity       IdentityType?
-  credentialEvents            IssueCredentialEvent[]            @default([])
+  credentialEvents            CredentialEventType[]             @default([])
   author                      User                              @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   blocks                      Block[]
   bounties                    Bounty[]
@@ -342,7 +342,7 @@ model Space {
   blacklistedSpaceUsers       BlacklistedSpaceUser[]
   additionalBlockQuotas       AdditionalBlockQuota[]
   proposalWorkflows           ProposalWorkflow[]
-  CredentialTemplate          CredentialTemplate[]
+  credentialTemplates         CredentialTemplate[]
 
   @@index([createdBy])
 }
@@ -663,6 +663,7 @@ model User {
   blacklistedUser               BlacklistedUser[]
   proposalEvaluationPermissions ProposalEvaluationPermission[]
   decidedProposalEvaluations    ProposalEvaluation[]
+  receivedCredentials           IssuedCredential[]
 }
 
 model VerifiedEmail {
@@ -1151,40 +1152,40 @@ enum ProposalEvaluationType {
 }
 
 model Proposal {
-  id                   String                              @id @default(uuid()) @db.Uuid
-  createdBy            String                              @db.Uuid
-  spaceId              String                              @db.Uuid
-  status               ProposalStatus
-  archived             Boolean?                            @default(false)
-  authors              ProposalAuthor[]
-  reviewers            ProposalReviewer[]
-  space                Space                               @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  page                 Page?                               @relation("proposal")
-  sourcePage           Page?                               @relation("convertedProposal")
-  reviewedBy           String?                             @db.Uuid
-  reviewer             User?                               @relation(fields: [reviewedBy], references: [id], onDelete: Cascade)
-  reviewedAt           DateTime?
-  categoryId           String?                             @db.Uuid
-  category             ProposalCategory?                   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  publishToLens        Boolean?
-  lensPostLink         String?
-  Post                 Post[]
-  evaluationType       ProposalEvaluationType              @default(vote)
-  rubricCriteria       ProposalRubricCriteria[]
-  rubricAnswers        ProposalRubricCriteriaAnswer[]
-  fields               Json?
-  draftRubricAnswers   DraftProposalRubricCriteriaAnswer[]
-  notifications        ProposalNotification[]
-  evaluations          ProposalEvaluation[]
+  id                  String                              @id @default(uuid()) @db.Uuid
+  createdBy           String                              @db.Uuid
+  spaceId             String                              @db.Uuid
+  status              ProposalStatus
+  archived            Boolean?                            @default(false)
+  authors             ProposalAuthor[]
+  reviewers           ProposalReviewer[]
+  space               Space                               @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  page                Page?                               @relation("proposal")
+  sourcePage          Page?                               @relation("convertedProposal")
+  reviewedBy          String?                             @db.Uuid
+  reviewer            User?                               @relation(fields: [reviewedBy], references: [id], onDelete: Cascade)
+  reviewedAt          DateTime?
+  categoryId          String?                             @db.Uuid
+  category            ProposalCategory?                   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  publishToLens       Boolean?
+  lensPostLink        String?
+  Post                Post[]
+  evaluationType      ProposalEvaluationType              @default(vote)
+  rubricCriteria      ProposalRubricCriteria[]
+  rubricAnswers       ProposalRubricCriteriaAnswer[]
+  fields              Json?
+  selectedCredentialTemplates String[]                            
+  draftRubricAnswers  DraftProposalRubricCriteriaAnswer[]
+  notifications       ProposalNotification[]
+  evaluations         ProposalEvaluation[]
   // we only reference workflows for proposal templates
-  workflowId           String?                             @db.Uuid
-  workflow             ProposalWorkflow?                   @relation(fields: [workflowId], references: [id], onDelete: SetNull)
-  rewards              Bounty[]
-  formId               String?                             @db.Uuid
-  form                 Form?                               @relation(fields: [formId], references: [id], onDelete: Cascade)
-  formAnswers          FormFieldAnswer[]
-  credentialTemplateId String?                             @db.Uuid
-  credentialTemplate   CredentialTemplate?                 @relation(fields: [credentialTemplateId], references: [id], onDelete: SetNull)
+  workflowId          String?                             @db.Uuid
+  workflow            ProposalWorkflow?                   @relation(fields: [workflowId], references: [id], onDelete: SetNull)
+  rewards             Bounty[]
+  formId              String?                             @db.Uuid
+  form                Form?                               @relation(fields: [formId], references: [id], onDelete: Cascade)
+  formAnswers         FormFieldAnswer[]
+  issuedCredentials   IssuedCredential[]
 
   @@index([spaceId])
   @@index([reviewedBy])
@@ -1999,14 +2000,27 @@ enum CredentialType {
 }
 
 model CredentialTemplate {
-  id            String         @id @default(uuid()) @db.Uuid
-  spaceId       String         @db.Uuid
-  name          String
-  organization  String         
-  description   String?        @default("")
-  schemaType    CredentialType
-  schemaAddress String
-  createdAt     DateTime       @default(now())
-  space         Space          @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  Proposal      Proposal[]
+  id                String             @id @default(uuid()) @db.Uuid
+  spaceId           String             @db.Uuid
+  name              String
+  organization      String
+  description       String             @default("")
+  schemaType        CredentialType
+  schemaAddress     String
+  createdAt         DateTime           @default(now())
+  space             Space              @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  issuedCredentials IssuedCredential[]
+}
+
+model IssuedCredential {
+  id                   String              @id @default(uuid()) @db.Uuid
+  credentialTemplateId String?             @db.Uuid
+  credentialTemplate   CredentialTemplate? @relation(fields: [credentialTemplateId], references: [id], onDelete: SetNull)
+  proposalId           String              @db.Uuid
+  proposal             Proposal            @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  ceramicId            String
+  userId               String              @db.Uuid
+  user                 User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  credentialEvent      CredentialEventType
+  createdAt            DateTime            @default(now())
 }
