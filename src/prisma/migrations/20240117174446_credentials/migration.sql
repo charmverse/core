@@ -2,7 +2,7 @@
 CREATE TYPE "CredentialEventType" AS ENUM ('proposal_created', 'proposal_approved');
 
 -- CreateEnum
-CREATE TYPE "CredentialType" AS ENUM ('proposal');
+CREATE TYPE "AttestationType" AS ENUM ('proposal');
 
 -- AlterTable
 ALTER TABLE "Proposal" ADD COLUMN     "selectedCredentialTemplates" TEXT[];
@@ -17,7 +17,7 @@ CREATE TABLE "CredentialTemplate" (
     "name" TEXT NOT NULL,
     "organization" TEXT NOT NULL,
     "description" TEXT NOT NULL DEFAULT '',
-    "schemaType" "CredentialType" NOT NULL,
+    "schemaType" "AttestationType" NOT NULL,
     "schemaAddress" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -36,6 +36,9 @@ CREATE TABLE "IssuedCredential" (
 
     CONSTRAINT "IssuedCredential_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "IssuedCredential_ceramicId_key" ON "IssuedCredential"("ceramicId");
 
 -- AddForeignKey
 ALTER TABLE "CredentialTemplate" ADD CONSTRAINT "CredentialTemplate_spaceId_fkey" FOREIGN KEY ("spaceId") REFERENCES "Space"("id") ON DELETE CASCADE ON UPDATE CASCADE;

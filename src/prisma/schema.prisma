@@ -1995,7 +1995,7 @@ model FormFieldAnswer {
   @@index([fieldId])
 }
 
-enum CredentialType {
+enum AttestationType {
   proposal
 }
 
@@ -2005,7 +2005,7 @@ model CredentialTemplate {
   name              String
   organization      String
   description       String             @default("")
-  schemaType        CredentialType
+  schemaType        AttestationType
   schemaAddress     String
   createdAt         DateTime           @default(now())
   space             Space              @relation(fields: [spaceId], references: [id], onDelete: Cascade)
@@ -2018,7 +2018,7 @@ model IssuedCredential {
   credentialTemplate   CredentialTemplate? @relation(fields: [credentialTemplateId], references: [id], onDelete: SetNull)
   proposalId           String              @db.Uuid
   proposal             Proposal            @relation(fields: [proposalId], references: [id], onDelete: Cascade)
-  ceramicId            String
+  ceramicId            String              @unique
   userId               String              @db.Uuid
   user                 User                @relation(fields: [userId], references: [id], onDelete: Cascade)
   credentialEvent      CredentialEventType
