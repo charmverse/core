@@ -1,4 +1,6 @@
-import type { CredentialTemplate } from '../../prisma-client';
+import { v4 as uuid } from 'uuid';
+
+import type { CredentialEventType, CredentialTemplate, IssuedCredential } from '../../prisma-client';
 import { prisma } from '../../prisma-client';
 
 type GenerateCredentialTemplateInput = Pick<CredentialTemplate, 'spaceId'> &
@@ -20,6 +22,41 @@ export async function generateCredentialTemplate({
       schemaType: schemaType || 'proposal',
       description: description || 'Test Description',
       space: { connect: { id: spaceId } }
+    }
+  });
+}
+
+type GenerateIssuedCredentialInput = {
+  userId: string;
+  proposalId: string;
+  credentialTemplateId: string;
+  ceramicId?: string;
+  credentialEvent: CredentialEventType;
+};
+
+export async function generateIssuedCredential({
+  userId,
+  proposalId,
+  ceramicId,
+  credentialEvent,
+  credentialTemplateId
+}: GenerateIssuedCredentialInput): Promise<IssuedCredential> {
+  const proposal = await prisma.proposal.findUniqueOrThrow({
+    where: {
+      id: proposalId
+    },
+    select: {
+      id: true,
+      spaceId: true
+    }
+  });
+  return prisma.issuedCredential.create({
+    data: {
+      credentialEvent,
+      ceramicId: ceramicId || uuid(),
+      credentialTemplate: { connect: { id: credentialTemplateId } },
+      proposal: { connect: { id: proposal.id } },
+      user: { connect: { id: userId } }
     }
   });
 }
