@@ -1377,8 +1377,8 @@ model DraftProposalRubricCriteriaAnswer {
   userId           String
   response         Json
   comment          String?
-  evaluation       ProposalEvaluation?    @relation(fields: [evaluationId], references: [id])
-  evaluationId     String?                @db.Uuid
+  evaluation       ProposalEvaluation     @relation(fields: [evaluationId], references: [id])
+  evaluationId     String                 @db.Uuid
 
   @@unique([userId, rubricCriteriaId])
   @@index([proposalId])

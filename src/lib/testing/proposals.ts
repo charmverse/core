@@ -20,12 +20,7 @@ import { generatePage } from './pages';
 
 export type ProposalWithUsersAndPageMeta = ProposalWithUsers & { page: Pick<Page, 'title' | 'path'> };
 
-export type ProposalEvaluationTestInput = Partial<
-  Pick<
-    Prisma.ProposalEvaluationCreateManyInput,
-    'id' | 'title' | 'completedAt' | 'snapshotExpiry' | 'snapshotId' | 'result' | 'voteId'
-  >
-> & {
+export type ProposalEvaluationTestInput = Partial<Prisma.ProposalEvaluationCreateManyInput> & {
   evaluationType: ProposalEvaluationType;
   rubricCriteria?: Partial<
     Pick<Prisma.ProposalRubricCriteriaCreateManyInput, 'title' | 'description' | 'parameters'>
@@ -56,6 +51,7 @@ export type GenerateProposalInput = {
   evaluationInputs?: ProposalEvaluationTestInput[];
   workflowId?: string;
   selectedCredentialTemplateIds?: string[];
+  sourceTemplateId?: string;
 };
 
 type TypedEvaluation = ProposalEvaluation & { permissions: PermissionJson[]; reviewers: ProposalReviewer[] };
@@ -79,9 +75,10 @@ export async function generateProposal({
   evaluationType,
   customProperties,
   snapshotProposalId,
+  selectedCredentialTemplateIds,
+  sourceTemplateId,
   evaluationInputs,
-  workflowId,
-  selectedCredentialTemplateIds
+  workflowId
 }: GenerateProposalInput): Promise<GenerateProposalResponse> {
   if (reviewers && evaluationInputs) {
     throw new InvalidInputError(
@@ -97,7 +94,6 @@ export async function generateProposal({
       createdBy: userId,
       status: proposalStatus,
       archived,
-      evaluationType,
       space: {
         connect: {
           id: spaceId
@@ -149,10 +145,23 @@ export async function generateProposal({
     deletedAt,
     proposalId,
     content,
-    snapshotProposalId
+    snapshotProposalId,
+    sourceTemplateId
   });
 
-  if (evaluationInputs) {
+  if (evaluationInputs || evaluationType) {
+    evaluationInputs = evaluationType
+      ? [
+          {
+            id: uuid(),
+            index: 0,
+            evaluationType,
+            title: evaluationType,
+            reviewers: reviewers || [],
+            permissions: []
+          }
+        ]
+      : evaluationInputs || [];
     const evaluationInputsWithIdAndIndex = evaluationInputs.map((input, index) => ({
       ...input,
       id: input.id ?? uuid(),
