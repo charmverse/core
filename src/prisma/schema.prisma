@@ -336,6 +336,7 @@ model Space {
   postTags                    PostTag[]
   blockCounts                 BlockCount[]
   blockQuota                  Int                               @default(0)
+  requireMembersTwoFactorAuth Boolean                           @default(false)
   proposalBlocks              ProposalBlock[]
   rewardBlocks                RewardBlock[]
   userNotifications           UserNotificationMetadata[]
@@ -664,6 +665,7 @@ model User {
   proposalEvaluationPermissions ProposalEvaluationPermission[]
   decidedProposalEvaluations    ProposalEvaluation[]
   receivedCredentials           IssuedCredential[]
+  otp                           Otp?
 }
 
 model VerifiedEmail {
@@ -2022,4 +2024,27 @@ model IssuedCredential {
   user                 User                @relation(fields: [userId], references: [id], onDelete: Cascade)
   credentialEvent      CredentialEventType
   createdAt            DateTime            @default(now())
+}
+
+model Otp {
+  id             String       @id @default(uuid()) @db.Uuid
+  createdAt      DateTime     @default(now())
+  deletedAt      DateTime?
+  activatedAt    DateTime?
+  secret         String
+  userId         String       @unique @db.Uuid
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recoveryCodeId String       @unique @db.Uuid
+  recoveryCode   RecoveryCode @relation(fields: [recoveryCodeId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model RecoveryCode {
+  id        String    @id @default(uuid()) @db.Uuid
+  createdAt DateTime  @default(now())
+  usedAt    DateTime?
+  deletedAt DateTime?
+  code      String
+  otp       Otp?
 }
