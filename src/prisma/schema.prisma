@@ -1097,19 +1097,21 @@ model SpacePermission {
 }
 
 model Thread {
-  id           String    @id @default(uuid()) @db.Uuid
-  createdAt    DateTime  @default(now())
-  pageId       String    @db.Uuid
-  context      String
-  userId       String    @db.Uuid
-  resolved     Boolean
-  spaceId      String    @db.Uuid
-  updatedAt    DateTime?
-  page         Page      @relation(fields: [pageId], references: [id], onDelete: Cascade)
-  space        Space     @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  user         User      @relation(fields: [userId], references: [id])
-  comments     Comment[]
-  accessGroups Json[]    @default([])
+  id            String           @id @default(uuid()) @db.Uuid
+  createdAt     DateTime         @default(now())
+  pageId        String           @db.Uuid
+  context       String
+  userId        String           @db.Uuid
+  resolved      Boolean
+  spaceId       String           @db.Uuid
+  updatedAt     DateTime?
+  page          Page             @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  space         Space            @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  user          User             @relation(fields: [userId], references: [id])
+  comments      Comment[]
+  accessGroups  Json[]           @default([])
+  fieldAnswerId String?          @db.Uuid
+  fieldAnswer   FormFieldAnswer? @relation(fields: [fieldAnswerId], references: [id], onDelete: SetNull)
 
   @@index([pageId])
   @@index([spaceId])
@@ -1981,6 +1983,7 @@ model FormFieldAnswer {
   value      Json
   proposalId String        @db.Uuid
   proposal   Proposal      @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  threads    Thread[]
 
   @@index([fieldId])
 }
