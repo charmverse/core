@@ -157,15 +157,6 @@ enum ProfileItemType {
 
 enum ProposalStatus {
   draft
-  discussion
-  review
-  reviewed
-  vote_active
-  vote_closed
-  // Separate flow
-  evaluation_active
-  evaluation_closed
-  // New flow
   published
 }
 
@@ -1172,7 +1163,6 @@ model Proposal {
   publishToLens      Boolean?
   lensPostLink       String?
   Post               Post[]
-  evaluationType     ProposalEvaluationType              @default(vote)
   rubricCriteria     ProposalRubricCriteria[]
   rubricAnswers      ProposalRubricCriteriaAnswer[]
   fields             Json?
@@ -1377,8 +1367,8 @@ model DraftProposalRubricCriteriaAnswer {
   userId           String
   response         Json
   comment          String?
-  evaluation       ProposalEvaluation?    @relation(fields: [evaluationId], references: [id])
-  evaluationId     String?                @db.Uuid
+  evaluation       ProposalEvaluation     @relation(fields: [evaluationId], references: [id])
+  evaluationId     String                 @db.Uuid
 
   @@unique([userId, rubricCriteriaId])
   @@index([proposalId])

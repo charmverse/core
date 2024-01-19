@@ -53,7 +53,7 @@ describe('generateProposal', () => {
       spaceId: space.id,
       userId: user.id,
       authors: [user.id, otherUser.id],
-      proposalStatus: 'review',
+      proposalStatus: 'published',
       reviewers: [{ group: 'role', id: role.id }],
       archived: true,
       customProperties
@@ -75,7 +75,6 @@ describe('generateProposal', () => {
         archived: proposalInput.archived as boolean,
         spaceId: space.id,
         page: expect.any(Object),
-        evaluationType: 'vote',
         fields: {
           properties: customProperties
         },
@@ -177,7 +176,7 @@ describe('generateProposal', () => {
       spaceId: space.id,
       userId: user.id,
       authors: [user.id],
-      proposalStatus: 'review',
+      proposalStatus: 'published',
       archived: true,
       customProperties,
       // These 2 fields should not be provided together. This allows us to migrate testing towards the new proposal model while maintaining retrocompatibility
@@ -363,7 +362,7 @@ describe('generateProposal', () => {
       spaceId: space.id,
       userId: user.id,
       authors: [user.id],
-      proposalStatus: 'review',
+      proposalStatus: 'published',
       archived: true,
       customProperties,
       // These 2 fields should not be provided together. This allows us to migrate testing towards the new proposal model while maintaining retrocompatibility
