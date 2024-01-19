@@ -657,7 +657,7 @@ model User {
   blacklistedUser               BlacklistedUser[]
   proposalEvaluationPermissions ProposalEvaluationPermission[]
   decidedProposalEvaluations    ProposalEvaluation[]
-  userOTP                       UserOTP?
+  otp                           Otp?
 }
 
 model VerifiedEmail {
@@ -1986,7 +1986,7 @@ model FormFieldAnswer {
   @@index([fieldId])
 }
 
-model UserOTP {
+model Otp {
   id             String       @id @default(uuid()) @db.Uuid
   createdAt      DateTime     @default(now())
   deletedAt      DateTime?
@@ -2006,5 +2006,5 @@ model RecoveryCode {
   usedAt    DateTime?
   deletedAt DateTime?
   code      String
-  userOtp   UserOTP?
+  otp       Otp?
 }
