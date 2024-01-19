@@ -657,6 +657,7 @@ model User {
   blacklistedUser               BlacklistedUser[]
   proposalEvaluationPermissions ProposalEvaluationPermission[]
   decidedProposalEvaluations    ProposalEvaluation[]
+  otp                           Otp?
 }
 
 model VerifiedEmail {
@@ -1986,4 +1987,27 @@ model FormFieldAnswer {
   threads    Thread[]
 
   @@index([fieldId])
+}
+
+model Otp {
+  id             String       @id @default(uuid()) @db.Uuid
+  createdAt      DateTime     @default(now())
+  deletedAt      DateTime?
+  activatedAt    DateTime?
+  secret         String
+  userId         String       @unique @db.Uuid
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recoveryCodeId String       @unique @db.Uuid
+  recoveryCode   RecoveryCode @relation(fields: [recoveryCodeId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model RecoveryCode {
+  id        String    @id @default(uuid()) @db.Uuid
+  createdAt DateTime  @default(now())
+  usedAt    DateTime?
+  deletedAt DateTime?
+  code      String
+  otp       Otp?
 }
