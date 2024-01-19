@@ -49,8 +49,9 @@ export type GenerateProposalInput = {
   customProperties?: Record<string, any>;
   snapshotProposalId?: string;
   evaluationInputs?: ProposalEvaluationTestInput[];
-  sourceTemplateId?: string;
   workflowId?: string;
+  selectedCredentialTemplateIds?: string[];
+  sourceTemplateId?: string;
 };
 
 type TypedEvaluation = ProposalEvaluation & { permissions: PermissionJson[]; reviewers: ProposalReviewer[] };
@@ -74,6 +75,7 @@ export async function generateProposal({
   evaluationType,
   customProperties,
   snapshotProposalId,
+  selectedCredentialTemplateIds,
   sourceTemplateId,
   evaluationInputs,
   workflowId
@@ -97,6 +99,14 @@ export async function generateProposal({
           id: spaceId
         }
       },
+      workflow: workflowId
+        ? {
+            connect: {
+              id: workflowId
+            }
+          }
+        : undefined,
+      selectedCredentialTemplates: selectedCredentialTemplateIds,
       fields: customProperties
         ? {
             properties: customProperties
@@ -120,14 +130,7 @@ export async function generateProposal({
                 };
               })
             }
-          },
-      workflow: workflowId
-        ? {
-            connect: {
-              id: workflowId
-            }
           }
-        : undefined
     }
   });
 
