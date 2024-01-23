@@ -4,7 +4,12 @@ import type { CredentialEventType, CredentialTemplate, IssuedCredential } from '
 import { prisma } from '../../prisma-client';
 
 type GenerateCredentialTemplateInput = Pick<CredentialTemplate, 'spaceId'> &
-  Partial<Pick<CredentialTemplate, 'name' | 'description' | 'organization' | 'schemaAddress' | 'schemaType'>>;
+  Partial<
+    Pick<
+      CredentialTemplate,
+      'name' | 'description' | 'organization' | 'schemaAddress' | 'schemaType' | 'credentialEvents'
+    >
+  >;
 
 export async function generateCredentialTemplate({
   spaceId,
@@ -12,7 +17,8 @@ export async function generateCredentialTemplate({
   name,
   organization,
   schemaAddress,
-  schemaType
+  schemaType,
+  credentialEvents
 }: GenerateCredentialTemplateInput): Promise<CredentialTemplate> {
   return prisma.credentialTemplate.create({
     data: {
@@ -21,7 +27,8 @@ export async function generateCredentialTemplate({
       schemaAddress: schemaAddress || '0x20770d8c0a19668aa843240ddf6d57025334b346171c28dfed1a7ddb16928b89',
       schemaType: schemaType || 'proposal',
       description: description || 'Test Description',
-      space: { connect: { id: spaceId } }
+      space: { connect: { id: spaceId } },
+      credentialEvents
     }
   });
 }

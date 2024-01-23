@@ -98,7 +98,6 @@ export async function generateUserAndSpace({
                   id: userId
                 }
               },
-              credentialEvents: spaceCredentialEvents,
               paidTier: spacePaidTier,
               updatedBy: userId,
               name: spaceName,

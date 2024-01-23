@@ -38,7 +38,6 @@ describe('generateUserAndSpace', () => {
     expect(space.publicProposals).toBe(true);
     expect(space.paidTier).toBe('enterprise');
     expect(space.domain).toBe(randomDomain);
-    expect(space.credentialEvents).toEqual(['proposal_created']);
 
     const spaceRole = (await prisma.spaceRole.findFirst({
       where: {
