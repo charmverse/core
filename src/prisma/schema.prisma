@@ -1156,39 +1156,39 @@ enum ProposalEvaluationType {
 }
 
 model Proposal {
-  id                  String                              @id @default(uuid()) @db.Uuid
-  createdBy           String                              @db.Uuid
-  spaceId             String                              @db.Uuid
-  status              ProposalStatus
-  archived            Boolean?                            @default(false)
-  authors             ProposalAuthor[]
-  reviewers           ProposalReviewer[]
-  space               Space                               @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  page                Page?                               @relation("proposal")
-  sourcePage          Page?                               @relation("convertedProposal")
-  reviewedBy          String?                             @db.Uuid
-  reviewer            User?                               @relation(fields: [reviewedBy], references: [id], onDelete: Cascade)
-  reviewedAt          DateTime?
-  categoryId          String?                             @db.Uuid
-  category            ProposalCategory?                   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  publishToLens       Boolean?
-  lensPostLink        String?
-  Post                Post[]
-  rubricCriteria      ProposalRubricCriteria[]
-  rubricAnswers       ProposalRubricCriteriaAnswer[]
-  fields              Json?
-  selectedCredentialTemplates String[]                            
-  draftRubricAnswers  DraftProposalRubricCriteriaAnswer[]
-  notifications       ProposalNotification[]
-  evaluations         ProposalEvaluation[]
+  id                          String                              @id @default(uuid()) @db.Uuid
+  createdBy                   String                              @db.Uuid
+  spaceId                     String                              @db.Uuid
+  status                      ProposalStatus
+  archived                    Boolean?                            @default(false)
+  authors                     ProposalAuthor[]
+  reviewers                   ProposalReviewer[]
+  space                       Space                               @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  page                        Page?                               @relation("proposal")
+  sourcePage                  Page?                               @relation("convertedProposal")
+  reviewedBy                  String?                             @db.Uuid
+  reviewer                    User?                               @relation(fields: [reviewedBy], references: [id], onDelete: Cascade)
+  reviewedAt                  DateTime?
+  categoryId                  String?                             @db.Uuid
+  category                    ProposalCategory?                   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  publishToLens               Boolean?
+  lensPostLink                String?
+  Post                        Post[]
+  rubricCriteria              ProposalRubricCriteria[]
+  rubricAnswers               ProposalRubricCriteriaAnswer[]
+  fields                      Json                                @default("{}")
+  selectedCredentialTemplates String[]
+  draftRubricAnswers          DraftProposalRubricCriteriaAnswer[]
+  notifications               ProposalNotification[]
+  evaluations                 ProposalEvaluation[]
   // we only reference workflows for proposal templates
-  workflowId          String?                             @db.Uuid
-  workflow            ProposalWorkflow?                   @relation(fields: [workflowId], references: [id], onDelete: SetNull)
-  rewards             Bounty[]
-  formId              String?                             @db.Uuid
-  form                Form?                               @relation(fields: [formId], references: [id], onDelete: Cascade)
-  formAnswers         FormFieldAnswer[]
-  issuedCredentials   IssuedCredential[]
+  workflowId                  String?                             @db.Uuid
+  workflow                    ProposalWorkflow?                   @relation(fields: [workflowId], references: [id], onDelete: SetNull)
+  rewards                     Bounty[]
+  formId                      String?                             @db.Uuid
+  form                        Form?                               @relation(fields: [formId], references: [id], onDelete: Cascade)
+  formAnswers                 FormFieldAnswer[]
+  issuedCredentials           IssuedCredential[]
 
   @@index([spaceId])
   @@index([reviewedBy])
