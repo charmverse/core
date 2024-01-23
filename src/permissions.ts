@@ -13,7 +13,6 @@ export * from './lib/permissions/forums/policies/index';
 export * from './lib/permissions/forums/policies/interfaces';
 
 // Proposal permission exports
-export * from './lib/permissions/proposals/availableProposalCategoryPermissions.class';
 export * from './lib/permissions/proposals/availableProposalPermissions.class';
 export * from './lib/permissions/proposals/client/interfaces';
 export * from './lib/permissions/proposals/interfaces';
