@@ -1,4 +1,4 @@
-import type { CredentialEventType, SubscriptionTier, User } from '@prisma/client';
+import type { SubscriptionTier, User } from '@prisma/client';
 import { v4 as uuid } from 'uuid';
 
 import { uid } from '../../lib/utilities/strings';
@@ -62,7 +62,6 @@ type CreateUserAndSpaceInput = {
   publicProposals?: boolean;
   spacePaidTier?: SubscriptionTier;
   customProposalProperties?: IPropertyTemplate[];
-  spaceCredentialEvents?: CredentialEventType[];
   wallet?: string;
 };
 
@@ -77,7 +76,6 @@ export async function generateUserAndSpace({
   publicProposals = false,
   spacePaidTier = 'community',
   customProposalProperties,
-  spaceCredentialEvents,
   wallet
 }: CreateUserAndSpaceInput = {}) {
   const userId = uuid();
@@ -98,7 +96,6 @@ export async function generateUserAndSpace({
                   id: userId
                 }
               },
-              credentialEvents: spaceCredentialEvents,
               paidTier: spacePaidTier,
               updatedBy: userId,
               name: spaceName,
