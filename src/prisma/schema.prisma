@@ -686,6 +686,7 @@ model UserWallet {
   ensname      String?       @unique
   user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   profileItems ProfileItem[]
+  primary      Boolean       @default(false)
 
   @@index([userId])
 }
