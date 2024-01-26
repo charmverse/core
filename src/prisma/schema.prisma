@@ -614,6 +614,8 @@ model User {
   emailNewsletter               Boolean?                        @default(false)
   xpsEngineId                   String?                         @unique
   publishToLensDefault          Boolean?                        @default(false)
+  primaryWalletId               String?                         @db.Uuid
+  primaryWallet                 UserWallet?                     @relation(fields: [primaryWalletId], references: [id], onDelete: SetNull, name: "primaryUserWallet")
   applications                  Application[]
   blocks                        Block[]
   bounties                      Bounty[]
@@ -643,7 +645,7 @@ model User {
   proposalsReviewed             ProposalReviewer[]
   reviewedProposals             Proposal[]
   workspaceEvents               WorkspaceEvent[]
-  wallets                       UserWallet[]
+  wallets                       UserWallet[]                    @relation("userWallet")
   memberPropertyValues          MemberPropertyValue[]
   spaceNotificationSettings     UserSpaceNotificationSettings[]
   userTokenGates                UserTokenGate[]
@@ -681,12 +683,13 @@ model VerifiedEmail {
 }
 
 model UserWallet {
-  id           String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  address      String        @unique
-  userId       String        @db.Uuid
-  ensname      String?       @unique
-  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  profileItems ProfileItem[]
+  id                 String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  address            String        @unique
+  userId             String        @db.Uuid
+  ensname            String?       @unique
+  user               User          @relation(fields: [userId], references: [id], onDelete: Cascade, name: "userWallet")
+  primaryWalletUsers User[]        @relation("primaryUserWallet")
+  profileItems       ProfileItem[]
 
   @@index([userId])
 }
