@@ -7,6 +7,9 @@
 
 */
 -- DropForeignKey
+ALTER TABLE "DraftProposalRubricCriteriaAnswer" DROP CONSTRAINT "DraftProposalRubricCriteriaAnswer_evaluationId_fkey";
+
+-- DropForeignKey
 ALTER TABLE "ProposalRubricCriteria" DROP CONSTRAINT "ProposalRubricCriteria_evaluationId_fkey";
 
 -- DropForeignKey
@@ -22,7 +25,10 @@ ALTER TABLE "ProposalRubricCriteria" ALTER COLUMN "evaluationId" SET NOT NULL;
 ALTER TABLE "ProposalRubricCriteriaAnswer" ALTER COLUMN "evaluationId" SET NOT NULL;
 
 -- AddForeignKey
-ALTER TABLE "ProposalRubricCriteria" ADD CONSTRAINT "ProposalRubricCriteria_evaluationId_fkey" FOREIGN KEY ("evaluationId") REFERENCES "ProposalEvaluation"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "ProposalRubricCriteria" ADD CONSTRAINT "ProposalRubricCriteria_evaluationId_fkey" FOREIGN KEY ("evaluationId") REFERENCES "ProposalEvaluation"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "ProposalRubricCriteriaAnswer" ADD CONSTRAINT "ProposalRubricCriteriaAnswer_evaluationId_fkey" FOREIGN KEY ("evaluationId") REFERENCES "ProposalEvaluation"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "ProposalRubricCriteriaAnswer" ADD CONSTRAINT "ProposalRubricCriteriaAnswer_evaluationId_fkey" FOREIGN KEY ("evaluationId") REFERENCES "ProposalEvaluation"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "DraftProposalRubricCriteriaAnswer" ADD CONSTRAINT "DraftProposalRubricCriteriaAnswer_evaluationId_fkey" FOREIGN KEY ("evaluationId") REFERENCES "ProposalEvaluation"("id") ON DELETE CASCADE ON UPDATE CASCADE;
