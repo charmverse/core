@@ -344,6 +344,7 @@ model Space {
   additionalBlockQuotas       AdditionalBlockQuota[]
   proposalWorkflows           ProposalWorkflow[]
   credentialTemplates         CredentialTemplate[]
+  charmWallet                 CharmWallet?
 
   @@index([createdBy])
 }
@@ -668,6 +669,7 @@ model User {
   decidedProposalEvaluations    ProposalEvaluation[]
   receivedCredentials           IssuedCredential[]
   otp                           Otp?
+  charmWallet                   CharmWallet?
 }
 
 model VerifiedEmail {
@@ -2054,4 +2056,29 @@ model RecoveryCode {
   deletedAt DateTime?
   code      String
   otp       Otp?
+}
+
+model CharmWallet {
+  id                   String             @id @default(uuid()) @db.Uuid
+  userId               String?            @unique @db.Uuid
+  user                 User?              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  spaceId              String?            @unique @db.Uuid
+  space                Space?             @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  address              String             @unique
+  balance              Int                @default(0)
+  charmTransactionFrom CharmTransaction[] @relation("fromWallet")
+  charmTransactionTo   CharmTransaction[] @relation("toWallet")
+
+  @@index([id])
+}
+
+model CharmTransaction {
+  id         String       @id @default(uuid()) @db.Uuid
+  createdAt  DateTime     @default(now())
+  amount     Int
+  from       String?
+  to         String?
+  fromWallet CharmWallet? @relation("fromWallet", fields: [from], references: [id], onDelete: SetNull)
+  toWallet   CharmWallet? @relation("toWallet", fields: [to], references: [id], onDelete: SetNull)
+  metadata   Json?        @default("{}")
 }
