@@ -181,6 +181,7 @@ enum PageType {
   card_synced
   card_template
   proposal
+  proposal_notes
   proposal_template
   inline_board
   inline_linked_board

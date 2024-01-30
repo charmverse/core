@@ -1,6 +1,6 @@
 import type {
   Page,
-  Post,
+  PageType,
   Prisma,
   ProposalEvaluation,
   ProposalEvaluationType,
@@ -42,6 +42,7 @@ export type GenerateProposalInput = {
   spaceId: string;
   authors?: string[];
   reviewers?: ProposalReviewerInput[];
+  pageType?: PageType;
   proposalStatus?: ProposalStatus;
   title?: string;
   content?: any;
@@ -66,6 +67,7 @@ export async function generateProposal({
   userId,
   spaceId,
   proposalStatus = 'draft',
+  pageType = 'proposal',
   title = 'Proposal',
   authors = [],
   reviewers,
@@ -127,7 +129,7 @@ export async function generateProposal({
     contentText: '',
     path: `path-${uuid()}`,
     title,
-    type: 'proposal',
+    type: pageType,
     createdBy: userId,
     spaceId,
     deletedAt,
@@ -254,42 +256,24 @@ export async function generateProposal({
   return result as GenerateProposalResponse;
 }
 
-export async function convertPostToProposal({ post, userId }: { post: Post; userId: string }) {
-  await prisma.post.update({
-    where: { id: post.id },
-    data: {
-      proposal: {
-        create: {
-          createdBy: userId,
-          status: 'draft',
-          space: {
-            connect: {
-              id: post.spaceId
-            }
-          },
-          page: {
-            create: {
-              author: {
-                connect: {
-                  id: userId
-                }
-              },
-              space: {
-                connect: {
-                  id: post.spaceId
-                }
-              },
-              contentText: post.contentText,
-              content: post.content as any,
-              path: `post-${uuid()}`,
-              title: post.title,
-              type: 'proposal',
-              updatedBy: userId
-            }
-          }
-        }
-      }
-    }
+export async function generateProposalNotes({
+  proposalPageId,
+  createdBy,
+  content
+}: {
+  proposalPageId: string;
+  spaceId?: string;
+  createdBy?: string;
+  content?: any | null;
+}) {
+  const page = await prisma.page.findUniqueOrThrow({ where: { id: proposalPageId } });
+  return generatePage({
+    type: 'proposal_notes',
+    title: '',
+    parentId: proposalPageId,
+    createdBy: createdBy || page.createdBy,
+    content,
+    spaceId: page.spaceId
   });
 }
 
@@ -329,32 +313,4 @@ export async function generateProposalTemplate({
   });
 
   return convertedToTemplate.proposal as ProposalWithUsers;
-}
-
-export async function convertPageToProposal({
-  pageId,
-  userId
-}: {
-  pageId: string;
-  proposalCategoryId?: string;
-  userId?: string;
-}): Promise<void> {
-  const page = await prisma.page.findUniqueOrThrow({
-    where: { id: pageId },
-    select: { createdBy: true, spaceId: true }
-  });
-
-  const { page: proposalPage } = await generateProposal({
-    userId: userId ?? page.createdBy,
-    spaceId: page.spaceId
-  });
-
-  await prisma.page.update({
-    where: {
-      id: pageId
-    },
-    data: {
-      convertedProposalId: proposalPage.id
-    }
-  });
 }
