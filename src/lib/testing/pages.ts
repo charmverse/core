@@ -1,4 +1,4 @@
-import type { Page, Prisma, Thread, Comment } from '@prisma/client';
+import type { Comment, Page, Prisma, Thread } from '@prisma/client';
 import { DataNotFoundError, InvalidInputError, PageNotFoundError } from 'errors';
 import { v4 } from 'uuid';
 
@@ -80,6 +80,7 @@ export function generatePage({
       index,
       additionalPaths,
       snapshotProposalId,
+      sourceTemplateId,
       proposal: proposalId
         ? {
             connect: {
