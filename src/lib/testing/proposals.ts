@@ -118,18 +118,6 @@ export async function generateProposal({
             createMany: {
               data: authors.map((authorId) => ({ userId: authorId }))
             }
-          },
-      reviewers: !reviewers?.length
-        ? undefined
-        : {
-            createMany: {
-              data: (reviewers ?? []).map((r) => {
-                return {
-                  userId: r.group === 'user' ? r.id : undefined,
-                  roleId: r.group === 'role' ? r.id : undefined
-                };
-              })
-            }
           }
     }
   });

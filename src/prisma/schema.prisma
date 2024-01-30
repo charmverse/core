@@ -1332,8 +1332,8 @@ model ProposalReviewer {
   systemRole   ProposalSystemRole?
   role         Role?               @relation(fields: [roleId], references: [id], onDelete: Cascade)
   reviewer     User?               @relation(fields: [userId], references: [id], onDelete: Cascade)
-  evaluationId String?             @db.Uuid
-  evaluation   ProposalEvaluation? @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
+  evaluationId String              @db.Uuid
+  evaluation   ProposalEvaluation  @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
 
   @@index([proposalId])
   @@index([roleId])
@@ -1355,8 +1355,8 @@ model ProposalRubricCriteria {
   parameters   Json
   answers      ProposalRubricCriteriaAnswer[]
   draftAnswers DraftProposalRubricCriteriaAnswer[]
-  evaluation   ProposalEvaluation?                 @relation(fields: [evaluationId], references: [id])
-  evaluationId String?                             @db.Uuid
+  evaluation   ProposalEvaluation                  @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
+  evaluationId String                              @db.Uuid
 
   @@index([proposalId])
 }
@@ -1369,8 +1369,8 @@ model ProposalRubricCriteriaAnswer {
   userId           String
   response         Json
   comment          String?
-  evaluation       ProposalEvaluation?    @relation(fields: [evaluationId], references: [id])
-  evaluationId     String?                @db.Uuid
+  evaluation       ProposalEvaluation     @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
+  evaluationId     String                 @db.Uuid
 
   @@unique([userId, rubricCriteriaId])
   @@index([proposalId])
@@ -1385,7 +1385,7 @@ model DraftProposalRubricCriteriaAnswer {
   userId           String
   response         Json
   comment          String?
-  evaluation       ProposalEvaluation     @relation(fields: [evaluationId], references: [id])
+  evaluation       ProposalEvaluation     @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
   evaluationId     String                 @db.Uuid
 
   @@unique([userId, rubricCriteriaId])
