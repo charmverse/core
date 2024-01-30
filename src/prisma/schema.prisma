@@ -2059,14 +2059,14 @@ model RecoveryCode {
 }
 
 model CharmWallet {
-  id                   String             @id @default(uuid()) @db.Uuid
-  balance              Int                @default(0)
-  userId               String?            @unique @db.Uuid
-  spaceId              String?            @unique @db.Uuid
-  user                 User?              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  space                Space?             @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  charmTransactionFrom CharmTransaction[] @relation("fromWallet")
-  charmTransactionTo   CharmTransaction[] @relation("toWallet")
+  id               String             @id @default(uuid()) @db.Uuid
+  balance          Int                @default(0)
+  userId           String?            @unique @db.Uuid
+  spaceId          String?            @unique @db.Uuid
+  user             User?              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  space            Space?             @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  transactionsFrom CharmTransaction[] @relation("fromWallet")
+  transactionsTo   CharmTransaction[] @relation("toWallet")
 
   @@index([id])
 }
@@ -2075,8 +2075,8 @@ model CharmTransaction {
   id         String       @id @default(uuid()) @db.Uuid
   createdAt  DateTime     @default(now())
   amount     Int
-  from       String? @db.Uuid
-  to         String? @db.Uuid
+  from       String?      @db.Uuid
+  to         String?      @db.Uuid
   fromWallet CharmWallet? @relation("fromWallet", fields: [from], references: [id], onDelete: SetNull)
   toWallet   CharmWallet? @relation("toWallet", fields: [to], references: [id], onDelete: SetNull)
   metadata   Json?        @default("{}")
