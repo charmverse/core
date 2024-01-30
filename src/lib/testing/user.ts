@@ -60,6 +60,7 @@ type CreateUserAndSpaceInput = {
   domain?: string;
   publicBountyBoard?: boolean;
   publicProposals?: boolean;
+  publicProposalTemplates?: boolean;
   spacePaidTier?: SubscriptionTier;
   customProposalProperties?: IPropertyTemplate[];
   wallet?: string;
@@ -74,6 +75,7 @@ export async function generateUserAndSpace({
   domain,
   publicBountyBoard = false,
   publicProposals = false,
+  publicProposalTemplates = false,
   spacePaidTier = 'community',
   customProposalProperties,
   wallet
@@ -102,7 +104,8 @@ export async function generateUserAndSpace({
               // Adding prefix avoids this being evaluated as uuid
               domain: domain ?? `domain-${uuid()}`,
               publicBountyBoard,
-              publicProposals
+              publicProposals,
+              publicProposalTemplates
             }
           }
         }
