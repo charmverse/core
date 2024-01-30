@@ -30,11 +30,13 @@ describe('generateUserAndSpace', () => {
       publicProposals: true,
       spacePaidTier: 'enterprise',
       isAdmin: true,
-      domain: randomDomain
+      domain: randomDomain,
+      publicProposalTemplates: true
     });
 
     expect(space.publicBountyBoard).toBe(true);
     expect(space.publicProposals).toBe(true);
+    expect(space.publicProposalTemplates).toBe(true);
     expect(space.paidTier).toBe('enterprise');
     expect(space.domain).toBe(randomDomain);
 

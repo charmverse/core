@@ -289,6 +289,7 @@ model Space {
   defaultPublicPages          Boolean?                          @default(false)
   notificationToggles         Json                              @default("{}")
   requireProposalTemplate     Boolean?                          @default(false)
+  publicProposalTemplates     Boolean?                          @default(false)
   permissionConfigurationMode SpacePermissionConfigurationMode? @default(custom)
   publicBountyBoard           Boolean?                          @default(false)
   publicProposals             Boolean?                          @default(false)
