@@ -2,7 +2,7 @@
 CREATE TABLE "FavoriteCredential" (
     "id" UUID NOT NULL,
     "index" INTEGER NOT NULL DEFAULT -1,
-    "attestationId" UUID,
+    "attestationId" TEXT,
     "chainId" INTEGER,
     "issuedCredentialId" UUID,
 

@@ -2091,7 +2091,7 @@ model CharmTransaction {
 model FavoriteCredential {
   id                 String            @id @default(uuid()) @db.Uuid
   index              Int               @default(-1)
-  attestationId      String?           @db.Uuid
+  attestationId      String?
   chainId            Int?
   issuedCredentialId String?           @db.Uuid
   issuedCredential   IssuedCredential? @relation(fields: [issuedCredentialId], references: [id], onDelete: SetNull)
