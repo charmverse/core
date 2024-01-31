@@ -2096,5 +2096,6 @@ model FavoriteCredential {
   issuedCredentialId String?           @db.Uuid
   issuedCredential   IssuedCredential? @relation(fields: [issuedCredentialId], references: [id], onDelete: SetNull)
 
-  @@unique([issuedCredentialId, attestationId])
+  @@unique([issuedCredentialId])
+  @@unique([attestationId])
 }

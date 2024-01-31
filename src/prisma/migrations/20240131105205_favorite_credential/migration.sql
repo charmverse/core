@@ -10,7 +10,10 @@ CREATE TABLE "FavoriteCredential" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "FavoriteCredential_issuedCredentialId_attestationId_key" ON "FavoriteCredential"("issuedCredentialId", "attestationId");
+CREATE UNIQUE INDEX "FavoriteCredential_issuedCredentialId_key" ON "FavoriteCredential"("issuedCredentialId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "FavoriteCredential_attestationId_key" ON "FavoriteCredential"("attestationId");
 
 -- AddForeignKey
 ALTER TABLE "FavoriteCredential" ADD CONSTRAINT "FavoriteCredential_issuedCredentialId_fkey" FOREIGN KEY ("issuedCredentialId") REFERENCES "IssuedCredential"("id") ON DELETE SET NULL ON UPDATE CASCADE;
