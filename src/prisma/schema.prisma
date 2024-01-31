@@ -2028,16 +2028,17 @@ model CredentialTemplate {
 }
 
 model IssuedCredential {
-  id                   String              @id @default(uuid()) @db.Uuid
-  credentialTemplateId String?             @db.Uuid
-  credentialTemplate   CredentialTemplate? @relation(fields: [credentialTemplateId], references: [id], onDelete: SetNull)
-  proposalId           String              @db.Uuid
-  proposal             Proposal            @relation(fields: [proposalId], references: [id], onDelete: Cascade)
-  ceramicId            String              @unique
-  userId               String              @db.Uuid
-  user                 User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                   String               @id @default(uuid()) @db.Uuid
+  credentialTemplateId String?              @db.Uuid
+  credentialTemplate   CredentialTemplate?  @relation(fields: [credentialTemplateId], references: [id], onDelete: SetNull)
+  proposalId           String               @db.Uuid
+  proposal             Proposal             @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  ceramicId            String               @unique
+  userId               String               @db.Uuid
+  user                 User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
   credentialEvent      CredentialEventType
-  createdAt            DateTime            @default(now())
+  createdAt            DateTime             @default(now())
+  favoriteCredentials  FavoriteCredential[]
 }
 
 model Otp {
@@ -2085,4 +2086,15 @@ model CharmTransaction {
   fromWallet CharmWallet? @relation("fromWallet", fields: [from], references: [id], onDelete: SetNull)
   toWallet   CharmWallet? @relation("toWallet", fields: [to], references: [id], onDelete: SetNull)
   metadata   Json?        @default("{}")
+}
+
+model FavoriteCredential {
+  id                 String            @id @default(uuid()) @db.Uuid
+  index              Int               @default(-1)
+  attestationId      String?           @db.Uuid
+  chainId            Int?
+  issuedCredentialId String?           @db.Uuid
+  issuedCredential   IssuedCredential? @relation(fields: [issuedCredentialId], references: [id], onDelete: SetNull)
+
+  @@unique([issuedCredentialId, attestationId])
 }
