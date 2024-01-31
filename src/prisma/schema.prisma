@@ -181,6 +181,7 @@ enum PageType {
   card_synced
   card_template
   proposal
+  proposal_notes
   proposal_template
   inline_board
   inline_linked_board
@@ -287,6 +288,8 @@ model Space {
   defaultPostCategory         PostCategory?                     @relation(fields: [defaultPostCategoryId], references: [id], name: "defaultPostCategory", onDelete: SetNull)
   defaultPagePermissionGroup  PagePermissionLevel?              @default(full_access)
   defaultPublicPages          Boolean?                          @default(false)
+  homePageId                  String?                           @unique @db.Uuid
+  homePage                    Page?                             @relation(fields: [homePageId], references: [id], name: "spaceHomePage", onDelete: SetNull)
   notificationToggles         Json                              @default("{}")
   requireProposalTemplate     Boolean?                          @default(false)
   publicProposalTemplates     Boolean?                          @default(false)
@@ -437,6 +440,7 @@ model Page {
   userSpaceActions    UserSpaceAction[]
   sourceTemplateId    String?                @db.Uuid
   notifications       DocumentNotification[]
+  homePageSpace       Space?                 @relation("spaceHomePage")
 
   // Ensure synced proposal databases cannot have duplicate cards for a proposal
   @@unique([parentId, syncWithPageId])
