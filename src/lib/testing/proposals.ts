@@ -25,7 +25,10 @@ export type ProposalEvaluationTestInput = Partial<Prisma.ProposalEvaluationCreat
   rubricCriteria?: Partial<
     Pick<Prisma.ProposalRubricCriteriaCreateManyInput, 'title' | 'description' | 'parameters'>
   >[];
-  reviewers: ({ group: Extract<ProposalSystemRole, 'space_member'> } | TargetPermissionGroup<'role' | 'user'>)[];
+  reviewers: (
+    | { group: Extract<ProposalSystemRole, 'space_member' | 'author'> }
+    | TargetPermissionGroup<'role' | 'user'>
+  )[];
   permissions: {
     assignee: { group: ProposalSystemRole } | TargetPermissionGroup<'role' | 'user'>;
     operation: Extract<ProposalOperation, 'edit' | 'view' | 'move' | 'comment'>;
