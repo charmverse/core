@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.28.4-rc-feat-fav-creden.3",
+  "version": "0.28.4-rc-feat-fav-creden.4",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
