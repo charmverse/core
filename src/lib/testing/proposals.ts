@@ -265,7 +265,7 @@ export async function generateProposalNotes({
   spaceId?: string;
   createdBy?: string;
   content?: any | null;
-}) {
+}): Promise<Omit<Page, 'parentId'> & { parentId: string }> {
   const page = await prisma.page.findUniqueOrThrow({ where: { id: proposalPageId } });
   return generatePage({
     type: 'proposal_notes',
@@ -274,7 +274,7 @@ export async function generateProposalNotes({
     createdBy: createdBy || page.createdBy,
     content,
     spaceId: page.spaceId
-  });
+  }) as Promise<Omit<Page, 'parentId'> & { parentId: string }>;
 }
 
 export async function generateProposalTemplate({
