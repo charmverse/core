@@ -2095,10 +2095,8 @@ model FavoriteCredential {
   chainId              Int?
   userId               String            @db.Uuid
   user                 User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  attestationId        String?
-  issuedCredentialId   String?           @db.Uuid
+  attestationId        String?           @unique
+  issuedCredentialId   String?           @unique @db.Uuid
   issuedCredential     IssuedCredential? @relation(fields: [issuedCredentialId], references: [id], onDelete: SetNull)
-  gitcoinWalletAddress String?
-
-  @@unique([issuedCredentialId, attestationId, gitcoinWalletAddress])
+  gitcoinWalletAddress String?           @unique
 }
