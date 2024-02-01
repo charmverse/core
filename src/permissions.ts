@@ -25,8 +25,6 @@ export * from './lib/permissions/pages/availablePagePermissions.class';
 export * from './lib/permissions/pages/client/interfaces';
 export * from './lib/permissions/pages/copyPagePermissions';
 export * from './lib/permissions/pages/interfaces';
-export * from './lib/permissions/pages/policies/index';
-export * from './lib/permissions/pages/policies/interfaces';
 
 // Core and general permission exports
 export { getPermissionAssignee } from './lib/permissions/core/getPermissionAssignee';
