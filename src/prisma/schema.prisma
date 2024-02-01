@@ -675,6 +675,7 @@ model User {
   receivedCredentials           IssuedCredential[]
   otp                           Otp?
   charmWallet                   CharmWallet?
+  favoriteCredentials           FavoriteCredential[]
 }
 
 model VerifiedEmail {
@@ -2089,13 +2090,15 @@ model CharmTransaction {
 }
 
 model FavoriteCredential {
-  id                 String            @id @default(uuid()) @db.Uuid
-  index              Int               @default(-1)
-  attestationId      String?
-  chainId            Int?
-  issuedCredentialId String?           @db.Uuid
-  issuedCredential   IssuedCredential? @relation(fields: [issuedCredentialId], references: [id], onDelete: SetNull)
+  id                   String            @id @default(uuid()) @db.Uuid
+  index                Int               @default(-1)
+  chainId              Int?
+  userId               String            @db.Uuid
+  user                 User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  attestationId        String?
+  issuedCredentialId   String?           @db.Uuid
+  issuedCredential     IssuedCredential? @relation(fields: [issuedCredentialId], references: [id], onDelete: SetNull)
+  gitcoinWalletAddress String?
 
-  @@unique([issuedCredentialId])
-  @@unique([attestationId])
+  @@unique([issuedCredentialId, attestationId, gitcoinWalletAddress])
 }
