@@ -414,7 +414,6 @@ model Page {
   index               Int                    @default(-1)
   cardId              String?                @unique @db.Uuid
   proposalId          String?                @unique @db.Uuid
-  snapshotProposalId  String?
   fullWidth           Boolean?               @default(false)
   fontFamily          FontFamily?            @default(default)
   fontSizeSmall       Boolean?               @default(false)
