@@ -319,14 +319,12 @@ model Space {
   votes                       Vote[]
   proposals                   Proposal[]
   workspaceEvents             WorkspaceEvent[]
-  proposalCategories          ProposalCategory[]
   memberProperties            MemberProperty[]
   memberPropertyValues        MemberPropertyValue[]
   userTokenGates              UserTokenGate[]
   postCategories              PostCategory[]
   posts                       Post[]
   postCategoryPermissions     PostCategoryPermission[]
-  proposalCategoryPermissions ProposalCategoryPermission[]
   spaceNotificationSettings   UserSpaceNotificationSettings[]
   webhookSubscriptionUrl      String?
   webhookSubscriptions        WebhookSubscription[]
@@ -1016,7 +1014,6 @@ model Role {
   inviteLinkToRoles             InviteLinkToRole[]
   memberPropertyPermissions     MemberPropertyPermission[]
   postCategoryPermissions       PostCategoryPermission[]
-  proposalCategoryPermissions   ProposalCategoryPermission[]
   proposalEvaluationPermissions ProposalEvaluationPermission[]
 
   @@unique([spaceId, name])
@@ -1179,8 +1176,6 @@ model Proposal {
   reviewedBy                  String?                             @db.Uuid
   reviewer                    User?                               @relation(fields: [reviewedBy], references: [id], onDelete: Cascade)
   reviewedAt                  DateTime?
-  categoryId                  String?                             @db.Uuid
-  category                    ProposalCategory?                   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   publishToLens               Boolean?
   lensPostLink                String?
   Post                        Post[]
@@ -1202,7 +1197,6 @@ model Proposal {
 
   @@index([spaceId])
   @@index([reviewedBy])
-  @@index([categoryId])
 }
 
 model ProposalWorkflow {
@@ -1431,17 +1425,6 @@ model WorkspaceEvent {
   @@index([createdAt])
 }
 
-// note: this will eventually be managed by evaluation permissions
-enum ProposalCategoryOperation {
-  manage_permissions
-  create_proposal
-  edit
-  delete
-  view_category
-  comment_proposals
-  vote_proposals
-}
-
 // Note: eventually this will just be view, edit, comment, and move once we migrate to the new permissions flow
 enum ProposalOperation {
   edit
@@ -1456,52 +1439,6 @@ enum ProposalOperation {
   archive
   unarchive
   move
-}
-
-enum ProposalCategoryPermissionLevel {
-  view
-  view_comment
-  view_comment_vote
-  create_comment
-  full_access
-}
-
-model ProposalCategoryPermission {
-  id                 String                          @id @default(uuid()) @db.Uuid
-  permissionLevel    ProposalCategoryPermissionLevel
-  proposalCategoryId String                          @db.Uuid
-  proposalCategory   ProposalCategory                @relation(fields: [proposalCategoryId], references: [id], onDelete: Cascade)
-  // These fields will only be used when the custom permission level is used
-  // For now adding these to the schema so that Prisma Client doesn't drop the enums at generator stage
-  categoryOperations ProposalCategoryOperation[]
-
-  // Permission assignees
-  roleId  String?  @db.Uuid
-  role    Role?    @relation(fields: [roleId], references: [id], onDelete: Cascade)
-  spaceId String?  @db.Uuid
-  space   Space?   @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  public  Boolean?
-
-  @@unique([roleId, proposalCategoryId])
-  @@unique([spaceId, proposalCategoryId])
-  @@unique([public, proposalCategoryId])
-  @@index([proposalCategoryId])
-  @@index([proposalCategoryId, roleId])
-  @@index([proposalCategoryId, spaceId])
-  @@index([proposalCategoryId, public])
-}
-
-model ProposalCategory {
-  id                          String                       @id @default(uuid()) @db.Uuid
-  spaceId                     String                       @db.Uuid
-  space                       Space                        @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  title                       String
-  color                       String
-  proposal                    Proposal[]
-  proposalCategoryPermissions ProposalCategoryPermission[]
-
-  @@unique([spaceId, title])
-  @@index([spaceId])
 }
 
 model MemberProperty {

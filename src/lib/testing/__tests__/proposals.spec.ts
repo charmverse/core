@@ -1,6 +1,5 @@
 import type {
   Page,
-  ProposalCategory,
   ProposalEvaluation,
   ProposalEvaluationPermission,
   ProposalReviewer,
@@ -24,7 +23,6 @@ describe('generateProposal', () => {
   let space: Space;
   let user: User;
   let role: Role;
-  let proposalCategory: ProposalCategory;
 
   beforeAll(async () => {
     ({ space, user } = await generateUserAndSpace());

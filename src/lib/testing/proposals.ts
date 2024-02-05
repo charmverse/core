@@ -239,7 +239,6 @@ export async function generateProposal({
       id: proposalId
     },
     include: {
-      category: true,
       authors: true,
       reviewers: true,
       page: true,
@@ -304,8 +303,7 @@ export async function generateProposalTemplate({
       proposal: {
         include: {
           authors: true,
-          reviewers: true,
-          category: true
+          reviewers: true
         }
       }
     }

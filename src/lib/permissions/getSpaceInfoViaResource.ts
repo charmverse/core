@@ -1,16 +1,14 @@
-import type { SubscriptionTier, Space } from 'prisma';
+import type { Space, SubscriptionTier } from 'prisma';
 
 import { prisma } from '../../prisma-client';
 import {
+  DataNotFoundError,
   InvalidInputError,
-  PostNotFoundError,
-  PostCategoryNotFoundError,
-  SpaceNotFoundError,
-  ProposalNotFoundError,
-  ProposalCategoryNotFoundError,
-  ProposalCategoryPermissionNotFoundError,
   PageNotFoundError,
-  DataNotFoundError
+  PostCategoryNotFoundError,
+  PostNotFoundError,
+  ProposalNotFoundError,
+  SpaceNotFoundError
 } from '../errors';
 import { isUUID } from '../utilities/strings';
 
@@ -133,44 +131,6 @@ async function isProposalSpaceOptedIn({ resourceId }: Resource): Promise<SpaceSu
   return getEngine(proposal.space);
 }
 
-async function isProposalCategorySpaceOptedIn({ resourceId }: Resource): Promise<SpaceSubscriptionInfo> {
-  const proposalCategory = await prisma.proposalCategory.findUnique({
-    where: {
-      id: resourceId
-    },
-    select: {
-      space: spaceSelect()
-    }
-  });
-
-  if (!proposalCategory) {
-    throw new ProposalCategoryNotFoundError(resourceId);
-  }
-
-  return getEngine(proposalCategory.space);
-}
-
-async function isProposalCategoryPermissionSpaceOptedIn({ resourceId }: Resource): Promise<SpaceSubscriptionInfo> {
-  const proposalCategoryPermission = await prisma.proposalCategoryPermission.findUnique({
-    where: {
-      id: resourceId
-    },
-    select: {
-      proposalCategory: {
-        select: {
-          space: spaceSelect()
-        }
-      }
-    }
-  });
-
-  if (!proposalCategoryPermission) {
-    throw new ProposalCategoryPermissionNotFoundError(resourceId);
-  }
-
-  return getEngine(proposalCategoryPermission.proposalCategory.space);
-}
-
 async function isPageSpaceOptedIn({ resourceId }: Resource): Promise<SpaceSubscriptionInfo> {
   const page = await prisma.page.findUnique({
     where: {
@@ -202,7 +162,7 @@ async function isPagePermissionSpaceOptedIn({ resourceId }: Resource): Promise<S
   });
 
   if (!pagePermission) {
-    throw new ProposalCategoryPermissionNotFoundError(resourceId);
+    throw new DataNotFoundError(`Page permission not found: ${resourceId}`);
   }
 
   return getEngine(pagePermission.page.space);
@@ -265,8 +225,6 @@ export type ResourceIdEntity =
   | 'postCategory'
   | 'postCategoryPermission'
   | 'proposal'
-  | 'proposalCategory'
-  | 'proposalCategoryPermission'
   | 'page'
   | 'pagePermission'
   | 'bounty'
@@ -295,10 +253,6 @@ export async function getSpaceInfoViaResource({
       ? isPostSpaceOptedIn
       : resourceIdType === 'proposal'
       ? isProposalSpaceOptedIn
-      : resourceIdType === 'proposalCategory'
-      ? isProposalCategorySpaceOptedIn
-      : resourceIdType === 'proposalCategoryPermission'
-      ? isProposalCategoryPermissionSpaceOptedIn
       : resourceIdType === 'page'
       ? isPageSpaceOptedIn
       : resourceIdType === 'pagePermission'
