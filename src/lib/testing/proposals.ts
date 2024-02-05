@@ -135,7 +135,6 @@ export async function generateProposal({
     deletedAt,
     proposalId,
     content,
-    snapshotProposalId,
     sourceTemplateId
   });
 
