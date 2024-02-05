@@ -181,6 +181,7 @@ enum PageType {
   card_synced
   card_template
   proposal
+  proposal_notes
   proposal_template
   inline_board
   inline_linked_board
@@ -282,18 +283,21 @@ model Space {
   snapshotDomain              String?
   spaceImage                  String?
   spaceArtwork                String?
+  credentialLogo              String?
   defaultPostCategoryId       String?                           @unique @db.Uuid
   defaultPostCategory         PostCategory?                     @relation(fields: [defaultPostCategoryId], references: [id], name: "defaultPostCategory", onDelete: SetNull)
   defaultPagePermissionGroup  PagePermissionLevel?              @default(full_access)
   defaultPublicPages          Boolean?                          @default(false)
+  homePageId                  String?                           @unique @db.Uuid
+  homePage                    Page?                             @relation(fields: [homePageId], references: [id], name: "spaceHomePage", onDelete: SetNull)
   notificationToggles         Json                              @default("{}")
   requireProposalTemplate     Boolean?                          @default(false)
+  publicProposalTemplates     Boolean?                          @default(false)
   permissionConfigurationMode SpacePermissionConfigurationMode? @default(custom)
   publicBountyBoard           Boolean?                          @default(false)
   publicProposals             Boolean?                          @default(false)
   xpsEngineId                 String?                           @unique
   primaryMemberIdentity       IdentityType?
-  credentialEvents            CredentialEventType[]             @default([])
   author                      User                              @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   blocks                      Block[]
   bounties                    Bounty[]
@@ -342,6 +346,7 @@ model Space {
   additionalBlockQuotas       AdditionalBlockQuota[]
   proposalWorkflows           ProposalWorkflow[]
   credentialTemplates         CredentialTemplate[]
+  charmWallet                 CharmWallet?
 
   @@index([createdBy])
 }
@@ -433,6 +438,7 @@ model Page {
   userSpaceActions    UserSpaceAction[]
   sourceTemplateId    String?                @db.Uuid
   notifications       DocumentNotification[]
+  homePageSpace       Space?                 @relation("spaceHomePage")
 
   // Ensure synced proposal databases cannot have duplicate cards for a proposal
   @@unique([parentId, syncWithPageId])
@@ -612,6 +618,8 @@ model User {
   emailNewsletter               Boolean?                        @default(false)
   xpsEngineId                   String?                         @unique
   publishToLensDefault          Boolean?                        @default(false)
+  primaryWalletId               String?                         @db.Uuid
+  primaryWallet                 UserWallet?                     @relation(fields: [primaryWalletId], references: [id], onDelete: SetNull, name: "primaryUserWallet")
   applications                  Application[]
   blocks                        Block[]
   bounties                      Bounty[]
@@ -641,7 +649,7 @@ model User {
   proposalsReviewed             ProposalReviewer[]
   reviewedProposals             Proposal[]
   workspaceEvents               WorkspaceEvent[]
-  wallets                       UserWallet[]
+  wallets                       UserWallet[]                    @relation("userWallet")
   memberPropertyValues          MemberPropertyValue[]
   spaceNotificationSettings     UserSpaceNotificationSettings[]
   userTokenGates                UserTokenGate[]
@@ -664,6 +672,8 @@ model User {
   decidedProposalEvaluations    ProposalEvaluation[]
   receivedCredentials           IssuedCredential[]
   otp                           Otp?
+  charmWallet                   CharmWallet?
+  favoriteCredentials           FavoriteCredential[]
 }
 
 model VerifiedEmail {
@@ -679,12 +689,13 @@ model VerifiedEmail {
 }
 
 model UserWallet {
-  id           String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  address      String        @unique
-  userId       String        @db.Uuid
-  ensname      String?       @unique
-  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  profileItems ProfileItem[]
+  id                 String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  address            String        @unique
+  userId             String        @db.Uuid
+  ensname            String?       @unique
+  user               User          @relation(fields: [userId], references: [id], onDelete: Cascade, name: "userWallet")
+  primaryWalletUsers User[]        @relation("primaryUserWallet")
+  profileItems       ProfileItem[]
 
   @@index([userId])
 }
@@ -1103,19 +1114,21 @@ model SpacePermission {
 }
 
 model Thread {
-  id           String    @id @default(uuid()) @db.Uuid
-  createdAt    DateTime  @default(now())
-  pageId       String    @db.Uuid
-  context      String
-  userId       String    @db.Uuid
-  resolved     Boolean
-  spaceId      String    @db.Uuid
-  updatedAt    DateTime?
-  page         Page      @relation(fields: [pageId], references: [id], onDelete: Cascade)
-  space        Space     @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  user         User      @relation(fields: [userId], references: [id])
-  comments     Comment[]
-  accessGroups Json[]    @default([])
+  id            String           @id @default(uuid()) @db.Uuid
+  createdAt     DateTime         @default(now())
+  pageId        String           @db.Uuid
+  context       String
+  userId        String           @db.Uuid
+  resolved      Boolean
+  spaceId       String           @db.Uuid
+  updatedAt     DateTime?
+  page          Page             @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  space         Space            @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  user          User             @relation(fields: [userId], references: [id])
+  comments      Comment[]
+  accessGroups  Json[]           @default([])
+  fieldAnswerId String?          @db.Uuid
+  fieldAnswer   FormFieldAnswer? @relation(fields: [fieldAnswerId], references: [id], onDelete: SetNull)
 
   @@index([pageId])
   @@index([spaceId])
@@ -1319,8 +1332,8 @@ model ProposalReviewer {
   systemRole   ProposalSystemRole?
   role         Role?               @relation(fields: [roleId], references: [id], onDelete: Cascade)
   reviewer     User?               @relation(fields: [userId], references: [id], onDelete: Cascade)
-  evaluationId String?             @db.Uuid
-  evaluation   ProposalEvaluation? @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
+  evaluationId String              @db.Uuid
+  evaluation   ProposalEvaluation  @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
 
   @@index([proposalId])
   @@index([roleId])
@@ -1342,8 +1355,8 @@ model ProposalRubricCriteria {
   parameters   Json
   answers      ProposalRubricCriteriaAnswer[]
   draftAnswers DraftProposalRubricCriteriaAnswer[]
-  evaluation   ProposalEvaluation?                 @relation(fields: [evaluationId], references: [id])
-  evaluationId String?                             @db.Uuid
+  evaluation   ProposalEvaluation                  @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
+  evaluationId String                              @db.Uuid
 
   @@index([proposalId])
 }
@@ -1356,8 +1369,8 @@ model ProposalRubricCriteriaAnswer {
   userId           String
   response         Json
   comment          String?
-  evaluation       ProposalEvaluation?    @relation(fields: [evaluationId], references: [id])
-  evaluationId     String?                @db.Uuid
+  evaluation       ProposalEvaluation     @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
+  evaluationId     String                 @db.Uuid
 
   @@unique([userId, rubricCriteriaId])
   @@index([proposalId])
@@ -1372,7 +1385,7 @@ model DraftProposalRubricCriteriaAnswer {
   userId           String
   response         Json
   comment          String?
-  evaluation       ProposalEvaluation     @relation(fields: [evaluationId], references: [id])
+  evaluation       ProposalEvaluation     @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
   evaluationId     String                 @db.Uuid
 
   @@unique([userId, rubricCriteriaId])
@@ -1929,6 +1942,7 @@ model FormFieldAnswer {
   value      Json
   proposalId String        @db.Uuid
   proposal   Proposal      @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  threads    Thread[]
 
   @@index([fieldId])
 }
@@ -1938,29 +1952,31 @@ enum AttestationType {
 }
 
 model CredentialTemplate {
-  id                String             @id @default(uuid()) @db.Uuid
-  spaceId           String             @db.Uuid
+  id                String                @id @default(uuid()) @db.Uuid
+  spaceId           String                @db.Uuid
   name              String
   organization      String
-  description       String             @default("")
+  description       String                @default("")
   schemaType        AttestationType
   schemaAddress     String
-  createdAt         DateTime           @default(now())
-  space             Space              @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  createdAt         DateTime              @default(now())
+  space             Space                 @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  credentialEvents  CredentialEventType[] @default([])
   issuedCredentials IssuedCredential[]
 }
 
 model IssuedCredential {
-  id                   String              @id @default(uuid()) @db.Uuid
-  credentialTemplateId String?             @db.Uuid
-  credentialTemplate   CredentialTemplate? @relation(fields: [credentialTemplateId], references: [id], onDelete: SetNull)
-  proposalId           String              @db.Uuid
-  proposal             Proposal            @relation(fields: [proposalId], references: [id], onDelete: Cascade)
-  ceramicId            String              @unique
-  userId               String              @db.Uuid
-  user                 User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                   String               @id @default(uuid()) @db.Uuid
+  credentialTemplateId String?              @db.Uuid
+  credentialTemplate   CredentialTemplate?  @relation(fields: [credentialTemplateId], references: [id], onDelete: SetNull)
+  proposalId           String               @db.Uuid
+  proposal             Proposal             @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  ceramicId            String               @unique
+  userId               String               @db.Uuid
+  user                 User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
   credentialEvent      CredentialEventType
-  createdAt            DateTime            @default(now())
+  createdAt            DateTime             @default(now())
+  favoriteCredentials  FavoriteCredential[]
 }
 
 model Otp {
@@ -1984,4 +2000,40 @@ model RecoveryCode {
   deletedAt DateTime?
   code      String
   otp       Otp?
+}
+
+model CharmWallet {
+  id               String             @id @default(uuid()) @db.Uuid
+  balance          Int                @default(0)
+  userId           String?            @unique @db.Uuid
+  spaceId          String?            @unique @db.Uuid
+  user             User?              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  space            Space?             @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  transactionsFrom CharmTransaction[] @relation("fromWallet")
+  transactionsTo   CharmTransaction[] @relation("toWallet")
+
+  @@index([id])
+}
+
+model CharmTransaction {
+  id         String       @id @default(uuid()) @db.Uuid
+  createdAt  DateTime     @default(now())
+  amount     Int
+  from       String?      @db.Uuid
+  to         String?      @db.Uuid
+  fromWallet CharmWallet? @relation("fromWallet", fields: [from], references: [id], onDelete: SetNull)
+  toWallet   CharmWallet? @relation("toWallet", fields: [to], references: [id], onDelete: SetNull)
+  metadata   Json?        @default("{}")
+}
+
+model FavoriteCredential {
+  id                   String            @id @default(uuid()) @db.Uuid
+  index                Int               @default(-1)
+  chainId              Int?
+  userId               String            @db.Uuid
+  user                 User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  attestationId        String?           @unique
+  issuedCredentialId   String?           @unique @db.Uuid
+  issuedCredential     IssuedCredential? @relation(fields: [issuedCredentialId], references: [id], onDelete: SetNull)
+  gitcoinWalletAddress String?           @unique
 }

@@ -85,16 +85,6 @@ describe('generateProposal', () => {
             proposalId: generatedProposal.id,
             userId: otherUser.id
           }
-        ]),
-        reviewers: expect.arrayContaining([
-          {
-            id: expect.any(String),
-            proposalId: generatedProposal.id,
-            roleId: role.id,
-            userId: null,
-            evaluationId: null,
-            systemRole: null
-          }
         ])
       })
     );

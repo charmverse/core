@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.23.1",
+  "version": "0.29.1",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
@@ -93,6 +93,7 @@
     "prisma:generate": "npx prisma generate --schema=./src/prisma/schema.prisma",
     "prisma:reset": "npx prisma migrate reset --schema=./src/prisma/schema.prisma --force",
     "prisma:migrate": "npx prisma migrate dev --schema=./src/prisma/schema.prisma",
+    "prisma:format": "npx prisma format --schema=./src/prisma/schema.prisma",
     "prisma:migrate:local": "npx dotenv -e .env.local -- npx prisma migrate dev --schema=./src/prisma/schema.prisma",
     "prisma:deploy": "npx prisma migrate deploy --schema=./src/prisma/schema.prisma"
   },

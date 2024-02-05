@@ -1,4 +1,4 @@
-import type { CredentialEventType, SubscriptionTier, User } from '@prisma/client';
+import type { SubscriptionTier, User } from '@prisma/client';
 import { v4 as uuid } from 'uuid';
 
 import { uid } from '../../lib/utilities/strings';
@@ -60,9 +60,9 @@ type CreateUserAndSpaceInput = {
   domain?: string;
   publicBountyBoard?: boolean;
   publicProposals?: boolean;
+  publicProposalTemplates?: boolean;
   spacePaidTier?: SubscriptionTier;
   customProposalProperties?: IPropertyTemplate[];
-  spaceCredentialEvents?: CredentialEventType[];
   wallet?: string;
 };
 
@@ -75,9 +75,9 @@ export async function generateUserAndSpace({
   domain,
   publicBountyBoard = false,
   publicProposals = false,
+  publicProposalTemplates = false,
   spacePaidTier = 'community',
   customProposalProperties,
-  spaceCredentialEvents,
   wallet
 }: CreateUserAndSpaceInput = {}) {
   const userId = uuid();
@@ -98,14 +98,14 @@ export async function generateUserAndSpace({
                   id: userId
                 }
               },
-              credentialEvents: spaceCredentialEvents,
               paidTier: spacePaidTier,
               updatedBy: userId,
               name: spaceName,
               // Adding prefix avoids this being evaluated as uuid
               domain: domain ?? `domain-${uuid()}`,
               publicBountyBoard,
-              publicProposals
+              publicProposals,
+              publicProposalTemplates
             }
           }
         }
