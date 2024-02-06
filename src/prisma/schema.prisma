@@ -812,6 +812,7 @@ model SpaceRole {
   isAdmin         Boolean           @default(false)
   isGuest         Boolean           @default(false)
   createdAt       DateTime          @default(now())
+  xpsUserId       String?           @unique
   space           Space             @relation(fields: [spaceId], references: [id], onDelete: Cascade)
   user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   spaceRoleToRole SpaceRoleToRole[]
