@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types */
-import type { SpaceRole } from '@prisma/client';
-
 import { DataNotFoundError } from '../../errors';
 import { objectUtils } from '../../utilities';
 import { hasAccessToSpace } from '../hasAccessToSpace';
@@ -11,6 +8,7 @@ import type {
   PermissionComputeWithCachedData,
   PreComputedSpacePermissionFlags,
   PreComputedSpaceRole,
+  SpaceRoleFields,
   UserPermissionFlags
 } from './interfaces';
 
@@ -64,19 +62,18 @@ type PolicyBuilderInput<R, F> = {
  * @type R - If the resource contains a spaceId, we can auto resolve admin status. In this case, your Permission Filtering Policies can make use of isAdmin
  * @type P - Additional params the compute function can receive
  */
-export function buildComputePermissionsWithPermissionFilteringPolicies<R, F extends UserPermissionFlags<any>, P = {}>({
-  computeFn,
-  resolver,
-  policies,
-  computeSpacePermissions
-}: PolicyBuilderInput<R, F>): PermissionComputeFn<F, P> {
+export function buildComputePermissionsWithPermissionFilteringPolicies<
+  R,
+  F extends UserPermissionFlags<any>,
+  P = object
+>({ computeFn, resolver, policies, computeSpacePermissions }: PolicyBuilderInput<R, F>): PermissionComputeFn<F, P> {
   return async (request: PermissionComputeWithCachedData): Promise<F> => {
     const resource = request.preFetchedResource ?? (await resolver({ resourceId: request.resourceId }));
     if (!resource) {
       throw new DataNotFoundError(`Could not find resource with ID ${request.resourceId}`);
     }
     // If the resource has a spaceId, we can auto resolve admin status
-    let spaceRole: SpaceRole | undefined | null;
+    let spaceRole: SpaceRoleFields | undefined | null;
     let preComputedSpacePermissionFlags = request.preComputedSpacePermissionFlags;
     const spaceId = (resource as any as ResourceWithSpaceId).spaceId;
 

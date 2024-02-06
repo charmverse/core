@@ -55,17 +55,19 @@ describe('hasAccessToSpace', () => {
     });
 
     expect(isAdmin).toBe(true);
-    expect(spaceRole).toMatchObject<SpaceRole>({
-      createdAt: expect.any(Date),
-      id: expect.any(String),
-      isAdmin: true,
-      isGuest: false,
-      joinedViaLink: null,
-      onboarded: expect.any(Boolean),
-      spaceId: space.id,
-      tokenGateId: null,
-      userId: adminUser.id
-    });
+    expect(spaceRole).toMatchObject<SpaceRole>(
+      expect.objectContaining({
+        createdAt: expect.any(Date),
+        id: expect.any(String),
+        isAdmin: true,
+        isGuest: false,
+        joinedViaLink: null,
+        onboarded: expect.any(Boolean),
+        spaceId: space.id,
+        tokenGateId: null,
+        userId: adminUser.id
+      })
+    );
   });
 
   it('should return success and admin status of the member user', async () => {
@@ -74,17 +76,19 @@ describe('hasAccessToSpace', () => {
       userId: memberUser.id
     });
     expect(isAdmin).toBe(false);
-    expect(spaceRole).toMatchObject<SpaceRole>({
-      createdAt: expect.any(Date),
-      id: expect.any(String),
-      isAdmin: false,
-      isGuest: false,
-      joinedViaLink: null,
-      onboarded: expect.any(Boolean),
-      spaceId: space.id,
-      tokenGateId: null,
-      userId: memberUser.id
-    });
+    expect(spaceRole).toMatchObject<SpaceRole>(
+      expect.objectContaining({
+        createdAt: expect.any(Date),
+        id: expect.any(String),
+        isAdmin: false,
+        isGuest: false,
+        joinedViaLink: null,
+        onboarded: expect.any(Boolean),
+        spaceId: space.id,
+        tokenGateId: null,
+        userId: memberUser.id
+      })
+    );
   });
 
   it('should return success if user is a guest', async () => {
@@ -94,17 +98,19 @@ describe('hasAccessToSpace', () => {
     });
 
     expect(isAdmin).toBe(false);
-    expect(spaceRole).toMatchObject<SpaceRole>({
-      createdAt: expect.any(Date),
-      id: expect.any(String),
-      isAdmin: false,
-      isGuest: true,
-      joinedViaLink: null,
-      onboarded: expect.any(Boolean),
-      spaceId: space.id,
-      tokenGateId: null,
-      userId: guestUser.id
-    });
+    expect(spaceRole).toMatchObject<SpaceRole>(
+      expect.objectContaining({
+        createdAt: expect.any(Date),
+        id: expect.any(String),
+        isAdmin: false,
+        isGuest: true,
+        joinedViaLink: null,
+        onboarded: expect.any(Boolean),
+        spaceId: space.id,
+        tokenGateId: null,
+        userId: guestUser.id
+      })
+    );
   });
 
   it('should return a null space role for non space members', async () => {
@@ -165,15 +171,13 @@ describe('hasAccessToSpace', () => {
   });
 
   it('should throw an error if a spaceRole is provided that does not match the provided userId and spaceId', async () => {
-    const mockSpaceRole: SpaceRole = {
+    const mockSpaceRole = {
       createdAt: new Date(),
       id: uuid(),
       isAdmin: false,
       isGuest: true,
-      joinedViaLink: null,
       onboarded: true,
       spaceId: uuid(),
-      tokenGateId: null,
       userId: uuid()
     };
     await expect(
