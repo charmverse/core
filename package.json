@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.29.4-rc-xps-user-ids.0",
+  "version": "0.29.4",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
