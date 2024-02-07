@@ -8,7 +8,7 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - uses: actions/setup-node@v3
+    - uses: actions/setup-node@v4
       with:
         node-version: 18
         registry-url: 'https://registry.npmjs.org/'
@@ -52,15 +52,15 @@ runs:
         NODE_AUTH_TOKEN: ${{ env.NODE_AUTH_TOKEN }}
       run: |
         git log -2
-        ls -la 
+        ls -la
         npm pkg delete scripts.prepare
         npm pack
 
-        if [[ "${{ steps.version_main.outputs.newTag }}" != "" ]]; then 
+        if [[ "${{ steps.version_main.outputs.newTag }}" != "" ]]; then
           npm publish --access=public
           echo "pkg_version=${{ steps.version_main.outputs.newTag }}" >> $GITHUB_OUTPUT
         else
           npm publish --access=public --tag "pr-${{ github.event.number }}-${{ env.GITHUB_HEAD_REF_SLUG || env.GITHUB_REF_NAME_SLUG }}"
           echo "pkg_version=${{ steps.version_other_branch.outputs.newTag }}" >> $GITHUB_OUTPUT
-        fi 
+        fi
 

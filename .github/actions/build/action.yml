@@ -9,7 +9,7 @@ runs:
 
     - name: Restore build cache
       id: cache_build
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: |
           dist
