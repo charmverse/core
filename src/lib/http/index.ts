@@ -6,15 +6,16 @@ type HttpConfig = { credentials?: RequestCredentials; headers?: any; addBrackets
 
 const httpConfigParams = ['credentials', 'headers', 'addBracketsToArrayValues'];
 
-export function GET<T = Response>(
-  _requestUrl: string,
-  data: Params | null | undefined | HttpConfig,
-  config?: HttpConfig
-): Promise<T> {
-  const { credentials = 'include', headers = {}, addBracketsToArrayValues = true } = _getHttpConfig(data, config);
-  const requestData = !config && _isConfigObject(data) ? null : data;
+type ParamsOrHttpConfig = Params | null | undefined | HttpConfig;
 
-  const requestUrl = _appendQuery(_requestUrl, requestData || {}, addBracketsToArrayValues);
+export function GET<T = Response>(_requestUrl: string, params?: ParamsOrHttpConfig, config?: HttpConfig): Promise<T> {
+  if (_isConfigObject(params)) {
+    config = params;
+    params = {};
+  }
+  const { credentials, headers, addBracketsToArrayValues } = _getHttpConfig(config);
+
+  const requestUrl = _appendQuery(_requestUrl, params || {}, addBracketsToArrayValues);
 
   return fetch<T>(requestUrl, {
     method: 'GET',
@@ -26,20 +27,20 @@ export function GET<T = Response>(
   });
 }
 
-export function DELETE<T>(
-  _requestUrl: string,
-  data: Params = {},
-  { headers = {} }: { headers?: any } = {}
-): Promise<T> {
-  const requestUrl = _appendQuery(_requestUrl, data || {});
+export function DELETE<T>(_requestUrl: string, params: Params = {}, config: { headers?: any } = {}): Promise<T> {
+  if (_isConfigObject(params)) {
+    config = params;
+    params = {};
+  }
+  const requestUrl = _appendQuery(_requestUrl, params);
   return fetch<T>(requestUrl, {
     // deprecated: sending DELETE params inside of body
-    body: JSON.stringify(data),
+    body: JSON.stringify(params),
     method: 'DELETE',
     headers: new Headers({
       Accept: 'application/json',
       'Content-Type': 'application/json',
-      ...headers
+      ...config.headers
     }),
     credentials: 'include'
   });
@@ -64,9 +65,9 @@ export function POST<T>(
   });
 }
 
-export function PUT<T>(requestURL: string, data: Params = {}, { headers = {} }: { headers?: any } = {}): Promise<T> {
+export function PUT<T>(requestURL: string, params: Params = {}, { headers = {} }: { headers?: any } = {}): Promise<T> {
   return fetch<T>(requestURL, {
-    body: JSON.stringify(data),
+    body: JSON.stringify(params),
     method: 'PUT',
     headers: new Headers({
       Accept: 'application/json',
@@ -77,18 +78,21 @@ export function PUT<T>(requestURL: string, data: Params = {}, { headers = {} }: 
   });
 }
 
-function _getHttpConfig(data: Params | null | undefined | string, config?: HttpConfig): HttpConfig {
-  // allow passing config as second or 3rd argument
-  const httpConfig = config || _isConfigObject(data) ? (data as HttpConfig) : {};
-
-  return httpConfig;
+// allow passing config as second or 3rd argument
+function _getHttpConfig(config?: HttpConfig): HttpConfig {
+  return {
+    credentials: 'include',
+    headers: {},
+    addBracketsToArrayValues: true,
+    ...config
+  };
 }
 
-function _appendQuery(path: string, data: Params, addBracketsToArrayValues: boolean = true) {
-  const queryString = Object.keys(data)
-    .filter((key) => !!data[key])
+function _appendQuery(path: string, params: Params, addBracketsToArrayValues: boolean = true) {
+  const queryString = Object.keys(params)
+    .filter((key) => !!params[key])
     .map((key) => {
-      const value = data[key];
+      const value = params[key];
       return Array.isArray(value)
         ? `${value.map((v: string) => `${key}${addBracketsToArrayValues ? '[]' : ''}=${v}`).join('&')}`
         : `${key}=${encodeURIComponent(value)}`;
@@ -97,7 +101,7 @@ function _appendQuery(path: string, data: Params, addBracketsToArrayValues: bool
   return `${path}${queryString ? `?${queryString}` : ''}`;
 }
 
-function _isConfigObject(obj: Params | null | undefined | string | HttpConfig): obj is HttpConfig {
+function _isConfigObject(obj: ParamsOrHttpConfig): obj is HttpConfig {
   if (!obj || typeof obj === 'string') {
     return false;
   }
