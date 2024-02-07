@@ -4,16 +4,19 @@ type Params = { [key: string]: any };
 
 type HttpConfig = { credentials?: RequestCredentials; headers?: any; addBracketsToArrayValues?: boolean };
 
-const httpConfigParams = ['credentials', 'headers', 'addBracketsToArrayValues'];
+const httpConfigParams: (keyof HttpConfig)[] = ['credentials', 'headers', 'addBracketsToArrayValues'];
 
 type ParamsOrHttpConfig = Params | null | undefined | HttpConfig;
 
 export function GET<T = Response>(_requestUrl: string, params?: ParamsOrHttpConfig, config?: HttpConfig): Promise<T> {
+  // allow passing config as second or 3rd argument
   if (_isConfigObject(params)) {
     config = params;
     params = {};
   }
-  const { credentials, headers, addBracketsToArrayValues } = _getHttpConfig(config);
+  const credentials = config?.credentials || 'include';
+  const headers = config?.headers || {};
+  const addBracketsToArrayValues = config?.addBracketsToArrayValues ?? true;
 
   const requestUrl = _appendQuery(_requestUrl, params || {}, addBracketsToArrayValues);
 
@@ -28,6 +31,7 @@ export function GET<T = Response>(_requestUrl: string, params?: ParamsOrHttpConf
 }
 
 export function DELETE<T>(_requestUrl: string, params: Params = {}, config: { headers?: any } = {}): Promise<T> {
+  // allow passing config as second or 3rd argument
   if (_isConfigObject(params)) {
     config = params;
     params = {};
@@ -76,16 +80,6 @@ export function PUT<T>(requestURL: string, params: Params = {}, { headers = {} }
     }),
     credentials: 'include'
   });
-}
-
-// allow passing config as second or 3rd argument
-function _getHttpConfig(config?: HttpConfig): HttpConfig {
-  return {
-    credentials: 'include',
-    headers: {},
-    addBracketsToArrayValues: true,
-    ...config
-  };
 }
 
 function _appendQuery(path: string, params: Params, addBracketsToArrayValues: boolean = true) {
