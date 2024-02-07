@@ -1762,6 +1762,7 @@ model BlockCount {
   details   Json
 
   @@index([spaceId])
+  @@index([createdAt(sort: Desc)])
 }
 
 model UserNotificationMetadata {
