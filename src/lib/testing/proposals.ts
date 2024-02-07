@@ -2,6 +2,8 @@ import type {
   Page,
   PageType,
   Prisma,
+  Proposal,
+  ProposalAuthor,
   ProposalEvaluation,
   ProposalEvaluationType,
   ProposalOperation,
@@ -14,11 +16,10 @@ import { v4 as uuid } from 'uuid';
 
 import { prisma } from '../../prisma-client';
 import { InvalidInputError } from '../errors';
-import type { PermissionJson, ProposalReviewerInput, ProposalWithUsers } from '../proposals/interfaces';
+import type { AssignablePermissionGroups } from '../permissions/core/interfaces';
+import type { PermissionJson } from '../proposals/interfaces';
 
 import { generatePage } from './pages';
-
-export type ProposalWithUsersAndPageMeta = ProposalWithUsers & { page: Pick<Page, 'title' | 'path'> };
 
 export type ProposalEvaluationTestInput = Partial<Prisma.ProposalEvaluationCreateManyInput> & {
   evaluationType: ProposalEvaluationType;
@@ -31,6 +32,17 @@ export type ProposalEvaluationTestInput = Partial<Prisma.ProposalEvaluationCreat
     operation: Extract<ProposalOperation, 'edit' | 'view' | 'move' | 'comment'>;
   }[];
 };
+
+type ProposalReviewerInput = {
+  group: Extract<AssignablePermissionGroups, 'role' | 'user'>;
+  id: string;
+};
+
+type ProposalWithUsers = Proposal & {
+  authors: ProposalAuthor[];
+  reviewers: ProposalReviewer[];
+};
+
 /**
  * @reviewers - Valid only for old tests, use `evaluationInputs` instead to define reviewers and permissions
  for that step
@@ -48,7 +60,6 @@ export type GenerateProposalInput = {
   content?: any;
   evaluationType?: ProposalEvaluationType;
   customProperties?: Record<string, any>;
-  snapshotProposalId?: string;
   evaluationInputs?: ProposalEvaluationTestInput[];
   workflowId?: string;
   selectedCredentialTemplateIds?: string[];
@@ -56,7 +67,7 @@ export type GenerateProposalInput = {
 };
 
 type TypedEvaluation = ProposalEvaluation & { permissions: PermissionJson[]; reviewers: ProposalReviewer[] };
-type GenerateProposalResponse = ProposalWithUsers & { page: Page; evaluations: TypedEvaluation[] };
+export type GenerateProposalResponse = ProposalWithUsers & { page: Page; evaluations: TypedEvaluation[] };
 
 /**
  * Creates a proposal with the linked authors and reviewers
@@ -76,7 +87,6 @@ export async function generateProposal({
   archived,
   evaluationType,
   customProperties,
-  snapshotProposalId,
   selectedCredentialTemplateIds,
   sourceTemplateId,
   evaluationInputs,

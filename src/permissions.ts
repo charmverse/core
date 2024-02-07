@@ -17,7 +17,6 @@ export * from './lib/permissions/proposals/availableProposalPermissions.class';
 export * from './lib/permissions/proposals/client/interfaces';
 export * from './lib/permissions/proposals/interfaces';
 export * from './lib/permissions/proposals/isProposalAuthor';
-export * from './lib/permissions/proposals/isProposalReviewer';
 
 // Page permission exports
 export * from './lib/permissions/pages/availablePagePermissions.class';
