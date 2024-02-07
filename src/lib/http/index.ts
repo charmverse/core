@@ -100,5 +100,5 @@ function _isConfigObject(obj: ParamsOrHttpConfig): obj is HttpConfig {
     return false;
   }
 
-  return Object.keys(obj).every((key) => httpConfigParams.includes(key));
+  return Object.keys(obj).every((key) => httpConfigParams.includes(key as keyof HttpConfig));
 }
