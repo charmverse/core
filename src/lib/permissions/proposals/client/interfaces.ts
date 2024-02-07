@@ -1,33 +1,22 @@
-import type { ListProposalsRequest, ProposalWithUsers } from '../../../proposals/interfaces';
-import type { PermissionCompute, PermissionResource, Resource, SpaceResourcesRequest } from '../../core/interfaces';
-import type {
-  AssignedProposalCategoryPermission,
-  ProposalCategoryPermissionAssignment,
-  ProposalCategoryPermissionFlags,
-  ProposalCategoryWithPermissions,
-  ProposalPermissionFlags,
-  ProposalReviewerPool
-} from '../interfaces';
-import type { ProposalFlowPermissionFlags } from '../proposalFlowFlags';
+import type { ListProposalsRequest } from '../../../proposals/interfaces';
+import type { PermissionCompute } from '../../core/interfaces';
+import type { ProposalPermissionFlags } from '../interfaces';
 
-export type BaseProposalPermissionsClient = {
-  computeProposalPermissions: (request: PermissionCompute) => Promise<ProposalPermissionFlags>;
-  computeProposalCategoryPermissions: (request: PermissionCompute) => Promise<ProposalCategoryPermissionFlags>;
-  computeProposalFlowPermissions: (request: PermissionCompute) => Promise<ProposalFlowPermissionFlags>;
-  getAccessibleProposalCategories: (request: SpaceResourcesRequest) => Promise<ProposalCategoryWithPermissions[]>;
-  getAccessibleProposals: (request: ListProposalsRequest) => Promise<ProposalWithUsers[]>;
-  getAccessibleProposalIds: (request: ListProposalsRequest) => Promise<string[]>;
-  getProposalReviewerPool: (request: Resource) => Promise<ProposalReviewerPool>;
-};
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type BaseProposalPermissionsClient = {};
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type PremiumProposalPermissionsClient = BaseProposalPermissionsClient & {
+  computeProposalPermissions: (request: PermissionCompute) => Promise<ProposalPermissionFlags>;
+
+  /**
+   * A method for getting the users' permissions on each step of the workflow
+   * Each key in the result is permissions for that evaluationId
+   */
+  computeAllProposalEvaluationPermissions: (
+    request: PermissionCompute
+  ) => Promise<Record<string, ProposalPermissionFlags>>;
+
   // This will be the new method used for proposals with evaluation step
-  computeProposalEvaluationPermissions: (request: PermissionCompute) => Promise<ProposalPermissionFlags>;
+  getAccessibleProposalIds: (request: ListProposalsRequest) => Promise<string[]>;
   computeBaseProposalPermissions: (request: PermissionCompute) => Promise<ProposalPermissionFlags>;
-  assignDefaultProposalCategoryPermissions: (proposalCategory: Resource) => Promise<void>;
-  upsertProposalCategoryPermission: (
-    assignment: ProposalCategoryPermissionAssignment
-  ) => Promise<AssignedProposalCategoryPermission>;
-  deleteProposalCategoryPermission: (permission: PermissionResource) => Promise<void>;
-  getProposalCategoryPermissions: (request: PermissionCompute) => Promise<AssignedProposalCategoryPermission[]>;
 };

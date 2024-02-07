@@ -1,5 +1,3 @@
-import type { SpaceRole } from '@prisma/client';
-
 import { InvalidInputError } from '../../lib/errors';
 import { prisma } from '../../prisma-client';
 import { isUUID } from '../utilities/strings';
@@ -17,7 +15,7 @@ type Input = {
 
 interface Result {
   isAdmin?: boolean;
-  spaceRole: SpaceRole | null;
+  spaceRole: PreComputedSpaceRole['preComputedSpaceRole'] | null;
 }
 
 export async function hasAccessToSpace({ userId, spaceId, preComputedSpaceRole }: Input): Promise<Result> {

@@ -4,27 +4,23 @@ import { v4 as uuid } from 'uuid';
 import { uid } from '../../lib/utilities/strings';
 import { prisma } from '../../prisma-client';
 
-import { randomETHWalletAddress } from './random';
-
 export async function generateSpaceUser({
   spaceId,
   isAdmin,
-  isGuest
+  isGuest,
+  wallet
 }: {
   spaceId: string;
   isAdmin?: boolean;
   isGuest?: boolean;
+  wallet?: string;
 }): Promise<User> {
   return prisma.user.create({
     data: {
       path: uid(),
       identityType: 'Discord',
       username: 'Username',
-      wallets: {
-        create: {
-          address: randomETHWalletAddress()
-        }
-      },
+      wallets: wallet ? { create: { address: wallet } } : undefined,
       spaceRoles: {
         create: {
           space: {
@@ -61,10 +57,13 @@ type CreateUserAndSpaceInput = {
   isGuest?: boolean;
   onboarded?: boolean;
   spaceName?: string;
+  domain?: string;
   publicBountyBoard?: boolean;
   publicProposals?: boolean;
+  publicProposalTemplates?: boolean;
   spacePaidTier?: SubscriptionTier;
   customProposalProperties?: IPropertyTemplate[];
+  wallet?: string;
 };
 
 export async function generateUserAndSpace({
@@ -73,10 +72,13 @@ export async function generateUserAndSpace({
   isGuest,
   onboarded = true,
   spaceName = 'Example Space',
+  domain,
   publicBountyBoard = false,
   publicProposals = false,
+  publicProposalTemplates = false,
   spacePaidTier = 'community',
-  customProposalProperties
+  customProposalProperties,
+  wallet
 }: CreateUserAndSpaceInput = {}) {
   const userId = uuid();
   const newUser = await prisma.user.create({
@@ -100,14 +102,22 @@ export async function generateUserAndSpace({
               updatedBy: userId,
               name: spaceName,
               // Adding prefix avoids this being evaluated as uuid
-              domain: `domain-${uuid()}`,
+              domain: domain ?? `domain-${uuid()}`,
               publicBountyBoard,
-              publicProposals
+              publicProposals,
+              publicProposalTemplates
             }
           }
         }
       },
       path: uid(),
+      wallets: wallet
+        ? {
+            create: {
+              address: wallet
+            }
+          }
+        : undefined,
       ...user
     },
     include: {

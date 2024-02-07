@@ -5,12 +5,12 @@ import { prisma } from '../../prisma-client';
 import { InvalidInputError, PageNotFoundError } from '../errors';
 
 import type {
+  PageMetaWithPermissions,
   PageNodeWithPermissions,
   PageTreeResolveInput,
-  TargetPageTree,
-  TargetPageTreeWithFlatChildren,
   PageWithPermissions,
-  PageMetaWithPermissions
+  TargetPageTree,
+  TargetPageTreeWithFlatChildren
 } from './interfaces';
 import { flattenTree, mapTargetPageTree } from './mapPageTree';
 
@@ -49,6 +49,7 @@ function generatePagesQuery({
           type: true,
           createdAt: true,
           deletedAt: true,
+          spaceId: true,
           permissions: {
             include: {
               sourcePermission: true

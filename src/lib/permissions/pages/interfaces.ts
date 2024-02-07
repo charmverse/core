@@ -1,6 +1,5 @@
 import type { Page, PageOperations, PagePermission, PagePermissionLevel, Role, Space, SpaceRole } from '@prisma/client';
 
-import type { PageLifecyleEvent } from '../../pages/interfaces';
 import type { AssignablePermissionGroups, TargetPermissionGroup, UserPermissionFlags } from '../core/interfaces';
 
 export type PagePermissionFlags = UserPermissionFlags<PageOperations>;
@@ -56,7 +55,7 @@ export type BoardPagePermissionUpdated = {
 };
 
 export type PageEventTriggeringPermissions = {
-  event: PageLifecyleEvent;
+  event: 'created' | 'repositioned';
   pageId: string;
 };
 
