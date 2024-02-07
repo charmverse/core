@@ -1,5 +1,4 @@
 import type {
-  Page,
   ProposalEvaluation,
   ProposalEvaluationPermission,
   ProposalReviewer,
@@ -13,9 +12,8 @@ import { v4 as uuid } from 'uuid';
 
 import { prisma } from '../../../prisma-client';
 import { InvalidInputError } from '../../errors';
-import type { ProposalWithUsers } from '../../proposals/interfaces';
 import { generateRole } from '../members';
-import type { GenerateProposalInput, ProposalEvaluationTestInput } from '../proposals';
+import type { GenerateProposalInput, GenerateProposalResponse, ProposalEvaluationTestInput } from '../proposals';
 import { generateProposal } from '../proposals';
 import { generateSpaceUser, generateUserAndSpace } from '../user';
 
@@ -65,7 +63,7 @@ describe('generateProposal', () => {
     expect(generatedProposal.id).toEqual(generatedProposal.page.id);
 
     // Evaluate return type
-    expect(generatedProposal).toMatchObject<ProposalWithUsers & { page: Page }>(
+    expect(generatedProposal).toMatchObject<GenerateProposalResponse>(
       expect.objectContaining({
         createdBy: proposalInput.userId,
         id: expect.any(String),
@@ -89,13 +87,13 @@ describe('generateProposal', () => {
       })
     );
 
-    const proposalPageFromDb = (await prisma.page.findUnique({
+    const proposalPageFromDb = await prisma.page.findUnique({
       where: {
         id: generatedProposal.id
       }
-    })) as Page & { proposal: ProposalWithUsers };
+    });
 
-    expect(generatedProposal.page).toMatchObject(proposalPageFromDb);
+    expect(generatedProposal.page).toMatchObject(expect.objectContaining(proposalPageFromDb));
   });
 
   it('should create the evaluation steps correctly along with attached permissions and rubric criteria', async () => {

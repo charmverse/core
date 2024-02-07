@@ -1,30 +1,4 @@
-import type {
-  Page,
-  PageComment,
-  Proposal,
-  ProposalAuthor,
-  ProposalEvaluation,
-  ProposalEvaluationPermission,
-  ProposalReviewer,
-  ProposalWorkflow
-} from '@prisma/client';
-
-import type { AssignablePermissionGroups } from '../permissions/core/interfaces';
-
-export interface ProposalReviewerInput {
-  group: Extract<AssignablePermissionGroups, 'role' | 'user'>;
-  id: string;
-}
-
-export interface ProposalWithUsers extends Proposal {
-  authors: ProposalAuthor[];
-  reviewers: ProposalReviewer[];
-  rewardIds?: string[] | null;
-}
-
-export interface ProposalWithCommentsAndUsers extends ProposalWithUsers {
-  page: Page & { comments: PageComment[] };
-}
+import type { ProposalEvaluation, ProposalEvaluationPermission, ProposalWorkflow } from '@prisma/client';
 
 /**
  * @onlyAssigned - If the user is an author or reviewer on this proposal
