@@ -2,7 +2,6 @@ import chunk from 'lodash/chunk';
 
 import { DELETE, GET, POST, PUT } from '../../../http';
 import type {
-  PageMeta,
   PageMetaWithPermissions,
   PagesRequest,
   UpdatePagePermissionDiscoverabilityRequest
@@ -20,9 +19,9 @@ import type {
   PagePermissionFlags
 } from '../interfaces';
 
-import type { PremiumPagePermissionsClient } from './interfaces';
+import type { PagePermissionsClient } from './interfaces';
 
-export class PagePermissionsHttpClient extends AbstractPermissionsApiClient implements PremiumPagePermissionsClient {
+export class PagePermissionsHttpClient extends AbstractPermissionsApiClient implements PagePermissionsClient {
   private get prefix() {
     return `${this.baseUrl}/api/pages`;
   }
@@ -55,10 +54,6 @@ export class PagePermissionsHttpClient extends AbstractPermissionsApiClient impl
     return computedResult;
   }
 
-  getAccessiblePages(request: PagesRequest): Promise<PageMeta[]> {
-    return GET(`${this.prefix}/list`, request);
-  }
-
   getAccessiblePageIds(request: PagesRequest): Promise<string[]> {
     return GET(`${this.prefix}/list-ids`, request);
   }
@@ -77,7 +72,7 @@ export class PagePermissionsHttpClient extends AbstractPermissionsApiClient impl
     return GET(`${this.prefix}/page-permissions-list`, request);
   }
 
-  setupPagePermissionsAfterEvent(request: PageEventTriggeringPermissions): Promise<PageMetaWithPermissions> {
+  setupPagePermissionsAfterEvent(request: PageEventTriggeringPermissions): Promise<void> {
     return POST(`${this.prefix}/setup-page-permissions-after-event`, request, { headers: this.jsonHeaders });
   }
 

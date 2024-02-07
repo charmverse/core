@@ -1,65 +1,26 @@
 import type {
   Page,
-  Post,
+  PageType,
   Prisma,
-  ProposalCategory,
-  ProposalStatus,
+  ProposalEvaluation,
   ProposalEvaluationType,
-  ProposalOperation
+  ProposalOperation,
+  ProposalReviewer,
+  ProposalStatus
 } from '@prisma/client';
 import { ProposalSystemRole } from '@prisma/client';
 import type { TargetPermissionGroup } from 'permissions';
 import { v4 as uuid } from 'uuid';
 
 import { prisma } from '../../prisma-client';
-import { randomThemeColor } from '../branding/colors';
 import { InvalidInputError } from '../errors';
-import type { ProposalCategoryPermissionAssignment } from '../permissions/proposals/interfaces';
-import type { ProposalReviewerInput, ProposalWithUsers } from '../proposals/interfaces';
+import type { PermissionJson, ProposalReviewerInput, ProposalWithUsers } from '../proposals/interfaces';
 
 import { generatePage } from './pages';
 
-export async function generateProposalCategory({
-  spaceId,
-  title = `Category-${Math.random()}`,
-  proposalCategoryPermissions
-}: {
-  spaceId: string;
-  title?: string;
-  proposalCategoryPermissions?: Pick<ProposalCategoryPermissionAssignment, 'assignee' | 'permissionLevel'>[];
-}): Promise<Required<ProposalCategory>> {
-  return prisma.proposalCategory.create({
-    data: {
-      title,
-      space: { connect: { id: spaceId } },
-      color: randomThemeColor(),
-      proposalCategoryPermissions:
-        proposalCategoryPermissions && proposalCategoryPermissions.length > 0
-          ? {
-              createMany: {
-                data: proposalCategoryPermissions.map((p) => {
-                  return {
-                    permissionLevel: p.permissionLevel,
-                    public: p.assignee.group === 'public' ? true : undefined,
-                    roleId: p.assignee.group === 'role' ? p.assignee.id : undefined,
-                    spaceId: p.assignee.group === 'space' ? p.assignee.id : undefined
-                  } as Omit<Prisma.ProposalCategoryPermissionCreateManyInput, 'proposalCategoryId'>;
-                })
-              }
-            }
-          : undefined
-    }
-  });
-}
-
 export type ProposalWithUsersAndPageMeta = ProposalWithUsers & { page: Pick<Page, 'title' | 'path'> };
 
-export type ProposalEvaluationTestInput = Partial<
-  Pick<
-    Prisma.ProposalEvaluationCreateManyInput,
-    'id' | 'title' | 'completedAt' | 'snapshotExpiry' | 'snapshotId' | 'result' | 'voteId'
-  >
-> & {
+export type ProposalEvaluationTestInput = Partial<Prisma.ProposalEvaluationCreateManyInput> & {
   evaluationType: ProposalEvaluationType;
   rubricCriteria?: Partial<
     Pick<Prisma.ProposalRubricCriteriaCreateManyInput, 'title' | 'description' | 'parameters'>
@@ -70,7 +31,6 @@ export type ProposalEvaluationTestInput = Partial<
     operation: Extract<ProposalOperation, 'edit' | 'view' | 'move' | 'comment'>;
   }[];
 };
-
 /**
  * @reviewers - Valid only for old tests, use `evaluationInputs` instead to define reviewers and permissions
  for that step
@@ -78,11 +38,11 @@ export type ProposalEvaluationTestInput = Partial<
 export type GenerateProposalInput = {
   deletedAt?: Page['deletedAt'];
   archived?: boolean;
-  categoryId?: string;
   userId: string;
   spaceId: string;
   authors?: string[];
   reviewers?: ProposalReviewerInput[];
+  pageType?: PageType;
   proposalStatus?: ProposalStatus;
   title?: string;
   content?: any;
@@ -90,7 +50,13 @@ export type GenerateProposalInput = {
   customProperties?: Record<string, any>;
   snapshotProposalId?: string;
   evaluationInputs?: ProposalEvaluationTestInput[];
+  workflowId?: string;
+  selectedCredentialTemplateIds?: string[];
+  sourceTemplateId?: string;
 };
+
+type TypedEvaluation = ProposalEvaluation & { permissions: PermissionJson[]; reviewers: ProposalReviewer[] };
+type GenerateProposalResponse = ProposalWithUsers & { page: Page; evaluations: TypedEvaluation[] };
 
 /**
  * Creates a proposal with the linked authors and reviewers
@@ -98,10 +64,10 @@ export type GenerateProposalInput = {
  * @reviewers Valid only for old tests, use `evaluationInputs` instead to define reviewers and permissions
  */
 export async function generateProposal({
-  categoryId,
   userId,
   spaceId,
   proposalStatus = 'draft',
+  pageType = 'proposal',
   title = 'Proposal',
   authors = [],
   reviewers,
@@ -111,8 +77,11 @@ export async function generateProposal({
   evaluationType,
   customProperties,
   snapshotProposalId,
-  evaluationInputs
-}: GenerateProposalInput): Promise<ProposalWithUsers & { page: Page }> {
+  selectedCredentialTemplateIds,
+  sourceTemplateId,
+  evaluationInputs,
+  workflowId
+}: GenerateProposalInput): Promise<GenerateProposalResponse> {
   if (reviewers && evaluationInputs) {
     throw new InvalidInputError(
       'Cannot define both reviewers and evaluationInputs. Reviewers are a legacy feature. For new proposal tests, you should use the evaluation inputs field'
@@ -123,19 +92,23 @@ export async function generateProposal({
 
   await prisma.proposal.create({
     data: {
-      category: !categoryId
-        ? { create: { color: randomThemeColor(), title: `Category ${Math.random()}`, spaceId } }
-        : { connect: { id: categoryId } },
       id: proposalId,
       createdBy: userId,
       status: proposalStatus,
       archived,
-      evaluationType,
       space: {
         connect: {
           id: spaceId
         }
       },
+      workflow: workflowId
+        ? {
+            connect: {
+              id: workflowId
+            }
+          }
+        : undefined,
+      selectedCredentialTemplates: selectedCredentialTemplateIds,
       fields: customProperties
         ? {
             properties: customProperties
@@ -147,18 +120,6 @@ export async function generateProposal({
             createMany: {
               data: authors.map((authorId) => ({ userId: authorId }))
             }
-          },
-      reviewers: !reviewers?.length
-        ? undefined
-        : {
-            createMany: {
-              data: (reviewers ?? []).map((r) => {
-                return {
-                  userId: r.group === 'user' ? r.id : undefined,
-                  roleId: r.group === 'role' ? r.id : undefined
-                };
-              })
-            }
           }
     }
   });
@@ -168,16 +129,28 @@ export async function generateProposal({
     contentText: '',
     path: `path-${uuid()}`,
     title,
-    type: 'proposal',
+    type: pageType,
     createdBy: userId,
     spaceId,
     deletedAt,
     proposalId,
     content,
-    snapshotProposalId
+    sourceTemplateId
   });
 
-  if (evaluationInputs) {
+  if (evaluationInputs || evaluationType) {
+    evaluationInputs = evaluationType
+      ? [
+          {
+            id: uuid(),
+            index: 0,
+            evaluationType,
+            title: evaluationType,
+            reviewers: reviewers || [],
+            permissions: []
+          }
+        ]
+      : evaluationInputs || [];
     const evaluationInputsWithIdAndIndex = evaluationInputs.map((input, index) => ({
       ...input,
       id: input.id ?? uuid(),
@@ -230,7 +203,7 @@ export async function generateProposal({
           )
       );
 
-    const [evaluationSteps, evaluationPermissions, evaluationReviewers] = await prisma.$transaction([
+    await prisma.$transaction([
       prisma.proposalEvaluation.createMany({
         data: evaluationInputsWithIdAndIndex.map(
           (input) =>
@@ -266,64 +239,39 @@ export async function generateProposal({
       id: proposalId
     },
     include: {
-      category: true,
       authors: true,
       reviewers: true,
-      page: true
-    }
-  });
-
-  return result as ProposalWithUsers & { page: Page };
-}
-export async function convertPostToProposal({
-  post,
-  userId,
-  categoryId
-}: {
-  post: Post;
-  userId: string;
-  categoryId: string;
-}) {
-  await prisma.post.update({
-    where: { id: post.id },
-    data: {
-      proposal: {
-        create: {
-          createdBy: userId,
-          status: 'draft',
-          category: {
-            connect: {
-              id: categoryId
-            }
-          },
-          space: {
-            connect: {
-              id: post.spaceId
-            }
-          },
-          page: {
-            create: {
-              author: {
-                connect: {
-                  id: userId
-                }
-              },
-              space: {
-                connect: {
-                  id: post.spaceId
-                }
-              },
-              contentText: post.contentText,
-              content: post.content as any,
-              path: `post-${uuid()}`,
-              title: post.title,
-              type: 'proposal',
-              updatedBy: userId
-            }
-          }
+      page: true,
+      evaluations: {
+        include: {
+          permissions: true,
+          reviewers: true
         }
       }
     }
+  });
+
+  return result as GenerateProposalResponse;
+}
+
+export async function generateProposalNotes({
+  proposalPageId,
+  createdBy,
+  content
+}: {
+  proposalPageId: string;
+  spaceId?: string;
+  createdBy?: string;
+  content?: any | null;
+}) {
+  const page = await prisma.page.findUniqueOrThrow({ where: { id: proposalPageId } });
+  return generatePage({
+    type: 'proposal_notes',
+    title: '',
+    parentId: proposalPageId,
+    createdBy: createdBy || page.createdBy,
+    content,
+    spaceId: page.spaceId
   });
 }
 
@@ -333,15 +281,9 @@ export async function generateProposalTemplate({
   authors,
   deletedAt,
   proposalStatus,
-  reviewers,
-  categoryId
+  reviewers
 }: GenerateProposalInput): Promise<ProposalWithUsers> {
-  if (!categoryId) {
-    throw new InvalidInputError('Proposal category is required');
-  }
-
   const proposal = await generateProposal({
-    categoryId,
     spaceId,
     userId,
     authors,
@@ -361,42 +303,11 @@ export async function generateProposalTemplate({
       proposal: {
         include: {
           authors: true,
-          reviewers: true,
-          category: true
+          reviewers: true
         }
       }
     }
   });
 
   return convertedToTemplate.proposal as ProposalWithUsers;
-}
-
-export async function convertPageToProposal({
-  pageId,
-  proposalCategoryId,
-  userId
-}: {
-  pageId: string;
-  proposalCategoryId?: string;
-  userId?: string;
-}): Promise<void> {
-  const page = await prisma.page.findUniqueOrThrow({
-    where: { id: pageId },
-    select: { createdBy: true, spaceId: true }
-  });
-
-  const { page: proposalPage } = await generateProposal({
-    userId: userId ?? page.createdBy,
-    spaceId: page.spaceId,
-    categoryId: proposalCategoryId
-  });
-
-  await prisma.page.update({
-    where: {
-      id: pageId
-    },
-    data: {
-      convertedProposalId: proposalPage.id
-    }
-  });
 }

@@ -24,16 +24,21 @@ describe('generateUserAndSpace', () => {
   });
 
   it('should pass the given parameters to the space and user admin role', async () => {
+    const randomDomain = `cvt-${Math.random()}`;
     const { space, user } = await generateUserAndSpace({
       publicBountyBoard: true,
       publicProposals: true,
       spacePaidTier: 'enterprise',
-      isAdmin: true
+      isAdmin: true,
+      domain: randomDomain,
+      publicProposalTemplates: true
     });
 
     expect(space.publicBountyBoard).toBe(true);
     expect(space.publicProposals).toBe(true);
+    expect(space.publicProposalTemplates).toBe(true);
     expect(space.paidTier).toBe('enterprise');
+    expect(space.domain).toBe(randomDomain);
 
     const spaceRole = (await prisma.spaceRole.findFirst({
       where: {

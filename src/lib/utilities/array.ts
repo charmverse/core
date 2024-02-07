@@ -50,3 +50,12 @@ export function asyncSeries<T, U>(
     return asyncSeries(values, asyncIterator, index + 1, results);
   });
 }
+
+/**
+ * Given an array of objects, extract their ids.
+ *
+ * Useful for example when you have an array of pages, but just want the list of page ids as strings
+ */
+export function extractUuids<T extends { id: string }>(items: T[]): string[] {
+  return items.map((item) => item.id);
+}

@@ -21,5 +21,4 @@ This way, your code is merged into main without making production changes.
 And Core workflow will then kick off the Core package update in downstream repos automatically.
 No reinstalling of Core package is necessary.
 
-
 Find out more about CharmVerse at https://www.charmverse.io

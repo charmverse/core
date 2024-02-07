@@ -1,6 +1,5 @@
 import type {
   Page,
-  ProposalCategory,
   ProposalEvaluation,
   ProposalEvaluationPermission,
   ProposalReviewer,
@@ -17,23 +16,19 @@ import { InvalidInputError } from '../../errors';
 import type { ProposalWithUsers } from '../../proposals/interfaces';
 import { generateRole } from '../members';
 import type { GenerateProposalInput, ProposalEvaluationTestInput } from '../proposals';
-import { generateProposalCategory, generateProposal } from '../proposals';
+import { generateProposal } from '../proposals';
 import { generateSpaceUser, generateUserAndSpace } from '../user';
 
 describe('generateProposal', () => {
   let space: Space;
   let user: User;
   let role: Role;
-  let proposalCategory: ProposalCategory;
 
   beforeAll(async () => {
     ({ space, user } = await generateUserAndSpace());
     role = await generateRole({
       spaceId: space.id,
       createdBy: user.id
-    });
-    proposalCategory = await generateProposalCategory({
-      spaceId: space.id
     });
   });
   it('should generate a proposal with specific parameters, and return the extended proposal and page data', async () => {
@@ -56,9 +51,8 @@ describe('generateProposal', () => {
       spaceId: space.id,
       userId: user.id,
       authors: [user.id, otherUser.id],
-      proposalStatus: 'review',
+      proposalStatus: 'published',
       reviewers: [{ group: 'role', id: role.id }],
-      categoryId: proposalCategory.id,
       archived: true,
       customProperties
     };
@@ -76,13 +70,9 @@ describe('generateProposal', () => {
         createdBy: proposalInput.userId,
         id: expect.any(String),
         status: proposalInput.proposalStatus as ProposalStatus,
-        snapshotProposalExpiry: null,
         archived: proposalInput.archived as boolean,
-        categoryId: proposalInput.categoryId as string,
         spaceId: space.id,
-        category: proposalCategory,
         page: expect.any(Object),
-        evaluationType: 'vote',
         fields: {
           properties: customProperties
         },
@@ -95,17 +85,7 @@ describe('generateProposal', () => {
             proposalId: generatedProposal.id,
             userId: otherUser.id
           }
-        ]),
-        reviewers: [
-          {
-            id: expect.any(String),
-            proposalId: generatedProposal.id,
-            roleId: role.id,
-            userId: null,
-            evaluationId: null,
-            systemRole: null
-          }
-        ]
+        ])
       })
     );
 
@@ -184,8 +164,7 @@ describe('generateProposal', () => {
       spaceId: space.id,
       userId: user.id,
       authors: [user.id],
-      proposalStatus: 'review',
-      categoryId: proposalCategory.id,
+      proposalStatus: 'published',
       archived: true,
       customProperties,
       // These 2 fields should not be provided together. This allows us to migrate testing towards the new proposal model while maintaining retrocompatibility
@@ -242,45 +221,33 @@ describe('generateProposal', () => {
 
     expect(createdEvaluationSteps).toMatchObject(
       expect.arrayContaining<ProposalEvaluation>([
-        {
+        expect.objectContaining({
           completedAt: rubricStep.completedAt as Date,
           id: expect.any(String),
           index: 0,
           proposalId: proposal.id,
-          result: null,
-          snapshotExpiry: null,
-          snapshotId: null,
           title: expect.any(String),
-          type: 'rubric',
-          voteId: null,
-          decidedBy: null
-        },
-        {
+          type: 'rubric'
+        }),
+        expect.objectContaining({
           completedAt: passFailStep.completedAt as Date,
           id: passFailStep.id as string,
           index: 1,
           proposalId: proposal.id,
           result: 'pass',
-          snapshotExpiry: null,
-          snapshotId: null,
           title: expect.any(String),
-          type: 'pass_fail',
-          voteId: null,
-          decidedBy: null
-        },
-        {
-          completedAt: null,
+          type: 'pass_fail'
+        }),
+        expect.objectContaining({
           id: expect.any(String),
           index: 2,
           proposalId: proposal.id,
-          result: null,
           snapshotExpiry: voteStep.snapshotExpiry as Date,
           snapshotId: voteStep.snapshotId as string,
           title: expect.any(String),
           type: 'vote',
-          voteId: voteStep.voteId as string,
-          decidedBy: null
-        }
+          voteId: voteStep.voteId as string
+        })
       ])
     );
 
@@ -383,8 +350,7 @@ describe('generateProposal', () => {
       spaceId: space.id,
       userId: user.id,
       authors: [user.id],
-      proposalStatus: 'review',
-      categoryId: proposalCategory.id,
+      proposalStatus: 'published',
       archived: true,
       customProperties,
       // These 2 fields should not be provided together. This allows us to migrate testing towards the new proposal model while maintaining retrocompatibility

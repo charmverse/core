@@ -27,13 +27,15 @@ export type PermissionCompute = {
   resourceId: string;
   userId?: string;
 };
+
+export type SpaceRoleFields = Pick<SpaceRole, 'id' | 'userId' | 'spaceId' | 'isAdmin' | 'isGuest'>;
 /**
  * Undefined means we don't have a valid compute yet
  *
  * Null means we already computed space role, and the target user does not belong to this space
  */
 export type PreComputedSpaceRole = {
-  preComputedSpaceRole?: SpaceRole | null;
+  preComputedSpaceRole?: SpaceRoleFields | null;
 };
 
 export type PreComputedSpacePermissionFlags = {

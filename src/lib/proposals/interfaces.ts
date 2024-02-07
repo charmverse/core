@@ -1,12 +1,12 @@
 import type {
-  ProposalEvaluation,
-  ProposalWorkflow,
-  ProposalEvaluationPermission,
   Page,
   PageComment,
   Proposal,
   ProposalAuthor,
-  ProposalReviewer
+  ProposalEvaluation,
+  ProposalEvaluationPermission,
+  ProposalReviewer,
+  ProposalWorkflow
 } from '@prisma/client';
 
 import type { AssignablePermissionGroups } from '../permissions/core/interfaces';
@@ -16,21 +16,7 @@ export interface ProposalReviewerInput {
   id: string;
 }
 
-export interface NewProposalCategory {
-  title: string;
-  color: string;
-}
-
-export interface ProposalCategory extends NewProposalCategory {
-  id: string;
-  spaceId: string;
-}
-
-export interface ProposalWithCategory extends Proposal {
-  category: ProposalCategory | null;
-}
-
-export interface ProposalWithUsers extends Proposal, ProposalWithCategory {
+export interface ProposalWithUsers extends Proposal {
   authors: ProposalAuthor[];
   reviewers: ProposalReviewer[];
   rewardIds?: string[] | null;
@@ -40,21 +26,18 @@ export interface ProposalWithCommentsAndUsers extends ProposalWithUsers {
   page: Page & { comments: PageComment[] };
 }
 
-export type ProposalCategoryQuery = string | string[] | undefined;
-
 /**
  * @onlyAssigned - If the user is an author or reviewer on this proposal
  */
 export type ListProposalsRequest = {
   userId?: string;
   spaceId: string;
-  categoryIds?: ProposalCategoryQuery;
   onlyAssigned?: boolean;
 };
 
 // Workflows - the evaluations and permissions are stored in Json for ease of use
 
-type PermissionJson = Pick<ProposalEvaluationPermission, 'operation'> &
+export type PermissionJson = Pick<ProposalEvaluationPermission, 'operation'> &
   Partial<Pick<ProposalEvaluationPermission, 'roleId' | 'userId' | 'systemRole'>>;
 
 // we keep the id for JSON because it makes easy to manage sorting the list of evaluations in React

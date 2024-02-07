@@ -6,13 +6,6 @@ export const isProdEnv = process.env.NODE_ENV === 'production' && !isTestEnv && 
 export const isNodeEnv = typeof window === 'undefined';
 export const appEnv = isProdEnv ? 'production' : isStagingEnv ? 'staging' : isTestEnv ? 'test' : 'development';
 export const baseUrl = process.env.DOMAIN as string | undefined;
-// for cookies
-export const authSecret = process.env.AUTH_SECRET as string | undefined;
-// export const cookieDomain = process.env.COOKIE_DOMAIN as string | undefined;
-export const cookieDomain = undefined; // TODO: set cookie domain so that we can have cross-subdomain sessions
-export const cookieName = 'charm.sessionId';
-// web sockets
-export const websocketsHost = process.env.NEXT_PUBLIC_WEBSOCKETS_HOST;
 // Google config
 export const googleOAuthClientId = process.env.GOOGLE_OAUTH_CLIENT_ID;
 export const googleOAuthClientSecret = process.env.GOOGLE_OAUTH_CLIENT_SECRET;
@@ -27,7 +20,6 @@ export const googleWebClientConfig = {
   appId: process.env.NEXT_PUBLIC_GOOGLE_APP_ID
 };
 
-export const charmverseDiscordInvite = 'https://discord.gg/ACYCzBGC2M';
 // Google config with sensitive scopes (to eventually replace the primary config)
 export const googleOAuthClientIdSensitive =
   process.env.GOOGLE_OAUTH_CLIENT_ID_SENSITIVE || process.env.NEXT_PUBLIC_GOOGLE_OAUTH_CLIENT_ID_SENSITIVE;

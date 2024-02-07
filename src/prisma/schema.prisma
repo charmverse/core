@@ -1,6 +1,6 @@
 generator client {
   provider        = "prisma-client-js"
-  binaryTargets   = ["debian-openssl-1.1.x", "linux-musl", "darwin", "native", "rhel-openssl-1.0.x"]
+  binaryTargets   = ["debian-openssl-3.0.x", "linux-musl", "darwin", "native", "rhel-openssl-1.0.x"]
   previewFeatures = ["fullTextSearch"]
 }
 
@@ -31,6 +31,8 @@ enum IdentityType {
   UnstoppableDomain
   Google
   VerifiedEmail
+  Lens
+  Farcaster
 }
 
 enum VoteStatus {
@@ -143,6 +145,7 @@ enum SpaceOperation {
   deleteAnyPage
   deleteAnyBounty
   deleteAnyProposal
+  createProposals
 }
 
 enum ProfileItemType {
@@ -154,15 +157,6 @@ enum ProfileItemType {
 
 enum ProposalStatus {
   draft
-  discussion
-  review
-  reviewed
-  vote_active
-  vote_closed
-  // Separate flow
-  evaluation_active
-  evaluation_closed
-  // New flow
   published
 }
 
@@ -187,6 +181,7 @@ enum PageType {
   card_synced
   card_template
   proposal
+  proposal_notes
   proposal_template
   inline_board
   inline_linked_board
@@ -210,13 +205,15 @@ enum MemberPropertyType {
   role
   profile_pic
   timezone
-  name
   discord
   twitter
   bio
   join_date
   linked_in
   github
+  google
+  telegram
+  wallet
 }
 
 enum MemberPropertyPermissionLevel {
@@ -258,6 +255,17 @@ enum SubscriptionPeriod {
   annual
 }
 
+enum TokenGateType {
+  lit
+  unlock
+  hypersub
+}
+
+enum CredentialEventType {
+  proposal_created
+  proposal_approved
+}
+
 model Space {
   id                          String                            @id @default(uuid()) @db.Uuid
   deletedAt                   DateTime?
@@ -274,16 +282,22 @@ model Space {
   defaultVotingDuration       Int?
   snapshotDomain              String?
   spaceImage                  String?
+  spaceArtwork                String?
+  credentialLogo              String?
   defaultPostCategoryId       String?                           @unique @db.Uuid
   defaultPostCategory         PostCategory?                     @relation(fields: [defaultPostCategoryId], references: [id], name: "defaultPostCategory", onDelete: SetNull)
   defaultPagePermissionGroup  PagePermissionLevel?              @default(full_access)
   defaultPublicPages          Boolean?                          @default(false)
+  homePageId                  String?                           @unique @db.Uuid
+  homePage                    Page?                             @relation(fields: [homePageId], references: [id], name: "spaceHomePage", onDelete: SetNull)
   notificationToggles         Json                              @default("{}")
   requireProposalTemplate     Boolean?                          @default(false)
+  publicProposalTemplates     Boolean?                          @default(false)
   permissionConfigurationMode SpacePermissionConfigurationMode? @default(custom)
   publicBountyBoard           Boolean?                          @default(false)
   publicProposals             Boolean?                          @default(false)
   xpsEngineId                 String?                           @unique
+  primaryMemberIdentity       IdentityType?
   author                      User                              @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   blocks                      Block[]
   bounties                    Bounty[]
@@ -305,14 +319,12 @@ model Space {
   votes                       Vote[]
   proposals                   Proposal[]
   workspaceEvents             WorkspaceEvent[]
-  proposalCategories          ProposalCategory[]
   memberProperties            MemberProperty[]
   memberPropertyValues        MemberPropertyValue[]
   userTokenGates              UserTokenGate[]
   postCategories              PostCategory[]
   posts                       Post[]
   postCategoryPermissions     PostCategoryPermission[]
-  proposalCategoryPermissions ProposalCategoryPermission[]
   spaceNotificationSettings   UserSpaceNotificationSettings[]
   webhookSubscriptionUrl      String?
   webhookSubscriptions        WebhookSubscription[]
@@ -326,12 +338,15 @@ model Space {
   postTags                    PostTag[]
   blockCounts                 BlockCount[]
   blockQuota                  Int                               @default(0)
+  requireMembersTwoFactorAuth Boolean                           @default(false)
   proposalBlocks              ProposalBlock[]
   rewardBlocks                RewardBlock[]
   userNotifications           UserNotificationMetadata[]
   blacklistedSpaceUsers       BlacklistedSpaceUser[]
   additionalBlockQuotas       AdditionalBlockQuota[]
   proposalWorkflows           ProposalWorkflow[]
+  credentialTemplates         CredentialTemplate[]
+  charmWallet                 CharmWallet?
 
   @@index([createdBy])
 }
@@ -397,7 +412,6 @@ model Page {
   index               Int                    @default(-1)
   cardId              String?                @unique @db.Uuid
   proposalId          String?                @unique @db.Uuid
-  snapshotProposalId  String?
   fullWidth           Boolean?               @default(false)
   fontFamily          FontFamily?            @default(default)
   fontSizeSmall       Boolean?               @default(false)
@@ -423,6 +437,7 @@ model Page {
   userSpaceActions    UserSpaceAction[]
   sourceTemplateId    String?                @db.Uuid
   notifications       DocumentNotification[]
+  homePageSpace       Space?                 @relation("spaceHomePage")
 
   // Ensure synced proposal databases cannot have duplicate cards for a proposal
   @@unique([parentId, syncWithPageId])
@@ -602,6 +617,8 @@ model User {
   emailNewsletter               Boolean?                        @default(false)
   xpsEngineId                   String?                         @unique
   publishToLensDefault          Boolean?                        @default(false)
+  primaryWalletId               String?                         @db.Uuid
+  primaryWallet                 UserWallet?                     @relation(fields: [primaryWalletId], references: [id], onDelete: SetNull, name: "primaryUserWallet")
   applications                  Application[]
   blocks                        Block[]
   bounties                      Bounty[]
@@ -631,7 +648,7 @@ model User {
   proposalsReviewed             ProposalReviewer[]
   reviewedProposals             Proposal[]
   workspaceEvents               WorkspaceEvent[]
-  wallets                       UserWallet[]
+  wallets                       UserWallet[]                    @relation("userWallet")
   memberPropertyValues          MemberPropertyValue[]
   spaceNotificationSettings     UserSpaceNotificationSettings[]
   userTokenGates                UserTokenGate[]
@@ -652,6 +669,10 @@ model User {
   blacklistedUser               BlacklistedUser[]
   proposalEvaluationPermissions ProposalEvaluationPermission[]
   decidedProposalEvaluations    ProposalEvaluation[]
+  receivedCredentials           IssuedCredential[]
+  otp                           Otp?
+  charmWallet                   CharmWallet?
+  favoriteCredentials           FavoriteCredential[]
 }
 
 model VerifiedEmail {
@@ -667,12 +688,13 @@ model VerifiedEmail {
 }
 
 model UserWallet {
-  id           String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  address      String        @unique
-  userId       String        @db.Uuid
-  ensname      String?       @unique
-  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  profileItems ProfileItem[]
+  id                 String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  address            String        @unique
+  userId             String        @db.Uuid
+  ensname            String?       @unique
+  user               User          @relation(fields: [userId], references: [id], onDelete: Cascade, name: "userWallet")
+  primaryWalletUsers User[]        @relation("primaryUserWallet")
+  profileItems       ProfileItem[]
 
   @@index([userId])
 }
@@ -790,6 +812,7 @@ model SpaceRole {
   isAdmin         Boolean           @default(false)
   isGuest         Boolean           @default(false)
   createdAt       DateTime          @default(now())
+  xpsUserId       String?           @unique
   space           Space             @relation(fields: [spaceId], references: [id], onDelete: Cascade)
   user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   spaceRoleToRole SpaceRoleToRole[]
@@ -930,6 +953,7 @@ model TokenGate {
   resourceId       Json
   userRole         String?
   accessTypes      String[]          @default([])
+  type             TokenGateType     @default(lit)
   space            Space             @relation(fields: [spaceId], references: [id], onDelete: Cascade)
   tokenGateToRoles TokenGateToRole[]
   userTokenGates   UserTokenGate[]
@@ -991,7 +1015,6 @@ model Role {
   inviteLinkToRoles             InviteLinkToRole[]
   memberPropertyPermissions     MemberPropertyPermission[]
   postCategoryPermissions       PostCategoryPermission[]
-  proposalCategoryPermissions   ProposalCategoryPermission[]
   proposalEvaluationPermissions ProposalEvaluationPermission[]
 
   @@unique([spaceId, name])
@@ -1091,19 +1114,21 @@ model SpacePermission {
 }
 
 model Thread {
-  id           String    @id @default(uuid()) @db.Uuid
-  createdAt    DateTime  @default(now())
-  pageId       String    @db.Uuid
-  context      String
-  userId       String    @db.Uuid
-  resolved     Boolean
-  spaceId      String    @db.Uuid
-  updatedAt    DateTime?
-  page         Page      @relation(fields: [pageId], references: [id], onDelete: Cascade)
-  space        Space     @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  user         User      @relation(fields: [userId], references: [id])
-  comments     Comment[]
-  accessGroups Json[]    @default([])
+  id            String           @id @default(uuid()) @db.Uuid
+  createdAt     DateTime         @default(now())
+  pageId        String           @db.Uuid
+  context       String
+  userId        String           @db.Uuid
+  resolved      Boolean
+  spaceId       String           @db.Uuid
+  updatedAt     DateTime?
+  page          Page             @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  space         Space            @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  user          User             @relation(fields: [userId], references: [id])
+  comments      Comment[]
+  accessGroups  Json[]           @default([])
+  fieldAnswerId String?          @db.Uuid
+  fieldAnswer   FormFieldAnswer? @relation(fields: [fieldAnswerId], references: [id], onDelete: SetNull)
 
   @@index([pageId])
   @@index([spaceId])
@@ -1139,40 +1164,40 @@ enum ProposalEvaluationType {
 }
 
 model Proposal {
-  id                     String                              @id @default(uuid()) @db.Uuid
-  createdBy              String                              @db.Uuid
-  spaceId                String                              @db.Uuid
-  status                 ProposalStatus
-  archived               Boolean?                            @default(false)
-  authors                ProposalAuthor[]
-  reviewers              ProposalReviewer[]
-  space                  Space                               @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  page                   Page?                               @relation("proposal")
-  sourcePage             Page?                               @relation("convertedProposal")
-  reviewedBy             String?                             @db.Uuid
-  reviewer               User?                               @relation(fields: [reviewedBy], references: [id], onDelete: Cascade)
-  reviewedAt             DateTime?
-  categoryId             String?                             @db.Uuid
-  category               ProposalCategory?                   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  snapshotProposalExpiry DateTime?
-  publishToLens          Boolean?
-  lensPostLink           String?
-  Post                   Post[]
-  evaluationType         ProposalEvaluationType              @default(vote)
-  rubricCriteria         ProposalRubricCriteria[]
-  rubricAnswers          ProposalRubricCriteriaAnswer[]
-  fields                 Json?
-  draftRubricAnswers     DraftProposalRubricCriteriaAnswer[]
-  notifications          ProposalNotification[]
-  evaluations            ProposalEvaluation[]
+  id                          String                              @id @default(uuid()) @db.Uuid
+  createdBy                   String                              @db.Uuid
+  spaceId                     String                              @db.Uuid
+  status                      ProposalStatus
+  archived                    Boolean?                            @default(false)
+  authors                     ProposalAuthor[]
+  reviewers                   ProposalReviewer[]
+  space                       Space                               @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  page                        Page?                               @relation("proposal")
+  sourcePage                  Page?                               @relation("convertedProposal")
+  reviewedBy                  String?                             @db.Uuid
+  reviewer                    User?                               @relation(fields: [reviewedBy], references: [id], onDelete: Cascade)
+  reviewedAt                  DateTime?
+  publishToLens               Boolean?
+  lensPostLink                String?
+  Post                        Post[]
+  rubricCriteria              ProposalRubricCriteria[]
+  rubricAnswers               ProposalRubricCriteriaAnswer[]
+  fields                      Json                                @default("{}")
+  selectedCredentialTemplates String[]
+  draftRubricAnswers          DraftProposalRubricCriteriaAnswer[]
+  notifications               ProposalNotification[]
+  evaluations                 ProposalEvaluation[]
   // we only reference workflows for proposal templates
-  workflowId             String?                             @db.Uuid
-  workflow               ProposalWorkflow?                   @relation(fields: [workflowId], references: [id], onDelete: SetNull)
-  rewards                Bounty[]
+  workflowId                  String?                             @db.Uuid
+  workflow                    ProposalWorkflow?                   @relation(fields: [workflowId], references: [id], onDelete: SetNull)
+  rewards                     Bounty[]
+  formId                      String?                             @db.Uuid
+  form                        Form?                               @relation(fields: [formId], references: [id], onDelete: Cascade)
+  formAnswers                 FormFieldAnswer[]
+  issuedCredentials           IssuedCredential[]
 
   @@index([spaceId])
   @@index([reviewedBy])
-  @@index([categoryId])
 }
 
 model ProposalWorkflow {
@@ -1215,25 +1240,27 @@ model ProposalEvaluationPermission {
 }
 
 model ProposalEvaluation {
-  id                 String                              @id @default(uuid()) @db.Uuid
-  index              Int // tells us what order
-  title              String
-  type               ProposalEvaluationType
-  completedAt        DateTime?
-  snapshotId         String?
-  snapshotExpiry     DateTime?
-  decidedBy          String?                             @db.Uuid
-  decider            User?                               @relation(fields: [decidedBy], references: [id], onDelete: SetNull)
-  proposalId         String                              @db.Uuid
-  proposal           Proposal                            @relation(fields: [proposalId], references: [id], onDelete: Cascade)
-  voteId             String?                             @unique @db.Uuid
-  vote               Vote?                               @relation(fields: [voteId], references: [id], onDelete: SetNull)
-  rubricCriteria     ProposalRubricCriteria[]
-  rubricAnswers      ProposalRubricCriteriaAnswer[]
-  draftRubricAnswers DraftProposalRubricCriteriaAnswer[]
-  result             ProposalEvaluationResult?
-  reviewers          ProposalReviewer[]
-  permissions        ProposalEvaluationPermission[]
+  id                   String                              @id @default(uuid()) @db.Uuid
+  index                Int // tells us what order
+  title                String
+  type                 ProposalEvaluationType
+  completedAt          DateTime?
+  snapshotId           String?
+  snapshotExpiry       DateTime?
+  decidedBy            String?                             @db.Uuid
+  decider              User?                               @relation(fields: [decidedBy], references: [id], onDelete: SetNull)
+  proposalId           String                              @db.Uuid
+  proposal             Proposal                            @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  voteSettings         Json?
+  voteId               String?                             @unique @db.Uuid
+  vote                 Vote?                               @relation(fields: [voteId], references: [id], onDelete: SetNull)
+  rubricCriteria       ProposalRubricCriteria[]
+  rubricAnswers        ProposalRubricCriteriaAnswer[]
+  draftRubricAnswers   DraftProposalRubricCriteriaAnswer[]
+  result               ProposalEvaluationResult?
+  reviewers            ProposalReviewer[]
+  permissions          ProposalEvaluationPermission[]
+  proposalNotification ProposalNotification[]
 
   @@index([proposalId])
 }
@@ -1305,8 +1332,8 @@ model ProposalReviewer {
   systemRole   ProposalSystemRole?
   role         Role?               @relation(fields: [roleId], references: [id], onDelete: Cascade)
   reviewer     User?               @relation(fields: [userId], references: [id], onDelete: Cascade)
-  evaluationId String?             @db.Uuid
-  evaluation   ProposalEvaluation? @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
+  evaluationId String              @db.Uuid
+  evaluation   ProposalEvaluation  @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
 
   @@index([proposalId])
   @@index([roleId])
@@ -1328,8 +1355,8 @@ model ProposalRubricCriteria {
   parameters   Json
   answers      ProposalRubricCriteriaAnswer[]
   draftAnswers DraftProposalRubricCriteriaAnswer[]
-  evaluation   ProposalEvaluation?                 @relation(fields: [evaluationId], references: [id])
-  evaluationId String?                             @db.Uuid
+  evaluation   ProposalEvaluation                  @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
+  evaluationId String                              @db.Uuid
 
   @@index([proposalId])
 }
@@ -1342,8 +1369,8 @@ model ProposalRubricCriteriaAnswer {
   userId           String
   response         Json
   comment          String?
-  evaluation       ProposalEvaluation?    @relation(fields: [evaluationId], references: [id])
-  evaluationId     String?                @db.Uuid
+  evaluation       ProposalEvaluation     @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
+  evaluationId     String                 @db.Uuid
 
   @@unique([userId, rubricCriteriaId])
   @@index([proposalId])
@@ -1358,8 +1385,8 @@ model DraftProposalRubricCriteriaAnswer {
   userId           String
   response         Json
   comment          String?
-  evaluation       ProposalEvaluation?    @relation(fields: [evaluationId], references: [id])
-  evaluationId     String?                @db.Uuid
+  evaluation       ProposalEvaluation     @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
+  evaluationId     String                 @db.Uuid
 
   @@unique([userId, rubricCriteriaId])
   @@index([proposalId])
@@ -1399,17 +1426,6 @@ model WorkspaceEvent {
   @@index([createdAt])
 }
 
-// note: this will eventually be managed by evaluation permissions
-enum ProposalCategoryOperation {
-  manage_permissions
-  create_proposal
-  edit
-  delete
-  view_category
-  comment_proposals
-  vote_proposals
-}
-
 // Note: eventually this will just be view, edit, comment, and move once we migrate to the new permissions flow
 enum ProposalOperation {
   edit
@@ -1424,52 +1440,6 @@ enum ProposalOperation {
   archive
   unarchive
   move
-}
-
-enum ProposalCategoryPermissionLevel {
-  view
-  view_comment
-  view_comment_vote
-  create_comment
-  full_access
-}
-
-model ProposalCategoryPermission {
-  id                 String                          @id @default(uuid()) @db.Uuid
-  permissionLevel    ProposalCategoryPermissionLevel
-  proposalCategoryId String                          @db.Uuid
-  proposalCategory   ProposalCategory                @relation(fields: [proposalCategoryId], references: [id], onDelete: Cascade)
-  // These fields will only be used when the custom permission level is used
-  // For now adding these to the schema so that Prisma Client doesn't drop the enums at generator stage
-  categoryOperations ProposalCategoryOperation[]
-
-  // Permission assignees
-  roleId  String?  @db.Uuid
-  role    Role?    @relation(fields: [roleId], references: [id], onDelete: Cascade)
-  spaceId String?  @db.Uuid
-  space   Space?   @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  public  Boolean?
-
-  @@unique([roleId, proposalCategoryId])
-  @@unique([spaceId, proposalCategoryId])
-  @@unique([public, proposalCategoryId])
-  @@index([proposalCategoryId])
-  @@index([proposalCategoryId, roleId])
-  @@index([proposalCategoryId, spaceId])
-  @@index([proposalCategoryId, public])
-}
-
-model ProposalCategory {
-  id                          String                       @id @default(uuid()) @db.Uuid
-  spaceId                     String                       @db.Uuid
-  space                       Space                        @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  title                       String
-  color                       String
-  proposal                    Proposal[]
-  proposalCategoryPermissions ProposalCategoryPermission[]
-
-  @@unique([spaceId, title])
-  @@index([spaceId])
 }
 
 model MemberProperty {
@@ -1878,6 +1848,8 @@ model ProposalNotification {
   proposalId             String                   @db.Uuid
   proposal               Proposal                 @relation(fields: [proposalId], references: [id], onDelete: Cascade)
   type                   String
+  evaluationId           String?                  @db.Uuid
+  evaluation             ProposalEvaluation?      @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
 }
 
 model VoteNotification {
@@ -1925,4 +1897,143 @@ model AdditionalBlockQuota {
   expiresAt  DateTime?
   blockCount Int
   createdAt  DateTime  @default(now())
+}
+
+model Form {
+  id         String      @id @default(uuid()) @db.Uuid
+  formFields FormField[]
+  proposal   Proposal[]
+}
+
+enum FormFieldType {
+  short_text
+  long_text
+  number
+  email
+  phone
+  url
+  select
+  multiselect
+  wallet
+  date
+  person
+  label
+}
+
+model FormField {
+  id          String            @id @default(uuid()) @db.Uuid
+  type        FormFieldType
+  index       Int               @default(-1)
+  name        String
+  description Json?
+  required    Boolean           @default(false)
+  private     Boolean           @default(false)
+  options     Json?
+  formId      String            @db.Uuid
+  form        Form              @relation(fields: [formId], references: [id], onDelete: Cascade)
+  answers     FormFieldAnswer[]
+}
+
+model FormFieldAnswer {
+  id         String        @id @default(uuid()) @db.Uuid
+  fieldId    String        @db.Uuid
+  field      FormField     @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+  type       FormFieldType
+  value      Json
+  proposalId String        @db.Uuid
+  proposal   Proposal      @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  threads    Thread[]
+
+  @@index([fieldId])
+}
+
+enum AttestationType {
+  proposal
+}
+
+model CredentialTemplate {
+  id                String                @id @default(uuid()) @db.Uuid
+  spaceId           String                @db.Uuid
+  name              String
+  organization      String
+  description       String                @default("")
+  schemaType        AttestationType
+  schemaAddress     String
+  createdAt         DateTime              @default(now())
+  space             Space                 @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  credentialEvents  CredentialEventType[] @default([])
+  issuedCredentials IssuedCredential[]
+}
+
+model IssuedCredential {
+  id                   String               @id @default(uuid()) @db.Uuid
+  credentialTemplateId String?              @db.Uuid
+  credentialTemplate   CredentialTemplate?  @relation(fields: [credentialTemplateId], references: [id], onDelete: SetNull)
+  proposalId           String               @db.Uuid
+  proposal             Proposal             @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  ceramicId            String               @unique
+  userId               String               @db.Uuid
+  user                 User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  credentialEvent      CredentialEventType
+  createdAt            DateTime             @default(now())
+  favoriteCredentials  FavoriteCredential[]
+}
+
+model Otp {
+  id             String       @id @default(uuid()) @db.Uuid
+  createdAt      DateTime     @default(now())
+  deletedAt      DateTime?
+  activatedAt    DateTime?
+  secret         String
+  userId         String       @unique @db.Uuid
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recoveryCodeId String       @unique @db.Uuid
+  recoveryCode   RecoveryCode @relation(fields: [recoveryCodeId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model RecoveryCode {
+  id        String    @id @default(uuid()) @db.Uuid
+  createdAt DateTime  @default(now())
+  usedAt    DateTime?
+  deletedAt DateTime?
+  code      String
+  otp       Otp?
+}
+
+model CharmWallet {
+  id               String             @id @default(uuid()) @db.Uuid
+  balance          Int                @default(0)
+  userId           String?            @unique @db.Uuid
+  spaceId          String?            @unique @db.Uuid
+  user             User?              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  space            Space?             @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  transactionsFrom CharmTransaction[] @relation("fromWallet")
+  transactionsTo   CharmTransaction[] @relation("toWallet")
+
+  @@index([id])
+}
+
+model CharmTransaction {
+  id         String       @id @default(uuid()) @db.Uuid
+  createdAt  DateTime     @default(now())
+  amount     Int
+  from       String?      @db.Uuid
+  to         String?      @db.Uuid
+  fromWallet CharmWallet? @relation("fromWallet", fields: [from], references: [id], onDelete: SetNull)
+  toWallet   CharmWallet? @relation("toWallet", fields: [to], references: [id], onDelete: SetNull)
+  metadata   Json?        @default("{}")
+}
+
+model FavoriteCredential {
+  id                   String            @id @default(uuid()) @db.Uuid
+  index                Int               @default(-1)
+  chainId              Int?
+  userId               String            @db.Uuid
+  user                 User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  attestationId        String?           @unique
+  issuedCredentialId   String?           @unique @db.Uuid
+  issuedCredential     IssuedCredential? @relation(fields: [issuedCredentialId], references: [id], onDelete: SetNull)
+  gitcoinWalletAddress String?           @unique
 }

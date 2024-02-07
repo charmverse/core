@@ -89,6 +89,7 @@ export type PageMeta = Pick<
   | 'hasContent'
   | 'galleryImage'
   | 'syncWithPageId'
+  | 'sourceTemplateId'
 >;
 
 export type PagePermissionData = PagePermission & { sourcePermission: PagePermission | null };
@@ -100,8 +101,6 @@ export type WithPermissions = {
 export type PageMetaWithPermissions = PageMeta & WithPermissions;
 
 export type PageWithPermissions = Page & WithPermissions;
-
-export type PageLifecyleEvent = 'created' | 'repositioned';
 
 export type UpdatePagePermissionDiscoverabilityRequest = Pick<PagePermission, 'allowDiscovery'> & {
   permissionId: string;
