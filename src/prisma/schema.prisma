@@ -1434,8 +1434,8 @@ enum ProposalOperation {
   delete
   create_vote
   comment
-  make_public
   evaluate
+  make_public
   archive
   unarchive
   move
