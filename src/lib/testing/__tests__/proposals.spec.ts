@@ -153,10 +153,26 @@ describe('generateProposal', () => {
         snapshotId: uuid(),
         snapshotExpiry: new Date(),
         voteId: vote.id
+      },
+      {
+        title: 'Super final vote',
+        evaluationType: 'vote',
+        permissions: [{ assignee: { group: 'current_reviewer' }, operation: 'comment' }],
+        reviewers: [{ group: 'space_member' }],
+        snapshotId: uuid(),
+        snapshotExpiry: new Date(),
+        voteSettings: {
+          durationDays: 12,
+          maxChoices: 1,
+          options: ['Yes', 'No'],
+          publishToSnapshot: false,
+          threshold: 90,
+          type: 'SingleChoice'
+        }
       }
     ];
 
-    const [rubricStep, passFailStep, voteStep] = evaluationSteps;
+    const [rubricStep, passFailStep, voteStep, superFinalVoteStep] = evaluationSteps;
 
     const proposalInput: GenerateProposalInput = {
       spaceId: space.id,
@@ -251,7 +267,12 @@ describe('generateProposal', () => {
 
     const createdRubricStep = createdEvaluationSteps.find((step) => step.type === 'rubric') as ProposalEvaluation;
     const createdPassFailStep = createdEvaluationSteps.find((step) => step.type === 'pass_fail') as ProposalEvaluation;
-    const createdVoteStep = createdEvaluationSteps.find((step) => step.type === 'vote') as ProposalEvaluation;
+    const createdVoteStep = createdEvaluationSteps.find(
+      (step) => step.type === 'vote' && step.title === 'Final vote'
+    ) as ProposalEvaluation;
+    const createdSuperFinalVoteStep = createdEvaluationSteps.find(
+      (step) => step.type === 'vote' && step.title === 'Super final vote'
+    ) as ProposalEvaluation;
 
     const createdPermissions = await prisma.proposalEvaluationPermission.findMany({
       where: {
@@ -260,6 +281,8 @@ describe('generateProposal', () => {
         }
       }
     });
+
+    expect(createdSuperFinalVoteStep.voteSettings).toMatchObject(superFinalVoteStep.voteSettings as any);
 
     const expectedPermissionsResult: ProposalEvaluationPermission[] = [
       {
@@ -301,10 +324,18 @@ describe('generateProposal', () => {
         roleId: null,
         systemRole: 'current_reviewer',
         userId: null
+      },
+      {
+        evaluationId: createdSuperFinalVoteStep.id,
+        id: expect.any(String),
+        operation: 'comment',
+        roleId: null,
+        systemRole: 'current_reviewer',
+        userId: null
       }
     ];
 
-    expect(createdPermissions).toHaveLength(5);
+    expect(createdPermissions).toHaveLength(6);
 
     expect(createdPermissions).toMatchObject(
       expect.arrayContaining<ProposalEvaluationPermission>(expectedPermissionsResult)

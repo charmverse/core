@@ -8,7 +8,8 @@ import type {
   ProposalEvaluationType,
   ProposalOperation,
   ProposalReviewer,
-  ProposalStatus
+  ProposalStatus,
+  VoteType
 } from '@prisma/client';
 import { ProposalSystemRole } from '@prisma/client';
 import type { TargetPermissionGroup } from 'permissions';
@@ -21,7 +22,7 @@ import type { PermissionJson } from '../proposals/interfaces';
 
 import { generatePage } from './pages';
 
-export type ProposalEvaluationTestInput = Partial<Prisma.ProposalEvaluationCreateManyInput> & {
+export type ProposalEvaluationTestInput = Partial<Omit<Prisma.ProposalEvaluationCreateManyInput, 'voteSettings'>> & {
   evaluationType: ProposalEvaluationType;
   rubricCriteria?: Partial<
     Pick<Prisma.ProposalRubricCriteriaCreateManyInput, 'title' | 'description' | 'parameters'>
@@ -31,6 +32,14 @@ export type ProposalEvaluationTestInput = Partial<Prisma.ProposalEvaluationCreat
     assignee: { group: ProposalSystemRole } | TargetPermissionGroup<'role' | 'user'>;
     operation: Extract<ProposalOperation, 'edit' | 'view' | 'move' | 'comment'>;
   }[];
+  voteSettings?: {
+    durationDays: number;
+    threshold: number;
+    type: VoteType;
+    options: string[];
+    maxChoices: number;
+    publishToSnapshot: boolean;
+  };
 };
 
 type ProposalReviewerInput = {
@@ -223,6 +232,7 @@ export async function generateProposal({
               proposalId,
               title: input.title ?? input.evaluationType,
               type: input.evaluationType,
+              voteSettings: input.voteSettings,
               completedAt: input.completedAt,
               result: input.result,
               snapshotExpiry: input.snapshotExpiry,
