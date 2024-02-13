@@ -1430,15 +1430,8 @@ model WorkspaceEvent {
 enum ProposalOperation {
   edit
   view
-  delete
-  create_vote
-  vote
   comment
-  review
   evaluate
-  make_public
-  archive
-  unarchive
   move
 }
 
