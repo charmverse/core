@@ -26,7 +26,10 @@ export type ProposalEvaluationTestInput = Partial<Omit<Prisma.ProposalEvaluation
   rubricCriteria?: Partial<
     Pick<Prisma.ProposalRubricCriteriaCreateManyInput, 'title' | 'description' | 'parameters'>
   >[];
-  reviewers: ({ group: Extract<ProposalSystemRole, 'space_member'> } | TargetPermissionGroup<'role' | 'user'>)[];
+  reviewers: (
+    | { group: Extract<ProposalSystemRole, 'space_member' | 'author'> }
+    | TargetPermissionGroup<'role' | 'user'>
+  )[];
   permissions: {
     assignee: { group: ProposalSystemRole } | TargetPermissionGroup<'role' | 'user'>;
     operation: Extract<ProposalOperation, 'edit' | 'view' | 'move' | 'comment'>;
@@ -275,7 +278,7 @@ export async function generateProposalNotes({
   spaceId?: string;
   createdBy?: string;
   content?: any | null;
-}) {
+}): Promise<Omit<Page, 'parentId'> & { parentId: string }> {
   const page = await prisma.page.findUniqueOrThrow({ where: { id: proposalPageId } });
   return generatePage({
     type: 'proposal_notes',
@@ -284,7 +287,7 @@ export async function generateProposalNotes({
     createdBy: createdBy || page.createdBy,
     content,
     spaceId: page.spaceId
-  });
+  }) as Promise<Omit<Page, 'parentId'> & { parentId: string }>;
 }
 
 export async function generateProposalTemplate({
