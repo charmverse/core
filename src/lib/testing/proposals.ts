@@ -8,8 +8,7 @@ import type {
   ProposalEvaluationType,
   ProposalOperation,
   ProposalReviewer,
-  ProposalStatus,
-  VoteType
+  ProposalStatus
 } from '@prisma/client';
 import { ProposalSystemRole } from '@prisma/client';
 import type { TargetPermissionGroup } from 'permissions';
@@ -32,14 +31,7 @@ export type ProposalEvaluationTestInput = Partial<Omit<Prisma.ProposalEvaluation
     assignee: { group: ProposalSystemRole } | TargetPermissionGroup<'role' | 'user'>;
     operation: Extract<ProposalOperation, 'edit' | 'view' | 'move' | 'comment'>;
   }[];
-  voteSettings?: {
-    durationDays: number;
-    threshold: number;
-    type: VoteType;
-    options: string[];
-    maxChoices: number;
-    publishToSnapshot: boolean;
-  };
+  voteSettings?: any;
 };
 
 type ProposalReviewerInput = {
