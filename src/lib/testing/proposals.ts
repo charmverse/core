@@ -2,6 +2,8 @@ import type {
   Page,
   PageType,
   Prisma,
+  Proposal,
+  ProposalAuthor,
   ProposalEvaluation,
   ProposalEvaluationType,
   ProposalOperation,
@@ -14,13 +16,12 @@ import { v4 as uuid } from 'uuid';
 
 import { prisma } from '../../prisma-client';
 import { InvalidInputError } from '../errors';
-import type { PermissionJson, ProposalReviewerInput, ProposalWithUsers } from '../proposals/interfaces';
+import type { AssignablePermissionGroups } from '../permissions/core/interfaces';
+import type { PermissionJson } from '../proposals/interfaces';
 
 import { generatePage } from './pages';
 
-export type ProposalWithUsersAndPageMeta = ProposalWithUsers & { page: Pick<Page, 'title' | 'path'> };
-
-export type ProposalEvaluationTestInput = Partial<Prisma.ProposalEvaluationCreateManyInput> & {
+export type ProposalEvaluationTestInput = Partial<Omit<Prisma.ProposalEvaluationCreateManyInput, 'voteSettings'>> & {
   evaluationType: ProposalEvaluationType;
   rubricCriteria?: Partial<
     Pick<Prisma.ProposalRubricCriteriaCreateManyInput, 'title' | 'description' | 'parameters'>
@@ -33,7 +34,19 @@ export type ProposalEvaluationTestInput = Partial<Prisma.ProposalEvaluationCreat
     assignee: { group: ProposalSystemRole } | TargetPermissionGroup<'role' | 'user'>;
     operation: Extract<ProposalOperation, 'edit' | 'view' | 'move' | 'comment'>;
   }[];
+  voteSettings?: any;
 };
+
+type ProposalReviewerInput = {
+  group: Extract<AssignablePermissionGroups, 'role' | 'user'>;
+  id: string;
+};
+
+type ProposalWithUsers = Proposal & {
+  authors: ProposalAuthor[];
+  reviewers: ProposalReviewer[];
+};
+
 /**
  * @reviewers - Valid only for old tests, use `evaluationInputs` instead to define reviewers and permissions
  for that step
@@ -51,7 +64,6 @@ export type GenerateProposalInput = {
   content?: any;
   evaluationType?: ProposalEvaluationType;
   customProperties?: Record<string, any>;
-  snapshotProposalId?: string;
   evaluationInputs?: ProposalEvaluationTestInput[];
   workflowId?: string;
   selectedCredentialTemplateIds?: string[];
@@ -59,7 +71,7 @@ export type GenerateProposalInput = {
 };
 
 type TypedEvaluation = ProposalEvaluation & { permissions: PermissionJson[]; reviewers: ProposalReviewer[] };
-type GenerateProposalResponse = ProposalWithUsers & { page: Page; evaluations: TypedEvaluation[] };
+export type GenerateProposalResponse = ProposalWithUsers & { page: Page; evaluations: TypedEvaluation[] };
 
 /**
  * Creates a proposal with the linked authors and reviewers
@@ -79,7 +91,6 @@ export async function generateProposal({
   archived,
   evaluationType,
   customProperties,
-  snapshotProposalId,
   selectedCredentialTemplateIds,
   sourceTemplateId,
   evaluationInputs,
@@ -138,7 +149,6 @@ export async function generateProposal({
     deletedAt,
     proposalId,
     content,
-    snapshotProposalId,
     sourceTemplateId
   });
 
@@ -217,6 +227,7 @@ export async function generateProposal({
               proposalId,
               title: input.title ?? input.evaluationType,
               type: input.evaluationType,
+              voteSettings: input.voteSettings,
               completedAt: input.completedAt,
               result: input.result,
               snapshotExpiry: input.snapshotExpiry,
@@ -243,7 +254,6 @@ export async function generateProposal({
       id: proposalId
     },
     include: {
-      category: true,
       authors: true,
       reviewers: true,
       page: true,
@@ -308,8 +318,7 @@ export async function generateProposalTemplate({
       proposal: {
         include: {
           authors: true,
-          reviewers: true,
-          category: true
+          reviewers: true
         }
       }
     }

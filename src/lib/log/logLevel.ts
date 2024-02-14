@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { datadogLogs } from '@datadog/browser-logs';
 import { RateLimit } from 'async-sema';
 import type { Logger, LogLevelDesc } from 'loglevel';

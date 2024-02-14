@@ -28,7 +28,7 @@ jobs:
     name: Build test env
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install dependencies
         uses: ./.github/actions/install
       - name: Run build
@@ -66,9 +66,9 @@ jobs:
           fi
 
       - name: Checkout ref of the event that triggered this workflow. (first time run)
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Checkout head of merge on re-run
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         if: github.event_name != 'push' && github.run_attempt > 1
         with:
           ref: refs/pull/${{ github.event.number }}/merge
@@ -157,7 +157,7 @@ jobs:
           - test_name: "Basic tests"
             test_command: "npm run test:ci"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Restore dependencies from cache
         uses: ./.github/actions/install
