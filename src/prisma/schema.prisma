@@ -1918,6 +1918,8 @@ enum FormFieldType {
   date
   person
   label
+  image
+  file
 }
 
 model FormField {
