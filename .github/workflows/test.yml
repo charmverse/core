@@ -189,10 +189,11 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: charmverse/${{matrix.repo}}
+          token: ${{ secrets.WORKFLOW_TRIGGER_PAT }}
           path: ${{matrix.repo}}
-        # env:
-        #   GITHUB_TOKEN: ${{ secrets.WORKFLOW_TRIGGER_PAT }}
       - name: Trigger Core pkg update and deploy on repo ${{ matrix.repo }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.WORKFLOW_TRIGGER_PAT }}
         run: |
           set -e
             echo "Processing ${{matrix.repo}}"
