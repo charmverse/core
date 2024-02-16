@@ -1431,6 +1431,7 @@ model WorkspaceEvent {
 enum ProposalOperation {
   edit
   view
+  view_notes
   view_private_fields
   delete
   create_vote
