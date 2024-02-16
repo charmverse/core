@@ -1335,6 +1335,7 @@ model ProposalReviewer {
   evaluationId String              @db.Uuid
   evaluation   ProposalEvaluation  @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
 
+  @@index([evaluationId])
   @@index([proposalId])
   @@index([roleId])
   @@index([userId])
