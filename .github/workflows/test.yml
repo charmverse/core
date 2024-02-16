@@ -196,7 +196,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.WORKFLOW_TRIGGER_PAT }}
         run: |
           set -e
-            echo "Processing ${{matrix.repo}}"
+            echo "Processing ${{matrix.repo}} $GITHUB_TOKEN"
 
             git clone --depth=1 git@github.com:charmverse/${{matrix.repo}}.git ~/${{matrix.repo}}-2
             cd ~/${{matrix.repo}}
