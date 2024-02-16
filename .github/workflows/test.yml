@@ -169,7 +169,7 @@ jobs:
         run: ${{matrix.test_command}}
 
   trigger-pkg-upgrade:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     name: Bump Core pkg in ${{ matrix.repo }}
     runs-on: ubuntu-latest
     permissions:
@@ -207,7 +207,7 @@ jobs:
             done
             if [ "$timeout" -le 10 ]; then
               git add package-lock.json package.json
-              git commit -m "bump common to ${{matrix.repo}}"
-              git push
+              git commit -m "bump core to ${{matrix.repo}}"
+              # git push
             fi
           done
