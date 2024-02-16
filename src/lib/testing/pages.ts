@@ -39,7 +39,7 @@ export function generatePage({
   id,
   createdBy,
   spaceId,
-  content,
+  content = null,
   contentText,
   pagePermissions,
   parentId,
