@@ -186,9 +186,14 @@ jobs:
             core_pkg_version: "${{needs.push-package.outputs.pkg_version}}"
 
     steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: charmverse/${{matrix.repo}}
+          token: ${{ secrets.WORKFLOW_TRIGGER_PAT }}
+          path: ~/${{matrix.repo}}
+        # env:
+        #   GITHUB_TOKEN: ${{ secrets.WORKFLOW_TRIGGER_PAT }}
       - name: Trigger Core pkg update and deploy on repo ${{ matrix.repo }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.WORKFLOW_TRIGGER_PAT }}
         run: |
           set -e
             echo "Processing ${{matrix.repo}}"
@@ -204,6 +209,8 @@ jobs:
               echo "sleep 5 secs then retry install" && ((timeout+=1)) && sleep 5
             done
             if [ "$timeout" -le 10 ]; then
+              git config user.name github-actions
+              git config user.email github-actions@github.com
               git add package-lock.json package.json
               git commit -m "bump core to ${{matrix.repo}}"
               # git push
