@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
     inputs:
       webapp_branch:
-        description: "Webapp branch to test against."
+        description: "Webapp branch to test against"
         required: true
       permissionapi_branch:
         description: "Permissions api branch to test against"
@@ -181,54 +181,33 @@ jobs:
       matrix:
         include:
           - repo: "app.charmverse.io"
-            workflow_file: "test_and_deploy.yml"
-            workflow_payload: |
-              { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}" }
+            core_pkg_version: "${{needs.push-package.outputs.pkg_version}}"
           - repo: "permissions.charmverse.io"
-            workflow_file: "test_and_deploy.yml"
-            workflow_payload: |
-              { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}" }
+            core_pkg_version: "${{needs.push-package.outputs.pkg_version}}"
 
     steps:
       - name: Trigger Core pkg update and deploy on repo ${{ matrix.repo }}
-        id: run_downstream_repo_workflow
-        uses: convictional/trigger-workflow-and-wait@v1.6.1
-        with:
-          owner: charmverse
-          repo: ${{ matrix.repo }}
-          github_token: ${{ secrets.WORKFLOW_TRIGGER_PAT }}
-          github_user: charmed-bot
-          workflow_file_name: ${{ matrix.workflow_file }}
-          ref: main
-          client_payload: ${{ matrix.workflow_payload }}
-          wait_interval: 10
-          propagate_failure: true
-          trigger_workflow: true
-          wait_workflow: true
-      # - name: Cancel downstream workflow if the workflow wait has been cancelled
-      #   if: ${{ cancelled() }}
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.WORKFLOW_TRIGGER_PAT }}
-      #   run: |
-      #     gh api \
-      #       --method POST \
-      #       -H "Accept: application/vnd.github+json" \
-      #       -H "X-GitHub-Api-Version: 2022-11-28" \
-      #       /repos/charmverse/${{ matrix.repo }}/actions/runs/${{ steps.run_downstream_repo_workflow.outputs.workflow_id }}/cancel
+        env:
+          GITHUB_TOKEN: ${{ secrets.WORKFLOW_TRIGGER_PAT }}
+        run: |
+          set -e
+            echo "Processing ${{matrix.repo}}"
 
-      # Discord embed color code: ALERT_RED = 16515843   ALERT_GREEN = 2326548
-      # - name: If any downstream deploy failed, notify discord
-      #   if: ${{ failure() && steps.run_downstream_repo_workflow.conclusion == 'failure' }}
-      #   uses: sarisia/actions-status-discord@v1
-      #   with:
-      #     webhook: ${{ secrets.DISCORD_WARNINGS_WEBHOOK }}
-      #     status: ${{ job.status }}
-      #     content: "Hey <@&1027309276454207519>"
-      #     title: "Core upgrade in ${{ matrix.repo }} to version ${{ needs.push-package.outputs.pkg_version }}"
-      #     description: |
-      #       Please check that webapp and permissions are running same version of core.
-      #       Failed Downstream job URL: ${{ steps.run_downstream_repo_workflow.outputs.workflow_url }}
-      #     color: "${{ job.status == 'success' && '2326548' || '16515843' }}"
-      #     url: "https://github.com/charmverse/core/actions/runs/${{ github.run_id }}"
-      #     username: GitHub Actions
-      #     avatar_url: "https://github.githubassets.com/images/modules/logos_page/Octocat.png"
+            if [ ! -d ~/$APP ]; then
+              git clone --depth=1 git@github.com:charmverse/${{matrix.repo}}.git ~/${{matrix.repo}}
+            fi
+            cd ~/${{matrix.repo}}
+
+            # Don't download deps, we don't need them
+            timeout=0
+            until [ "$timeout" -gt 10 ]; do
+              # if npm install ran ok, break out of loop, else sleep then try again
+              npm install --save --package-lock-only "@charmverse/core@${{matrix.repo}}" && break;
+              echo "sleep 5 secs then retry install" && ((timeout+=1)) && sleep 5
+            done
+            if [ "$timeout" -le 10 ]; then
+              git add package-lock.json package.json
+              git commit -m "bump common to ${{matrix.repo}}"
+              git push
+            fi
+          done
