@@ -49,7 +49,7 @@ jobs:
       - name: Determine downstream repo branch to run tests against
         id: set_downstream_repo_branch
         run: |
-          # values of this step's output is used in step run-downstream-test-workflows
+          # values of this step's output is used in step test-downstream-apps
           # strategy/matrix doesn't permit access to env context. very lame...
 
           if [[ "${{ github.event_name }}" == "push" && "${{ github.ref }}" == "refs/heads/main" ]]; then
@@ -91,7 +91,7 @@ jobs:
           message: |
             Code ${{ github.sha }} labeled version ${{ steps.publish_pkg.outputs.pkg_version }}
 
-  run-downstream-test-workflows:
+  test-downstream-apps:
     name: Run tests in ${{matrix.repo}}
     if: (github.event_name == 'pull_request' && ( github.event.action == 'opened' || github.event.action == 'synchronize' ))
     runs-on: ubuntu-latest
@@ -174,7 +174,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    needs: [push-package, tests]
+    # needs: [push-package, tests, test-downstream-apps]
     strategy:
       max-parallel: 2
       fail-fast: false
@@ -193,9 +193,7 @@ jobs:
           set -e
             echo "Processing ${{matrix.repo}}"
 
-            if [ ! -d ~/$APP ]; then
-              git clone --depth=1 git@github.com:charmverse/${{matrix.repo}}.git ~/${{matrix.repo}}
-            fi
+            git clone --depth=1 git@github.com:charmverse/${{matrix.repo}}.git ~/${{matrix.repo}}
             cd ~/${{matrix.repo}}
 
             # Don't download deps, we don't need them
