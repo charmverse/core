@@ -674,8 +674,8 @@ model User {
   charmWallet                   CharmWallet?
   favoriteCredentials           FavoriteCredential[]
   referralCodes                 ReferralCode[]
-  referredUserEvent             ReferralCodeUseEvent[]          @relation("referrer")
-  referredByUserEvent           ReferralCodeUseEvent[]          @relation("referee")
+  referredUserEvents            ReferralCodeUseEvent[]          @relation("referrer")
+  referredByUserEvents          ReferralCodeUseEvent[]          @relation("referee")
 }
 
 model VerifiedEmail {
