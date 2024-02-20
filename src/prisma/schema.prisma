@@ -673,6 +673,9 @@ model User {
   otp                           Otp?
   charmWallet                   CharmWallet?
   favoriteCredentials           FavoriteCredential[]
+  referralCodes                 ReferralCode[]
+  referredUserEvent             ReferralCodeUseEvent[]          @relation("referrer")
+  referredByUserEvent           ReferralCodeUseEvent[]          @relation("referee")
 }
 
 model VerifiedEmail {
@@ -2040,4 +2043,28 @@ model FavoriteCredential {
   issuedCredentialId   String?           @unique @db.Uuid
   issuedCredential     IssuedCredential? @relation(fields: [issuedCredentialId], references: [id], onDelete: SetNull)
   gitcoinWalletAddress String?           @unique
+}
+
+model ReferralCode {
+  id        String   @id @default(uuid()) @db.Uuid
+  code      String   @unique
+  createdAt DateTime @default(now())
+  userId    String   @unique @db.Uuid
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([code])
+}
+
+model ReferralCodeUseEvent {
+  id         String   @id @default(uuid()) @db.Uuid
+  createdAt  DateTime @default(now())
+  referrerId String   @db.Uuid
+  refereeId  String   @db.Uuid
+  referrer   User     @relation("referrer", fields: [referrerId], references: [id], onDelete: Cascade)
+  referee    User     @relation("referee", fields: [refereeId], references: [id], onDelete: Cascade)
+
+  @@unique([referrerId, refereeId])
+  @@index([referrerId])
+  @@index([refereeId])
 }
