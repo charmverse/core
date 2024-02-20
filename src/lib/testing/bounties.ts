@@ -17,6 +17,7 @@ export async function generateBounty({
   createdBy,
   status,
   maxSubmissions,
+  permissions: _permissions,
   approveSubmitters,
   title = 'Example',
   rewardToken = 'ETH',
@@ -26,13 +27,29 @@ export async function generateBounty({
   pagePermissions = [],
   page = {},
   type = 'bounty',
+  customReward = null,
+  fields = {},
   id
-}: Pick<Bounty, 'createdBy' | 'spaceId' | 'status' | 'approveSubmitters'> &
-  Partial<Pick<Bounty, 'id' | 'maxSubmissions' | 'chainId' | 'rewardAmount' | 'rewardToken'>> &
+}: Pick<Bounty, 'createdBy' | 'spaceId'> &
+  Partial<
+    Pick<
+      Bounty,
+      | 'id'
+      | 'approveSubmitters'
+      | 'maxSubmissions'
+      | 'status'
+      | 'chainId'
+      | 'rewardAmount'
+      | 'rewardToken'
+      | 'customReward'
+    >
+  > &
   Partial<Pick<Page, 'title' | 'content' | 'contentText' | 'type'>> & {
     bountyPermissions?: Partial<BountyPermissions>;
+    permissions?: Omit<Prisma.BountyPermissionCreateManyInput, 'bountyId'>[];
     pagePermissions?: PagePermissionAssignmentByValues[];
     page?: Partial<Pick<Page, 'deletedAt'>>;
+    fields?: any;
   }): Promise<BountyWithDetails> {
   const pageId = id ?? v4();
 
@@ -68,6 +85,8 @@ export async function generateBounty({
         id: pageId,
         createdBy,
         chainId,
+        customReward,
+        fields,
         rewardAmount,
         rewardToken,
         status,
@@ -90,7 +109,7 @@ export async function generateBounty({
         },
         permissions: {
           createMany: {
-            data: bountyPermissionsToAssign
+            data: _permissions || bountyPermissionsToAssign
           }
         }
       }
@@ -116,6 +135,7 @@ export async function generateBounty({
     },
     include: {
       applications: true,
+      permissions: true,
       page: {
         include: {
           permissions: {

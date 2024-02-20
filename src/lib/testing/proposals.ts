@@ -60,6 +60,7 @@ export type GenerateProposalInput = {
   reviewers?: ProposalReviewerInput[];
   pageType?: PageType;
   proposalStatus?: ProposalStatus;
+  fields?: any;
   title?: string;
   content?: any;
   evaluationType?: ProposalEvaluationType;
@@ -81,6 +82,7 @@ export type GenerateProposalResponse = ProposalWithUsers & { page: Page; evaluat
 export async function generateProposal({
   userId,
   spaceId,
+  fields = {},
   proposalStatus = 'draft',
   pageType = 'proposal',
   title = 'Proposal',
@@ -104,10 +106,15 @@ export async function generateProposal({
 
   const proposalId = uuid();
 
+  if (customProperties) {
+    fields.properties = customProperties;
+  }
+
   await prisma.proposal.create({
     data: {
       id: proposalId,
       createdBy: userId,
+      fields,
       status: proposalStatus,
       archived,
       space: {
@@ -123,11 +130,6 @@ export async function generateProposal({
           }
         : undefined,
       selectedCredentialTemplates: selectedCredentialTemplateIds,
-      fields: customProperties
-        ? {
-            properties: customProperties
-          }
-        : undefined,
       authors: !authors.length
         ? undefined
         : {
