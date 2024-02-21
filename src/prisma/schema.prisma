@@ -1954,6 +1954,7 @@ model FormFieldAnswer {
 
 enum AttestationType {
   proposal
+  reward
 }
 
 model CredentialTemplate {
