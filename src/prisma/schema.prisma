@@ -264,6 +264,7 @@ enum TokenGateType {
 enum CredentialEventType {
   proposal_created
   proposal_approved
+  reward_submission_approved
 }
 
 model Space {
