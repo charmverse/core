@@ -873,6 +873,7 @@ model Bounty {
   permissions               BountyPermission[]
   page                      Page?
   customReward              String?
+  selectedCredentialTemplates String[]
   fields                    Json?
   notifications             BountyNotification[]
   proposalId                String?              @db.Uuid
