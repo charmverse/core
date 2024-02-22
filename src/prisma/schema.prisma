@@ -881,6 +881,7 @@ model Bounty {
   notifications             BountyNotification[]
   proposalId                String?              @db.Uuid
   proposal                  Proposal?            @relation(fields: [proposalId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  issuedCredentials           IssuedCredential[]
 
   @@index([createdBy])
   @@index([spaceId])
@@ -1979,8 +1980,10 @@ model IssuedCredential {
   id                   String               @id @default(uuid()) @db.Uuid
   credentialTemplateId String?              @db.Uuid
   credentialTemplate   CredentialTemplate?  @relation(fields: [credentialTemplateId], references: [id], onDelete: SetNull)
-  proposalId           String               @db.Uuid
-  proposal             Proposal             @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  proposalId           String?               @db.Uuid
+  proposal             Proposal?             @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  rewardId             String?               @db.Uuid
+  reward               Bounty?               @relation(fields: [rewardId], references: [id], onDelete: Cascade)
   ceramicId            String               @unique
   userId               String               @db.Uuid
   user                 User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
