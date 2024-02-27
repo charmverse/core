@@ -1982,8 +1982,8 @@ model IssuedCredential {
   credentialTemplate   CredentialTemplate?  @relation(fields: [credentialTemplateId], references: [id], onDelete: SetNull)
   proposalId           String?               @db.Uuid
   proposal             Proposal?             @relation(fields: [proposalId], references: [id], onDelete: Cascade)
-  applicationId             String?               @db.Uuid
-  application               Application?               @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  rewardApplicationId             String?               @db.Uuid
+  rewardApplication               Application?               @relation(fields: [rewardApplicationId], references: [id], onDelete: Cascade)
   ceramicId            String               @unique
   userId               String               @db.Uuid
   user                 User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
