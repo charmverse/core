@@ -62,7 +62,7 @@ export type PagesRequest = {
   pageIds?: string[];
   search?: string;
   limit?: number;
-  filter?: 'card' | 'reward' | 'not_card';
+  filter?: 'reward' | 'not_card';
   pageType?: PageType;
 };
 // Page without content and contentText props - used for list of pages (on the client)
