@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.33.1-rc-add-reward-cred.3",
+  "version": "0.33.1",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
