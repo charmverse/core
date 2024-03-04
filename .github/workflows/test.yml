@@ -189,14 +189,14 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: charmverse/${{matrix.repo}}
-          token: ${{ secrets.WORKFLOW_TRIGGER_PAT }}
+          token: ${{ secrets.CHARMED_BOT_PAT }}
           path: ${{matrix.repo}}
       - name: Trigger Core pkg update and deploy on repo ${{ matrix.repo }}
         env:
-          GITHUB_TOKEN: ${{ secrets.WORKFLOW_TRIGGER_PAT }}
+          GITHUB_TOKEN: ${{ secrets.CHARMED_BOT_PAT }}
         run: |
           set -e
-            echo "Processing ${{matrix.repo}} $GITHUB_TOKEN"
+            echo "Processing ${{matrix.repo}}"
 
             git clone --depth=1 git@github.com:charmverse/${{matrix.repo}}.git ~/${{matrix.repo}}-2
             cd ~/${{matrix.repo}}
@@ -209,8 +209,8 @@ jobs:
               echo "sleep 5 secs then retry install" && ((timeout+=1)) && sleep 5
             done
             if [ "$timeout" -le 10 ]; then
-              git config user.name github-actions
-              git config user.email github-actions@github.com
+              git config user.name charmed-bot
+              git config user.email charmed-bot@charmverse.io
               git add package-lock.json package.json
               git commit -m "bump core to ${{matrix.repo}}"
               # git push
