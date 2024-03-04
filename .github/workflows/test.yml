@@ -198,7 +198,7 @@ jobs:
           set -e
             echo "Processing ${{matrix.repo}}"
 
-            git clone --depth=1 https://$GIT_TOKEN@github.com:charmverse/${{matrix.repo}}.git ~/${{matrix.repo}}-2
+            git clone --depth=1 https://$GITHUB_TOKEN@github.com:charmverse/${{matrix.repo}}.git ~/${{matrix.repo}}-2
             cd ~/${{matrix.repo}}
 
             # Don't download deps, we don't need them
