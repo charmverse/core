@@ -281,7 +281,7 @@ model Space {
   paidTier                    SubscriptionTier                  @default(community)
   discordServerId             String?
   defaultVotingDuration       Int?
-  enableTestNets              Boolean?                          @default(false)
+  enableTestnets              Boolean?                          @default(false)
   snapshotDomain              String?
   spaceImage                  String?
   spaceArtwork                String?
