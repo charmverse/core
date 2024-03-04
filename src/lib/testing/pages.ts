@@ -35,20 +35,11 @@ type PageGenerateArgs = Pick<Page, 'createdBy' | 'spaceId'> &
   > &
   OptionalPagePermissionsToGenerate;
 
-const emptyDocument = {
-  type: 'doc',
-  content: [
-    {
-      type: 'paragraph'
-    }
-  ]
-};
-
 export function generatePage({
   id,
   createdBy,
   spaceId,
-  content,
+  content = null,
   contentText,
   pagePermissions,
   parentId,
@@ -71,7 +62,7 @@ export function generatePage({
       path: path ?? `page-${v4()}`,
       type: type ?? 'page',
       updatedBy: createdBy,
-      content: content ?? emptyDocument,
+      content: content as any,
       contentText: contentText ?? '',
       syncWithPageId,
       parentId,

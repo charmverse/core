@@ -174,7 +174,7 @@ export async function generateForumPosts({
   count,
   spaceId,
   createdBy,
-  content = { type: 'doc', content: [] },
+  content = null,
   contentText = '',
   title,
   isDraft,
