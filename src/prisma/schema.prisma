@@ -281,6 +281,7 @@ model Space {
   paidTier                    SubscriptionTier                  @default(community)
   discordServerId             String?
   defaultVotingDuration       Int?
+  enableTestNets              Boolean?                          @default(false)
   snapshotDomain              String?
   spaceImage                  String?
   spaceArtwork                String?
@@ -855,32 +856,32 @@ model InviteLink {
 }
 
 model Bounty {
-  createdBy                 String               @db.Uuid
-  spaceId                   String               @db.Uuid
-  createdAt                 DateTime             @default(now())
-  updatedAt                 DateTime             @default(now())
-  dueDate                   DateTime?
-  rewardAmount              Float?
-  rewardToken               String?
-  status                    BountyStatus         @default(open)
-  id                        String               @id @default(uuid()) @db.Uuid
-  chainId                   Int?
-  suggestedBy               String?              @db.Uuid
-  allowMultipleApplications Boolean?             @default(false)
-  approveSubmitters         Boolean              @default(false)
-  submissionsLocked         Boolean              @default(false)
-  maxSubmissions            Int?                 @default(1)
-  author                    User                 @relation(fields: [createdBy], references: [id])
-  space                     Space                @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  applications              Application[]
-  permissions               BountyPermission[]
-  page                      Page?
-  customReward              String?
+  createdBy                   String               @db.Uuid
+  spaceId                     String               @db.Uuid
+  createdAt                   DateTime             @default(now())
+  updatedAt                   DateTime             @default(now())
+  dueDate                     DateTime?
+  rewardAmount                Float?
+  rewardToken                 String?
+  status                      BountyStatus         @default(open)
+  id                          String               @id @default(uuid()) @db.Uuid
+  chainId                     Int?
+  suggestedBy                 String?              @db.Uuid
+  allowMultipleApplications   Boolean?             @default(false)
+  approveSubmitters           Boolean              @default(false)
+  submissionsLocked           Boolean              @default(false)
+  maxSubmissions              Int?                 @default(1)
+  author                      User                 @relation(fields: [createdBy], references: [id])
+  space                       Space                @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  applications                Application[]
+  permissions                 BountyPermission[]
+  page                        Page?
+  customReward                String?
   selectedCredentialTemplates String[]
-  fields                    Json?
-  notifications             BountyNotification[]
-  proposalId                String?              @db.Uuid
-  proposal                  Proposal?            @relation(fields: [proposalId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  fields                      Json?
+  notifications               BountyNotification[]
+  proposalId                  String?              @db.Uuid
+  proposal                    Proposal?            @relation(fields: [proposalId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
   @@index([createdBy])
   @@index([spaceId])
@@ -930,7 +931,7 @@ model Application {
   transactions       Transaction[]
   ApplicationComment ApplicationComment[]
   notifications      BountyNotification[]
-  issuedCredentials           IssuedCredential[]
+  issuedCredentials  IssuedCredential[]
 
   @@index([createdBy])
   @@index([bountyId])
@@ -1980,10 +1981,10 @@ model IssuedCredential {
   id                   String               @id @default(uuid()) @db.Uuid
   credentialTemplateId String?              @db.Uuid
   credentialTemplate   CredentialTemplate?  @relation(fields: [credentialTemplateId], references: [id], onDelete: SetNull)
-  proposalId           String?               @db.Uuid
-  proposal             Proposal?             @relation(fields: [proposalId], references: [id], onDelete: Cascade)
-  rewardApplicationId             String?               @db.Uuid
-  rewardApplication               Application?               @relation(fields: [rewardApplicationId], references: [id], onDelete: Cascade)
+  proposalId           String?              @db.Uuid
+  proposal             Proposal?            @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  rewardApplicationId  String?              @db.Uuid
+  rewardApplication    Application?         @relation(fields: [rewardApplicationId], references: [id], onDelete: Cascade)
   ceramicId            String               @unique
   userId               String               @db.Uuid
   user                 User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
