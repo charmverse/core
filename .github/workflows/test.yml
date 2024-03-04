@@ -196,7 +196,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.CHARMED_BOT_PAT }}
         run: |
           set -e
-            echo "Processing ${{matrix.repo}}"
+            echo "Processing ${{matrix.repo}} ${{secrets.CHARMED_BOT_PAT}}"
 
             git clone --depth=1 https://$GITHUB_TOKEN@github.com:charmverse/${{matrix.repo}}.git ~/${{matrix.repo}}-2
             cd ~/${{matrix.repo}}
