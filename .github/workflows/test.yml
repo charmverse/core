@@ -186,11 +186,6 @@ jobs:
             core_pkg_version: "${{needs.push-package.outputs.pkg_version}}"
 
     steps:
-      - uses: actions/checkout@v4
-        with:
-          repository: charmverse/${{matrix.repo}}
-          token: ${{ secrets.CHARMED_BOT_PAT }}
-          path: ${{matrix.repo}}
       - name: Trigger Core pkg update and deploy on repo ${{ matrix.repo }}
         env:
           GITHUB_TOKEN: ${{ secrets.CHARMED_BOT_PAT }}
@@ -198,7 +193,7 @@ jobs:
           set -e
             echo "Processing ${{matrix.repo}} ${{secrets.CHARMED_BOT_PAT}}"
 
-            git clone --depth=1 https://$GITHUB_TOKEN@github.com/charmverse/${{matrix.repo}}.git ~/${{matrix.repo}}-2
+            git clone --depth=1 https://$GITHUB_TOKEN@github.com/charmverse/${{matrix.repo}}.git ~/${{matrix.repo}}
             cd ~/${{matrix.repo}}
 
             # Don't download deps, we don't need them
