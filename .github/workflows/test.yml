@@ -24,20 +24,20 @@ env:
   PERMISSION_WORKFLOW_BRANCH:
 
 jobs:
-  # build-test-env:
-  #   name: Build test env
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - name: Install dependencies
-  #       uses: ./.github/actions/install
-  #     - name: Run build
-  #       uses: ./.github/actions/build
+  build-test-env:
+    name: Build test env
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        uses: ./.github/actions/install
+      - name: Run build
+        uses: ./.github/actions/build
 
   push-package:
     name: Push Release candidate package to allow devs to use to test
     runs-on: ubuntu-latest
-    # needs: build-test-env
+    needs: build-test-env
     permissions:
       contents: write
       pull-requests: write
@@ -174,7 +174,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    # needs: [push-package, tests, test-downstream-apps]
+    needs: [push-package]
+    #, tests, test-downstream-apps]
     strategy:
       max-parallel: 2
       fail-fast: false
