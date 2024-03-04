@@ -211,4 +211,3 @@ jobs:
               git commit -m "bump core to ${{matrix.repo}}"
               # git push
             fi
-          done
