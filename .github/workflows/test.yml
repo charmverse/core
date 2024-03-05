@@ -169,7 +169,7 @@ jobs:
         run: ${{matrix.test_command}}
 
   trigger-pkg-upgrade:
-    # if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     name: Bump Core pkg in ${{ matrix.repo }}
     runs-on: ubuntu-latest
     permissions:
