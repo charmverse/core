@@ -174,7 +174,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    needs: [push-package, tests, test-downstream-apps]
+    needs: [push-package, tests]
     strategy:
       max-parallel: 2
       fail-fast: false
