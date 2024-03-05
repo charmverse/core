@@ -208,5 +208,5 @@ jobs:
               git config user.email charmed-bot@charmverse.io
               git add package-lock.json package.json
               git commit -m "bump core to v${{needs.push-package.outputs.pkg_version}}"
-              # git push
+              git push
             fi
