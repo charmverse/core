@@ -2,8 +2,8 @@ import { GET } from '../../../http/index';
 import type { ListProposalsRequest } from '../../../proposals/interfaces';
 import { AbstractPermissionsApiClient } from '../../clients/abstractApiClient.class';
 import type { PermissionsApiClientConstructor } from '../../clients/interfaces';
-import type { PermissionCompute, Resource } from '../../core/interfaces';
-import type { ProposalPermissionFlags, ProposalReviewerPool } from '../interfaces';
+import type { PermissionCompute, Resource, SpaceResourcesRequest } from '../../core/interfaces';
+import type { ProposalPermissionFlags, ProposalReviewerPool, SmallProposalPermissionFlags } from '../interfaces';
 
 import type { PremiumProposalPermissionsClient } from './interfaces';
 
@@ -44,5 +44,12 @@ export class ProposalPermissionsHttpClient
 
   computeBaseProposalPermissions(request: PermissionCompute): Promise<ProposalPermissionFlags> {
     return GET(`${this.prefix}/compute-base-proposal-permissions`, request);
+  }
+
+  bulkComputeProposalPermissions({
+    spaceId,
+    userId
+  }: SpaceResourcesRequest): Promise<Record<string, SmallProposalPermissionFlags>> {
+    return GET(`${this.prefix}/bulk-compute-proposal-permissions`, { spaceId, userId });
   }
 }

@@ -16,3 +16,8 @@ export type ProposalReviewerPool = {
   userIds: string[];
   roleIds: string[];
 };
+
+export type SmallProposalPermissionFlags = Pick<
+  ProposalPermissionFlags,
+  'view' | 'view_notes' | 'view_private_fields' | 'evaluate'
+>;

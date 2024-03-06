@@ -1,6 +1,6 @@
 import type { ListProposalsRequest } from '../../../proposals/interfaces';
-import type { PermissionCompute } from '../../core/interfaces';
-import type { ProposalPermissionFlags } from '../interfaces';
+import type { PermissionCompute, SpaceResourcesRequest } from '../../core/interfaces';
+import type { ProposalPermissionFlags, SmallProposalPermissionFlags } from '../interfaces';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type BaseProposalPermissionsClient = {};
@@ -19,4 +19,6 @@ export type PremiumProposalPermissionsClient = BaseProposalPermissionsClient & {
   // This will be the new method used for proposals with evaluation step
   getAccessibleProposalIds: (request: ListProposalsRequest) => Promise<string[]>;
   computeBaseProposalPermissions: (request: PermissionCompute) => Promise<ProposalPermissionFlags>;
+
+  bulkComputeProposalPermissions: (req: SpaceResourcesRequest) => Promise<Record<string, SmallProposalPermissionFlags>>;
 };
