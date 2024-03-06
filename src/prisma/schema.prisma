@@ -548,13 +548,14 @@ model Block {
 }
 
 model UserVote {
-  voteId    String   @db.Uuid
-  userId    String   @db.Uuid
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-  choices   String[] @default([])
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  vote      Vote     @relation(fields: [voteId], references: [id], onDelete: Cascade)
+  voteId      String   @db.Uuid
+  userId      String   @db.Uuid
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
+  choices     String[] @default([])
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vote        Vote     @relation(fields: [voteId], references: [id], onDelete: Cascade)
+  tokenAmount Float?
 
   @@unique([voteId, userId])
   @@index([voteId])
@@ -1186,7 +1187,7 @@ model Proposal {
   reviewedAt                  DateTime?
   publishToLens               Boolean?
   lensPostLink                String?
-  Post                        Post[]
+  post                        Post[]
   rubricCriteria              ProposalRubricCriteria[]
   rubricAnswers               ProposalRubricCriteriaAnswer[]
   fields                      Json                                @default("{}")
@@ -1202,6 +1203,7 @@ model Proposal {
   form                        Form?                               @relation(fields: [formId], references: [id], onDelete: Cascade)
   formAnswers                 FormFieldAnswer[]
   issuedCredentials           IssuedCredential[]
+  blockNumber                 Int?
 
   @@index([spaceId])
   @@index([reviewedBy])
