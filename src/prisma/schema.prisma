@@ -596,6 +596,8 @@ model Vote {
   voteOptions   VoteOptions[]
   notifications VoteNotification[]
   evaluation    ProposalEvaluation?
+  chainId       Int?
+  tokenAddress  String?
 
   @@index([createdBy])
   @@index([pageId])
