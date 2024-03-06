@@ -598,6 +598,7 @@ model Vote {
   evaluation    ProposalEvaluation?
   chainId       Int?
   tokenAddress  String?
+  blockNumber   Int?
 
   @@index([createdBy])
   @@index([pageId])
@@ -1205,7 +1206,6 @@ model Proposal {
   form                        Form?                               @relation(fields: [formId], references: [id], onDelete: Cascade)
   formAnswers                 FormFieldAnswer[]
   issuedCredentials           IssuedCredential[]
-  blockNumber                 Int?
 
   @@index([spaceId])
   @@index([reviewedBy])
