@@ -1,35 +1,17 @@
 {
-  "[typescriptreact]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.codeActionsOnSave": {
-      "source.fixAll.eslint": "explicit"
-    }
-  },
-  "[typescript]": {
+  "[javascript][typescript][typescriptreact]": {
     "editor.defaultFormatter": "dbaeumer.vscode-eslint",
     "editor.codeActionsOnSave": {
-      "source.fixAll.eslint": "explicit"
-    }
-  },
-  "[javascript]": {
-    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
-    "editor.codeActionsOnSave": {
-      "source.fixAll.eslint": "explicit"
+      "source.fixAll.eslint": "explicit",
+      "source.organizeImports": "always"
     }
   },
   "editor.detectIndentation": false,
   "editor.tabSize": 2,
   "jestrunner.jestCommand": "npx dotenv -e .env.test.local -- node --experimental-vm-modules 'node_modules/.bin/jest'",
-  //// "jestrunner.jestCommand": "dotenv -e .env.test.local -- nox  --experimental-vm-modules 'node_modules/.bin/jest'",
   "jestrunner.configPath": "jest.config.js",
   "typescript.tsdk": "node_modules/typescript/lib",
   "[prisma]": {
     "editor.defaultFormatter": "Prisma.prisma"
-  },
-  "[javascript][typescript][typescriptreact]": {
-    "editor.codeActionsOnSave": {
-      "source.fixAll.eslint": "explicit",
-      "source.organizeImports": "always"
-    }
   }
 }
