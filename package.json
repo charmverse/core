@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.34.8-rc-vscode-settings.1",
+  "version": "0.34.8-rc-vscode-settings.2",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
