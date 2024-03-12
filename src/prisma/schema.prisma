@@ -305,6 +305,7 @@ model Space {
   publicBountyBoard           Boolean?                          @default(false)
   publicProposals             Boolean?                          @default(false)
   xpsEngineId                 String?                           @unique
+  issueCredentialsOnChainId     Int?
   primaryMemberIdentity       IdentityType?
   author                      User                              @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   blocks                      Block[]
