@@ -679,6 +679,8 @@ model User {
   referralCodes                 ReferralCode[]
   referredUserEvents            ReferralCodeUseEvent[]          @relation("referrer")
   referredByUserEvents          ReferralCodeUseEvent[]          @relation("referee")
+
+  @@index([createdAt(sort: Desc)])
 }
 
 model VerifiedEmail {
@@ -2020,6 +2022,7 @@ model RecoveryCode {
 model CharmWallet {
   id               String             @id @default(uuid()) @db.Uuid
   balance          Int                @default(0)
+  totalBalance     Int                @default(0)
   userId           String?            @unique @db.Uuid
   spaceId          String?            @unique @db.Uuid
   user             User?              @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -2028,6 +2031,7 @@ model CharmWallet {
   transactionsTo   CharmTransaction[] @relation("toWallet")
 
   @@index([id])
+  @@index([totalBalance(sort: Desc)])
 }
 
 model CharmTransaction {
