@@ -679,6 +679,8 @@ model User {
   referralCodes                 ReferralCode[]
   referredUserEvents            ReferralCodeUseEvent[]          @relation("referrer")
   referredByUserEvents          ReferralCodeUseEvent[]          @relation("referee")
+
+  @@index([createdAt(sort: Desc)])
 }
 
 model VerifiedEmail {
@@ -2029,6 +2031,7 @@ model CharmWallet {
   transactionsTo   CharmTransaction[] @relation("toWallet")
 
   @@index([id])
+  @@index([totalBalance(sort: Desc)])
 }
 
 model CharmTransaction {
