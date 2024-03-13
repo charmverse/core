@@ -299,7 +299,7 @@ model Space {
   publicBountyBoard           Boolean?                          @default(false)
   publicProposals             Boolean?                          @default(false)
   xpsEngineId                 String?                           @unique
-  issueCredentialsOnChainId     Int?
+  issueCredentialsOnChainId   Int?
   primaryMemberIdentity       IdentityType?
   author                      User                              @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   blocks                      Block[]
@@ -680,7 +680,7 @@ model User {
   referredUserEvents            ReferralCodeUseEvent[]          @relation("referrer")
   referredByUserEvents          ReferralCodeUseEvent[]          @relation("referee")
 
-  @@index([createdAt(sort: Desc)])
+  @@index([createdAt(sort: Asc)])
 }
 
 model VerifiedEmail {
