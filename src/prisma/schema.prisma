@@ -691,7 +691,7 @@ model User {
   referredUserEvents            ReferralCodeUseEvent[]          @relation("referrer")
   referredByUserEvents          ReferralCodeUseEvent[]          @relation("referee")
 
-  @@index([createdAt(sort: Desc)])
+  @@index([createdAt(sort: Asc)])
 }
 
 model VerifiedEmail {
