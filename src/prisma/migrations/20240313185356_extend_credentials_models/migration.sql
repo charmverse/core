@@ -6,8 +6,8 @@
 
 */
 -- AlterTable
-ALTER TABLE "IssuedCredential" ADD COLUMN     "chainId" INTEGER,
-ADD COLUMN     "content" JSONB,
+ALTER TABLE "IssuedCredential" ADD COLUMN     "ceramicContent" JSONB,
+ADD COLUMN     "chainId" INTEGER,
 ADD COLUMN     "onChainUid" TEXT,
 ADD COLUMN     "schemaId" TEXT,
 ALTER COLUMN "ceramicId" DROP NOT NULL;

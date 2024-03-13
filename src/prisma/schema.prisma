@@ -1989,7 +1989,7 @@ model IssuedCredential {
   rewardApplicationId  String?              @db.Uuid
   rewardApplication    Application?         @relation(fields: [rewardApplicationId], references: [id], onDelete: Cascade)
   ceramicId            String?              @unique
-  content              Json?
+  ceramicContent       Json?
   onChainUid           String?              @unique
   chainId              Int?
   schemaId             String?
