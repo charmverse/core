@@ -1993,8 +1993,8 @@ model IssuedCredential {
   ceramicId            String?              @unique
   ceramicRecord        Json?
   // Fields specific to on chain credentials
-  onChainAttestationId String?              @unique
-  easChainId            Int?
+  onchainAttestationId String?              @unique
+  onchainChainId            Int?
   userId               String               @db.Uuid
   user                 User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
   credentialEvent      CredentialEventType
