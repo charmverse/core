@@ -1988,11 +1988,13 @@ model IssuedCredential {
   proposal             Proposal?            @relation(fields: [proposalId], references: [id], onDelete: Cascade)
   rewardApplicationId  String?              @db.Uuid
   rewardApplication    Application?         @relation(fields: [rewardApplicationId], references: [id], onDelete: Cascade)
-  ceramicId            String?              @unique
-  ceramicContent       Json?
-  onChainUid           String?              @unique
-  chainId              Int?
   schemaId             String?
+  // Fields specific to ceramic
+  ceramicId            String?              @unique
+  ceramicRecord        Json?
+  // Fields specific to on chain credentials
+  onChainAttestationId String?              @unique
+  easChainId            Int?
   userId               String               @db.Uuid
   user                 User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
   credentialEvent      CredentialEventType
