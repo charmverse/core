@@ -165,7 +165,6 @@ describe('generateProposal', () => {
           durationDays: 12,
           maxChoices: 1,
           options: ['Yes', 'No'],
-          publishToSnapshot: false,
           threshold: 90,
           type: 'SingleChoice'
         }
