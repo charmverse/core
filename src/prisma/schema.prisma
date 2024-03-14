@@ -562,7 +562,7 @@ model UserVote {
   choices     String[] @default([])
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   vote        Vote     @relation(fields: [voteId], references: [id], onDelete: Cascade)
-  tokenAmount Float?
+  tokenAmount String?
 
   @@unique([voteId, userId])
   @@index([voteId])
