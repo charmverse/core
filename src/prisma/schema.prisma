@@ -267,6 +267,12 @@ enum CredentialEventType {
   reward_submission_approved
 }
 
+enum VoteStrategy {
+  regular
+  token
+  snapshot
+}
+
 model Space {
   id                          String                            @id @default(uuid()) @db.Uuid
   deletedAt                   DateTime?
@@ -549,13 +555,14 @@ model Block {
 }
 
 model UserVote {
-  voteId    String   @db.Uuid
-  userId    String   @db.Uuid
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-  choices   String[] @default([])
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  vote      Vote     @relation(fields: [voteId], references: [id], onDelete: Cascade)
+  voteId      String   @db.Uuid
+  userId      String   @db.Uuid
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
+  choices     String[] @default([])
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vote        Vote     @relation(fields: [voteId], references: [id], onDelete: Cascade)
+  tokenAmount String?
 
   @@unique([voteId, userId])
   @@index([voteId])
@@ -587,6 +594,7 @@ model Vote {
   threshold     Int
   maxChoices    Int?                @default(1)
   type          VoteType            @default(SingleChoice)
+  strategy      VoteStrategy        @default(regular)
   context       VoteContext         @default(inline)
   author        User                @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   page          Page?               @relation(fields: [pageId], references: [id], onDelete: Cascade)
@@ -596,6 +604,9 @@ model Vote {
   voteOptions   VoteOptions[]
   notifications VoteNotification[]
   evaluation    ProposalEvaluation?
+  chainId       Int?
+  tokenAddress  String?
+  blockNumber   String?
 
   @@index([createdBy])
   @@index([pageId])
@@ -1189,7 +1200,7 @@ model Proposal {
   reviewedAt                  DateTime?
   publishToLens               Boolean?
   lensPostLink                String?
-  Post                        Post[]
+  post                        Post[]
   rubricCriteria              ProposalRubricCriteria[]
   rubricAnswers               ProposalRubricCriteriaAnswer[]
   fields                      Json                                @default("{}")
