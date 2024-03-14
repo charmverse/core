@@ -17,10 +17,4 @@ ALTER TABLE "Space" DROP COLUMN "issueCredentialsOnChainId",
 ADD COLUMN     "credentialsChainId" INTEGER;
 
 -- CreateIndex
-CREATE INDEX "CharmWallet_totalBalance_idx" ON "CharmWallet"("totalBalance" DESC);
-
--- CreateIndex
 CREATE UNIQUE INDEX "IssuedCredential_onchainAttestationId_key" ON "IssuedCredential"("onchainAttestationId");
-
--- CreateIndex
-CREATE INDEX "User_createdAt_idx" ON "User"("createdAt" ASC);
