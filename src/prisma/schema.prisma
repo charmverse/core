@@ -305,6 +305,7 @@ model Space {
   publicBountyBoard           Boolean?                          @default(false)
   publicProposals             Boolean?                          @default(false)
   xpsEngineId                 String?                           @unique
+  useOnchainCredentials       Boolean?                          @default(false)
   credentialsChainId          Int?
   credentialsWallet           String?
   primaryMemberIdentity       IdentityType?
