@@ -1931,6 +1931,7 @@ model Form {
 }
 
 enum FormFieldType {
+  project_profile
   short_text
   long_text
   number
@@ -1958,6 +1959,7 @@ model FormField {
   options     Json?
   formId      String            @db.Uuid
   form        Form              @relation(fields: [formId], references: [id], onDelete: Cascade)
+  extraFields Json?
   answers     FormFieldAnswer[]
 }
 
