@@ -306,6 +306,7 @@ model Space {
   publicProposals             Boolean?                          @default(false)
   xpsEngineId                 String?                           @unique
   credentialsChainId          Int?
+  credentialsWallet           String?
   primaryMemberIdentity       IdentityType?
   author                      User                              @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   blocks                      Block[]
@@ -2006,6 +2007,7 @@ model IssuedCredential {
   // Fields specific to on chain credentials
   onchainAttestationId String?              @unique
   onchainChainId            Int?
+  hidden               Boolean?              @default(false)
   userId               String               @db.Uuid
   user                 User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
   credentialEvent      CredentialEventType
