@@ -690,6 +690,8 @@ model User {
   referralCodes                 ReferralCode[]
   referredUserEvents            ReferralCodeUseEvent[]          @relation("referrer")
   referredByUserEvents          ReferralCodeUseEvent[]          @relation("referee")
+  ProjectMember                 ProjectMember[]
+  Project                       Project[]
 
   @@index([createdAt(sort: Asc)])
 }
@@ -2005,7 +2007,7 @@ model IssuedCredential {
   ceramicRecord        Json?
   // Fields specific to on chain credentials
   onchainAttestationId String?              @unique
-  onchainChainId            Int?
+  onchainChainId       Int?
   userId               String               @db.Uuid
   user                 User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
   credentialEvent      CredentialEventType
@@ -2097,3 +2099,53 @@ model ReferralCodeUseEvent {
   @@index([referrerId])
   @@index([refereeId])
 }
+
+model ProjectMember {
+  id            String   @id @default(uuid()) @db.Uuid
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  updatedBy     String   @db.Uuid
+  teamLead      Boolean  @default(false)
+  name          String
+  walletAddress String
+  email         String
+  twitter       String?
+  warpcast      String?
+  github        String?
+  linkedin      String?
+  telegram      String?
+  otherUrl      String?
+  userId        String   @db.Uuid
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  projectId     String   @db.Uuid
+  project       Project  @relation(fields: [projectId], references: [id])
+
+  @@index([userId])
+}
+
+// Open question - Will we have other roles here or just team lead and not
+// Open question here is if we will have custom fields or multiple fields in the future
+model Project {
+  id             String          @id @default(uuid()) @db.Uuid
+  createdAt      DateTime        @default(now())
+  createdBy      String          @db.Uuid
+  updatedAt      DateTime        @updatedAt
+  updatedBy      String          @db.Uuid
+  name           String
+  excerpt        String
+  description    String
+  twitter        String?
+  website        String?
+  github         String?
+  blog           String?
+  productUrl     String?
+  communityUrl   String?
+  otherUrl       String?
+  walletAddress  String
+  user           User            @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  projectMembers ProjectMember[]
+
+  @@index([createdBy])
+}
+
+// Create a Project field component
