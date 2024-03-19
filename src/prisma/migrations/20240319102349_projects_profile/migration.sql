@@ -20,6 +20,7 @@ CREATE TABLE "ProjectMember" (
     "linkedin" TEXT,
     "telegram" TEXT,
     "otherUrl" TEXT,
+    "previousProjects" TEXT,
     "userId" UUID NOT NULL,
     "projectId" UUID NOT NULL,
 
