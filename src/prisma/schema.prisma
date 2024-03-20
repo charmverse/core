@@ -2006,7 +2006,7 @@ model IssuedCredential {
   ceramicRecord        Json?
   // Fields specific to on chain credentials
   onchainAttestationId String?              @unique
-  onchainChainId            Int?
+  onchainChainId       Int?
   userId               String               @db.Uuid
   user                 User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
   credentialEvent      CredentialEventType
@@ -2097,4 +2097,14 @@ model ReferralCodeUseEvent {
   @@unique([referrerId, refereeId])
   @@index([referrerId])
   @@index([refereeId])
+}
+
+model ExternalProjects {
+  id            String  @id @default(uuid()) @db.Uuid
+  metadata      Json
+  recipient     String
+  schemaId      String?
+  // Fields specific to ceramic
+  ceramicId     String? @unique
+  ceramicRecord Json?
 }
