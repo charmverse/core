@@ -692,6 +692,7 @@ model User {
   referredByUserEvents          ReferralCodeUseEvent[]          @relation("referee")
   projectMembers                ProjectMember[]
   projects                      Project[]
+  claimed                       Boolean?
 
   @@index([createdAt(sort: Asc)])
 }
@@ -1218,6 +1219,8 @@ model Proposal {
   form                        Form?                               @relation(fields: [formId], references: [id], onDelete: Cascade)
   formAnswers                 FormFieldAnswer[]
   issuedCredentials           IssuedCredential[]
+  projectId                   String?                             @db.Uuid
+  project                     Project?                            @relation(fields: [projectId], references: [id], onDelete: SetNull)
 
   @@index([spaceId])
   @@index([reviewedBy])
@@ -2118,8 +2121,8 @@ model ProjectMember {
   telegram         String?
   otherUrl         String?
   previousProjects String?
-  userId           String   @db.Uuid
-  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId           String?  @db.Uuid
+  user             User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   projectId        String   @db.Uuid
   project          Project  @relation(fields: [projectId], references: [id])
 
@@ -2147,6 +2150,7 @@ model Project {
   walletAddress  String
   user           User            @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   projectMembers ProjectMember[]
+  proposals      Proposal[]
 
   @@index([createdBy])
 }

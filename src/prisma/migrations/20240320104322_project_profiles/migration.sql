@@ -4,6 +4,12 @@ ALTER TYPE "FormFieldType" ADD VALUE 'project_profile';
 -- AlterTable
 ALTER TABLE "FormField" ADD COLUMN     "extraFields" JSONB;
 
+-- AlterTable
+ALTER TABLE "Proposal" ADD COLUMN     "projectId" UUID;
+
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN     "claimed" BOOLEAN;
+
 -- CreateTable
 CREATE TABLE "ProjectMember" (
     "id" UUID NOT NULL,
@@ -21,7 +27,7 @@ CREATE TABLE "ProjectMember" (
     "telegram" TEXT,
     "otherUrl" TEXT,
     "previousProjects" TEXT,
-    "userId" UUID NOT NULL,
+    "userId" UUID,
     "projectId" UUID NOT NULL,
 
     CONSTRAINT "ProjectMember_pkey" PRIMARY KEY ("id")
@@ -54,6 +60,9 @@ CREATE INDEX "ProjectMember_userId_idx" ON "ProjectMember"("userId");
 
 -- CreateIndex
 CREATE INDEX "Project_createdBy_idx" ON "Project"("createdBy");
+
+-- AddForeignKey
+ALTER TABLE "Proposal" ADD CONSTRAINT "Proposal_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "Project"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "ProjectMember" ADD CONSTRAINT "ProjectMember_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
