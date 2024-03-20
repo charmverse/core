@@ -2100,11 +2100,11 @@ model ReferralCodeUseEvent {
 }
 
 model ExternalProjects {
-  id            String  @id @default(uuid()) @db.Uuid
-  metadata      Json
-  recipient     String
-  schemaId      String?
+  id        String  @id @default(uuid()) @db.Uuid
+  metadata  Json
+  recipient String
+  schemaId  String?
   // Fields specific to ceramic
-  ceramicId     String? @unique
-  ceramicRecord Json?
+  ceramicId String? @unique
+  source    String
 }

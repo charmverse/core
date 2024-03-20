@@ -8,7 +8,7 @@ CREATE TABLE "ExternalProjects" (
     "recipient" TEXT NOT NULL,
     "schemaId" TEXT,
     "ceramicId" TEXT,
-    "ceramicRecord" JSONB,
+    "source" TEXT NOT NULL,
 
     CONSTRAINT "ExternalProjects_pkey" PRIMARY KEY ("id")
 );
