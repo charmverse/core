@@ -453,6 +453,7 @@ model Page {
   // Ensure synced proposal databases cannot have duplicate cards for a proposal
   @@unique([parentId, syncWithPageId])
   @@index([bountyId])
+  @@index([boardId])
   @@index([cardId])
   @@index([createdBy])
   @@index([deletedAt])
@@ -2007,7 +2008,7 @@ model IssuedCredential {
   ceramicRecord        Json?
   // Fields specific to on chain credentials
   onchainAttestationId String?              @unique
-  onchainChainId            Int?
+  onchainChainId       Int?
   hidden               Boolean?              @default(false)
   userId               String               @db.Uuid
   user                 User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
