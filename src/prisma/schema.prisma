@@ -2100,12 +2100,18 @@ model ReferralCodeUseEvent {
   @@index([refereeId])
 }
 
-model ExternalProjects {
-  id        String  @id @default(uuid()) @db.Uuid
-  metadata  Json
-  recipient String
-  schemaId  String?
-  // Fields specific to ceramic
-  ceramicId String? @unique
-  source    String
+enum ExternalProjectSource {
+  gitcoin
+  questbook
+}
+
+model ExternalProject {
+  id          String                @id @default(uuid()) @db.Uuid
+  metadata    Json
+  recipient   String
+  round       String
+  source      ExternalProjectSource
+  schemaId    String?
+  projectId   String?
+  proposalUrl String?
 }
