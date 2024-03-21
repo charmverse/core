@@ -451,6 +451,7 @@ model Page {
   // Ensure synced proposal databases cannot have duplicate cards for a proposal
   @@unique([parentId, syncWithPageId])
   @@index([bountyId])
+  @@index([boardId])
   @@index([cardId])
   @@index([createdBy])
   @@index([deletedAt])
