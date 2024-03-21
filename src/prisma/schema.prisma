@@ -2101,3 +2101,11 @@ model ReferralCodeUseEvent {
   @@index([referrerId])
   @@index([refereeId])
 }
+
+
+
+model PendingSafeTransaction {
+  safeTxHash    String   @unique
+  chainId       Int
+  processed     Boolean  @default(false)
+}
