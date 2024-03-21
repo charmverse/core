@@ -1963,7 +1963,7 @@ model FormField {
   options     Json?
   formId      String            @db.Uuid
   form        Form              @relation(fields: [formId], references: [id], onDelete: Cascade)
-  extraFields Json?
+  fieldConfig Json?
   answers     FormFieldAnswer[]
 }
 

@@ -2,7 +2,7 @@
 ALTER TYPE "FormFieldType" ADD VALUE 'project_profile';
 
 -- AlterTable
-ALTER TABLE "FormField" ADD COLUMN     "extraFields" JSONB;
+ALTER TABLE "FormField" ADD COLUMN     "fieldConfig" JSONB;
 
 -- AlterTable
 ALTER TABLE "Proposal" ADD COLUMN     "projectId" UUID;
