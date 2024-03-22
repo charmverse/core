@@ -358,6 +358,7 @@ model Space {
   proposalWorkflows           ProposalWorkflow[]
   credentialTemplates         CredentialTemplate[]
   charmWallet                 CharmWallet?
+  pendingSafeTransactions     PendingSafeTransaction[]
 
   @@index([createdBy])
 }
@@ -2105,7 +2106,17 @@ model ReferralCodeUseEvent {
 
 
 model PendingSafeTransaction {
+  safeAddress   String
   safeTxHash    String   @unique
   chainId       Int
   processed     Boolean  @default(false)
+  spaceId         String  @db.Uuid
+  space           Space   @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  schemaId        String
+  credentialEvents CredentialEventType[]
+  proposalIds     String[]
+
+  @@index([spaceId])
+  @@index([credentialEvents], type: Gin)
+  @@index([proposalIds], type: Gin)
 }
