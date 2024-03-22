@@ -2113,11 +2113,9 @@ model PendingSafeTransaction {
   spaceId         String  @db.Uuid
   space           Space   @relation(fields: [spaceId], references: [id], onDelete: Cascade)
   schemaId        String
-  credentialEvents CredentialEventType[]
   proposalIds     String[]
   credentialContent Json?
 
   @@index([spaceId])
-  @@index([credentialEvents], type: Gin)
   @@index([proposalIds], type: Gin)
 }

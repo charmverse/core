@@ -6,7 +6,6 @@ CREATE TABLE "PendingSafeTransaction" (
     "processed" BOOLEAN NOT NULL DEFAULT false,
     "spaceId" UUID NOT NULL,
     "schemaId" TEXT NOT NULL,
-    "credentialEvents" "CredentialEventType"[],
     "proposalIds" TEXT[],
     "credentialContent" JSONB
 );
@@ -16,9 +15,6 @@ CREATE UNIQUE INDEX "PendingSafeTransaction_safeTxHash_key" ON "PendingSafeTrans
 
 -- CreateIndex
 CREATE INDEX "PendingSafeTransaction_spaceId_idx" ON "PendingSafeTransaction"("spaceId");
-
--- CreateIndex
-CREATE INDEX "PendingSafeTransaction_credentialEvents_idx" ON "PendingSafeTransaction" USING GIN ("credentialEvents");
 
 -- CreateIndex
 CREATE INDEX "PendingSafeTransaction_proposalIds_idx" ON "PendingSafeTransaction" USING GIN ("proposalIds");
