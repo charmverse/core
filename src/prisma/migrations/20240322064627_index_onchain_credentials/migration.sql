@@ -7,7 +7,8 @@ CREATE TABLE "PendingSafeTransaction" (
     "spaceId" UUID NOT NULL,
     "schemaId" TEXT NOT NULL,
     "credentialEvents" "CredentialEventType"[],
-    "proposalIds" TEXT[]
+    "proposalIds" TEXT[],
+    "credentialContent" JSONB
 );
 
 -- CreateIndex

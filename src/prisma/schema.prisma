@@ -2115,6 +2115,7 @@ model PendingSafeTransaction {
   schemaId        String
   credentialEvents CredentialEventType[]
   proposalIds     String[]
+  credentialContent Json?
 
   @@index([spaceId])
   @@index([credentialEvents], type: Gin)
