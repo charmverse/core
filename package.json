@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.38.3-rc-onchain-space-c.5",
+  "version": "0.38.3-rc-onchain-space-c.6",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
