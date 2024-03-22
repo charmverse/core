@@ -305,7 +305,9 @@ model Space {
   publicBountyBoard           Boolean?                          @default(false)
   publicProposals             Boolean?                          @default(false)
   xpsEngineId                 String?                           @unique
+  useOnchainCredentials       Boolean?                          @default(false)
   credentialsChainId          Int?
+  credentialsWallet           String?
   primaryMemberIdentity       IdentityType?
   author                      User                              @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   blocks                      Block[]
@@ -356,6 +358,7 @@ model Space {
   proposalWorkflows           ProposalWorkflow[]
   credentialTemplates         CredentialTemplate[]
   charmWallet                 CharmWallet?
+  pendingSafeTransactions     PendingSafeTransaction[]
 
   @@index([createdBy])
 }
@@ -2007,6 +2010,7 @@ model IssuedCredential {
   // Fields specific to on chain credentials
   onchainAttestationId String?              @unique
   onchainChainId       Int?
+  hidden               Boolean?              @default(false)
   userId               String               @db.Uuid
   user                 User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
   credentialEvent      CredentialEventType
@@ -2097,4 +2101,21 @@ model ReferralCodeUseEvent {
   @@unique([referrerId, refereeId])
   @@index([referrerId])
   @@index([refereeId])
+}
+
+
+
+model PendingSafeTransaction {
+  safeAddress   String
+  safeTxHash    String   @unique
+  chainId       Int
+  processed     Boolean  @default(false)
+  spaceId         String  @db.Uuid
+  space           Space   @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  schemaId        String
+  proposalIds     String[]
+  credentialContent Json?
+
+  @@index([spaceId])
+  @@index([proposalIds], type: Gin)
 }
