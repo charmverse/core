@@ -888,7 +888,7 @@ model Bounty {
   allowMultipleApplications   Boolean?             @default(false)
   approveSubmitters           Boolean              @default(false)
   submissionsLocked           Boolean              @default(false)
-  maxSubmissions              Int?                 @default(1)
+  maxSubmissions              Int?
   author                      User                 @relation(fields: [createdBy], references: [id])
   space                       Space                @relation(fields: [spaceId], references: [id], onDelete: Cascade)
   applications                Application[]
@@ -2010,7 +2010,7 @@ model IssuedCredential {
   // Fields specific to on chain credentials
   onchainAttestationId String?              @unique
   onchainChainId       Int?
-  hidden               Boolean?              @default(false)
+  hidden               Boolean?             @default(false)
   userId               String               @db.Uuid
   user                 User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
   credentialEvent      CredentialEventType
@@ -2103,17 +2103,15 @@ model ReferralCodeUseEvent {
   @@index([refereeId])
 }
 
-
-
 model PendingSafeTransaction {
-  safeAddress   String
-  safeTxHash    String   @unique
-  chainId       Int
-  processed     Boolean  @default(false)
-  spaceId         String  @db.Uuid
-  space           Space   @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  schemaId        String
-  proposalIds     String[]
+  safeAddress       String
+  safeTxHash        String   @unique
+  chainId           Int
+  processed         Boolean  @default(false)
+  spaceId           String   @db.Uuid
+  space             Space    @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  schemaId          String
+  proposalIds       String[]
   credentialContent Json?
 
   @@index([spaceId])
