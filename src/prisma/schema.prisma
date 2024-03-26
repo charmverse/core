@@ -2125,12 +2125,8 @@ enum ExternalProjectSource {
 }
 
 model ExternalProject {
-  id          String                @id @default(uuid()) @db.Uuid
-  metadata    Json
-  recipient   String
-  round       String
-  source      ExternalProjectSource
-  schemaId    String?
-  projectId   String?
-  proposalUrl String?
+  id        String                @id @default(uuid()) @db.Uuid
+  metadata  Json
+  recipient String
+  source    ExternalProjectSource
 }
