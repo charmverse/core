@@ -47,7 +47,7 @@ CREATE TABLE "Project" (
     "website" TEXT,
     "github" TEXT,
     "blog" TEXT,
-    "productUrl" TEXT,
+    "demoUrl" TEXT,
     "communityUrl" TEXT,
     "otherUrl" TEXT,
     "walletAddress" TEXT NOT NULL,
