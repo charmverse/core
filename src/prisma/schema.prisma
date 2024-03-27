@@ -430,6 +430,7 @@ model Page {
   version             Int                    @default(1)
   card                Block?                 @relation(fields: [cardId], references: [id], onDelete: Cascade)
   author              User                   @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  parent              Page?                  @relation(fields: [parentId], references: [id], onDelete: SetNull, name: "parent")
   space               Space                  @relation(fields: [spaceId], references: [id], onDelete: Cascade)
   inlineComments      Comment[]
   favorites           FavoritePage[]
@@ -450,6 +451,8 @@ model Page {
   sourceTemplateId    String?                @db.Uuid
   notifications       DocumentNotification[]
   homePageSpace       Space?                 @relation("spaceHomePage")
+  pageId              String?                @db.Uuid
+  children            Page[]                 @relation("parent")
 
   // Ensure synced proposal databases cannot have duplicate cards for a proposal
   @@unique([parentId, syncWithPageId])
