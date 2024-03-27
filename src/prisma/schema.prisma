@@ -1986,6 +1986,7 @@ model FormFieldAnswer {
 enum AttestationType {
   proposal
   reward
+  external
 }
 
 model CredentialTemplate {
@@ -2171,4 +2172,16 @@ model Project {
   proposals      Proposal[]
 
   @@index([createdBy])
+}
+
+enum ExternalProjectSource {
+  gitcoin
+  questbook
+}
+
+model ExternalProject {
+  id        String                @id @default(uuid()) @db.Uuid
+  metadata  Json
+  recipient String
+  source    ExternalProjectSource
 }
