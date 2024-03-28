@@ -2133,8 +2133,8 @@ model ProjectMember {
   updatedBy        String   @db.Uuid
   teamLead         Boolean  @default(false)
   name             String
-  walletAddress    String
-  email            String
+  walletAddress    String?
+  email            String?
   twitter          String?
   warpcast         String?
   github           String?
@@ -2166,7 +2166,7 @@ model Project {
   demoUrl        String?
   communityUrl   String?
   otherUrl       String?
-  walletAddress  String
+  walletAddress  String?
   user           User            @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   projectMembers ProjectMember[]
   proposals      Proposal[]
