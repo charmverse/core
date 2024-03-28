@@ -451,7 +451,6 @@ model Page {
   sourceTemplateId    String?                @db.Uuid
   notifications       DocumentNotification[]
   homePageSpace       Space?                 @relation("spaceHomePage")
-  pageId              String?                @db.Uuid
   children            Page[]                 @relation("parent")
 
   // Ensure synced proposal databases cannot have duplicate cards for a proposal
@@ -697,6 +696,9 @@ model User {
   referralCodes                 ReferralCode[]
   referredUserEvents            ReferralCodeUseEvent[]          @relation("referrer")
   referredByUserEvents          ReferralCodeUseEvent[]          @relation("referee")
+  projectMembers                ProjectMember[]
+  projects                      Project[]
+  claimed                       Boolean?
 
   @@index([createdAt(sort: Asc)])
 }
@@ -1223,6 +1225,8 @@ model Proposal {
   form                        Form?                               @relation(fields: [formId], references: [id], onDelete: Cascade)
   formAnswers                 FormFieldAnswer[]
   issuedCredentials           IssuedCredential[]
+  projectId                   String?                             @db.Uuid
+  project                     Project?                            @relation(fields: [projectId], references: [id], onDelete: SetNull)
 
   @@index([spaceId])
   @@index([reviewedBy])
@@ -1936,6 +1940,7 @@ model Form {
 }
 
 enum FormFieldType {
+  project_profile
   short_text
   long_text
   number
@@ -1963,6 +1968,7 @@ model FormField {
   options     Json?
   formId      String            @db.Uuid
   form        Form              @relation(fields: [formId], references: [id], onDelete: Cascade)
+  fieldConfig Json?
   answers     FormFieldAnswer[]
 }
 
@@ -1982,6 +1988,7 @@ model FormFieldAnswer {
 enum AttestationType {
   proposal
   reward
+  external
 }
 
 model CredentialTemplate {
@@ -2119,4 +2126,64 @@ model PendingSafeTransaction {
 
   @@index([spaceId])
   @@index([proposalIds], type: Gin)
+}
+
+model ProjectMember {
+  id               String   @id @default(uuid()) @db.Uuid
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  updatedBy        String   @db.Uuid
+  teamLead         Boolean  @default(false)
+  name             String
+  walletAddress    String?
+  email            String?
+  twitter          String?
+  warpcast         String?
+  github           String?
+  linkedin         String?
+  telegram         String?
+  otherUrl         String?
+  previousProjects String?
+  userId           String?  @db.Uuid
+  user             User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  projectId        String   @db.Uuid
+  project          Project  @relation(fields: [projectId], references: [id])
+
+  @@index([userId])
+}
+
+model Project {
+  id             String          @id @default(uuid()) @db.Uuid
+  createdAt      DateTime        @default(now())
+  createdBy      String          @db.Uuid
+  updatedAt      DateTime        @default(now()) @updatedAt
+  updatedBy      String          @db.Uuid
+  name           String
+  excerpt        String?
+  description    String?
+  twitter        String?
+  website        String?
+  github         String?
+  blog           String?
+  demoUrl        String?
+  communityUrl   String?
+  otherUrl       String?
+  walletAddress  String?
+  user           User            @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  projectMembers ProjectMember[]
+  proposals      Proposal[]
+
+  @@index([createdBy])
+}
+
+enum ExternalProjectSource {
+  gitcoin
+  questbook
+}
+
+model ExternalProject {
+  id        String                @id @default(uuid()) @db.Uuid
+  metadata  Json
+  recipient String
+  source    ExternalProjectSource
 }
