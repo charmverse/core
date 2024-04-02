@@ -359,7 +359,8 @@ model Space {
   credentialTemplates         CredentialTemplate[]
   charmWallet                 CharmWallet?
   pendingSafeTransactions     PendingSafeTransaction[]
-  compliance                  Compliance[]
+  synapsCredential            SynapsCredential?
+  SynapsUserKyc               SynapsUserKyc[]
 
   @@index([createdBy])
 }
@@ -700,7 +701,7 @@ model User {
   projectMembers                ProjectMember[]
   projects                      Project[]
   claimed                       Boolean?
-  userCompliance                UserCompliance[]
+  synapsUserKyc                 SynapsUserKyc[]
 
   @@index([createdAt(sort: Asc)])
 }
@@ -2194,7 +2195,7 @@ enum ComplianceVendor {
   synaps
 }
 
-model Compliance {
+model SynapsCredential {
   id      String           @id @default(uuid()) @db.Uuid
   apiKey  String
   secret  String?
@@ -2205,11 +2206,24 @@ model Compliance {
   @@index([spaceId])
 }
 
-model UserCompliance {
-  id     String @id @default(uuid()) @db.Uuid
-  status String
-  userId String @unique @db.Uuid
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+enum SynapsUserKycStatus {
+  APPROVED
+  REJECTED
+  RESUBMISSION_REQUIRED
+  SUBMISSION_REQUIRED
+  PENDING_VERIFICATION
+}
 
-  @@index([userId])
+model SynapsUserKyc {
+  id        String               @id @default(uuid()) @db.Uuid
+  deletedAt DateTime?
+  sessionId String // Unique identifier for the user KYC session in Synaps
+  status    SynapsUserKycStatus?
+  userId    String               @unique @db.Uuid
+  user      User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  spaceId   String               @db.Uuid
+  space     Space                @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, spaceId])
+  @@index([userId, spaceId])
 }
