@@ -2114,6 +2114,7 @@ model PendingSafeTransaction {
   space           Space   @relation(fields: [spaceId], references: [id], onDelete: Cascade)
   schemaId        String
   proposalIds     String[]
+  rewardApplicationIds  String[]
   credentialContent Json?
 
   @@index([spaceId])
