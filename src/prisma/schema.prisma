@@ -359,6 +359,7 @@ model Space {
   credentialTemplates         CredentialTemplate[]
   charmWallet                 CharmWallet?
   pendingSafeTransactions     PendingSafeTransaction[]
+  compliance                  Compliance[]
 
   @@index([createdBy])
 }
@@ -699,6 +700,7 @@ model User {
   projectMembers                ProjectMember[]
   projects                      Project[]
   claimed                       Boolean?
+  userCompliance                UserCompliance[]
 
   @@index([createdAt(sort: Asc)])
 }
@@ -2186,4 +2188,28 @@ model ExternalProject {
   metadata  Json
   recipient String
   source    ExternalProjectSource
+}
+
+enum ComplianceVendor {
+  synaps
+}
+
+model Compliance {
+  id      String           @id @default(uuid()) @db.Uuid
+  apiKey  String
+  secret  String?
+  spaceId String           @unique @db.Uuid
+  space   Space            @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  type    ComplianceVendor
+
+  @@index([spaceId])
+}
+
+model UserCompliance {
+  id     String @id @default(uuid()) @db.Uuid
+  status String
+  userId String @unique @db.Uuid
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
