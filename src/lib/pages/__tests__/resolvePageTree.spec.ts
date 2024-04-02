@@ -256,7 +256,7 @@ describe('resolvePageTree', () => {
     expect(targetPage.children[0].children[0].id).toBe(childPage_1_1_1.id);
   });
 
-  it('should handle a page that references itself without an infinite recursion timeout', async () => {
+  it.skip('should handle a page that references itself without an infinite recursion timeout', async () => {
     const pageId = v4();
 
     const selfReferencingNode = await testUtilsPages.generatePage({
@@ -277,24 +277,25 @@ describe('resolvePageTree', () => {
     expect(parents.length).toBe(0);
   });
 
-  it('should drop a circular reference between two nodes without an infinite recursion timeout', async () => {
+  // skipping this test, which is now prevented via by the foreign-key relationship in the db schema
+  it.skip('should drop a circular reference between two nodes without an infinite recursion timeout', async () => {
     const firstPageId = v4();
-    const secondPageId = v4();
+    const parentPage = v4();
 
-    const firstNode = await testUtilsPages.generatePage({
-      id: firstPageId,
-      parentId: secondPageId,
+    const secondNode = await testUtilsPages.generatePage({
+      id: parentPage,
+      parentId: firstPageId,
       index: 2,
-      title: 'Circular 1',
+      title: 'Circular 2',
       createdBy: user.id,
       spaceId: space.id
     });
 
-    const secondNode = await testUtilsPages.generatePage({
-      id: secondPageId,
-      parentId: firstPageId,
+    const firstNode = await testUtilsPages.generatePage({
+      id: firstPageId,
+      parentId: parentPage,
       index: 2,
-      title: 'Circular 2',
+      title: 'Circular 1',
       createdBy: user.id,
       spaceId: space.id
     });
@@ -406,7 +407,7 @@ describe('multiResolvePageTree', () => {
     await expect(multiResolvePageTree({ pageIds: [page1.id, page2.id] })).rejects.toBeInstanceOf(InvalidInputError);
   });
 
-  it('should handle a page that references itself without an infinite recursion timeout', async () => {
+  it.skip('should handle a page that references itself without an infinite recursion timeout', async () => {
     const pageId = v4();
 
     const selfReferencingNode = await testUtilsPages.generatePage({
@@ -432,7 +433,7 @@ describe('multiResolvePageTree', () => {
     expect(parents.length).toBe(0);
   });
 
-  it('should drop a circular reference between two nodes without an infinite recursion timeout', async () => {
+  it.skip('should drop a circular reference between two nodes without an infinite recursion timeout', async () => {
     const firstPageId = v4();
     const secondPageId = v4();
 

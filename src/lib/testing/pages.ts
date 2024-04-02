@@ -65,7 +65,13 @@ export function generatePage({
       content: content as any,
       contentText: contentText ?? '',
       syncWithPageId,
-      parentId,
+      parent: parentId
+        ? {
+            connect: {
+              id: parentId
+            }
+          }
+        : undefined,
       index,
       additionalPaths,
       sourceTemplateId,
