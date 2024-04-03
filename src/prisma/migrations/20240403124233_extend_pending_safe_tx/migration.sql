@@ -8,4 +8,7 @@
 ALTER TABLE "Page" DROP COLUMN "pageId";
 
 -- AlterTable
-ALTER TABLE "PendingSafeTransaction" ADD COLUMN     "rewardApplicationIds" TEXT[];
+ALTER TABLE "PendingSafeTransaction" ADD COLUMN     "rewardIds" TEXT[];
+
+-- CreateIndex
+CREATE INDEX "PendingSafeTransaction_rewardIds_idx" ON "PendingSafeTransaction" USING GIN ("rewardIds");
