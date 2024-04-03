@@ -2191,17 +2191,12 @@ model ExternalProject {
   source    ExternalProjectSource
 }
 
-enum ComplianceVendor {
-  synaps
-}
-
 model SynapsCredential {
-  id      String           @id @default(uuid()) @db.Uuid
+  id      String  @id @default(uuid()) @db.Uuid
   apiKey  String
   secret  String?
-  spaceId String           @unique @db.Uuid
-  space   Space            @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  type    ComplianceVendor
+  spaceId String  @unique @db.Uuid
+  space   Space   @relation(fields: [spaceId], references: [id], onDelete: Cascade)
 
   @@index([spaceId])
 }

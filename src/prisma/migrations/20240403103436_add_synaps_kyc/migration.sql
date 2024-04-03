@@ -5,9 +5,6 @@
 
 */
 -- CreateEnum
-CREATE TYPE "ComplianceVendor" AS ENUM ('synaps');
-
--- CreateEnum
 CREATE TYPE "SynapsUserKycStatus" AS ENUM ('APPROVED', 'REJECTED', 'RESUBMISSION_REQUIRED', 'SUBMISSION_REQUIRED', 'PENDING_VERIFICATION');
 
 -- AlterTable
@@ -19,7 +16,6 @@ CREATE TABLE "SynapsCredential" (
     "apiKey" TEXT NOT NULL,
     "secret" TEXT,
     "spaceId" UUID NOT NULL,
-    "type" "ComplianceVendor" NOT NULL,
 
     CONSTRAINT "SynapsCredential_pkey" PRIMARY KEY ("id")
 );
