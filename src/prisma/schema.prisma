@@ -2026,9 +2026,6 @@ model IssuedCredential {
   credentialEvent      CredentialEventType
   createdAt            DateTime             @default(now())
   favoriteCredentials  FavoriteCredential[]
-
-  // This allows us to perform atomic updates on the credential by unique status
-  @@unique([userId, credentialTemplateId, credentialEvent, proposalId, rewardApplicationId])
 }
 
 model Otp {
