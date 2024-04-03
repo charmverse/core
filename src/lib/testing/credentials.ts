@@ -50,21 +50,12 @@ export async function generateIssuedCredential({
   credentialEvent,
   credentialTemplateId
 }: GenerateIssuedCredentialInput): Promise<IssuedCredential> {
-  const proposal = await prisma.proposal.findUniqueOrThrow({
-    where: {
-      id: proposalId
-    },
-    select: {
-      id: true,
-      spaceId: true
-    }
-  });
   return prisma.issuedCredential.create({
     data: {
       credentialEvent,
       ceramicId: ceramicId || uuid(),
       credentialTemplate: { connect: { id: credentialTemplateId } },
-      proposal: proposalId ? { connect: { id: proposal.id } } : undefined,
+      proposal: proposalId ? { connect: { id: proposalId } } : undefined,
       rewardApplication: rewardApplicationId ? { connect: { id: rewardApplicationId } } : undefined,
       user: { connect: { id: userId } }
     }
