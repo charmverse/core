@@ -35,7 +35,8 @@ export async function generateCredentialTemplate({
 
 type GenerateIssuedCredentialInput = {
   userId: string;
-  proposalId: string;
+  proposalId?: string;
+  rewardApplicationId?: string;
   credentialTemplateId: string;
   ceramicId?: string;
   credentialEvent: CredentialEventType;
@@ -44,6 +45,7 @@ type GenerateIssuedCredentialInput = {
 export async function generateIssuedCredential({
   userId,
   proposalId,
+  rewardApplicationId,
   ceramicId,
   credentialEvent,
   credentialTemplateId
@@ -62,7 +64,8 @@ export async function generateIssuedCredential({
       credentialEvent,
       ceramicId: ceramicId || uuid(),
       credentialTemplate: { connect: { id: credentialTemplateId } },
-      proposal: { connect: { id: proposal.id } },
+      proposal: proposalId ? { connect: { id: proposal.id } } : undefined,
+      rewardApplication: rewardApplicationId ? { connect: { id: rewardApplicationId } } : undefined,
       user: { connect: { id: userId } }
     }
   });
