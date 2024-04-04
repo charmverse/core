@@ -6,7 +6,7 @@
 
 */
 -- AlterTable
-ALTER TABLE "Page" DROP COLUMN "pageId";
+ALTER TABLE "Page" DROP COLUMN IF EXISTS "pageId";
 
 -- AlterTable
 ALTER TABLE "PendingSafeTransaction" ADD COLUMN     "credentialType" "AttestationType" NOT NULL,
