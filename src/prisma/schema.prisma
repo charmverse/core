@@ -2118,6 +2118,7 @@ model PendingSafeTransaction {
   safeTxHash    String   @unique
   chainId       Int
   processed     Boolean  @default(false)
+  credentialType  AttestationType
   spaceId         String  @db.Uuid
   space           Space   @relation(fields: [spaceId], references: [id], onDelete: Cascade)
   schemaId        String
