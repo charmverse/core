@@ -2227,13 +2227,13 @@ model SynapsUserKyc {
 }
 
 model PersonaCredential {
-  id         String   @id @default(uuid()) @db.Uuid
+  id         String  @id @default(uuid()) @db.Uuid
   apiKey     String
   envId      String
-  templateId String[]
+  templateId String
   secret     String?
-  spaceId    String   @unique @db.Uuid
-  space      Space    @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  spaceId    String  @unique @db.Uuid
+  space      Space   @relation(fields: [spaceId], references: [id], onDelete: Cascade)
 
   @@index([spaceId])
 }
