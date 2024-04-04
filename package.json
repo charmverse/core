@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.40.2-rc-extend-safe-tra.7",
+  "version": "0.40.2-rc-extend-safe-tra.8",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
