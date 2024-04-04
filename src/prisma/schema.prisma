@@ -2207,11 +2207,12 @@ model SpaceGithubCredential {
 }
 
 model RewardsGithubRepo {
-  id           String                @id
-  credentialId String                @db.Uuid
-  settings     Json                  @default("{}")
-  spaceId      String                @db.Uuid
-  credential   SpaceGithubCredential @relation(fields: [credentialId], references: [id], onDelete: Cascade)
+  id               String                @id
+  credentialId     String                @db.Uuid
+  settings         Json                  @default("{}")
+  rewardTemplateId String                @db.Uuid
+  spaceId          String                @db.Uuid
+  credential       SpaceGithubCredential @relation(fields: [credentialId], references: [id], onDelete: Cascade)
 
   @@index([credentialId])
 }
