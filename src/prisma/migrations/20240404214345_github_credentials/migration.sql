@@ -26,6 +26,7 @@ CREATE TABLE "RewardsGithubRepo" (
     "id" TEXT NOT NULL,
     "credentialId" UUID NOT NULL,
     "settings" JSONB NOT NULL DEFAULT '{}',
+    "rewardTemplateId" UUID NOT NULL,
     "spaceId" UUID NOT NULL,
 
     CONSTRAINT "RewardsGithubRepo_pkey" PRIMARY KEY ("id")
