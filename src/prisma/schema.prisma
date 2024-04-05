@@ -701,6 +701,7 @@ model User {
   projects                      Project[]
   claimed                       Boolean?
   spaceGithubCredentials        SpaceGithubCredential[]
+  RewardsGithubRepoReviewer     RewardsGithubRepoReviewer[]
 
   @@index([createdAt(sort: Asc)])
 }
@@ -1048,6 +1049,7 @@ model Role {
   memberPropertyPermissions     MemberPropertyPermission[]
   postCategoryPermissions       PostCategoryPermission[]
   proposalEvaluationPermissions ProposalEvaluationPermission[]
+  RewardsGithubRepoReviewer     RewardsGithubRepoReviewer[]
 
   @@unique([spaceId, name])
   @@index([spaceId])
@@ -2207,12 +2209,26 @@ model SpaceGithubCredential {
 }
 
 model RewardsGithubRepo {
-  id               String                @id
-  credentialId     String                @db.Uuid
-  settings         Json                  @default("{}")
-  rewardTemplateId String                @db.Uuid
-  spaceId          String                @db.Uuid
-  credential       SpaceGithubCredential @relation(fields: [credentialId], references: [id], onDelete: Cascade)
+  id               String                      @id @default(uuid()) @db.Uuid
+  credentialId     String                      @db.Uuid
+  installationId   String
+  repositoryId     String
+  repositoryLabels String[]                    @default([])
+  repositoryName   String
+  rewardTemplateId String                      @db.Uuid
+  spaceId          String                      @db.Uuid
+  credential       SpaceGithubCredential       @relation(fields: [credentialId], references: [id], onDelete: Cascade)
+  rewardReviewers  RewardsGithubRepoReviewer[]
 
   @@index([credentialId])
+}
+
+model RewardsGithubRepoReviewer {
+  id           String            @id @default(uuid()) @db.Uuid
+  githubRepoId String            @db.Uuid
+  userId       String?           @db.Uuid
+  roleId       String?           @db.Uuid
+  githubRepo   RewardsGithubRepo @relation(fields: [githubRepoId], references: [id], onDelete: Cascade)
+  role         Role?             @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  user         User?             @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

@@ -23,13 +23,26 @@ CREATE TABLE "SpaceGithubCredential" (
 
 -- CreateTable
 CREATE TABLE "RewardsGithubRepo" (
-    "id" TEXT NOT NULL,
+    "id" UUID NOT NULL,
     "credentialId" UUID NOT NULL,
-    "settings" JSONB NOT NULL DEFAULT '{}',
+    "installationId" TEXT NOT NULL,
+    "repositoryId" TEXT NOT NULL,
+    "repositoryLabels" TEXT[] DEFAULT ARRAY[]::TEXT[],
+    "repositoryName" TEXT NOT NULL,
     "rewardTemplateId" UUID NOT NULL,
     "spaceId" UUID NOT NULL,
 
     CONSTRAINT "RewardsGithubRepo_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "RewardsGithubRepoReviewer" (
+    "id" UUID NOT NULL,
+    "githubRepoId" UUID NOT NULL,
+    "userId" UUID,
+    "roleId" UUID,
+
+    CONSTRAINT "RewardsGithubRepoReviewer_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -46,3 +59,12 @@ ALTER TABLE "SpaceGithubCredential" ADD CONSTRAINT "SpaceGithubCredential_spaceI
 
 -- AddForeignKey
 ALTER TABLE "RewardsGithubRepo" ADD CONSTRAINT "RewardsGithubRepo_credentialId_fkey" FOREIGN KEY ("credentialId") REFERENCES "SpaceGithubCredential"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "RewardsGithubRepoReviewer" ADD CONSTRAINT "RewardsGithubRepoReviewer_githubRepoId_fkey" FOREIGN KEY ("githubRepoId") REFERENCES "RewardsGithubRepo"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "RewardsGithubRepoReviewer" ADD CONSTRAINT "RewardsGithubRepoReviewer_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES "Role"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "RewardsGithubRepoReviewer" ADD CONSTRAINT "RewardsGithubRepoReviewer_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
