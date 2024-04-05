@@ -2120,18 +2120,21 @@ model ReferralCodeUseEvent {
 }
 
 model PendingSafeTransaction {
-  safeAddress       String
-  safeTxHash        String   @unique
-  chainId           Int
-  processed         Boolean  @default(false)
-  spaceId           String   @db.Uuid
-  space             Space    @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  schemaId          String
-  proposalIds       String[]
+  safeAddress   String
+  safeTxHash    String   @unique
+  chainId       Int
+  processed     Boolean  @default(false)
+  credentialType  AttestationType
+  spaceId         String  @db.Uuid
+  space           Space   @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  schemaId        String
+  proposalIds     String[]
+  rewardIds       String[]
   credentialContent Json?
 
   @@index([spaceId])
   @@index([proposalIds], type: Gin)
+  @@index([rewardIds], type: Gin)
 }
 
 model ProjectMember {

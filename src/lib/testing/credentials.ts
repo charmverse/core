@@ -33,36 +33,64 @@ export async function generateCredentialTemplate({
   });
 }
 
-type GenerateIssuedCredentialInput = {
+export type GenerateIssuedCredentialInput = {
   userId: string;
-  proposalId: string;
+  proposalId?: string;
+  rewardApplicationId?: string;
   credentialTemplateId: string;
-  ceramicId?: string;
+  schemaId?: string;
   credentialEvent: CredentialEventType;
 };
 
-export async function generateIssuedCredential({
+export type GenerateIssuedOffchainCredentialInput = GenerateIssuedCredentialInput & {
+  ceramicId?: string;
+  ceramicRecord?: any;
+};
+
+export async function generateIssuedOffchainCredential({
   userId,
   proposalId,
-  ceramicId,
+  rewardApplicationId,
   credentialEvent,
-  credentialTemplateId
-}: GenerateIssuedCredentialInput): Promise<IssuedCredential> {
-  const proposal = await prisma.proposal.findUniqueOrThrow({
-    where: {
-      id: proposalId
-    },
-    select: {
-      id: true,
-      spaceId: true
-    }
-  });
+  credentialTemplateId,
+  ceramicId,
+  ceramicRecord
+}: GenerateIssuedOffchainCredentialInput): Promise<IssuedCredential> {
   return prisma.issuedCredential.create({
     data: {
       credentialEvent,
       ceramicId: ceramicId || uuid(),
+      ceramicRecord: ceramicRecord || { test: uuid() },
       credentialTemplate: { connect: { id: credentialTemplateId } },
-      proposal: { connect: { id: proposal.id } },
+      proposal: proposalId ? { connect: { id: proposalId } } : undefined,
+      rewardApplication: rewardApplicationId ? { connect: { id: rewardApplicationId } } : undefined,
+      user: { connect: { id: userId } }
+    }
+  });
+}
+
+export type GenerateIssuedOnchainCredentialInput = GenerateIssuedCredentialInput & {
+  onchainChainId?: number;
+  onchainAttestationId?: string;
+};
+
+export async function generateIssuedOnchainCredential({
+  userId,
+  proposalId,
+  rewardApplicationId,
+  credentialEvent,
+  credentialTemplateId,
+  onchainAttestationId,
+  onchainChainId
+}: GenerateIssuedOnchainCredentialInput): Promise<IssuedCredential> {
+  return prisma.issuedCredential.create({
+    data: {
+      credentialEvent,
+      onchainChainId: onchainChainId || 10,
+      onchainAttestationId: onchainAttestationId || `0x${uuid().replace(/-/g, '')}`,
+      credentialTemplate: { connect: { id: credentialTemplateId } },
+      proposal: proposalId ? { connect: { id: proposalId } } : undefined,
+      rewardApplication: rewardApplicationId ? { connect: { id: rewardApplicationId } } : undefined,
       user: { connect: { id: userId } }
     }
   });
