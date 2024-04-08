@@ -701,7 +701,8 @@ model User {
   projects                      Project[]
   claimed                       Boolean?
   spaceGithubCredentials        SpaceGithubCredential[]
-  RewardsGithubRepoReviewer     RewardsGithubRepoReviewer[]
+  rewardsGithubRepoReviewer     RewardsGithubRepoReviewer[]
+  rewardsGithubRepo             RewardsGithubRepo[]
 
   @@index([createdAt(sort: Asc)])
 }
@@ -2193,17 +2194,19 @@ model ExternalProject {
 }
 
 model SpaceGithubCredential {
-  id           String              @id @default(uuid()) @db.Uuid
-  createdAt    DateTime            @default(now())
-  createdBy    String              @db.Uuid
-  updatedAt    DateTime            @updatedAt
-  updatedBy    String              @db.Uuid
-  error        Json?
-  name         String
-  spaceId      String              @db.Uuid
-  author       User                @relation(fields: [createdBy], references: [id], onDelete: Cascade)
-  space        Space               @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  rewardsRepos RewardsGithubRepo[]
+  id             String              @id @default(uuid()) @db.Uuid
+  createdAt      DateTime            @default(now())
+  createdBy      String              @db.Uuid
+  updatedAt      DateTime            @updatedAt
+  updatedBy      String              @db.Uuid
+  installationId String
+  uninstalledAt  DateTime? // so we dont have to delete the credential
+  error          Json?
+  name           String
+  spaceId        String              @db.Uuid
+  author         User                @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  space          Space               @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  rewardsRepos   RewardsGithubRepo[]
 
   @@index([spaceId])
 }
@@ -2211,15 +2214,16 @@ model SpaceGithubCredential {
 model RewardsGithubRepo {
   id               String                      @id @default(uuid()) @db.Uuid
   credentialId     String                      @db.Uuid
-  installationId   String
   repositoryId     String
   repositoryLabels String[]                    @default([])
   repositoryName   String
   rewardTemplateId String                      @db.Uuid
-  spaceId          String                      @db.Uuid
   credential       SpaceGithubCredential       @relation(fields: [credentialId], references: [id], onDelete: Cascade)
   rewardReviewers  RewardsGithubRepoReviewer[]
+  rewardAuthorId   String                      @db.Uuid
+  user             User?                       @relation(fields: [rewardAuthorId], references: [id], onDelete: Cascade)
 
+  @@unique([credentialId, repositoryId])
   @@index([credentialId])
 }
 
@@ -2231,4 +2235,6 @@ model RewardsGithubRepoReviewer {
   githubRepo   RewardsGithubRepo @relation(fields: [githubRepoId], references: [id], onDelete: Cascade)
   role         Role?             @relation(fields: [roleId], references: [id], onDelete: Cascade)
   user         User?             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([githubRepoId])
 }
