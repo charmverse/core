@@ -14,6 +14,8 @@ CREATE TABLE "SpaceGithubCredential" (
     "createdBy" UUID NOT NULL,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "updatedBy" UUID NOT NULL,
+    "installationId" TEXT NOT NULL,
+    "uninstalledAt" TIMESTAMP(3),
     "error" JSONB,
     "name" TEXT NOT NULL,
     "spaceId" UUID NOT NULL,
@@ -25,12 +27,11 @@ CREATE TABLE "SpaceGithubCredential" (
 CREATE TABLE "RewardsGithubRepo" (
     "id" UUID NOT NULL,
     "credentialId" UUID NOT NULL,
-    "installationId" TEXT NOT NULL,
     "repositoryId" TEXT NOT NULL,
     "repositoryLabels" TEXT[] DEFAULT ARRAY[]::TEXT[],
     "repositoryName" TEXT NOT NULL,
     "rewardTemplateId" UUID NOT NULL,
-    "spaceId" UUID NOT NULL,
+    "rewardAuthorId" UUID NOT NULL,
 
     CONSTRAINT "RewardsGithubRepo_pkey" PRIMARY KEY ("id")
 );
@@ -51,6 +52,12 @@ CREATE INDEX "SpaceGithubCredential_spaceId_idx" ON "SpaceGithubCredential"("spa
 -- CreateIndex
 CREATE INDEX "RewardsGithubRepo_credentialId_idx" ON "RewardsGithubRepo"("credentialId");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "RewardsGithubRepo_credentialId_repositoryId_key" ON "RewardsGithubRepo"("credentialId", "repositoryId");
+
+-- CreateIndex
+CREATE INDEX "RewardsGithubRepoReviewer_githubRepoId_idx" ON "RewardsGithubRepoReviewer"("githubRepoId");
+
 -- AddForeignKey
 ALTER TABLE "SpaceGithubCredential" ADD CONSTRAINT "SpaceGithubCredential_createdBy_fkey" FOREIGN KEY ("createdBy") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
@@ -59,6 +66,9 @@ ALTER TABLE "SpaceGithubCredential" ADD CONSTRAINT "SpaceGithubCredential_spaceI
 
 -- AddForeignKey
 ALTER TABLE "RewardsGithubRepo" ADD CONSTRAINT "RewardsGithubRepo_credentialId_fkey" FOREIGN KEY ("credentialId") REFERENCES "SpaceGithubCredential"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "RewardsGithubRepo" ADD CONSTRAINT "RewardsGithubRepo_rewardAuthorId_fkey" FOREIGN KEY ("rewardAuthorId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "RewardsGithubRepoReviewer" ADD CONSTRAINT "RewardsGithubRepoReviewer_githubRepoId_fkey" FOREIGN KEY ("githubRepoId") REFERENCES "RewardsGithubRepo"("id") ON DELETE CASCADE ON UPDATE CASCADE;
