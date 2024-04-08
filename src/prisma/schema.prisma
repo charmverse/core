@@ -273,6 +273,11 @@ enum VoteStrategy {
   snapshot
 }
 
+enum KycOption {
+  persona
+  synaps
+}
+
 model Space {
   id                          String                            @id @default(uuid()) @db.Uuid
   deletedAt                   DateTime?
@@ -308,6 +313,7 @@ model Space {
   useOnchainCredentials       Boolean?                          @default(false)
   credentialsChainId          Int?
   credentialsWallet           String?
+  kycOption                   KycOption?
   primaryMemberIdentity       IdentityType?
   author                      User                              @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   blocks                      Block[]
@@ -2120,16 +2126,16 @@ model ReferralCodeUseEvent {
 }
 
 model PendingSafeTransaction {
-  safeAddress   String
-  safeTxHash    String   @unique
-  chainId       Int
-  processed     Boolean  @default(false)
-  credentialType  AttestationType
-  spaceId         String  @db.Uuid
-  space           Space   @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  schemaId        String
-  proposalIds     String[]
-  rewardIds       String[]
+  safeAddress       String
+  safeTxHash        String          @unique
+  chainId           Int
+  processed         Boolean         @default(false)
+  credentialType    AttestationType
+  spaceId           String          @db.Uuid
+  space             Space           @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  schemaId          String
+  proposalIds       String[]
+  rewardIds         String[]
   credentialContent Json?
 
   @@index([spaceId])
