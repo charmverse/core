@@ -906,8 +906,7 @@ model Bounty {
   customReward                String?
   selectedCredentialTemplates String[]
   fields                      Json?
-  githubIssueId               String?
-  githubRepoId                String?
+  githubIssueUrl              String?
   notifications               BountyNotification[]
   proposalId                  String?              @db.Uuid
   proposal                    Proposal?            @relation(fields: [proposalId], references: [id], onDelete: SetNull, onUpdate: Cascade)

@@ -1,6 +1,5 @@
 -- AlterTable
-ALTER TABLE "Bounty" ADD COLUMN     "githubIssueId" TEXT,
-ADD COLUMN     "githubRepoId" TEXT;
+ALTER TABLE "Bounty" ADD COLUMN     "githubIssueUrl" TEXT;
 
 -- CreateTable
 CREATE TABLE "SpaceGithubConnection" (
