@@ -359,7 +359,7 @@ model Space {
   credentialTemplates         CredentialTemplate[]
   charmWallet                 CharmWallet?
   pendingSafeTransactions     PendingSafeTransaction[]
-  githubCredentials           SpaceGithubCredential[]
+  githubConnections           SpaceGithubConnection[]
 
   @@index([createdBy])
 }
@@ -453,6 +453,7 @@ model Page {
   notifications       DocumentNotification[]
   homePageSpace       Space?                 @relation("spaceHomePage")
   children            Page[]                 @relation("parent")
+  rewardsGithubRepos  RewardsGithubRepo[]
 
   // Ensure synced proposal databases cannot have duplicate cards for a proposal
   @@unique([parentId, syncWithPageId])
@@ -700,8 +701,7 @@ model User {
   projectMembers                ProjectMember[]
   projects                      Project[]
   claimed                       Boolean?
-  spaceGithubCredentials        SpaceGithubCredential[]
-  rewardsGithubRepoReviewer     RewardsGithubRepoReviewer[]
+  spaceGithubConnections        SpaceGithubConnection[]
   rewardsGithubRepo             RewardsGithubRepo[]
 
   @@index([createdAt(sort: Asc)])
@@ -1050,7 +1050,6 @@ model Role {
   memberPropertyPermissions     MemberPropertyPermission[]
   postCategoryPermissions       PostCategoryPermission[]
   proposalEvaluationPermissions ProposalEvaluationPermission[]
-  RewardsGithubRepoReviewer     RewardsGithubRepoReviewer[]
 
   @@unique([spaceId, name])
   @@index([spaceId])
@@ -2119,16 +2118,16 @@ model ReferralCodeUseEvent {
 }
 
 model PendingSafeTransaction {
-  safeAddress   String
-  safeTxHash    String   @unique
-  chainId       Int
-  processed     Boolean  @default(false)
-  credentialType  AttestationType
-  spaceId         String  @db.Uuid
-  space           Space   @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  schemaId        String
-  proposalIds     String[]
-  rewardIds       String[]
+  safeAddress       String
+  safeTxHash        String          @unique
+  chainId           Int
+  processed         Boolean         @default(false)
+  credentialType    AttestationType
+  spaceId           String          @db.Uuid
+  space             Space           @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  schemaId          String
+  proposalIds       String[]
+  rewardIds         String[]
   credentialContent Json?
 
   @@index([spaceId])
@@ -2196,7 +2195,7 @@ model ExternalProject {
   source    ExternalProjectSource
 }
 
-model SpaceGithubCredential {
+model SpaceGithubConnection {
   id             String              @id @default(uuid()) @db.Uuid
   createdAt      DateTime            @default(now())
   createdBy      String              @db.Uuid
@@ -2215,29 +2214,17 @@ model SpaceGithubCredential {
 }
 
 model RewardsGithubRepo {
-  id               String                      @id @default(uuid()) @db.Uuid
-  credentialId     String                      @db.Uuid
+  id               String                @id @default(uuid()) @db.Uuid
+  connectionId     String                @db.Uuid
+  connection       SpaceGithubConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
   repositoryId     String
-  repositoryLabels String[]                    @default([])
+  repositoryLabels String[]              @default([])
   repositoryName   String
-  rewardTemplateId String                      @db.Uuid
-  credential       SpaceGithubCredential       @relation(fields: [credentialId], references: [id], onDelete: Cascade)
-  rewardReviewers  RewardsGithubRepoReviewer[]
-  rewardAuthorId   String                      @db.Uuid
-  user             User?                       @relation(fields: [rewardAuthorId], references: [id], onDelete: Cascade)
+  rewardAuthorId   String                @db.Uuid
+  rewardAuthor     User                  @relation(fields: [rewardAuthorId], references: [id], onDelete: Cascade)
+  rewardTemplateId String                @db.Uuid
+  rewardTemplate   Page                  @relation(fields: [rewardTemplateId], references: [id], onDelete: Cascade)
 
-  @@unique([credentialId, repositoryId])
-  @@index([credentialId])
-}
-
-model RewardsGithubRepoReviewer {
-  id           String            @id @default(uuid()) @db.Uuid
-  githubRepoId String            @db.Uuid
-  userId       String?           @db.Uuid
-  roleId       String?           @db.Uuid
-  githubRepo   RewardsGithubRepo @relation(fields: [githubRepoId], references: [id], onDelete: Cascade)
-  role         Role?             @relation(fields: [roleId], references: [id], onDelete: Cascade)
-  user         User?             @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([githubRepoId])
+  @@unique([connectionId, repositoryId])
+  @@index([connectionId])
 }
