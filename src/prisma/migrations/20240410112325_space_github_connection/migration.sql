@@ -1,3 +1,7 @@
+-- AlterTable
+ALTER TABLE "Bounty" ADD COLUMN     "githubIssueId" TEXT,
+ADD COLUMN     "githubRepoId" TEXT;
+
 -- CreateTable
 CREATE TABLE "SpaceGithubConnection" (
     "id" UUID NOT NULL,
