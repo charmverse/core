@@ -2222,8 +2222,8 @@ model RewardsGithubRepo {
   repositoryName   String
   rewardAuthorId   String                @db.Uuid
   rewardAuthor     User                  @relation(fields: [rewardAuthorId], references: [id], onDelete: Cascade)
-  rewardTemplateId String                @db.Uuid
-  rewardTemplate   Page                  @relation(fields: [rewardTemplateId], references: [id], onDelete: Cascade)
+  rewardTemplateId String?               @db.Uuid
+  rewardTemplate   Page?                 @relation(fields: [rewardTemplateId], references: [id], onDelete: Cascade)
 
   @@unique([connectionId, repositoryId])
   @@index([connectionId])

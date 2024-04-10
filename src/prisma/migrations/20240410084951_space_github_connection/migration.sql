@@ -22,7 +22,7 @@ CREATE TABLE "RewardsGithubRepo" (
     "repositoryLabels" TEXT[] DEFAULT ARRAY[]::TEXT[],
     "repositoryName" TEXT NOT NULL,
     "rewardAuthorId" UUID NOT NULL,
-    "rewardTemplateId" UUID NOT NULL,
+    "rewardTemplateId" UUID,
 
     CONSTRAINT "RewardsGithubRepo_pkey" PRIMARY KEY ("id")
 );
