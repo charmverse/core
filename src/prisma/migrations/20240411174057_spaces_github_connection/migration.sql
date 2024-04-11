@@ -6,11 +6,7 @@ CREATE TABLE "SpaceGithubConnection" (
     "id" UUID NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "createdBy" UUID NOT NULL,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-    "updatedBy" UUID NOT NULL,
     "installationId" TEXT NOT NULL,
-    "uninstalledAt" TIMESTAMP(3),
-    "error" JSONB,
     "name" TEXT NOT NULL,
     "spaceId" UUID NOT NULL,
 

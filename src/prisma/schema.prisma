@@ -2200,11 +2200,7 @@ model SpaceGithubConnection {
   id             String              @id @default(uuid()) @db.Uuid
   createdAt      DateTime            @default(now())
   createdBy      String              @db.Uuid
-  updatedAt      DateTime            @updatedAt
-  updatedBy      String              @db.Uuid
   installationId String
-  uninstalledAt  DateTime? // so we dont have to delete the credential
-  error          Json?
   name           String
   spaceId        String              @db.Uuid
   author         User                @relation(fields: [createdBy], references: [id], onDelete: Cascade)
