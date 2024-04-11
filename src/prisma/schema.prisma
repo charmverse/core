@@ -1951,6 +1951,8 @@ model Form {
   proposal   Proposal[]
   spaceId    String?     @db.Uuid
   space      Space?      @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+
+  @@index([spaceId])
 }
 
 enum FormFieldType {
