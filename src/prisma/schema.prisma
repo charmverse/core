@@ -360,6 +360,7 @@ model Space {
   charmWallet                 CharmWallet?
   pendingSafeTransactions     PendingSafeTransaction[]
   githubConnections           SpaceGithubConnection[]
+  Form                        Form[]
 
   @@index([createdBy])
 }
@@ -913,6 +914,7 @@ model Bounty {
 
   @@index([createdBy])
   @@index([spaceId])
+  @@index([proposalId])
 }
 
 model BountyPermission {
@@ -1300,6 +1302,7 @@ model ProposalEvaluation {
   proposalNotification ProposalNotification[]
 
   @@index([proposalId])
+  @@index([index])
 }
 
 model ProposalBlock {
@@ -1397,6 +1400,8 @@ model ProposalRubricCriteria {
   evaluationId String                              @db.Uuid
 
   @@index([proposalId])
+  @@index([evaluationId])
+  @@index([index])
 }
 
 model ProposalRubricCriteriaAnswer {
@@ -1412,6 +1417,7 @@ model ProposalRubricCriteriaAnswer {
 
   @@unique([userId, rubricCriteriaId])
   @@index([proposalId])
+  @@index([evaluationId])
   @@index([rubricCriteriaId])
 }
 
@@ -1428,6 +1434,7 @@ model DraftProposalRubricCriteriaAnswer {
 
   @@unique([userId, rubricCriteriaId])
   @@index([proposalId])
+  @@index([evaluationId])
   @@index([rubricCriteriaId])
 }
 
@@ -1942,6 +1949,10 @@ model Form {
   id         String      @id @default(uuid()) @db.Uuid
   formFields FormField[]
   proposal   Proposal[]
+  spaceId    String?     @db.Uuid
+  space      Space?      @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+
+  @@index([spaceId])
 }
 
 enum FormFieldType {
@@ -1975,6 +1986,8 @@ model FormField {
   form        Form              @relation(fields: [formId], references: [id], onDelete: Cascade)
   fieldConfig Json?
   answers     FormFieldAnswer[]
+
+  @@index([formId])
 }
 
 model FormFieldAnswer {
@@ -1988,6 +2001,7 @@ model FormFieldAnswer {
   threads    Thread[]
 
   @@index([fieldId])
+  @@index([proposalId])
 }
 
 enum AttestationType {
