@@ -913,6 +913,7 @@ model Bounty {
 
   @@index([createdBy])
   @@index([spaceId])
+  @@index([proposalId])
 }
 
 model BountyPermission {
@@ -1300,6 +1301,7 @@ model ProposalEvaluation {
   proposalNotification ProposalNotification[]
 
   @@index([proposalId])
+  @@index([index])
 }
 
 model ProposalBlock {
@@ -1397,6 +1399,8 @@ model ProposalRubricCriteria {
   evaluationId String                              @db.Uuid
 
   @@index([proposalId])
+  @@index([evaluationId])
+  @@index([index])
 }
 
 model ProposalRubricCriteriaAnswer {
@@ -1412,6 +1416,7 @@ model ProposalRubricCriteriaAnswer {
 
   @@unique([userId, rubricCriteriaId])
   @@index([proposalId])
+  @@index([evaluationId])
   @@index([rubricCriteriaId])
 }
 
@@ -1428,6 +1433,7 @@ model DraftProposalRubricCriteriaAnswer {
 
   @@unique([userId, rubricCriteriaId])
   @@index([proposalId])
+  @@index([evaluationId])
   @@index([rubricCriteriaId])
 }
 
@@ -1975,6 +1981,8 @@ model FormField {
   form        Form              @relation(fields: [formId], references: [id], onDelete: Cascade)
   fieldConfig Json?
   answers     FormFieldAnswer[]
+
+  @@index([formId])
 }
 
 model FormFieldAnswer {
@@ -1988,6 +1996,7 @@ model FormFieldAnswer {
   threads    Thread[]
 
   @@index([fieldId])
+  @@index([proposalId])
 }
 
 enum AttestationType {
