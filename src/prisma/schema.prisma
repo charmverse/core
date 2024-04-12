@@ -368,9 +368,9 @@ model Space {
   githubConnections           SpaceGithubConnection[]
   Form                        Form[]
   synapsCredential            SynapsCredential?
-  SynapsUserKyc               SynapsUserKyc[]
-  PersonaCredential           PersonaCredential?
-  PersonaUserKyc              PersonaUserKyc[]
+  synapsUserKyc               SynapsUserKyc[]
+  personaCredential           PersonaCredential?
+  personaUserKyc              PersonaUserKyc[]
 
   @@index([createdBy])
 }
@@ -714,8 +714,8 @@ model User {
   claimed                       Boolean?
   spaceGithubConnections        SpaceGithubConnection[]
   rewardsGithubRepo             RewardsGithubRepo[]
-  synapsUserKyc                 SynapsUserKyc[]
-  PersonaUserKyc                PersonaUserKyc?
+  synapsUserKyc                 SynapsUserKyc?
+  personaUserKyc                PersonaUserKyc?
 
   @@index([createdAt(sort: Asc)])
 }
@@ -2317,5 +2317,6 @@ model PersonaUserKyc {
   spaceId   String                @db.Uuid
   space     Space                 @relation(fields: [spaceId], references: [id], onDelete: Cascade)
 
+  @@unique([userId, spaceId])
   @@index([userId, spaceId])
 }
