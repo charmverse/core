@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.40.7-rc-lock-databases.3",
+  "version": "0.40.7-rc-lock-databases.4",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
