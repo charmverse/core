@@ -122,7 +122,6 @@ enum PageOperations {
   delete
   edit_position
   edit_content
-  edit_isPublic
   edit_path
   grant_permissions
   comment
