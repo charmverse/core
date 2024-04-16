@@ -31,6 +31,8 @@ type PageGenerateArgs = Pick<Page, 'createdBy' | 'spaceId'> &
       | 'syncWithPageId'
       | 'additionalPaths'
       | 'sourceTemplateId'
+      | 'isLocked'
+      | 'lockedBy'
     >
   > &
   OptionalPagePermissionsToGenerate;
@@ -52,7 +54,9 @@ export function generatePage({
   index,
   syncWithPageId,
   additionalPaths,
-  sourceTemplateId
+  sourceTemplateId,
+  isLocked,
+  lockedBy
 }: PageGenerateArgs): Promise<Page> {
   return prisma.page.create({
     data: {
@@ -65,6 +69,8 @@ export function generatePage({
       content: content as any,
       contentText: contentText ?? '',
       syncWithPageId,
+      isLocked,
+      lockedBy,
       parent: parentId
         ? {
             connect: {
