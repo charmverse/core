@@ -106,7 +106,7 @@ export function buildComputePermissionsWithPermissionFilteringPolicies<
     for (const policy of policies) {
       let hasTrueFlag = false;
 
-      const newFlags = policy({
+      let newFlags = policy({
         flags: applicableFlags,
         resource,
         userId: request.userId,
@@ -116,7 +116,7 @@ export function buildComputePermissionsWithPermissionFilteringPolicies<
       } as any as PermissionFilteringPolicyFnInput<R & ResourceWithSpaceId, F, true>);
 
       if (newFlags instanceof Promise) {
-        await newFlags;
+        newFlags = await newFlags;
       }
 
       // Check the policy did not add any new flags as true
