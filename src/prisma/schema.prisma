@@ -129,6 +129,7 @@ enum PageOperations {
   comment
   create_poll
   delete_attached_bounty
+  edit_lock
 }
 
 enum UserSpaceActionType {
@@ -455,6 +456,8 @@ model Page {
   homePageSpace       Space?                 @relation("spaceHomePage")
   children            Page[]                 @relation("parent")
   rewardsGithubRepos  RewardsGithubRepo[]
+  isLocked            Boolean?                @default(false)
+  lockedBy            String?                 @db.Uuid
 
   // Ensure synced proposal databases cannot have duplicate cards for a proposal
   @@unique([parentId, syncWithPageId])
