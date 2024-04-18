@@ -2180,6 +2180,7 @@ model Project {
   createdBy      String          @db.Uuid
   updatedAt      DateTime        @default(now()) @updatedAt
   updatedBy      String          @db.Uuid
+  deletedAt      DateTime?
   name           String
   excerpt        String?
   description    String?
