@@ -23,6 +23,7 @@ CREATE TABLE "SynapsCredential" (
 -- CreateTable
 CREATE TABLE "SynapsUserKyc" (
     "id" UUID NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "deletedAt" TIMESTAMP(3),
     "sessionId" TEXT NOT NULL,
     "status" "SynapsUserKycStatus",
