@@ -37,7 +37,6 @@ CREATE TABLE "SynapsUserKyc" (
 CREATE TABLE "PersonaCredential" (
     "id" UUID NOT NULL,
     "apiKey" TEXT NOT NULL,
-    "envId" TEXT NOT NULL,
     "templateId" TEXT NOT NULL,
     "secret" TEXT,
     "spaceId" UUID NOT NULL,

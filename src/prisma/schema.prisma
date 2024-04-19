@@ -2290,7 +2290,6 @@ model SynapsUserKyc {
 model PersonaCredential {
   id         String  @id @default(uuid()) @db.Uuid
   apiKey     String
-  envId      String
   templateId String
   secret     String?
   spaceId    String  @unique @db.Uuid
