@@ -106,7 +106,7 @@ export function buildComputePermissionsWithPermissionFilteringPolicies<
     for (const policy of policies) {
       let hasTrueFlag = false;
 
-      const newFlags = await policy({
+      let newFlags = policy({
         flags: applicableFlags,
         resource,
         userId: request.userId,
@@ -114,6 +114,11 @@ export function buildComputePermissionsWithPermissionFilteringPolicies<
         preComputedSpacePermissionFlags
         // Any flag is needed here so that downstream compiler doesn't throw an error
       } as any as PermissionFilteringPolicyFnInput<R & ResourceWithSpaceId, F, true>);
+
+      if (newFlags instanceof Promise) {
+        newFlags = await newFlags;
+      }
+
       // Check the policy did not add any new flags as true
       // eslint-disable-next-line no-loop-func
       objectUtils.typedKeys(newFlags).forEach((key) => {
@@ -130,7 +135,7 @@ export function buildComputePermissionsWithPermissionFilteringPolicies<
         }
       });
 
-      applicableFlags = newFlags;
+      applicableFlags = newFlags as Awaited<F>;
 
       // Perform an early return if a policy results in fully empty permissions
       if (!hasTrueFlag) {
