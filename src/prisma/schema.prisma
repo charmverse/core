@@ -464,8 +464,8 @@ model Page {
   homePageSpace       Space?                 @relation("spaceHomePage")
   children            Page[]                 @relation("parent")
   rewardsGithubRepos  RewardsGithubRepo[]
-  isLocked            Boolean?                @default(false)
-  lockedBy            String?                 @db.Uuid
+  isLocked            Boolean?               @default(false)
+  lockedBy            String?                @db.Uuid
 
   // Ensure synced proposal databases cannot have duplicate cards for a proposal
   @@unique([parentId, syncWithPageId])
@@ -2311,10 +2311,11 @@ enum PersonaUserKycStatus {
 
 model PersonaUserKyc {
   id        String                @id @default(uuid()) @db.Uuid
+  createdAt DateTime              @default(now())
   deletedAt DateTime?
   inquiryId String // Unique identifier for the user KYC inquiry in Persona
   status    PersonaUserKycStatus?
-  userId    String                @unique @db.Uuid // Unique identifier for the user KYC named referenceId in Persona
+  userId    String                @unique @db.Uuid // This will be stored also in Persona as reference-id so we can debug each user kyc case
   user      User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
   spaceId   String                @db.Uuid
   space     Space                 @relation(fields: [spaceId], references: [id], onDelete: Cascade)

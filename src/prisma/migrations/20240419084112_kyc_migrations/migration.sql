@@ -47,6 +47,7 @@ CREATE TABLE "PersonaCredential" (
 -- CreateTable
 CREATE TABLE "PersonaUserKyc" (
     "id" UUID NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "deletedAt" TIMESTAMP(3),
     "inquiryId" TEXT NOT NULL,
     "status" "PersonaUserKycStatus",
