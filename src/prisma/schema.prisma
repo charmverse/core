@@ -466,6 +466,7 @@ model Page {
   rewardsGithubRepos  RewardsGithubRepo[]
   isLocked            Boolean?               @default(false)
   lockedBy            String?                @db.Uuid
+  lensPostLink        String?
 
   // Ensure synced proposal databases cannot have duplicate cards for a proposal
   @@unique([parentId, syncWithPageId])
