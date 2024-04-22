@@ -272,6 +272,11 @@ enum VoteStrategy {
   snapshot
 }
 
+enum KycOption {
+  persona
+  synaps
+}
+
 model Space {
   id                          String                            @id @default(uuid()) @db.Uuid
   deletedAt                   DateTime?
@@ -307,6 +312,7 @@ model Space {
   useOnchainCredentials       Boolean?                          @default(false)
   credentialsChainId          Int?
   credentialsWallet           String?
+  kycOption                   KycOption?
   primaryMemberIdentity       IdentityType?
   author                      User                              @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   blocks                      Block[]
@@ -360,6 +366,10 @@ model Space {
   pendingSafeTransactions     PendingSafeTransaction[]
   githubConnections           SpaceGithubConnection[]
   Form                        Form[]
+  synapsCredential            SynapsCredential?
+  synapsUserKyc               SynapsUserKyc[]
+  personaCredential           PersonaCredential?
+  personaUserKyc              PersonaUserKyc[]
 
   @@index([createdBy])
 }
@@ -454,8 +464,8 @@ model Page {
   homePageSpace       Space?                 @relation("spaceHomePage")
   children            Page[]                 @relation("parent")
   rewardsGithubRepos  RewardsGithubRepo[]
-  isLocked            Boolean?                @default(false)
-  lockedBy            String?                 @db.Uuid
+  isLocked            Boolean?               @default(false)
+  lockedBy            String?                @db.Uuid
 
   // Ensure synced proposal databases cannot have duplicate cards for a proposal
   @@unique([parentId, syncWithPageId])
@@ -705,6 +715,8 @@ model User {
   claimed                       Boolean?
   spaceGithubConnections        SpaceGithubConnection[]
   rewardsGithubRepo             RewardsGithubRepo[]
+  synapsUserKyc                 SynapsUserKyc?
+  personaUserKyc                PersonaUserKyc?
 
   @@index([createdAt(sort: Asc)])
 }
@@ -2240,4 +2252,74 @@ model RewardsGithubRepo {
 
   @@unique([connectionId, repositoryId])
   @@index([connectionId])
+}
+
+model SynapsCredential {
+  id      String  @id @default(uuid()) @db.Uuid
+  apiKey  String
+  secret  String?
+  spaceId String  @unique @db.Uuid
+  space   Space   @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+
+  @@index([spaceId])
+}
+
+enum SynapsUserKycStatus {
+  APPROVED
+  REJECTED
+  RESUBMISSION_REQUIRED
+  SUBMISSION_REQUIRED
+  PENDING_VERIFICATION
+}
+
+model SynapsUserKyc {
+  id        String              @id @default(uuid()) @db.Uuid
+  createdAt DateTime            @default(now())
+  deletedAt DateTime?
+  sessionId String // Unique identifier for the user KYC session in Synaps
+  status    SynapsUserKycStatus
+  userId    String              @unique @db.Uuid
+  user      User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  spaceId   String              @db.Uuid
+  space     Space               @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, spaceId])
+  @@index([userId, spaceId])
+}
+
+model PersonaCredential {
+  id         String  @id @default(uuid()) @db.Uuid
+  apiKey     String
+  templateId String
+  secret     String?
+  spaceId    String  @unique @db.Uuid
+  space      Space   @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+
+  @@index([spaceId])
+}
+
+enum PersonaUserKycStatus {
+  created
+  pending
+  completed
+  failed
+  expired
+  needs_review
+  approved
+  declined
+}
+
+model PersonaUserKyc {
+  id        String               @id @default(uuid()) @db.Uuid
+  createdAt DateTime             @default(now())
+  deletedAt DateTime?
+  inquiryId String // Unique identifier for the user KYC inquiry in Persona
+  status    PersonaUserKycStatus
+  userId    String               @unique @db.Uuid // This will be stored also in Persona as reference-id so we can debug each user kyc case
+  user      User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  spaceId   String               @db.Uuid
+  space     Space                @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, spaceId])
+  @@index([userId, spaceId])
 }
