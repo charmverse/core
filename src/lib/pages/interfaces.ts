@@ -91,6 +91,7 @@ export type PageMeta = Pick<
   | 'galleryImage'
   | 'syncWithPageId'
   | 'sourceTemplateId'
+  | 'lensPostLink'
 >;
 
 export type PagePermissionData = PagePermission & { sourcePermission: PagePermission | null };
