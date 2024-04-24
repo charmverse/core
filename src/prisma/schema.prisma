@@ -1230,7 +1230,6 @@ model Proposal {
   reviewer                    User?                               @relation(fields: [reviewedBy], references: [id], onDelete: Cascade)
   reviewedAt                  DateTime?
   publishToLens               Boolean?
-  lensPostLink                String?
   post                        Post[]
   rubricCriteria              ProposalRubricCriteria[]
   rubricAnswers               ProposalRubricCriteriaAnswer[]
