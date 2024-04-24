@@ -1336,6 +1336,7 @@ model ProposalBlock {
   fields    Json
   user      User      @relation(fields: [createdBy], references: [id])
   space     Space     @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  isLocked          Boolean?
 
   @@id([id, spaceId])
   @@index([rootId])
@@ -1359,6 +1360,7 @@ model RewardBlock {
   fields    Json
   user      User      @relation(fields: [createdBy], references: [id])
   space     Space     @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  isLocked          Boolean?
 
   @@id([id, spaceId])
   @@index([rootId])
