@@ -557,6 +557,7 @@ model Block {
   space             Space              @relation(fields: [spaceId], references: [id], onDelete: Cascade)
   page              Page?
   cardNotifications CardNotification[] @relation("card")
+  isLocked          Boolean?
 
   @@index([rootId])
   @@index([spaceId])
