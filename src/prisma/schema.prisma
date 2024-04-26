@@ -898,6 +898,12 @@ model InviteLink {
   @@index([spaceId])
 }
 
+enum RewardType {
+  token
+  none
+  custom
+}
+
 model Bounty {
   createdBy                   String               @db.Uuid
   spaceId                     String               @db.Uuid
@@ -906,6 +912,7 @@ model Bounty {
   dueDate                     DateTime?
   rewardAmount                Float?
   rewardToken                 String?
+  rewardType                  RewardType           @default(none)
   status                      BountyStatus         @default(open)
   id                          String               @id @default(uuid()) @db.Uuid
   chainId                     Int?
