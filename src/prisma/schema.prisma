@@ -972,6 +972,7 @@ model Application {
   walletAddress      String?
   rewardInfo         String?
   message            String?
+  messageNodes       Json?
   spaceId            String
   status             ApplicationStatus    @default(applied)
   submission         String?
