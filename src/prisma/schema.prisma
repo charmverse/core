@@ -371,7 +371,7 @@ model Space {
   synapsUserKyc               SynapsUserKyc[]
   personaCredential           PersonaCredential?
   personaUserKyc              PersonaUserKyc[]
-  DocusignCredentials         DocusignCredentials[]
+  DocusignCredentials         DocusignCredential[]
 
   @@index([createdBy])
 }
@@ -720,7 +720,7 @@ model User {
   rewardsGithubRepo             RewardsGithubRepo[]
   synapsUserKyc                 SynapsUserKyc?
   personaUserKyc                PersonaUserKyc?
-  DocusignCredentials           DocusignCredentials[]
+  DocusignCredentials           DocusignCredential[]
 
   @@index([createdAt(sort: Asc)])
 }
@@ -2335,9 +2335,10 @@ model PersonaUserKyc {
   @@index([userId, spaceId])
 }
 
-model DocusignCredentials {
+model DocusignCredential {
   id           String @id @default(uuid()) @db.Uuid
-  accountId    String
+  docusignSccountId    String
+  docusignAccountName String
   refreshToken String
   accessToken  String
   userId       String @db.Uuid
