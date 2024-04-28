@@ -371,6 +371,7 @@ model Space {
   synapsUserKyc               SynapsUserKyc[]
   personaCredential           PersonaCredential?
   personaUserKyc              PersonaUserKyc[]
+  DocusignCredentials         DocusignCredentials[]
 
   @@index([createdBy])
 }
@@ -719,6 +720,7 @@ model User {
   rewardsGithubRepo             RewardsGithubRepo[]
   synapsUserKyc                 SynapsUserKyc?
   personaUserKyc                PersonaUserKyc?
+  DocusignCredentials           DocusignCredentials[]
 
   @@index([createdAt(sort: Asc)])
 }
@@ -2323,4 +2325,26 @@ model PersonaUserKyc {
 
   @@unique([userId, spaceId])
   @@index([userId, spaceId])
+}
+
+model DocusignCredentials {
+  id           String @id @default(uuid()) @db.Uuid
+  accountId    String
+  refreshToken String
+  accessToken  String
+  userId       String @db.Uuid
+  user         User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  spaceId      String @db.Uuid
+  space        Space  @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, spaceId])
+  @@index([userId, spaceId])
+}
+
+model DocumentToSign {
+  id          String    @id @default(uuid()) @db.Uuid
+  createdAt   DateTime  @default(now())
+  completedAt DateTime?
+  docusignEnvelopeId  String
+  rewardId    String?    @db.Uuid
 }
