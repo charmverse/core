@@ -2337,7 +2337,7 @@ model PersonaUserKyc {
 
 model DocusignCredential {
   id           String @id @default(uuid()) @db.Uuid
-  docusignSccountId    String
+  docusignAccountId    String
   docusignAccountName String
   refreshToken String
   accessToken  String

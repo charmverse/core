@@ -1,7 +1,7 @@
 -- CreateTable
 CREATE TABLE "DocusignCredential" (
     "id" UUID NOT NULL,
-    "docusignSccountId" TEXT NOT NULL,
+    "docusignAccountId" TEXT NOT NULL,
     "docusignAccountName" TEXT NOT NULL,
     "refreshToken" TEXT NOT NULL,
     "accessToken" TEXT NOT NULL,
