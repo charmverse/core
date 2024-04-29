@@ -2339,6 +2339,7 @@ model DocusignCredential {
   id           String @id @default(uuid()) @db.Uuid
   docusignAccountId    String
   docusignAccountName String
+  docusignApiBaseUrl String
   refreshToken String
   accessToken  String
   userId       String @db.Uuid

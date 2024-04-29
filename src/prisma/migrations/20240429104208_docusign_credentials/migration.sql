@@ -3,6 +3,7 @@ CREATE TABLE "DocusignCredential" (
     "id" UUID NOT NULL,
     "docusignAccountId" TEXT NOT NULL,
     "docusignAccountName" TEXT NOT NULL,
+    "docusignApiBaseUrl" TEXT NOT NULL,
     "refreshToken" TEXT NOT NULL,
     "accessToken" TEXT NOT NULL,
     "userId" UUID NOT NULL,
