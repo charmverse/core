@@ -15,7 +15,7 @@ export type PermissionJson = Pick<ProposalEvaluationPermission, 'operation'> &
   Partial<Pick<ProposalEvaluationPermission, 'roleId' | 'userId' | 'systemRole'>>;
 
 // we keep the id for JSON because it makes easy to manage sorting the list of evaluations in React
-export type WorkflowEvaluationJson = Pick<ProposalEvaluation, 'id' | 'title' | 'type'> & {
+export type WorkflowEvaluationJson = Pick<ProposalEvaluation, 'id' | 'title' | 'type' | 'actionButtonLabels'> & {
   permissions: PermissionJson[];
 };
 
