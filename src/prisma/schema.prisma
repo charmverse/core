@@ -1994,6 +1994,7 @@ enum FormFieldType {
   label
   image
   file
+  milestone
 }
 
 model FormField {
