@@ -1322,6 +1322,7 @@ model ProposalEvaluation {
   reviewers            ProposalReviewer[]
   permissions          ProposalEvaluationPermission[]
   proposalNotification ProposalNotification[]
+  actionLabels         Json?
 
   @@index([proposalId])
   @@index([index])
