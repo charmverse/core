@@ -1221,6 +1221,7 @@ enum ProposalEvaluationType {
   vote
   rubric
   pass_fail
+  private_evaluation
 }
 
 model Proposal {
@@ -1268,6 +1269,7 @@ model ProposalWorkflow {
   space       Space      @relation(fields: [spaceId], references: [id], onDelete: Cascade)
   index       Int
   title       String
+  privateEvaluations Boolean? @default(false)
   evaluations Json[] // mirrors the ProposalEvaluation schema
   proposals   Proposal[]
 
