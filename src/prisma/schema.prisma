@@ -1221,7 +1221,6 @@ enum ProposalEvaluationType {
   vote
   rubric
   pass_fail
-  private_evaluation
 }
 
 model Proposal {
