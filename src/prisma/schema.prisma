@@ -2345,4 +2345,5 @@ model ProposalEvaluationReview {
   reviewer     ProposalReviewer         @relation(fields: [reviewerId], references: [id], onDelete: Cascade)
   evaluationId String                   @db.Uuid
   evaluation   ProposalEvaluation       @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
+  failReasons  String[]                 @default([])
 }
