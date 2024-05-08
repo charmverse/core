@@ -11,7 +11,7 @@ CREATE TABLE "ProposalEvaluationReview" (
 );
 
 -- AddForeignKey
-ALTER TABLE "ProposalEvaluationReview" ADD CONSTRAINT "ProposalEvaluationReview_reviewerId_fkey" FOREIGN KEY ("reviewerId") REFERENCES "ProposalReviewer"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "ProposalEvaluationReview" ADD CONSTRAINT "ProposalEvaluationReview_reviewerId_fkey" FOREIGN KEY ("reviewerId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "ProposalEvaluationReview" ADD CONSTRAINT "ProposalEvaluationReview_evaluationId_fkey" FOREIGN KEY ("evaluationId") REFERENCES "ProposalEvaluation"("id") ON DELETE CASCADE ON UPDATE CASCADE;
