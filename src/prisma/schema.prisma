@@ -2338,12 +2338,12 @@ model PersonaUserKyc {
 }
 
 model ProposalEvaluationReview {
-  id           String                   @id @default(uuid()) @db.Uuid
-  completedAt  DateTime                 @default(now())
-  result       ProposalEvaluationResult
-  reviewerId   String                   @db.Uuid
-  reviewer     User                     @relation(fields: [reviewerId], references: [id], onDelete: Cascade)
-  evaluationId String                   @db.Uuid
-  evaluation   ProposalEvaluation       @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
-  failReasons  String[]                 @default([])
+  id             String                   @id @default(uuid()) @db.Uuid
+  completedAt    DateTime                 @default(now())
+  result         ProposalEvaluationResult
+  reviewerId     String                   @db.Uuid
+  reviewer       User                     @relation(fields: [reviewerId], references: [id], onDelete: Cascade)
+  evaluationId   String                   @db.Uuid
+  evaluation     ProposalEvaluation       @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
+  declineReasons String[]                 @default([])
 }

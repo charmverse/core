@@ -5,7 +5,7 @@ CREATE TABLE "ProposalEvaluationReview" (
     "result" "ProposalEvaluationResult" NOT NULL,
     "reviewerId" UUID NOT NULL,
     "evaluationId" UUID NOT NULL,
-    "failReasons" TEXT[] DEFAULT ARRAY[]::TEXT[],
+    "declineReasons" TEXT[] DEFAULT ARRAY[]::TEXT[],
 
     CONSTRAINT "ProposalEvaluationReview_pkey" PRIMARY KEY ("id")
 );
