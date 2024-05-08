@@ -1301,28 +1301,29 @@ model ProposalEvaluationPermission {
 }
 
 model ProposalEvaluation {
-  id                   String                              @id @default(uuid()) @db.Uuid
-  index                Int // tells us what order
-  title                String
-  type                 ProposalEvaluationType
-  completedAt          DateTime?
-  snapshotId           String?
-  snapshotExpiry       DateTime?
-  decidedBy            String?                             @db.Uuid
-  decider              User?                               @relation(fields: [decidedBy], references: [id], onDelete: SetNull)
-  proposalId           String                              @db.Uuid
-  proposal             Proposal                            @relation(fields: [proposalId], references: [id], onDelete: Cascade)
-  voteSettings         Json?
-  voteId               String?                             @unique @db.Uuid
-  vote                 Vote?                               @relation(fields: [voteId], references: [id], onDelete: SetNull)
-  rubricCriteria       ProposalRubricCriteria[]
-  rubricAnswers        ProposalRubricCriteriaAnswer[]
-  draftRubricAnswers   DraftProposalRubricCriteriaAnswer[]
-  result               ProposalEvaluationResult?
-  reviewers            ProposalReviewer[]
-  permissions          ProposalEvaluationPermission[]
-  proposalNotification ProposalNotification[]
-  actionLabels         Json?
+  id                        String                              @id @default(uuid()) @db.Uuid
+  index                     Int // tells us what order
+  title                     String
+  type                      ProposalEvaluationType
+  completedAt               DateTime?
+  snapshotId                String?
+  snapshotExpiry            DateTime?
+  decidedBy                 String?                             @db.Uuid
+  decider                   User?                               @relation(fields: [decidedBy], references: [id], onDelete: SetNull)
+  proposalId                String                              @db.Uuid
+  proposal                  Proposal                            @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  voteSettings              Json?
+  voteId                    String?                             @unique @db.Uuid
+  vote                      Vote?                               @relation(fields: [voteId], references: [id], onDelete: SetNull)
+  rubricCriteria            ProposalRubricCriteria[]
+  rubricAnswers             ProposalRubricCriteriaAnswer[]
+  draftRubricAnswers        DraftProposalRubricCriteriaAnswer[]
+  result                    ProposalEvaluationResult?
+  reviewers                 ProposalReviewer[]
+  permissions               ProposalEvaluationPermission[]
+  proposalNotification      ProposalNotification[]
+  actionLabels              Json?
+  proposalEvaluationReviews ProposalEvaluationReview[]
 
   @@index([proposalId])
   @@index([index])
@@ -1386,17 +1387,18 @@ model ProposalAuthor {
 }
 
 model ProposalReviewer {
-  id           String              @id @default(uuid()) @db.Uuid
-  proposalId   String              @db.Uuid
-  proposal     Proposal            @relation(fields: [proposalId], references: [id], onDelete: Cascade)
-  roleId       String?             @db.Uuid
-  userId       String?             @db.Uuid
+  id                        String                     @id @default(uuid()) @db.Uuid
+  proposalId                String                     @db.Uuid
+  proposal                  Proposal                   @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  roleId                    String?                    @db.Uuid
+  userId                    String?                    @db.Uuid
   // This should only use the all_members value of system role
-  systemRole   ProposalSystemRole?
-  role         Role?               @relation(fields: [roleId], references: [id], onDelete: Cascade)
-  reviewer     User?               @relation(fields: [userId], references: [id], onDelete: Cascade)
-  evaluationId String              @db.Uuid
-  evaluation   ProposalEvaluation  @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
+  systemRole                ProposalSystemRole?
+  role                      Role?                      @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  reviewer                  User?                      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  evaluationId              String                     @db.Uuid
+  evaluation                ProposalEvaluation         @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
+  proposalEvaluationReviews ProposalEvaluationReview[]
 
   @@index([evaluationId])
   @@index([proposalId])
@@ -2333,4 +2335,14 @@ model PersonaUserKyc {
 
   @@unique([userId, spaceId])
   @@index([userId, spaceId])
+}
+
+model ProposalEvaluationReview {
+  id           String                   @id @default(uuid()) @db.Uuid
+  completedAt  DateTime                 @default(now())
+  result       ProposalEvaluationResult
+  reviewerId   String                   @db.Uuid
+  reviewer     ProposalReviewer         @relation(fields: [reviewerId], references: [id], onDelete: Cascade)
+  evaluationId String                   @db.Uuid
+  evaluation   ProposalEvaluation       @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
 }
