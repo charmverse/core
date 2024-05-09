@@ -13,6 +13,12 @@ CREATE TABLE "ProposalEvaluationReview" (
     CONSTRAINT "ProposalEvaluationReview_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateIndex
+CREATE INDEX "ProposalEvaluationReview_evaluationId_idx" ON "ProposalEvaluationReview"("evaluationId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "ProposalEvaluationReview_reviewerId_evaluationId_key" ON "ProposalEvaluationReview"("reviewerId", "evaluationId");
+
 -- AddForeignKey
 ALTER TABLE "ProposalEvaluationReview" ADD CONSTRAINT "ProposalEvaluationReview_reviewerId_fkey" FOREIGN KEY ("reviewerId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
