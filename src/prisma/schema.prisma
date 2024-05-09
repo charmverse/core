@@ -719,6 +719,7 @@ model User {
   rewardsGithubRepo             RewardsGithubRepo[]
   synapsUserKyc                 SynapsUserKyc?
   personaUserKyc                PersonaUserKyc?
+  proposalEvaluationReviews     ProposalEvaluationReview[]
 
   @@index([createdAt(sort: Asc)])
 }
@@ -1301,28 +1302,30 @@ model ProposalEvaluationPermission {
 }
 
 model ProposalEvaluation {
-  id                   String                              @id @default(uuid()) @db.Uuid
-  index                Int // tells us what order
-  title                String
-  type                 ProposalEvaluationType
-  completedAt          DateTime?
-  snapshotId           String?
-  snapshotExpiry       DateTime?
-  decidedBy            String?                             @db.Uuid
-  decider              User?                               @relation(fields: [decidedBy], references: [id], onDelete: SetNull)
-  proposalId           String                              @db.Uuid
-  proposal             Proposal                            @relation(fields: [proposalId], references: [id], onDelete: Cascade)
-  voteSettings         Json?
-  voteId               String?                             @unique @db.Uuid
-  vote                 Vote?                               @relation(fields: [voteId], references: [id], onDelete: SetNull)
-  rubricCriteria       ProposalRubricCriteria[]
-  rubricAnswers        ProposalRubricCriteriaAnswer[]
-  draftRubricAnswers   DraftProposalRubricCriteriaAnswer[]
-  result               ProposalEvaluationResult?
-  reviewers            ProposalReviewer[]
-  permissions          ProposalEvaluationPermission[]
-  proposalNotification ProposalNotification[]
-  actionLabels         Json?
+  id                        String                              @id @default(uuid()) @db.Uuid
+  index                     Int // tells us what order
+  title                     String
+  type                      ProposalEvaluationType
+  completedAt               DateTime?
+  snapshotId                String?
+  snapshotExpiry            DateTime?
+  decidedBy                 String?                             @db.Uuid
+  decider                   User?                               @relation(fields: [decidedBy], references: [id], onDelete: SetNull)
+  proposalId                String                              @db.Uuid
+  proposal                  Proposal                            @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  voteSettings              Json?
+  voteId                    String?                             @unique @db.Uuid
+  vote                      Vote?                               @relation(fields: [voteId], references: [id], onDelete: SetNull)
+  actionLabels              Json?
+  requiredReviews           Int                                 @default(1)
+  rubricCriteria            ProposalRubricCriteria[]
+  rubricAnswers             ProposalRubricCriteriaAnswer[]
+  draftRubricAnswers        DraftProposalRubricCriteriaAnswer[]
+  result                    ProposalEvaluationResult?
+  reviewers                 ProposalReviewer[]
+  permissions               ProposalEvaluationPermission[]
+  proposalNotification      ProposalNotification[]
+  proposalEvaluationReviews ProposalEvaluationReview[]
 
   @@index([proposalId])
   @@index([index])
@@ -2333,4 +2336,18 @@ model PersonaUserKyc {
 
   @@unique([userId, spaceId])
   @@index([userId, spaceId])
+}
+
+model ProposalEvaluationReview {
+  id             String                   @id @default(uuid()) @db.Uuid
+  completedAt    DateTime                 @default(now())
+  result         ProposalEvaluationResult
+  reviewerId     String                   @db.Uuid
+  reviewer       User                     @relation(fields: [reviewerId], references: [id], onDelete: Cascade)
+  evaluationId   String                   @db.Uuid
+  evaluation     ProposalEvaluation       @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
+  declineReasons String[]                 @default([])
+
+  @@unique([reviewerId, evaluationId])
+  @@index([evaluationId])
 }
