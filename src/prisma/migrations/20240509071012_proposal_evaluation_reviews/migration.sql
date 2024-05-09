@@ -1,3 +1,6 @@
+-- AlterTable
+ALTER TABLE "ProposalEvaluation" ADD COLUMN     "requiredReviews" INTEGER NOT NULL DEFAULT 1;
+
 -- CreateTable
 CREATE TABLE "ProposalEvaluationReview" (
     "id" UUID NOT NULL,
