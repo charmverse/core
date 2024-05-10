@@ -1837,24 +1837,25 @@ model BlockCount {
 }
 
 model UserNotificationMetadata {
-  id                    String                 @id @default(uuid()) @db.Uuid
-  createdAt             DateTime               @default(now())
-  createdBy             String                 @db.Uuid
-  author                User                   @relation(fields: [createdBy], references: [id], onDelete: Cascade, name: "author")
-  deletedAt             DateTime?
-  seenAt                DateTime?
-  archivedAt            DateTime?
-  channel               NotificationChannel?
-  spaceId               String                 @db.Uuid
-  space                 Space                  @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  userId                String                 @db.Uuid
-  user                  User                   @relation(fields: [userId], references: [id], onDelete: Cascade, name: "target")
-  bountyNotifications   BountyNotification[]
-  documentNotifications DocumentNotification[]
-  cardNotifications     CardNotification[]
-  postNotifications     PostNotification[]
-  proposalNotifications ProposalNotification[]
-  voteNotifications     VoteNotification[]
+  id                           String                         @id @default(uuid()) @db.Uuid
+  createdAt                    DateTime                       @default(now())
+  createdBy                    String                         @db.Uuid
+  author                       User                           @relation(fields: [createdBy], references: [id], onDelete: Cascade, name: "author")
+  deletedAt                    DateTime?
+  seenAt                       DateTime?
+  archivedAt                   DateTime?
+  channel                      NotificationChannel?
+  spaceId                      String                         @db.Uuid
+  space                        Space                          @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  userId                       String                         @db.Uuid
+  user                         User                           @relation(fields: [userId], references: [id], onDelete: Cascade, name: "target")
+  bountyNotifications          BountyNotification[]
+  documentNotifications        DocumentNotification[]
+  cardNotifications            CardNotification[]
+  postNotifications            PostNotification[]
+  proposalNotifications        ProposalNotification[]
+  voteNotifications            VoteNotification[]
+  issuedCredentialNotification IssuedCredentialNotification[]
 }
 
 model BountyNotification {
@@ -1931,6 +1932,15 @@ model VoteNotification {
   // vote task columns
   voteId                 String                   @db.Uuid
   vote                   Vote                     @relation(fields: [voteId], references: [id], onDelete: Cascade)
+  type                   String
+}
+
+model IssuedCredentialNotification {
+  id                     String                   @id @default(uuid()) @db.Uuid
+  notificationMetadataId String                   @db.Uuid
+  notificationMetadata   UserNotificationMetadata @relation(fields: [notificationMetadataId], references: [id], onDelete: Cascade)
+  issuedCredentialId     String                   @db.Uuid
+  issuedCredential       IssuedCredential         @relation(fields: [issuedCredentialId], references: [id], onDelete: Cascade)
   type                   String
 }
 
@@ -2052,26 +2062,27 @@ model CredentialTemplate {
 }
 
 model IssuedCredential {
-  id                   String               @id @default(uuid()) @db.Uuid
-  credentialTemplateId String?              @db.Uuid
-  credentialTemplate   CredentialTemplate?  @relation(fields: [credentialTemplateId], references: [id], onDelete: SetNull)
-  proposalId           String?              @db.Uuid
-  proposal             Proposal?            @relation(fields: [proposalId], references: [id], onDelete: Cascade)
-  rewardApplicationId  String?              @db.Uuid
-  rewardApplication    Application?         @relation(fields: [rewardApplicationId], references: [id], onDelete: Cascade)
-  schemaId             String?
+  id                           String                         @id @default(uuid()) @db.Uuid
+  credentialTemplateId         String?                        @db.Uuid
+  credentialTemplate           CredentialTemplate?            @relation(fields: [credentialTemplateId], references: [id], onDelete: SetNull)
+  proposalId                   String?                        @db.Uuid
+  proposal                     Proposal?                      @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  rewardApplicationId          String?                        @db.Uuid
+  rewardApplication            Application?                   @relation(fields: [rewardApplicationId], references: [id], onDelete: Cascade)
+  schemaId                     String?
   // Fields specific to ceramic
-  ceramicId            String?              @unique
-  ceramicRecord        Json?
+  ceramicId                    String?                        @unique
+  ceramicRecord                Json?
   // Fields specific to on chain credentials
-  onchainAttestationId String?              @unique
-  onchainChainId       Int?
-  hidden               Boolean?             @default(false)
-  userId               String               @db.Uuid
-  user                 User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
-  credentialEvent      CredentialEventType
-  createdAt            DateTime             @default(now())
-  favoriteCredentials  FavoriteCredential[]
+  onchainAttestationId         String?                        @unique
+  onchainChainId               Int?
+  hidden                       Boolean?                       @default(false)
+  userId                       String                         @db.Uuid
+  user                         User                           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  credentialEvent              CredentialEventType
+  createdAt                    DateTime                       @default(now())
+  favoriteCredentials          FavoriteCredential[]
+  issuedCredentialNotification IssuedCredentialNotification[]
 }
 
 model Otp {
