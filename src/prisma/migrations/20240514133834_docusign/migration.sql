@@ -19,6 +19,8 @@ CREATE TABLE "DocumentToSign" (
     "completedAt" TIMESTAMP(3),
     "docusignEnvelopeId" TEXT NOT NULL,
     "rewardId" UUID,
+    "proposalId" UUID,
+    "spaceId" UUID NOT NULL,
 
     CONSTRAINT "DocumentToSign_pkey" PRIMARY KEY ("id")
 );
@@ -34,3 +36,12 @@ ALTER TABLE "DocusignCredential" ADD CONSTRAINT "DocusignCredential_userId_fkey"
 
 -- AddForeignKey
 ALTER TABLE "DocusignCredential" ADD CONSTRAINT "DocusignCredential_spaceId_fkey" FOREIGN KEY ("spaceId") REFERENCES "Space"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "DocumentToSign" ADD CONSTRAINT "DocumentToSign_rewardId_fkey" FOREIGN KEY ("rewardId") REFERENCES "Bounty"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "DocumentToSign" ADD CONSTRAINT "DocumentToSign_proposalId_fkey" FOREIGN KEY ("proposalId") REFERENCES "Proposal"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "DocumentToSign" ADD CONSTRAINT "DocumentToSign_spaceId_fkey" FOREIGN KEY ("spaceId") REFERENCES "Space"("id") ON DELETE CASCADE ON UPDATE CASCADE;

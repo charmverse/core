@@ -937,7 +937,7 @@ model Bounty {
   notifications               BountyNotification[]
   proposalId                  String?              @db.Uuid
   proposal                    Proposal?            @relation(fields: [proposalId], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  DocumentToSign              DocumentToSign[]
+  documentToSign              DocumentToSign[]
 
   @@index([createdBy])
   @@index([spaceId])
@@ -1261,7 +1261,7 @@ model Proposal {
   issuedCredentials           IssuedCredential[]
   projectId                   String?                             @db.Uuid
   project                     Project?                            @relation(fields: [projectId], references: [id], onDelete: SetNull)
-  DocumentToSign              DocumentToSign[]
+  documentToSign              DocumentToSign[]
 
   @@index([spaceId])
   @@index([reviewedBy])
@@ -2385,4 +2385,16 @@ model DocumentToSign {
   proposal           Proposal? @relation(fields: [proposalId], references: [id], onDelete: Cascade)
   spaceId            String    @db.Uuid
   space              Space     @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  signers            DocumentSigner[]
+}
+
+
+model DocumentSigner {
+  id                 String    @id @default(uuid()) @db.Uuid
+  createdAt          DateTime  @default(now())
+  documentToSignId   String    @db.Uuid
+  documentToSign     DocumentToSign @relation(fields: [documentToSignId], references: [id], onDelete: Cascade)
+  completedAt        DateTime?
+  email              String
+  name               String
 }
