@@ -721,7 +721,8 @@ model User {
   rewardsGithubRepo             RewardsGithubRepo[]
   synapsUserKyc                 SynapsUserKyc?
   personaUserKyc                PersonaUserKyc?
-  DocusignCredentials           DocusignCredential[]
+  docusignCredentials           DocusignCredential[]
+  proposalEvaluationReviews     ProposalEvaluationReview[]
 
   @@index([createdAt(sort: Asc)])
 }
@@ -936,6 +937,7 @@ model Bounty {
   notifications               BountyNotification[]
   proposalId                  String?              @db.Uuid
   proposal                    Proposal?            @relation(fields: [proposalId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  DocumentToSign              DocumentToSign[]
 
   @@index([createdBy])
   @@index([spaceId])
@@ -1259,20 +1261,22 @@ model Proposal {
   issuedCredentials           IssuedCredential[]
   projectId                   String?                             @db.Uuid
   project                     Project?                            @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  DocumentToSign              DocumentToSign[]
 
   @@index([spaceId])
   @@index([reviewedBy])
 }
 
 model ProposalWorkflow {
-  id          String     @id @default(uuid()) @db.Uuid
-  createdAt   DateTime   @default(now())
-  spaceId     String     @db.Uuid
-  space       Space      @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  index       Int
-  title       String
-  evaluations Json[] // mirrors the ProposalEvaluation schema
-  proposals   Proposal[]
+  id                 String     @id @default(uuid()) @db.Uuid
+  createdAt          DateTime   @default(now())
+  spaceId            String     @db.Uuid
+  space              Space      @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  index              Int
+  title              String
+  privateEvaluations Boolean?   @default(false)
+  evaluations        Json[] // mirrors the ProposalEvaluation schema
+  proposals          Proposal[]
 
   @@index([spaceId])
 }
@@ -1304,27 +1308,30 @@ model ProposalEvaluationPermission {
 }
 
 model ProposalEvaluation {
-  id                   String                              @id @default(uuid()) @db.Uuid
-  index                Int // tells us what order
-  title                String
-  type                 ProposalEvaluationType
-  completedAt          DateTime?
-  snapshotId           String?
-  snapshotExpiry       DateTime?
-  decidedBy            String?                             @db.Uuid
-  decider              User?                               @relation(fields: [decidedBy], references: [id], onDelete: SetNull)
-  proposalId           String                              @db.Uuid
-  proposal             Proposal                            @relation(fields: [proposalId], references: [id], onDelete: Cascade)
-  voteSettings         Json?
-  voteId               String?                             @unique @db.Uuid
-  vote                 Vote?                               @relation(fields: [voteId], references: [id], onDelete: SetNull)
-  rubricCriteria       ProposalRubricCriteria[]
-  rubricAnswers        ProposalRubricCriteriaAnswer[]
-  draftRubricAnswers   DraftProposalRubricCriteriaAnswer[]
-  result               ProposalEvaluationResult?
-  reviewers            ProposalReviewer[]
-  permissions          ProposalEvaluationPermission[]
-  proposalNotification ProposalNotification[]
+  id                        String                              @id @default(uuid()) @db.Uuid
+  index                     Int // tells us what order
+  title                     String
+  type                      ProposalEvaluationType
+  completedAt               DateTime?
+  snapshotId                String?
+  snapshotExpiry            DateTime?
+  decidedBy                 String?                             @db.Uuid
+  decider                   User?                               @relation(fields: [decidedBy], references: [id], onDelete: SetNull)
+  proposalId                String                              @db.Uuid
+  proposal                  Proposal                            @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  voteSettings              Json?
+  voteId                    String?                             @unique @db.Uuid
+  vote                      Vote?                               @relation(fields: [voteId], references: [id], onDelete: SetNull)
+  actionLabels              Json?
+  requiredReviews           Int                                 @default(1)
+  rubricCriteria            ProposalRubricCriteria[]
+  rubricAnswers             ProposalRubricCriteriaAnswer[]
+  draftRubricAnswers        DraftProposalRubricCriteriaAnswer[]
+  result                    ProposalEvaluationResult?
+  reviewers                 ProposalReviewer[]
+  permissions               ProposalEvaluationPermission[]
+  proposalNotification      ProposalNotification[]
+  proposalEvaluationReviews ProposalEvaluationReview[]
 
   @@index([proposalId])
   @@index([index])
@@ -1996,6 +2003,7 @@ enum FormFieldType {
   label
   image
   file
+  milestone
 }
 
 model FormField {
@@ -2336,6 +2344,20 @@ model PersonaUserKyc {
   @@index([userId, spaceId])
 }
 
+model ProposalEvaluationReview {
+  id             String                   @id @default(uuid()) @db.Uuid
+  completedAt    DateTime                 @default(now())
+  result         ProposalEvaluationResult
+  reviewerId     String                   @db.Uuid
+  reviewer       User                     @relation(fields: [reviewerId], references: [id], onDelete: Cascade)
+  evaluationId   String                   @db.Uuid
+  evaluation     ProposalEvaluation       @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
+  declineReasons String[]                 @default([])
+
+  @@unique([reviewerId, evaluationId])
+  @@index([evaluationId])
+}
+
 model DocusignCredential {
   id                  String @id @default(uuid()) @db.Uuid
   docusignAccountId   String
@@ -2358,6 +2380,9 @@ model DocumentToSign {
   completedAt        DateTime?
   docusignEnvelopeId String
   rewardId           String?   @db.Uuid
+  reward             Bounty?   @relation(fields: [rewardId], references: [id], onDelete: Cascade)
+  proposalId         String?   @db.Uuid
+  proposal           Proposal? @relation(fields: [proposalId], references: [id], onDelete: Cascade)
   spaceId            String    @db.Uuid
   space              Space     @relation(fields: [spaceId], references: [id], onDelete: Cascade)
 }

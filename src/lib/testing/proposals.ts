@@ -234,7 +234,8 @@ export async function generateProposal({
               result: input.result,
               snapshotExpiry: input.snapshotExpiry,
               snapshotId: input.snapshotId,
-              voteId: input.voteId
+              voteId: input.voteId,
+              requiredReviews: input.requiredReviews ?? 1
             }) as Prisma.ProposalEvaluationCreateManyInput
         ),
         skipDuplicates: true

@@ -1,4 +1,4 @@
-import type { ProposalEvaluation } from '@prisma/client';
+import type { ProposalEvaluation, ProposalEvaluationType } from '@prisma/client';
 import sortBy from 'lodash/sortBy';
 
 /**
@@ -13,3 +13,5 @@ export function getCurrentEvaluation<
 
   return currentEvaluation ?? sortedEvaluations[sortedEvaluations.length - 1];
 }
+
+export const privateEvaluationSteps: ProposalEvaluationType[] = ['rubric', 'pass_fail', 'vote'];
