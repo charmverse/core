@@ -19,6 +19,7 @@ export type WorkflowEvaluationJson = Pick<ProposalEvaluation, 'id' | 'title' | '
   permissions: PermissionJson[];
   declineReasons?: string[] | null;
   requiredReviews?: number;
+  finalStep?: boolean;
   actionLabels?: {
     approve?: string;
     reject?: string;
