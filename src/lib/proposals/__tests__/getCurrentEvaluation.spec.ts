@@ -23,6 +23,17 @@ describe('getCurrentEvaluation()', () => {
     expect(result?.index).toBe(2);
   });
 
+  it('should stop at an final step evaluation if its marked as passed', () => {
+    const result = getCurrentEvaluation([
+      { index: 0, result: 'pass' },
+      { index: 1, result: 'pass', finalStep: true },
+      { index: 3, result: null },
+      { index: 2, result: null }
+    ]);
+
+    expect(result?.index).toBe(1);
+  });
+
   it('should return the final evaluation if all evaluations passed', () => {
     const result = getCurrentEvaluation([
       { index: 3, result: 'pass' },

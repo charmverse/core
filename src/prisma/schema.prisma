@@ -1324,6 +1324,7 @@ model ProposalEvaluation {
   vote                      Vote?                               @relation(fields: [voteId], references: [id], onDelete: SetNull)
   actionLabels              Json?
   requiredReviews           Int                                 @default(1)
+  finalStep                 Boolean?
   rubricCriteria            ProposalRubricCriteria[]
   rubricAnswers             ProposalRubricCriteriaAnswer[]
   draftRubricAnswers        DraftProposalRubricCriteriaAnswer[]
