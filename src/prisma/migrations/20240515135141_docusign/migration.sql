@@ -8,6 +8,7 @@ CREATE TABLE "DocusignCredential" (
     "accessToken" TEXT NOT NULL,
     "userId" UUID NOT NULL,
     "spaceId" UUID NOT NULL,
+    "spaceDocusignApiKey" TEXT NOT NULL,
 
     CONSTRAINT "DocusignCredential_pkey" PRIMARY KEY ("id")
 );
@@ -24,6 +25,21 @@ CREATE TABLE "DocumentToSign" (
 
     CONSTRAINT "DocumentToSign_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateTable
+CREATE TABLE "DocumentSigner" (
+    "id" UUID NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "documentToSignId" UUID NOT NULL,
+    "completedAt" TIMESTAMP(3),
+    "email" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+
+    CONSTRAINT "DocumentSigner_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateIndex
+CREATE UNIQUE INDEX "DocusignCredential_spaceDocusignApiKey_key" ON "DocusignCredential"("spaceDocusignApiKey");
 
 -- CreateIndex
 CREATE INDEX "DocusignCredential_userId_spaceId_idx" ON "DocusignCredential"("userId", "spaceId");
@@ -45,3 +61,6 @@ ALTER TABLE "DocumentToSign" ADD CONSTRAINT "DocumentToSign_proposalId_fkey" FOR
 
 -- AddForeignKey
 ALTER TABLE "DocumentToSign" ADD CONSTRAINT "DocumentToSign_spaceId_fkey" FOREIGN KEY ("spaceId") REFERENCES "Space"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "DocumentSigner" ADD CONSTRAINT "DocumentSigner_documentToSignId_fkey" FOREIGN KEY ("documentToSignId") REFERENCES "DocumentToSign"("id") ON DELETE CASCADE ON UPDATE CASCADE;

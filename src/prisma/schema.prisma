@@ -2369,6 +2369,7 @@ model DocusignCredential {
   user                User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   spaceId             String @db.Uuid
   space               Space  @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  spaceDocusignApiKey  String @unique
 
   @@unique([userId, spaceId])
   @@index([userId, spaceId])
