@@ -4,11 +4,12 @@ CREATE TABLE "DocusignCredential" (
     "docusignAccountId" TEXT NOT NULL,
     "docusignAccountName" TEXT NOT NULL,
     "docusignApiBaseUrl" TEXT NOT NULL,
+    "docusignWebhookId" TEXT,
     "refreshToken" TEXT NOT NULL,
     "accessToken" TEXT NOT NULL,
     "userId" UUID NOT NULL,
     "spaceId" UUID NOT NULL,
-    "spaceDocusignApiKey" TEXT NOT NULL,
+    "spaceDocusignApiKey" TEXT,
 
     CONSTRAINT "DocusignCredential_pkey" PRIMARY KEY ("id")
 );
