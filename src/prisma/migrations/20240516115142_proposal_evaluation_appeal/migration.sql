@@ -1,3 +1,12 @@
+/*
+  Warnings:
+
+  - A unique constraint covering the columns `[reviewerId,evaluationId,appeal]` on the table `ProposalEvaluationReview` will be added. If there are existing duplicate values, this will fail.
+
+*/
+-- DropIndex
+DROP INDEX "ProposalEvaluationReview_reviewerId_evaluationId_key";
+
 -- AlterTable
 ALTER TABLE "ProposalEvaluation" ADD COLUMN     "appealActive" BOOLEAN DEFAULT false,
 ADD COLUMN     "appealRequiredReviews" INTEGER,
@@ -29,6 +38,9 @@ CREATE INDEX "ProposalAppealReviewer_roleId_idx" ON "ProposalAppealReviewer"("ro
 
 -- CreateIndex
 CREATE INDEX "ProposalAppealReviewer_userId_idx" ON "ProposalAppealReviewer"("userId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "ProposalEvaluationReview_reviewerId_evaluationId_appeal_key" ON "ProposalEvaluationReview"("reviewerId", "evaluationId", "appeal");
 
 -- AddForeignKey
 ALTER TABLE "ProposalAppealReviewer" ADD CONSTRAINT "ProposalAppealReviewer_proposalId_fkey" FOREIGN KEY ("proposalId") REFERENCES "Proposal"("id") ON DELETE CASCADE ON UPDATE CASCADE;

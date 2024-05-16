@@ -2377,6 +2377,6 @@ model ProposalEvaluationReview {
   evaluation     ProposalEvaluation       @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
   declineReasons String[]                 @default([])
 
-  @@unique([reviewerId, evaluationId])
+  @@unique([reviewerId, evaluationId, appeal])
   @@index([evaluationId])
 }

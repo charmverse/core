@@ -21,7 +21,6 @@ export type WorkflowEvaluationJson = Pick<ProposalEvaluation, 'id' | 'title' | '
   requiredReviews?: number;
   finalStep?: boolean;
   appealable?: boolean;
-  appealReviewers?: string[];
   appealRequiredReviews?: number;
   actionLabels?: {
     approve?: string;
