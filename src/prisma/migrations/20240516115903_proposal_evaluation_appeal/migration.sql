@@ -8,9 +8,9 @@
 DROP INDEX "ProposalEvaluationReview_reviewerId_evaluationId_key";
 
 -- AlterTable
-ALTER TABLE "ProposalEvaluation" ADD COLUMN     "appealActive" BOOLEAN DEFAULT false,
-ADD COLUMN     "appealRequiredReviews" INTEGER,
-ADD COLUMN     "appealable" BOOLEAN DEFAULT false;
+ALTER TABLE "ProposalEvaluation" ADD COLUMN     "appealRequiredReviews" INTEGER,
+ADD COLUMN     "appealable" BOOLEAN DEFAULT false,
+ADD COLUMN     "appealedAt" TIMESTAMP(3);
 
 -- AlterTable
 ALTER TABLE "ProposalEvaluationReview" ADD COLUMN     "appeal" BOOLEAN;

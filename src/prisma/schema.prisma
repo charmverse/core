@@ -1325,7 +1325,7 @@ model ProposalEvaluation {
   finalStep                 Boolean?
   appealRequiredReviews     Int?
   appealable                Boolean?                            @default(false)
-  appealActive              Boolean?                            @default(false)
+  appealedAt                DateTime?
   rubricCriteria            ProposalRubricCriteria[]
   rubricAnswers             ProposalRubricCriteriaAnswer[]
   draftRubricAnswers        DraftProposalRubricCriteriaAnswer[]
