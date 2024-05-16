@@ -720,6 +720,7 @@ model User {
   synapsUserKyc                 SynapsUserKyc?
   personaUserKyc                PersonaUserKyc?
   proposalEvaluationReviews     ProposalEvaluationReview[]
+  proposalAppealReviewers       ProposalAppealReviewer[]
 
   @@index([createdAt(sort: Asc)])
 }
@@ -1077,6 +1078,7 @@ model Role {
   memberPropertyPermissions     MemberPropertyPermission[]
   postCategoryPermissions       PostCategoryPermission[]
   proposalEvaluationPermissions ProposalEvaluationPermission[]
+  proposalAppealReviewers       ProposalAppealReviewer[]
 
   @@unique([spaceId, name])
   @@index([spaceId])
@@ -1257,6 +1259,7 @@ model Proposal {
   issuedCredentials           IssuedCredential[]
   projectId                   String?                             @db.Uuid
   project                     Project?                            @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  ProposalAppealReviewer      ProposalAppealReviewer[]
 
   @@index([spaceId])
   @@index([reviewedBy])
@@ -1320,11 +1323,15 @@ model ProposalEvaluation {
   actionLabels              Json?
   requiredReviews           Int                                 @default(1)
   finalStep                 Boolean?
+  appealRequiredReviews     Int?
+  appealable                Boolean?                            @default(false)
+  appealActive              Boolean?                            @default(false)
   rubricCriteria            ProposalRubricCriteria[]
   rubricAnswers             ProposalRubricCriteriaAnswer[]
   draftRubricAnswers        DraftProposalRubricCriteriaAnswer[]
   result                    ProposalEvaluationResult?
   reviewers                 ProposalReviewer[]
+  appealReviewers           ProposalAppealReviewer[]
   permissions               ProposalEvaluationPermission[]
   proposalNotification      ProposalNotification[]
   proposalEvaluationReviews ProposalEvaluationReview[]
@@ -1391,6 +1398,25 @@ model ProposalAuthor {
 }
 
 model ProposalReviewer {
+  id           String              @id @default(uuid()) @db.Uuid
+  proposalId   String              @db.Uuid
+  proposal     Proposal            @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  roleId       String?             @db.Uuid
+  userId       String?             @db.Uuid
+  // This should only use the all_members value of system role
+  systemRole   ProposalSystemRole?
+  role         Role?               @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  reviewer     User?               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  evaluationId String              @db.Uuid
+  evaluation   ProposalEvaluation  @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
+
+  @@index([evaluationId])
+  @@index([proposalId])
+  @@index([roleId])
+  @@index([userId])
+}
+
+model ProposalAppealReviewer {
   id           String              @id @default(uuid()) @db.Uuid
   proposalId   String              @db.Uuid
   proposal     Proposal            @relation(fields: [proposalId], references: [id], onDelete: Cascade)
@@ -2346,6 +2372,7 @@ model ProposalEvaluationReview {
   result         ProposalEvaluationResult
   reviewerId     String                   @db.Uuid
   reviewer       User                     @relation(fields: [reviewerId], references: [id], onDelete: Cascade)
+  appeal         Boolean?
   evaluationId   String                   @db.Uuid
   evaluation     ProposalEvaluation       @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
   declineReasons String[]                 @default([])
