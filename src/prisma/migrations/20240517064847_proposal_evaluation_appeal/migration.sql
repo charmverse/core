@@ -4,6 +4,9 @@
   - A unique constraint covering the columns `[reviewerId,evaluationId,appeal]` on the table `ProposalEvaluationReview` will be added. If there are existing duplicate values, this will fail.
 
 */
+-- AlterEnum
+ALTER TYPE "ProposalOperation" ADD VALUE 'evaluate_appeal';
+
 -- DropIndex
 DROP INDEX "ProposalEvaluationReview_reviewerId_evaluationId_key";
 
