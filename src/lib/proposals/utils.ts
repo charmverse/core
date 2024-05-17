@@ -13,7 +13,10 @@ export function getCurrentEvaluation<
 >(evaluations: T[]): T | undefined {
   const sortedEvaluations = sortBy(evaluations, 'index');
   const currentEvaluation = sortedEvaluations.find(
-    (evaluation) => evaluation.result === 'fail' || evaluation.finalStep || !evaluation.result
+    (evaluation) =>
+      (!evaluation.finalStep && evaluation.result === 'fail') ||
+      (evaluation.finalStep && evaluation.result === 'pass') ||
+      !evaluation.result
   );
 
   return currentEvaluation ?? sortedEvaluations[sortedEvaluations.length - 1];
