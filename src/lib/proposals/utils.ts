@@ -6,9 +6,9 @@ import sortBy from 'lodash/sortBy';
  *
  * */
 export function getCurrentEvaluation<
-  T extends Pick<ProposalEvaluation, 'index' | 'result'> & { finalStep?: boolean | null } = Pick<
+  T extends Pick<ProposalEvaluation, 'index' | 'result' | 'appealedAt'> & { finalStep?: boolean | null } = Pick<
     ProposalEvaluation,
-    'index' | 'result'
+    'index' | 'result' | 'appealedAt'
   > & { finalStep?: boolean | null }
 >(evaluations: T[]): T | undefined {
   const sortedEvaluations = sortBy(evaluations, 'index');
@@ -16,6 +16,7 @@ export function getCurrentEvaluation<
     (evaluation) =>
       (!evaluation.finalStep && evaluation.result === 'fail') ||
       (evaluation.finalStep && evaluation.result === 'pass') ||
+      (evaluation.appealedAt && evaluation.result) ||
       !evaluation.result
   );
 
