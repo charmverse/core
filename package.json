@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.50.1-rc-feat-appeal-wor.4",
+  "version": "0.50.1-rc-feat-appeal-wor.5",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
