@@ -704,7 +704,8 @@ model User {
   blacklistedSpaceUsers         BlacklistedSpaceUser[]
   blacklistedUser               BlacklistedUser[]
   proposalEvaluationPermissions ProposalEvaluationPermission[]
-  decidedProposalEvaluations    ProposalEvaluation[]
+  decidedProposalEvaluations    ProposalEvaluation[]            @relation("decidedBy")
+  appealedByProposalEvaluations ProposalEvaluation[]            @relation("appealedBy")
   receivedCredentials           IssuedCredential[]
   otp                           Otp?
   charmWallet                   CharmWallet?
@@ -1311,10 +1312,11 @@ model ProposalEvaluation {
   title                     String
   type                      ProposalEvaluationType
   completedAt               DateTime?
+  declinedAt                DateTime? // Required to keep track of when the evaluation was declined for an appealable step
   snapshotId                String?
   snapshotExpiry            DateTime?
   decidedBy                 String?                             @db.Uuid
-  decider                   User?                               @relation(fields: [decidedBy], references: [id], onDelete: SetNull)
+  decider                   User?                               @relation(fields: [decidedBy], references: [id], onDelete: SetNull, name: "decidedBy")
   proposalId                String                              @db.Uuid
   proposal                  Proposal                            @relation(fields: [proposalId], references: [id], onDelete: Cascade)
   voteSettings              Json?
@@ -1326,6 +1328,8 @@ model ProposalEvaluation {
   appealRequiredReviews     Int?
   appealable                Boolean?                            @default(false)
   appealedAt                DateTime?
+  appealedBy                String?                             @db.Uuid
+  appealer                  User?                               @relation(fields: [appealedBy], references: [id], onDelete: SetNull, name: "appealedBy")
   rubricCriteria            ProposalRubricCriteria[]
   rubricAnswers             ProposalRubricCriteriaAnswer[]
   draftRubricAnswers        DraftProposalRubricCriteriaAnswer[]
@@ -1417,17 +1421,15 @@ model ProposalReviewer {
 }
 
 model ProposalAppealReviewer {
-  id           String              @id @default(uuid()) @db.Uuid
-  proposalId   String              @db.Uuid
-  proposal     Proposal            @relation(fields: [proposalId], references: [id], onDelete: Cascade)
-  roleId       String?             @db.Uuid
-  userId       String?             @db.Uuid
-  // This should only use the all_members value of system role
-  systemRole   ProposalSystemRole?
-  role         Role?               @relation(fields: [roleId], references: [id], onDelete: Cascade)
-  reviewer     User?               @relation(fields: [userId], references: [id], onDelete: Cascade)
-  evaluationId String              @db.Uuid
-  evaluation   ProposalEvaluation  @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
+  id           String             @id @default(uuid()) @db.Uuid
+  proposalId   String             @db.Uuid
+  proposal     Proposal           @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  roleId       String?            @db.Uuid
+  userId       String?            @db.Uuid
+  role         Role?              @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  reviewer     User?              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  evaluationId String             @db.Uuid
+  evaluation   ProposalEvaluation @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
 
   @@index([evaluationId])
   @@index([proposalId])

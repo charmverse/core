@@ -10,7 +10,9 @@ DROP INDEX "ProposalEvaluationReview_reviewerId_evaluationId_key";
 -- AlterTable
 ALTER TABLE "ProposalEvaluation" ADD COLUMN     "appealRequiredReviews" INTEGER,
 ADD COLUMN     "appealable" BOOLEAN DEFAULT false,
-ADD COLUMN     "appealedAt" TIMESTAMP(3);
+ADD COLUMN     "appealedAt" TIMESTAMP(3),
+ADD COLUMN     "appealedBy" UUID,
+ADD COLUMN     "declinedAt" TIMESTAMP(3);
 
 -- AlterTable
 ALTER TABLE "ProposalEvaluationReview" ADD COLUMN     "appeal" BOOLEAN;
@@ -21,7 +23,6 @@ CREATE TABLE "ProposalAppealReviewer" (
     "proposalId" UUID NOT NULL,
     "roleId" UUID,
     "userId" UUID,
-    "systemRole" "ProposalSystemRole",
     "evaluationId" UUID NOT NULL,
 
     CONSTRAINT "ProposalAppealReviewer_pkey" PRIMARY KEY ("id")
@@ -41,6 +42,9 @@ CREATE INDEX "ProposalAppealReviewer_userId_idx" ON "ProposalAppealReviewer"("us
 
 -- CreateIndex
 CREATE UNIQUE INDEX "ProposalEvaluationReview_reviewerId_evaluationId_appeal_key" ON "ProposalEvaluationReview"("reviewerId", "evaluationId", "appeal");
+
+-- AddForeignKey
+ALTER TABLE "ProposalEvaluation" ADD CONSTRAINT "ProposalEvaluation_appealedBy_fkey" FOREIGN KEY ("appealedBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "ProposalAppealReviewer" ADD CONSTRAINT "ProposalAppealReviewer_proposalId_fkey" FOREIGN KEY ("proposalId") REFERENCES "Proposal"("id") ON DELETE CASCADE ON UPDATE CASCADE;
