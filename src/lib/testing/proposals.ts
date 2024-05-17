@@ -30,6 +30,7 @@ export type ProposalEvaluationTestInput = Partial<Omit<Prisma.ProposalEvaluation
     | { group: Extract<ProposalSystemRole, 'space_member' | 'author'> }
     | TargetPermissionGroup<'role' | 'user'>
   )[];
+  appealReviewers?: TargetPermissionGroup<'role' | 'user'>[];
   permissions: {
     assignee: { group: ProposalSystemRole } | TargetPermissionGroup<'role' | 'user'>;
     operation: Extract<ProposalOperation, 'edit' | 'view' | 'move' | 'comment'>;
@@ -163,7 +164,8 @@ export async function generateProposal({
             evaluationType,
             title: evaluationType,
             reviewers: reviewers || [],
-            permissions: []
+            permissions: [],
+            appealReviewers: []
           }
         ]
       : evaluationInputs || [];
@@ -219,6 +221,20 @@ export async function generateProposal({
           )
       );
 
+    const evaluationAppealReviewersToCreate: Prisma.ProposalAppealReviewerCreateManyInput[] =
+      evaluationInputsWithIdAndIndex.flatMap(
+        (input) =>
+          input.appealReviewers?.map(
+            (reviewer) =>
+              ({
+                proposalId,
+                evaluationId: input.id,
+                roleId: reviewer.group === 'role' ? reviewer.id : undefined,
+                userId: reviewer.group === 'user' ? reviewer.id : undefined
+              }) as Prisma.ProposalReviewerCreateManyInput
+          ) ?? []
+      );
+
     await prisma.$transaction([
       prisma.proposalEvaluation.createMany({
         data: evaluationInputsWithIdAndIndex.map(
@@ -235,7 +251,10 @@ export async function generateProposal({
               snapshotExpiry: input.snapshotExpiry,
               snapshotId: input.snapshotId,
               voteId: input.voteId,
-              requiredReviews: input.requiredReviews ?? 1
+              requiredReviews: input.requiredReviews ?? 1,
+              appealable: input.appealable,
+              appealRequiredReviews: input.appealRequiredReviews,
+              finalStep: input.finalStep
             }) as Prisma.ProposalEvaluationCreateManyInput
         ),
         skipDuplicates: true
@@ -248,6 +267,9 @@ export async function generateProposal({
       }),
       prisma.proposalRubricCriteria.createMany({
         data: evaluationRubricsToCreate
+      }),
+      prisma.proposalAppealReviewer.createMany({
+        data: evaluationAppealReviewersToCreate
       })
     ]);
   }
