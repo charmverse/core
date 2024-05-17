@@ -18,8 +18,10 @@ export type PermissionJson = Pick<ProposalEvaluationPermission, 'operation'> &
 export type WorkflowEvaluationJson = Pick<ProposalEvaluation, 'id' | 'title' | 'type'> & {
   permissions: PermissionJson[];
   declineReasons?: string[] | null;
-  requiredReviews?: number;
-  finalStep?: boolean;
+  requiredReviews?: number | null;
+  finalStep?: boolean | null;
+  appealable?: boolean | null;
+  appealRequiredReviews?: number | null;
   actionLabels?: {
     approve?: string;
     reject?: string;

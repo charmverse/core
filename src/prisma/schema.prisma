@@ -704,7 +704,8 @@ model User {
   blacklistedSpaceUsers         BlacklistedSpaceUser[]
   blacklistedUser               BlacklistedUser[]
   proposalEvaluationPermissions ProposalEvaluationPermission[]
-  decidedProposalEvaluations    ProposalEvaluation[]
+  decidedProposalEvaluations    ProposalEvaluation[]            @relation("decidedBy")
+  appealedByProposalEvaluations ProposalEvaluation[]            @relation("appealedBy")
   receivedCredentials           IssuedCredential[]
   otp                           Otp?
   charmWallet                   CharmWallet?
@@ -720,6 +721,7 @@ model User {
   synapsUserKyc                 SynapsUserKyc?
   personaUserKyc                PersonaUserKyc?
   proposalEvaluationReviews     ProposalEvaluationReview[]
+  proposalAppealReviewers       ProposalAppealReviewer[]
 
   @@index([createdAt(sort: Asc)])
 }
@@ -1077,6 +1079,7 @@ model Role {
   memberPropertyPermissions     MemberPropertyPermission[]
   postCategoryPermissions       PostCategoryPermission[]
   proposalEvaluationPermissions ProposalEvaluationPermission[]
+  proposalAppealReviewers       ProposalAppealReviewer[]
 
   @@unique([spaceId, name])
   @@index([spaceId])
@@ -1257,6 +1260,7 @@ model Proposal {
   issuedCredentials           IssuedCredential[]
   projectId                   String?                             @db.Uuid
   project                     Project?                            @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  ProposalAppealReviewer      ProposalAppealReviewer[]
 
   @@index([spaceId])
   @@index([reviewedBy])
@@ -1308,10 +1312,11 @@ model ProposalEvaluation {
   title                     String
   type                      ProposalEvaluationType
   completedAt               DateTime?
+  declinedAt                DateTime? // Required to keep track of when the evaluation was declined for an appealable step
   snapshotId                String?
   snapshotExpiry            DateTime?
   decidedBy                 String?                             @db.Uuid
-  decider                   User?                               @relation(fields: [decidedBy], references: [id], onDelete: SetNull)
+  decider                   User?                               @relation(fields: [decidedBy], references: [id], onDelete: SetNull, name: "decidedBy")
   proposalId                String                              @db.Uuid
   proposal                  Proposal                            @relation(fields: [proposalId], references: [id], onDelete: Cascade)
   voteSettings              Json?
@@ -1320,11 +1325,17 @@ model ProposalEvaluation {
   actionLabels              Json?
   requiredReviews           Int                                 @default(1)
   finalStep                 Boolean?
+  appealRequiredReviews     Int?
+  appealable                Boolean?                            @default(false)
+  appealedAt                DateTime?
+  appealedBy                String?                             @db.Uuid
+  appealer                  User?                               @relation(fields: [appealedBy], references: [id], onDelete: SetNull, name: "appealedBy")
   rubricCriteria            ProposalRubricCriteria[]
   rubricAnswers             ProposalRubricCriteriaAnswer[]
   draftRubricAnswers        DraftProposalRubricCriteriaAnswer[]
   result                    ProposalEvaluationResult?
   reviewers                 ProposalReviewer[]
+  appealReviewers           ProposalAppealReviewer[]
   permissions               ProposalEvaluationPermission[]
   proposalNotification      ProposalNotification[]
   proposalEvaluationReviews ProposalEvaluationReview[]
@@ -1402,6 +1413,23 @@ model ProposalReviewer {
   reviewer     User?               @relation(fields: [userId], references: [id], onDelete: Cascade)
   evaluationId String              @db.Uuid
   evaluation   ProposalEvaluation  @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
+
+  @@index([evaluationId])
+  @@index([proposalId])
+  @@index([roleId])
+  @@index([userId])
+}
+
+model ProposalAppealReviewer {
+  id           String             @id @default(uuid()) @db.Uuid
+  proposalId   String             @db.Uuid
+  proposal     Proposal           @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  roleId       String?            @db.Uuid
+  userId       String?            @db.Uuid
+  role         Role?              @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  reviewer     User?              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  evaluationId String             @db.Uuid
+  evaluation   ProposalEvaluation @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
 
   @@index([evaluationId])
   @@index([proposalId])
@@ -1513,6 +1541,7 @@ enum ProposalOperation {
   archive
   unarchive
   move
+  evaluate_appeal
 }
 
 model MemberProperty {
@@ -2346,10 +2375,11 @@ model ProposalEvaluationReview {
   result         ProposalEvaluationResult
   reviewerId     String                   @db.Uuid
   reviewer       User                     @relation(fields: [reviewerId], references: [id], onDelete: Cascade)
+  appeal         Boolean?
   evaluationId   String                   @db.Uuid
   evaluation     ProposalEvaluation       @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
   declineReasons String[]                 @default([])
 
-  @@unique([reviewerId, evaluationId])
+  @@unique([reviewerId, evaluationId, appeal])
   @@index([evaluationId])
 }
