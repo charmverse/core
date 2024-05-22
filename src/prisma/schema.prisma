@@ -636,93 +636,93 @@ model Vote {
 }
 
 model User {
-  id                              String                           @id @default(uuid()) @db.Uuid
-  createdAt                       DateTime                         @default(now())
-  updatedAt                       DateTime                         @default(now())
-  deletedAt                       DateTime?
-  avatar                          String?
-  avatarContract                  String?
-  avatarTokenId                   String?
-  avatarChain                     Int?
-  username                        String
-  isBot                           Boolean?                         @default(false)
-  path                            String                           @unique
-  identityType                    IdentityType?
-  email                           String?
-  emailNotifications              Boolean?                         @default(true)
-  emailNewsletter                 Boolean?                         @default(false)
-  xpsEngineId                     String?                          @unique
-  publishToLensDefault            Boolean?                         @default(false)
-  primaryWalletId                 String?                          @db.Uuid
-  primaryWallet                   UserWallet?                      @relation(fields: [primaryWalletId], references: [id], onDelete: SetNull, name: "primaryUserWallet")
-  applications                    Application[]
-  blocks                          Block[]
-  bounties                        Bounty[]
-  bountyPermissions               BountyPermission[]
-  comments                        Comment[]
-  discordUser                     DiscordUser?
-  favorites                       FavoritePage[]
-  inviteLinks                     InviteLink[]
-  posts                           Post[]
-  pages                           Page[]
-  permissions                     PagePermission[]
-  poaps                           Poap[]
-  spacesCreated                   Space[]
-  spacePermissions                SpacePermission[]
-  spaceRoles                      SpaceRole[]
-  spacesOrder                     String[]
-  telegramUser                    TelegramUser?
-  threads                         Thread[]
-  profile                         UserDetails?
-  gnosisSafes                     UserGnosisSafe[]
-  userNotifications               UserNotification[]
-  notificationState               UserNotificationState?
-  userVotes                       UserVote[]
-  initiatedVotes                  Vote[]
-  profileItems                    ProfileItem[]
-  proposalsAuthored               ProposalAuthor[]
-  proposalsReviewed               ProposalReviewer[]
-  reviewedProposals               Proposal[]
-  workspaceEvents                 WorkspaceEvent[]
-  wallets                         UserWallet[]                     @relation("userWallet")
-  memberPropertyValues            MemberPropertyValue[]
-  spaceNotificationSettings       UserSpaceNotificationSettings[]
-  userTokenGates                  UserTokenGate[]
-  unstoppableDomains              UnstoppableDomain[]
-  postComments                    PostComment[]
-  googleAccounts                  GoogleAccount[]
-  GoogleCredential                GoogleCredential[]
-  PageComment                     PageComment[]
-  verifiedEmails                  VerifiedEmail[]
-  apiPageKeys                     ApiPageKey[]
-  spaceActions                    UserSpaceAction[]
-  proposalBlocks                  ProposalBlock[]
-  rewardBlocks                    RewardBlock[]
-  authorNotifications             UserNotificationMetadata[]       @relation("author")
-  targetNotifications             UserNotificationMetadata[]       @relation("target")
-  ApplicationComment              ApplicationComment[]
-  blacklistedSpaceUsers           BlacklistedSpaceUser[]
-  blacklistedUser                 BlacklistedUser[]
-  proposalEvaluationPermissions   ProposalEvaluationPermission[]
-  decidedProposalEvaluations      ProposalEvaluation[]             @relation("decidedBy")
-  appealedByProposalEvaluations   ProposalEvaluation[]             @relation("appealedBy")
-  receivedCredentials             IssuedCredential[]
-  otp                             Otp?
-  charmWallet                     CharmWallet?
-  favoriteCredentials             FavoriteCredential[]
-  referralCodes                   ReferralCode[]
-  referredUserEvents              ReferralCodeUseEvent[]           @relation("referrer")
-  referredByUserEvents            ReferralCodeUseEvent[]           @relation("referee")
-  projectMembers                  ProjectMember[]
-  projects                        Project[]
-  claimed                         Boolean?
-  spaceGithubConnections          SpaceGithubConnection[]
-  rewardsGithubRepo               RewardsGithubRepo[]
-  synapsUserKyc                   SynapsUserKyc?
-  personaUserKyc                  PersonaUserKyc?
-  proposalEvaluationReviews       ProposalEvaluationReview[]
-  proposalAppealReviewers         ProposalAppealReviewer[]
-  proposalEvaluationAppealReviews ProposalEvaluationAppealReview[]
+  id                            String                           @id @default(uuid()) @db.Uuid
+  createdAt                     DateTime                         @default(now())
+  updatedAt                     DateTime                         @default(now())
+  deletedAt                     DateTime?
+  avatar                        String?
+  avatarContract                String?
+  avatarTokenId                 String?
+  avatarChain                   Int?
+  username                      String
+  isBot                         Boolean?                         @default(false)
+  path                          String                           @unique
+  identityType                  IdentityType?
+  email                         String?
+  emailNotifications            Boolean?                         @default(true)
+  emailNewsletter               Boolean?                         @default(false)
+  xpsEngineId                   String?                          @unique
+  publishToLensDefault          Boolean?                         @default(false)
+  primaryWalletId               String?                          @db.Uuid
+  primaryWallet                 UserWallet?                      @relation(fields: [primaryWalletId], references: [id], onDelete: SetNull, name: "primaryUserWallet")
+  applications                  Application[]
+  blocks                        Block[]
+  bounties                      Bounty[]
+  bountyPermissions             BountyPermission[]
+  comments                      Comment[]
+  discordUser                   DiscordUser?
+  favorites                     FavoritePage[]
+  inviteLinks                   InviteLink[]
+  posts                         Post[]
+  pages                         Page[]
+  permissions                   PagePermission[]
+  poaps                         Poap[]
+  spacesCreated                 Space[]
+  spacePermissions              SpacePermission[]
+  spaceRoles                    SpaceRole[]
+  spacesOrder                   String[]
+  telegramUser                  TelegramUser?
+  threads                       Thread[]
+  profile                       UserDetails?
+  gnosisSafes                   UserGnosisSafe[]
+  userNotifications             UserNotification[]
+  notificationState             UserNotificationState?
+  userVotes                     UserVote[]
+  initiatedVotes                Vote[]
+  profileItems                  ProfileItem[]
+  proposalsAuthored             ProposalAuthor[]
+  proposalsReviewed             ProposalReviewer[]
+  reviewedProposals             Proposal[]
+  workspaceEvents               WorkspaceEvent[]
+  wallets                       UserWallet[]                     @relation("userWallet")
+  memberPropertyValues          MemberPropertyValue[]
+  spaceNotificationSettings     UserSpaceNotificationSettings[]
+  userTokenGates                UserTokenGate[]
+  unstoppableDomains            UnstoppableDomain[]
+  postComments                  PostComment[]
+  googleAccounts                GoogleAccount[]
+  GoogleCredential              GoogleCredential[]
+  PageComment                   PageComment[]
+  verifiedEmails                VerifiedEmail[]
+  apiPageKeys                   ApiPageKey[]
+  spaceActions                  UserSpaceAction[]
+  proposalBlocks                ProposalBlock[]
+  rewardBlocks                  RewardBlock[]
+  authorNotifications           UserNotificationMetadata[]       @relation("author")
+  targetNotifications           UserNotificationMetadata[]       @relation("target")
+  ApplicationComment            ApplicationComment[]
+  blacklistedSpaceUsers         BlacklistedSpaceUser[]
+  blacklistedUser               BlacklistedUser[]
+  proposalEvaluationPermissions ProposalEvaluationPermission[]
+  decidedProposalEvaluations    ProposalEvaluation[]             @relation("decidedBy")
+  appealedByProposalEvaluations ProposalEvaluation[]             @relation("appealedBy")
+  receivedCredentials           IssuedCredential[]
+  otp                           Otp?
+  charmWallet                   CharmWallet?
+  favoriteCredentials           FavoriteCredential[]
+  referralCodes                 ReferralCode[]
+  referredUserEvents            ReferralCodeUseEvent[]           @relation("referrer")
+  referredByUserEvents          ReferralCodeUseEvent[]           @relation("referee")
+  projectMembers                ProjectMember[]
+  projects                      Project[]
+  claimed                       Boolean?
+  spaceGithubConnections        SpaceGithubConnection[]
+  rewardsGithubRepo             RewardsGithubRepo[]
+  synapsUserKyc                 SynapsUserKyc?
+  personaUserKyc                PersonaUserKyc?
+  reviews                       ProposalEvaluationReview[]
+  proposalAppealReviewers       ProposalAppealReviewer[]
+  appealReviews                 ProposalEvaluationAppealReview[]
 
   @@index([createdAt(sort: Asc)])
 }
@@ -1308,39 +1308,39 @@ model ProposalEvaluationPermission {
 }
 
 model ProposalEvaluation {
-  id                              String                              @id @default(uuid()) @db.Uuid
-  index                           Int // tells us what order
-  title                           String
-  type                            ProposalEvaluationType
-  completedAt                     DateTime?
-  declinedAt                      DateTime? // Required to keep track of when the evaluation was declined for an appealable step
-  snapshotId                      String?
-  snapshotExpiry                  DateTime?
-  decidedBy                       String?                             @db.Uuid
-  decider                         User?                               @relation(fields: [decidedBy], references: [id], onDelete: SetNull, name: "decidedBy")
-  proposalId                      String                              @db.Uuid
-  proposal                        Proposal                            @relation(fields: [proposalId], references: [id], onDelete: Cascade)
-  voteSettings                    Json?
-  voteId                          String?                             @unique @db.Uuid
-  vote                            Vote?                               @relation(fields: [voteId], references: [id], onDelete: SetNull)
-  actionLabels                    Json?
-  requiredReviews                 Int                                 @default(1)
-  finalStep                       Boolean?
-  appealRequiredReviews           Int?
-  appealable                      Boolean?                            @default(false)
-  appealedAt                      DateTime?
-  appealedBy                      String?                             @db.Uuid
-  appealer                        User?                               @relation(fields: [appealedBy], references: [id], onDelete: SetNull, name: "appealedBy")
-  rubricCriteria                  ProposalRubricCriteria[]
-  rubricAnswers                   ProposalRubricCriteriaAnswer[]
-  draftRubricAnswers              DraftProposalRubricCriteriaAnswer[]
-  result                          ProposalEvaluationResult?
-  reviewers                       ProposalReviewer[]
-  appealReviewers                 ProposalAppealReviewer[]
-  permissions                     ProposalEvaluationPermission[]
-  proposalNotification            ProposalNotification[]
-  proposalEvaluationReviews       ProposalEvaluationReview[]
-  proposalEvaluationAppealReviews ProposalEvaluationAppealReview[]
+  id                    String                              @id @default(uuid()) @db.Uuid
+  index                 Int // tells us what order
+  title                 String
+  type                  ProposalEvaluationType
+  completedAt           DateTime?
+  declinedAt            DateTime? // Required to keep track of when the evaluation was declined for an appealable step
+  snapshotId            String?
+  snapshotExpiry        DateTime?
+  decidedBy             String?                             @db.Uuid
+  decider               User?                               @relation(fields: [decidedBy], references: [id], onDelete: SetNull, name: "decidedBy")
+  proposalId            String                              @db.Uuid
+  proposal              Proposal                            @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  voteSettings          Json?
+  voteId                String?                             @unique @db.Uuid
+  vote                  Vote?                               @relation(fields: [voteId], references: [id], onDelete: SetNull)
+  actionLabels          Json?
+  requiredReviews       Int                                 @default(1)
+  finalStep             Boolean?
+  appealRequiredReviews Int?
+  appealable            Boolean?                            @default(false)
+  appealedAt            DateTime?
+  appealedBy            String?                             @db.Uuid
+  appealer              User?                               @relation(fields: [appealedBy], references: [id], onDelete: SetNull, name: "appealedBy")
+  rubricCriteria        ProposalRubricCriteria[]
+  rubricAnswers         ProposalRubricCriteriaAnswer[]
+  draftRubricAnswers    DraftProposalRubricCriteriaAnswer[]
+  result                ProposalEvaluationResult?
+  reviewers             ProposalReviewer[]
+  appealReviewers       ProposalAppealReviewer[]
+  permissions           ProposalEvaluationPermission[]
+  proposalNotification  ProposalNotification[]
+  reviews               ProposalEvaluationReview[]
+  appealReviews         ProposalEvaluationAppealReview[]
 
   @@index([proposalId])
   @@index([index])
