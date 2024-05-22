@@ -371,8 +371,8 @@ model Space {
   synapsUserKyc               SynapsUserKyc[]
   personaCredential           PersonaCredential?
   personaUserKyc              PersonaUserKyc[]
-  DocusignCredentials         DocusignCredential[]
-  DocumentToSign              DocumentToSign[]
+  docusignCredentials         DocusignCredential[]
+  documentsToSign             DocumentToSign[]
 
   @@index([createdBy])
 }
