@@ -1,3 +1,6 @@
+-- CreateEnum
+CREATE TYPE "DocumentSignatureStatus" AS ENUM ('pending', 'completed');
+
 -- AlterEnum
 ALTER TYPE "ProposalEvaluationType" ADD VALUE 'sign_documents';
 
@@ -23,6 +26,8 @@ CREATE TABLE "DocumentToSign" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "completedAt" TIMESTAMP(3),
     "docusignEnvelopeId" TEXT NOT NULL,
+    "status" "DocumentSignatureStatus" NOT NULL,
+    "title" TEXT NOT NULL,
     "evaluationId" UUID NOT NULL,
     "proposalId" UUID NOT NULL,
     "spaceId" UUID NOT NULL,

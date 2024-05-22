@@ -2407,11 +2407,18 @@ model DocusignCredential {
   webhookApiKey  String? @unique
 }
 
+enum DocumentSignatureStatus {
+  pending
+  completed
+}
+
 model DocumentToSign {
   id                 String    @id @default(uuid()) @db.Uuid
   createdAt          DateTime  @default(now())
   completedAt        DateTime?
   docusignEnvelopeId String
+  status             DocumentSignatureStatus
+  title              String
   evaluationId       String    @db.Uuid
   evaluation         ProposalEvaluation @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
   proposalId         String   @db.Uuid
