@@ -2384,12 +2384,11 @@ model ProposalEvaluationReview {
   result         ProposalEvaluationResult
   reviewerId     String                   @db.Uuid
   reviewer       User                     @relation(fields: [reviewerId], references: [id], onDelete: Cascade)
-  appeal         Boolean?
   evaluationId   String                   @db.Uuid
   evaluation     ProposalEvaluation       @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
   declineReasons String[]                 @default([])
 
-  @@unique([reviewerId, evaluationId, appeal])
+  @@unique([reviewerId, evaluationId])
   @@index([evaluationId])
 }
 
