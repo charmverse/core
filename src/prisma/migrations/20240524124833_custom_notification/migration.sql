@@ -3,6 +3,7 @@ CREATE TABLE "CustomNotification" (
     "id" UUID NOT NULL,
     "notificationMetadataId" UUID NOT NULL,
     "type" TEXT NOT NULL,
+    "content" JSONB,
 
     CONSTRAINT "CustomNotification_pkey" PRIMARY KEY ("id")
 );

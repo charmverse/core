@@ -1973,6 +1973,7 @@ model CustomNotification {
   notificationMetadataId String                   @db.Uuid
   notificationMetadata   UserNotificationMetadata @relation(fields: [notificationMetadataId], references: [id], onDelete: Cascade)
   type                   String
+  content                Json?
 }
 
 model SQSMessage {
