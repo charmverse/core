@@ -1888,6 +1888,7 @@ model UserNotificationMetadata {
   postNotifications     PostNotification[]
   proposalNotifications ProposalNotification[]
   voteNotifications     VoteNotification[]
+  customNotifications   CustomNotification[]
 }
 
 model BountyNotification {
@@ -1964,6 +1965,13 @@ model VoteNotification {
   // vote task columns
   voteId                 String                   @db.Uuid
   vote                   Vote                     @relation(fields: [voteId], references: [id], onDelete: Cascade)
+  type                   String
+}
+
+model CustomNotification {
+  id                     String                   @id @default(uuid()) @db.Uuid
+  notificationMetadataId String                   @db.Uuid
+  notificationMetadata   UserNotificationMetadata @relation(fields: [notificationMetadataId], references: [id], onDelete: Cascade)
   type                   String
 }
 
