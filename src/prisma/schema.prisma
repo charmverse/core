@@ -1336,6 +1336,7 @@ model ProposalEvaluation {
   appealable            Boolean?                            @default(false)
   appealedAt            DateTime?
   appealedBy            String?                             @db.Uuid
+  appealReason          String?
   appealer              User?                               @relation(fields: [appealedBy], references: [id], onDelete: SetNull, name: "appealedBy")
   rubricCriteria        ProposalRubricCriteria[]
   rubricAnswers         ProposalRubricCriteriaAnswer[]
