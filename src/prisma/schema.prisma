@@ -296,7 +296,8 @@ model Space {
   snapshotDomain              String?
   spaceImage                  String?
   spaceArtwork                String?
-  emailArtwork                String?
+  emailBrandColor             String?
+  emailBrandArtwork           String?
   credentialLogo              String?
   defaultPostCategoryId       String?                           @unique @db.Uuid
   defaultPostCategory         PostCategory?                     @relation(fields: [defaultPostCategoryId], references: [id], name: "defaultPostCategory", onDelete: SetNull)
