@@ -2464,3 +2464,34 @@ model ProposalEvaluationAppealReview {
   @@unique([reviewerId, evaluationId])
   @@index([evaluationId])
 }
+
+
+enum PullRequestStatus {
+  open
+  closed
+  merged
+}
+
+model PullRequestSummary {
+  id             String  @id @default(uuid()) @db.Uuid
+  createdAt      DateTime @default(now())
+  repoName       String
+  repoOwner      String
+  prTitle        String
+  prNumber         Int
+  createdBy      String
+  status         PullRequestStatus
+  patches        Json
+  additions      Int
+  deletions       Int
+  changedFiles    Int
+  model           String
+  prompt          String
+  promptTokens    Int
+  summary         String
+  summaryTokens   Int
+
+
+  // Ensure we don't run duplicate simulations
+  @@unique([repoName, repoOwner, prNumber, model, prompt])
+}
