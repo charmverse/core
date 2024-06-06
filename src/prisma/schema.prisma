@@ -1280,6 +1280,7 @@ model ProposalWorkflow {
   space              Space      @relation(fields: [spaceId], references: [id], onDelete: Cascade)
   index              Int
   title              String
+  draftReminder      Boolean?   @default(false)
   privateEvaluations Boolean?   @default(false)
   evaluations        Json[] // mirrors the ProposalEvaluation schema
   proposals          Proposal[]
@@ -1330,6 +1331,7 @@ model ProposalEvaluation {
   voteId                String?                             @unique @db.Uuid
   vote                  Vote?                               @relation(fields: [voteId], references: [id], onDelete: SetNull)
   actionLabels          Json?
+  notificationLabels    Json?
   requiredReviews       Int                                 @default(1)
   finalStep             Boolean?
   appealRequiredReviews Int?
