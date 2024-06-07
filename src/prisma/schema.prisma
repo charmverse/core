@@ -2402,7 +2402,7 @@ model ProposalEvaluationReview {
   evaluationId   String                   @db.Uuid
   evaluation     ProposalEvaluation       @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
   declineReasons String[]                 @default([])
-  declineInput   String?
+  declineMessage String?
 
   @@unique([reviewerId, evaluationId])
   @@index([evaluationId])
@@ -2466,7 +2466,7 @@ model ProposalEvaluationAppealReview {
   evaluationId   String                   @db.Uuid
   evaluation     ProposalEvaluation       @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
   declineReasons String[]                 @default([])
-  declineInput   String?
+  declineMessage String?
 
   @@unique([reviewerId, evaluationId])
   @@index([evaluationId])
