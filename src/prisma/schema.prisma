@@ -296,6 +296,8 @@ model Space {
   snapshotDomain              String?
   spaceImage                  String?
   spaceArtwork                String?
+  emailBrandColor             String?
+  emailBrandArtwork           String?
   credentialLogo              String?
   defaultPostCategoryId       String?                           @unique @db.Uuid
   defaultPostCategory         PostCategory?                     @relation(fields: [defaultPostCategoryId], references: [id], name: "defaultPostCategory", onDelete: SetNull)
@@ -1280,6 +1282,7 @@ model ProposalWorkflow {
   space              Space      @relation(fields: [spaceId], references: [id], onDelete: Cascade)
   index              Int
   title              String
+  draftReminder      Boolean?   @default(false)
   privateEvaluations Boolean?   @default(false)
   evaluations        Json[] // mirrors the ProposalEvaluation schema
   proposals          Proposal[]
@@ -1330,6 +1333,7 @@ model ProposalEvaluation {
   voteId                String?                             @unique @db.Uuid
   vote                  Vote?                               @relation(fields: [voteId], references: [id], onDelete: SetNull)
   actionLabels          Json?
+  notificationLabels    Json?
   requiredReviews       Int                                 @default(1)
   finalStep             Boolean?
   appealRequiredReviews Int?
@@ -1890,6 +1894,7 @@ model UserNotificationMetadata {
   space                 Space                  @relation(fields: [spaceId], references: [id], onDelete: Cascade)
   userId                String                 @db.Uuid
   user                  User                   @relation(fields: [userId], references: [id], onDelete: Cascade, name: "target")
+  messageId             String?
   bountyNotifications   BountyNotification[]
   documentNotifications DocumentNotification[]
   cardNotifications     CardNotification[]
@@ -2397,6 +2402,7 @@ model ProposalEvaluationReview {
   evaluationId   String                   @db.Uuid
   evaluation     ProposalEvaluation       @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
   declineReasons String[]                 @default([])
+  declineMessage String?
 
   @@unique([reviewerId, evaluationId])
   @@index([evaluationId])
@@ -2460,6 +2466,7 @@ model ProposalEvaluationAppealReview {
   evaluationId   String                   @db.Uuid
   evaluation     ProposalEvaluation       @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
   declineReasons String[]                 @default([])
+  declineMessage String?
 
   @@unique([reviewerId, evaluationId])
   @@index([evaluationId])

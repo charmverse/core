@@ -26,6 +26,10 @@ export type WorkflowEvaluationJson = Pick<ProposalEvaluation, 'id' | 'title' | '
     approve?: string;
     reject?: string;
   } | null;
+  notificationLabels?: {
+    approve?: string;
+    reject?: string;
+  } | null;
 };
 
 export type ProposalWorkflowTyped = Omit<ProposalWorkflow, 'evaluations'> & {
