@@ -735,7 +735,7 @@ model User {
 }
 
 model FarcasterUser {
-  fid       String   @id
+  fid       Int      @id @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
   account   Json
@@ -2484,7 +2484,6 @@ model ProposalEvaluationAppealReview {
   @@index([evaluationId])
 }
 
-
 enum PullRequestStatus {
   open
   closed
@@ -2492,24 +2491,23 @@ enum PullRequestStatus {
 }
 
 model PullRequestSummary {
-  id             String  @id @default(uuid()) @db.Uuid
-  createdAt      DateTime @default(now())
-  repoName       String
-  repoOwner      String
-  prTitle        String
-  prNumber         Int
-  createdBy      String
-  status         PullRequestStatus
-  patches        Json
-  additions      Int
-  deletions       Int
-  changedFiles    Int
-  model           String
-  prompt          String
-  promptTokens    Int
-  summary         String
-  summaryTokens   Int
-
+  id            String            @id @default(uuid()) @db.Uuid
+  createdAt     DateTime          @default(now())
+  repoName      String
+  repoOwner     String
+  prTitle       String
+  prNumber      Int
+  createdBy     String
+  status        PullRequestStatus
+  patches       Json
+  additions     Int
+  deletions     Int
+  changedFiles  Int
+  model         String
+  prompt        String
+  promptTokens  Int
+  summary       String
+  summaryTokens Int
 
   // Ensure we don't run duplicate simulations
   @@unique([repoName, repoOwner, prNumber, model, prompt])
