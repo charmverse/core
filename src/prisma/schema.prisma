@@ -729,8 +729,20 @@ model User {
   reviews                       ProposalEvaluationReview[]
   proposalAppealReviewers       ProposalAppealReviewer[]
   appealReviews                 ProposalEvaluationAppealReview[]
+  farcasterUser                 FarcasterUser?
 
   @@index([createdAt(sort: Asc)])
+}
+
+model FarcasterUser {
+  fid       String   @id
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  account   Json
+  userId    String   @unique @db.Uuid
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model VerifiedEmail {
