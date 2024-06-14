@@ -5,8 +5,20 @@
 
 */
 -- AlterTable
-ALTER TABLE "ProposalRubricCriteriaAnswer" DROP COLUMN "userId",
-ADD COLUMN     "userId" UUID NOT NULL;
+ALTER TABLE "ProposalRubricCriteriaAnswer"
+RENAME COLUMN "userId" TO "oldUserId";
+
+ALTER TABLE "ProposalRubricCriteriaAnswer"
+ADD COLUMN "userId" UUID;
+
+UPDATE "ProposalRubricCriteriaAnswer"
+SET "userId" = "oldUserId"::UUID;
+
+ALTER TABLE "ProposalRubricCriteriaAnswer"
+ALTER COLUMN "userId" SET NOT NULL;
+
+ALTER TABLE "ProposalRubricCriteriaAnswer"
+DROP COLUMN "oldUserId";
 
 -- CreateIndex
 CREATE UNIQUE INDEX "ProposalRubricCriteriaAnswer_userId_rubricCriteriaId_key" ON "ProposalRubricCriteriaAnswer"("userId", "rubricCriteriaId");
