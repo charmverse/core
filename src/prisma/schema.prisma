@@ -210,6 +210,7 @@ enum MemberPropertyType {
   bio
   join_date
   linked_in
+  farcaster
   github
   google
   telegram
@@ -729,8 +730,21 @@ model User {
   reviews                       ProposalEvaluationReview[]
   proposalAppealReviewers       ProposalAppealReviewer[]
   appealReviews                 ProposalEvaluationAppealReview[]
+  farcasterUser                 FarcasterUser?
+  proposalRubricCriteriaAnswers ProposalRubricCriteriaAnswer[]
 
   @@index([createdAt(sort: Asc)])
+}
+
+model FarcasterUser {
+  fid       Int      @id @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  account   Json
+  userId    String   @unique @db.Uuid
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model VerifiedEmail {
@@ -1479,7 +1493,8 @@ model ProposalRubricCriteriaAnswer {
   rubricCriteria   ProposalRubricCriteria @relation(fields: [rubricCriteriaId], references: [id], onDelete: Cascade)
   proposalId       String                 @db.Uuid
   proposal         Proposal               @relation(fields: [proposalId], references: [id], onDelete: Cascade)
-  userId           String
+  userId           String                 @db.Uuid
+  user             User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
   response         Json
   comment          String?
   evaluation       ProposalEvaluation     @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
@@ -2472,7 +2487,6 @@ model ProposalEvaluationAppealReview {
   @@index([evaluationId])
 }
 
-
 enum PullRequestStatus {
   open
   closed
@@ -2480,24 +2494,23 @@ enum PullRequestStatus {
 }
 
 model PullRequestSummary {
-  id             String  @id @default(uuid()) @db.Uuid
-  createdAt      DateTime @default(now())
-  repoName       String
-  repoOwner      String
-  prTitle        String
-  prNumber         Int
-  createdBy      String
-  status         PullRequestStatus
-  patches        Json
-  additions      Int
-  deletions       Int
-  changedFiles    Int
-  model           String
-  prompt          String
-  promptTokens    Int
-  summary         String
-  summaryTokens   Int
-
+  id            String            @id @default(uuid()) @db.Uuid
+  createdAt     DateTime          @default(now())
+  repoName      String
+  repoOwner     String
+  prTitle       String
+  prNumber      Int
+  createdBy     String
+  status        PullRequestStatus
+  patches       Json
+  additions     Int
+  deletions     Int
+  changedFiles  Int
+  model         String
+  prompt        String
+  promptTokens  Int
+  summary       String
+  summaryTokens Int
 
   // Ensure we don't run duplicate simulations
   @@unique([repoName, repoOwner, prNumber, model, prompt])
