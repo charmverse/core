@@ -210,6 +210,7 @@ enum MemberPropertyType {
   bio
   join_date
   linked_in
+  farcaster
   github
   google
   telegram
