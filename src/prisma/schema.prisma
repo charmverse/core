@@ -2283,6 +2283,12 @@ model Project {
   description    String?
   twitter        String?
   website        String?
+  websites       String[]        @default([])
+  farcasterIds   String[]        @default([])
+  category       String?
+  avatar         String?
+  coverImage     String?
+  mirror         String?
   github         String?
   blog           String?
   demoUrl        String?
