@@ -2068,6 +2068,7 @@ enum FormFieldType {
   image
   file
   milestone
+  op_project
 }
 
 model FormField {
