@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.62.1-rc-feat-connect-pr.2",
+  "version": "0.62.1-rc-feat-connect-pr.3",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
