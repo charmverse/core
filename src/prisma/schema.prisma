@@ -665,6 +665,7 @@ model User {
   publishToLensDefault          Boolean?                         @default(false)
   primaryWalletId               String?                          @db.Uuid
   primaryWallet                 UserWallet?                      @relation(fields: [primaryWalletId], references: [id], onDelete: SetNull, name: "primaryUserWallet")
+  connectOnboarded              Boolean?                         @default(false)
   applications                  Application[]
   blocks                        Block[]
   bounties                      Bounty[]

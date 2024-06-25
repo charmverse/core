@@ -12,3 +12,6 @@ ADD COLUMN     "websites" TEXT[] DEFAULT ARRAY[]::TEXT[];
 
 -- AlterTable
 ALTER TABLE "ProjectMember" ADD COLUMN     "farcasterId" INTEGER;
+
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN     "connectOnboarded" BOOLEAN DEFAULT false;
