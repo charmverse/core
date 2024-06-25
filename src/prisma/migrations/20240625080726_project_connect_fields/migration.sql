@@ -11,4 +11,4 @@ ADD COLUMN     "source" "ProjectSource" NOT NULL DEFAULT 'charmverse',
 ADD COLUMN     "websites" TEXT[] DEFAULT ARRAY[]::TEXT[];
 
 -- AlterTable
-ALTER TABLE "ProjectMember" ADD COLUMN     "farcasterId" TEXT;
+ALTER TABLE "ProjectMember" ADD COLUMN     "farcasterId" INTEGER;

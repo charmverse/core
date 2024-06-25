@@ -2268,7 +2268,7 @@ model ProjectMember {
   telegram         String?
   otherUrl         String?
   previousProjects String?
-  farcasterId      String?
+  farcasterId      Int?
   userId           String?  @db.Uuid
   user             User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
   projectId        String   @db.Uuid
