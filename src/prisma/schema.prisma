@@ -279,6 +279,11 @@ enum KycOption {
   synaps
 }
 
+enum ProjectSource {
+  charmverse
+  connect
+}
+
 model Space {
   id                          String                            @id @default(uuid()) @db.Uuid
   deletedAt                   DateTime?
@@ -2263,6 +2268,7 @@ model ProjectMember {
   telegram         String?
   otherUrl         String?
   previousProjects String?
+  farcasterId      String?
   userId           String?  @db.Uuid
   user             User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
   projectId        String   @db.Uuid
@@ -2295,6 +2301,7 @@ model Project {
   communityUrl   String?
   otherUrl       String?
   walletAddress  String?
+  source         ProjectSource   @default(charmverse)
   user           User            @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   projectMembers ProjectMember[]
   proposals      Proposal[]
