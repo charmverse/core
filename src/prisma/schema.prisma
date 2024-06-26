@@ -279,6 +279,11 @@ enum KycOption {
   synaps
 }
 
+enum ProjectSource {
+  charmverse
+  connect
+}
+
 model Space {
   id                          String                            @id @default(uuid()) @db.Uuid
   deletedAt                   DateTime?
@@ -2265,6 +2270,7 @@ model ProjectMember {
   telegram         String?
   otherUrl         String?
   previousProjects String?
+  farcasterId      Int?
   userId           String?  @db.Uuid
   user             User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
   projectId        String   @db.Uuid
@@ -2274,26 +2280,33 @@ model ProjectMember {
 }
 
 model Project {
-  id             String          @id @default(uuid()) @db.Uuid
-  createdAt      DateTime        @default(now())
-  createdBy      String          @db.Uuid
-  updatedAt      DateTime        @default(now()) @updatedAt
-  updatedBy      String          @db.Uuid
-  deletedAt      DateTime?
-  name           String
-  excerpt        String?
-  description    String?
-  twitter        String?
-  website        String?
-  github         String?
-  blog           String?
-  demoUrl        String?
-  communityUrl   String?
-  otherUrl       String?
-  walletAddress  String?
-  user           User            @relation(fields: [createdBy], references: [id], onDelete: Cascade)
-  projectMembers ProjectMember[]
-  proposals      Proposal[]
+  id              String          @id @default(uuid()) @db.Uuid
+  createdAt       DateTime        @default(now())
+  createdBy       String          @db.Uuid
+  updatedAt       DateTime        @default(now()) @updatedAt
+  updatedBy       String          @db.Uuid
+  deletedAt       DateTime?
+  name            String
+  excerpt         String?
+  description     String?
+  twitter         String?
+  website         String?
+  websites        String[]        @default([])
+  farcasterValues String[]        @default([])
+  category        String?
+  avatar          String?
+  coverImage      String?
+  mirror          String?
+  github          String?
+  blog            String?
+  demoUrl         String?
+  communityUrl    String?
+  otherUrl        String?
+  walletAddress   String?
+  source          ProjectSource   @default(charmverse)
+  user            User            @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  projectMembers  ProjectMember[]
+  proposals       Proposal[]
 
   @@index([createdBy])
 }
