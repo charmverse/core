@@ -2074,6 +2074,7 @@ enum FormFieldType {
   image
   file
   milestone
+  optimism_project_profile
 }
 
 model FormField {
@@ -2439,7 +2440,7 @@ model ProposalEvaluationReview {
 
 model DocusignCredential {
   id                  String  @id @default(uuid()) @db.Uuid
-  docusignAccountId   String  
+  docusignAccountId   String
   docusignAccountName String
   docusignApiBaseUrl  String
   docusignWebhookId   String?
