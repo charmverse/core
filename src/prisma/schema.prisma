@@ -2439,7 +2439,7 @@ model ProposalEvaluationReview {
 
 model DocusignCredential {
   id                  String  @id @default(uuid()) @db.Uuid
-  docusignAccountId   String  @unique
+  docusignAccountId   String  
   docusignAccountName String
   docusignApiBaseUrl  String
   docusignWebhookId   String?
