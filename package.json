@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.62.1-rc-drop-docusign-u.0",
+  "version": "0.63.0",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
