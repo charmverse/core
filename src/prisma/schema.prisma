@@ -658,6 +658,7 @@ model User {
   emailNewsletter               Boolean?                         @default(false)
   xpsEngineId                   String?                          @unique
   publishToLensDefault          Boolean?                         @default(false)
+  connectOnboarded              Boolean?                         @default(false)
   primaryWalletId               String?                          @db.Uuid
   primaryWallet                 UserWallet?                      @relation(fields: [primaryWalletId], references: [id], onDelete: SetNull, name: "primaryUserWallet")
   applications                  Application[]
@@ -2426,7 +2427,7 @@ model ProposalEvaluationReview {
 
 model DocusignCredential {
   id                  String  @id @default(uuid()) @db.Uuid
-  docusignAccountId   String  @unique
+  docusignAccountId   String  
   docusignAccountName String
   docusignApiBaseUrl  String
   docusignWebhookId   String?
