@@ -381,7 +381,7 @@ model Space {
   personaUserKyc              PersonaUserKyc[]
   docusignCredentials         DocusignCredential[]
   documentsToSign             DocumentToSign[]
-  DocusignAllowedRoleOrUser   DocusignAllowedRoleOrUser[]
+  docusignAllowedRoleOrUsers   DocusignAllowedRoleOrUser[]
 
   @@index([createdBy])
 }
@@ -739,7 +739,7 @@ model User {
   appealReviews                 ProposalEvaluationAppealReview[]
   farcasterUser                 FarcasterUser?
   proposalRubricCriteriaAnswers ProposalRubricCriteriaAnswer[]
-  DocusignAllowedRoleOrUser     DocusignAllowedRoleOrUser[]
+  docusignAllowedRoleOrUsers     DocusignAllowedRoleOrUser[]
 
   @@index([createdAt(sort: Asc)])
 }
@@ -1109,7 +1109,7 @@ model Role {
   postCategoryPermissions       PostCategoryPermission[]
   proposalEvaluationPermissions ProposalEvaluationPermission[]
   proposalAppealReviewers       ProposalAppealReviewer[]
-  DocusignAllowedRoleOrUser     DocusignAllowedRoleOrUser[]
+  docusignAllowedRoleOrUsers     DocusignAllowedRoleOrUser[]
 
   @@unique([spaceId, name])
   @@index([spaceId])
