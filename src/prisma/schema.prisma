@@ -381,6 +381,7 @@ model Space {
   personaUserKyc              PersonaUserKyc[]
   docusignCredentials         DocusignCredential[]
   documentsToSign             DocumentToSign[]
+  docusignAllowedRoleOrUsers   DocusignAllowedRoleOrUser[]
 
   @@index([createdBy])
 }
@@ -738,6 +739,7 @@ model User {
   appealReviews                 ProposalEvaluationAppealReview[]
   farcasterUser                 FarcasterUser?
   proposalRubricCriteriaAnswers ProposalRubricCriteriaAnswer[]
+  docusignAllowedRoleOrUsers     DocusignAllowedRoleOrUser[]
 
   @@index([createdAt(sort: Asc)])
 }
@@ -1107,6 +1109,7 @@ model Role {
   postCategoryPermissions       PostCategoryPermission[]
   proposalEvaluationPermissions ProposalEvaluationPermission[]
   proposalAppealReviewers       ProposalAppealReviewer[]
+  docusignAllowedRoleOrUsers     DocusignAllowedRoleOrUser[]
 
   @@unique([spaceId, name])
   @@index([spaceId])
@@ -2529,4 +2532,14 @@ model PullRequestSummary {
 
   // Ensure we don't run duplicate simulations
   @@unique([repoName, repoOwner, prNumber, model, prompt])
+}
+
+model DocusignAllowedRoleOrUser {
+  id      String  @id @default(uuid()) @db.Uuid
+  spaceId String  @db.Uuid
+  space   Space   @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  roleId  String? @db.Uuid
+  role    Role?   @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  userId  String? @db.Uuid
+  user    User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
