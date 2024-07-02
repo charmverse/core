@@ -2,6 +2,7 @@
 CREATE TABLE "OptimismProjectAttestation" (
     "projectRefUID" TEXT NOT NULL,
     "farcasterIds" INTEGER[],
+    "chainId" INTEGER NOT NULL,
     "name" TEXT NOT NULL,
     "metadataAttestationUID" TEXT NOT NULL,
     "metadataUrl" TEXT NOT NULL,

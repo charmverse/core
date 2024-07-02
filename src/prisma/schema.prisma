@@ -2548,6 +2548,7 @@ model DocusignAllowedRoleOrUser {
 model OptimismProjectAttestation {
   projectRefUID         String   @id
   farcasterIds          Int[]
+  chainId               Int
   name                  String
   metadataAttestationUID String
   metadataUrl           String
