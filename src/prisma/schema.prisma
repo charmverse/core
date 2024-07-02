@@ -2546,10 +2546,10 @@ model DocusignAllowedRoleOrUser {
 }
 
 model OptimismProjectAttestation {
-  attestationId         String   @id
+  projectRefUID         String   @id
   farcasterIds          String[]
   name                  String
-  metadataAttestationId String
+  metadataAttestationUID String
   metadataUrl           String
   metadata              Json
   timeCreated           DateTime
