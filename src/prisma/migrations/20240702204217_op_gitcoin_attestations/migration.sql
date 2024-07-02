@@ -1,7 +1,7 @@
 -- CreateTable
 CREATE TABLE "OptimismProjectAttestation" (
     "projectRefUID" TEXT NOT NULL,
-    "farcasterIds" TEXT[],
+    "farcasterIds" INTEGER[],
     "name" TEXT NOT NULL,
     "metadataAttestationUID" TEXT NOT NULL,
     "metadataUrl" TEXT NOT NULL,
