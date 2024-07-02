@@ -2283,33 +2283,34 @@ model ProjectMember {
 }
 
 model Project {
-  id              String          @id @default(uuid()) @db.Uuid
-  createdAt       DateTime        @default(now())
-  createdBy       String          @db.Uuid
-  updatedAt       DateTime        @default(now()) @updatedAt
-  updatedBy       String          @db.Uuid
-  deletedAt       DateTime?
-  name            String
-  excerpt         String?
-  description     String?
-  twitter         String?
-  website         String?
-  websites        String[]        @default([])
-  farcasterValues String[]        @default([])
-  category        String?
-  avatar          String?
-  coverImage      String?
-  mirror          String?
-  github          String?
-  blog            String?
-  demoUrl         String?
-  communityUrl    String?
-  otherUrl        String?
-  walletAddress   String?
-  source          ProjectSource   @default(charmverse)
-  user            User            @relation(fields: [createdBy], references: [id], onDelete: Cascade)
-  projectMembers  ProjectMember[]
-  proposals       Proposal[]
+  id                        String                      @id @default(uuid()) @db.Uuid
+  createdAt                 DateTime                    @default(now())
+  createdBy                 String                      @db.Uuid
+  updatedAt                 DateTime                    @default(now()) @updatedAt
+  updatedBy                 String                      @db.Uuid
+  deletedAt                 DateTime?
+  name                      String
+  excerpt                   String?
+  description               String?
+  twitter                   String?
+  website                   String?
+  websites                  String[]                    @default([])
+  farcasterValues           String[]                    @default([])
+  category                  String?
+  avatar                    String?
+  coverImage                String?
+  mirror                    String?
+  github                    String?
+  blog                      String?
+  demoUrl                   String?
+  communityUrl              String?
+  otherUrl                  String?
+  walletAddress             String?
+  source                    ProjectSource               @default(charmverse)
+  user                      User                        @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  projectMembers            ProjectMember[]
+  proposals                 Proposal[]
+  gitcoinProjectAttestation GitcoinProjectAttestation[]
 
   @@index([createdBy])
 }
@@ -2552,4 +2553,14 @@ model OptimismProjectAttestation {
   metadataUrl           String
   metadata              Json
   timeCreated           DateTime
+}
+
+model GitcoinProjectAttestation {
+  id             String  @id @default(uuid()) @db.Uuid
+  createdAt      DateTime @default(now())
+  projectId      String  @db.Uuid
+  project        Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  chainId        Int
+  schemaId       String
+  attestationUID String
 }
