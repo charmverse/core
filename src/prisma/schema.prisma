@@ -2290,6 +2290,7 @@ model Project {
   updatedBy           String          @db.Uuid
   deletedAt           DateTime?
   name                String
+  path                String?
   excerpt             String?
   description         String?
   twitter             String?
