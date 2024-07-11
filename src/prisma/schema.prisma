@@ -2567,3 +2567,10 @@ model GitcoinProjectAttestation {
   schemaId       String
   attestationUID String
 }
+
+model ServiceWorkerSubscriptions {
+  id           String    @id @default(uuid()) @db.Uuid
+  createdAt    DateTime  @default(now())
+  deletedAt    DateTime?
+  subscription Json
+}
