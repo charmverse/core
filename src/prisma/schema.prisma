@@ -740,7 +740,8 @@ model User {
   farcasterUser                 FarcasterUser?
   proposalRubricCriteriaAnswers ProposalRubricCriteriaAnswer[]
   docusignAllowedRoleOrUsers    DocusignAllowedRoleOrUser[]
-  CharmCredential               CharmCredential[]
+  charmCredentials               CharmUserCredential[]
+  charmQualifyingEventCredentials CharmQualifyingEventCredential[]
 
   @@index([createdAt(sort: Asc)])
 }
@@ -1294,7 +1295,7 @@ model Proposal {
   project                     Project?                            @relation(fields: [projectId], references: [id], onDelete: SetNull)
   documentToSign              DocumentToSign[]
   ProposalAppealReviewer      ProposalAppealReviewer[]
-  CharmCredential             CharmCredential[]
+  charmQualifyingEventCredentials             CharmQualifyingEventCredential[]
 
   @@index([spaceId])
   @@index([reviewedBy])
@@ -2570,28 +2571,31 @@ model GitcoinProjectAttestation {
   attestationUID String
 }
 
-enum CharmCredentialType {
-  user_identifier
-  qualifying_event
-}
-
 enum QualifyingEventType {
-  none
   proposal_published
   pull_request_merged
 }
 
-model CharmCredential {
+model CharmUserCredential {
   id                  String              @id @default(uuid()) @db.Uuid
   createdAt           DateTime            @default(now())
-  type                CharmCredentialType
+  chainId             Int
+  schemaId            String
+  attestationUID      String
+  userId              String              @db.Uuid
+  user                User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model CharmQualifyingEventCredential {
+  id                  String              @id @default(uuid()) @db.Uuid
+  createdAt           DateTime            @default(now())
   qualifyingEventType QualifyingEventType
   chainId             Int
   schemaId            String
   attestationUID      String
   userId              String              @db.Uuid
   user                User                @relation(fields: [userId], references: [id], onDelete: Cascade)
-  // Relations to data that triggered the 
+  // Relations to data that triggered the attestation
   resourceUrl         String?
   proposalId          String?             @db.Uuid
   proposal            Proposal?           @relation(fields: [proposalId], references: [id], onDelete: Cascade)
