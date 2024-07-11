@@ -235,10 +235,9 @@ export type GetPermissionClient = {
   resourceIdType: ResourceIdEntity;
 };
 
-export async function getSpaceInfoViaResource({
-  resourceId,
-  resourceIdType
-}: GetPermissionClient): Promise<SpaceSubscriptionInfo> {
+export async function getSpaceInfoViaResource(
+  { resourceId, resourceIdType }: GetPermissionClient
+): Promise<SpaceSubscriptionInfo> {
   if (!isUUID(resourceId)) {
     throw new InvalidInputError(`Invalid resourceId: ${resourceId}`);
   }
@@ -246,24 +245,24 @@ export async function getSpaceInfoViaResource({
     !resourceIdType || resourceIdType === 'space'
       ? isSpaceOptedIn
       : resourceIdType === 'postCategory'
-        ? isPostCategorySpaceOptedIn
-        : resourceIdType === 'postCategoryPermission'
-          ? isPostCategoryPermissionSpaceOptedIn
-          : resourceIdType === 'post'
-            ? isPostSpaceOptedIn
-            : resourceIdType === 'proposal'
-              ? isProposalSpaceOptedIn
-              : resourceIdType === 'page'
-                ? isPageSpaceOptedIn
-                : resourceIdType === 'pagePermission'
-                  ? isPagePermissionSpaceOptedIn
-                  : resourceIdType === 'bounty'
-                    ? isBountySpaceOptedIn
-                    : resourceIdType === 'vote'
-                      ? isVoteSpaceOptedIn
-                      : resourceIdType === 'role'
-                        ? isRoleSpaceOptedIn
-                        : null;
+      ? isPostCategorySpaceOptedIn
+      : resourceIdType === 'postCategoryPermission'
+      ? isPostCategoryPermissionSpaceOptedIn
+      : resourceIdType === 'post'
+      ? isPostSpaceOptedIn
+      : resourceIdType === 'proposal'
+      ? isProposalSpaceOptedIn
+      : resourceIdType === 'page'
+      ? isPageSpaceOptedIn
+      : resourceIdType === 'pagePermission'
+      ? isPagePermissionSpaceOptedIn
+      : resourceIdType === 'bounty'
+      ? isBountySpaceOptedIn
+      : resourceIdType === 'vote'
+      ? isVoteSpaceOptedIn
+      : resourceIdType === 'role'
+      ? isRoleSpaceOptedIn
+      : null;
 
   if (!engineResolver) {
     throw new InvalidInputError(`Invalid resolver provided`);

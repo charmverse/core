@@ -80,25 +80,27 @@ export type GenerateProposalResponse = ProposalWithUsers & { page: Page; evaluat
  *
  * @reviewers Valid only for old tests, use `evaluationInputs` instead to define reviewers and permissions
  */
-export async function generateProposal({
-  userId,
-  spaceId,
-  fields = {},
-  proposalStatus = 'draft',
-  pageType = 'proposal',
-  title = 'Proposal',
-  authors = [],
-  reviewers,
-  deletedAt = null,
-  content,
-  archived,
-  evaluationType,
-  customProperties,
-  selectedCredentialTemplateIds,
-  sourceTemplateId,
-  evaluationInputs,
-  workflowId
-}: GenerateProposalInput): Promise<GenerateProposalResponse> {
+export async function generateProposal(
+  {
+    userId,
+    spaceId,
+    fields = {},
+    proposalStatus = 'draft',
+    pageType = 'proposal',
+    title = 'Proposal',
+    authors = [],
+    reviewers,
+    deletedAt = null,
+    content,
+    archived,
+    evaluationType,
+    customProperties,
+    selectedCredentialTemplateIds,
+    sourceTemplateId,
+    evaluationInputs,
+    workflowId
+  }: GenerateProposalInput
+): Promise<GenerateProposalResponse> {
   if (reviewers && evaluationInputs) {
     throw new InvalidInputError(
       'Cannot define both reviewers and evaluationInputs. Reviewers are a legacy feature. For new proposal tests, you should use the evaluation inputs field'
@@ -207,17 +209,18 @@ export async function generateProposal({
       );
 
     const evaluationReviewersToCreate: Prisma.ProposalReviewerCreateManyInput[] =
-      evaluationInputsWithIdAndIndex.flatMap((input) =>
-        input.reviewers?.map(
-          (reviewer) =>
-            ({
-              proposalId,
-              evaluationId: input.id,
-              roleId: reviewer.group === 'role' ? reviewer.id : undefined,
-              userId: reviewer.group === 'user' ? reviewer.id : undefined,
-              systemRole: ProposalSystemRole[reviewer.group as ProposalSystemRole] ? reviewer.group : undefined
-            }) as Prisma.ProposalReviewerCreateManyInput
-        )
+      evaluationInputsWithIdAndIndex.flatMap(
+        (input) =>
+          input.reviewers?.map(
+            (reviewer) =>
+              ({
+                proposalId,
+                evaluationId: input.id,
+                roleId: reviewer.group === 'role' ? reviewer.id : undefined,
+                userId: reviewer.group === 'user' ? reviewer.id : undefined,
+                systemRole: ProposalSystemRole[reviewer.group as ProposalSystemRole] ? reviewer.group : undefined
+              }) as Prisma.ProposalReviewerCreateManyInput
+          )
       );
 
     const evaluationAppealReviewersToCreate: Prisma.ProposalAppealReviewerCreateManyInput[] =
@@ -293,16 +296,18 @@ export async function generateProposal({
   return result as GenerateProposalResponse;
 }
 
-export async function generateProposalNotes({
-  proposalPageId,
-  createdBy,
-  content
-}: {
-  proposalPageId: string;
-  spaceId?: string;
-  createdBy?: string;
-  content?: any | null;
-}): Promise<Omit<Page, 'parentId'> & { parentId: string }> {
+export async function generateProposalNotes(
+  {
+    proposalPageId,
+    createdBy,
+    content
+  }: {
+    proposalPageId: string;
+    spaceId?: string;
+    createdBy?: string;
+    content?: any | null;
+  }
+): Promise<Omit<Page, 'parentId'> & { parentId: string }> {
   const page = await prisma.page.findUniqueOrThrow({ where: { id: proposalPageId } });
   return generatePage({
     type: 'proposal_notes',
@@ -314,14 +319,9 @@ export async function generateProposalNotes({
   }) as Promise<Omit<Page, 'parentId'> & { parentId: string }>;
 }
 
-export async function generateProposalTemplate({
-  spaceId,
-  userId,
-  authors,
-  deletedAt,
-  proposalStatus,
-  reviewers
-}: GenerateProposalInput): Promise<ProposalWithUsers> {
+export async function generateProposalTemplate(
+  { spaceId, userId, authors, deletedAt, proposalStatus, reviewers }: GenerateProposalInput
+): Promise<ProposalWithUsers> {
   const proposal = await generateProposal({
     spaceId,
     userId,
