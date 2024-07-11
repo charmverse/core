@@ -1,8 +1,8 @@
 import type { Comment, Page, Prisma, Thread } from '@prisma/client';
-import { DataNotFoundError, InvalidInputError, PageNotFoundError } from 'errors';
 import { v4 } from 'uuid';
 
 import { prisma } from '../../prisma-client';
+import { DataNotFoundError, InvalidInputError, PageNotFoundError } from '../errors';
 import type { PageNode, PageWithPermissions } from '../pages/interfaces';
 import type { PagePermissionAssignmentByValues } from '../permissions/pages/interfaces';
 

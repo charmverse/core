@@ -2,7 +2,7 @@
   "editor.detectIndentation": false,
   "editor.tabSize": 2,
   "jestrunner.jestCommand": "npx dotenv -e .env.test.local -- node --experimental-vm-modules 'node_modules/.bin/jest'",
-  "jestrunner.configPath": "jest.config.js",
+  "jestrunner.configPath": "jest.config.mjs",
   "typescript.tsdk": "node_modules/typescript/lib",
   "[javascript][typescript][typescriptreact]": {
     "editor.defaultFormatter": "dbaeumer.vscode-eslint",

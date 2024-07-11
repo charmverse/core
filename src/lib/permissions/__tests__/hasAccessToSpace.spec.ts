@@ -1,10 +1,10 @@
 import { jest } from '@jest/globals';
 import type { Space, SpaceRole, User } from '@prisma/client';
-import { InvalidInputError } from 'lib/errors';
 import { generateSpaceUser, generateUserAndSpace } from 'lib/testing/user';
+import { prisma } from 'prisma-client';
 import { v4 as uuid } from 'uuid';
 
-import { prisma } from '../../../prisma-client';
+import { InvalidInputError } from '../../errors';
 import { hasAccessToSpace } from '../hasAccessToSpace';
 
 let space: Space;
