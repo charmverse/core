@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.69.1-rc-feat-charm-cred.1",
+  "version": "0.70.3",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
@@ -80,8 +80,8 @@
   ],
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "test": "NODE_OPTIONS=\"--max_old_space_size=4096 --experimental-vm-modules=true\"  dotenv -e .env.test.local -- npx jest --config='./jest.config.js' --maxWorkers=2 --watch --verbose",
-    "test:ci": "NODE_OPTIONS=\"--max_old_space_size=4096 --experimental-vm-modules=true\"  dotenv -e .env.test.local -- npx jest --config='./jest.config.js' --maxWorkers=2",
+    "test": "NODE_OPTIONS=\"--max_old_space_size=4096 --experimental-vm-modules=true\"  dotenv -e .env.test.local -- npx jest --config='./jest.config.mjs' --maxWorkers=2 --watch --verbose",
+    "test:ci": "NODE_OPTIONS=\"--max_old_space_size=4096 --experimental-vm-modules=true\"  dotenv -e .env.test.local -- npx jest --config='./jest.config.mjs' --maxWorkers=2",
     "build": "rimraf dist && npm run build:esm && npx tsc && npx tsc-alias",
     "build:watch": "tsc --watch",
     "start": "npm run build:watch",
