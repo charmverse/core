@@ -1,7 +1,7 @@
-import { InvalidInputError } from 'errors';
 import type { Space, User } from 'prisma';
-import { prisma } from 'prisma-client';
 
+import { prisma } from '../../../prisma-client';
+import { InvalidInputError } from '../../errors';
 import { generateCommentWithThreadAndPage, generatePage } from '../pages';
 import { generateUserAndSpace } from '../user';
 
