@@ -2572,11 +2572,17 @@ model GitcoinProjectAttestation {
   attestationUID String
 }
 
+enum PushNotificationSource {
+  sunnyawards
+  connect
+  charmverse
+}
+
 model PushNotificationSubscription {
-  id           String   @id @default(uuid()) @db.Uuid
-  createdAt    DateTime @default(now())
+  id           String                 @id @default(uuid()) @db.Uuid
+  createdAt    DateTime               @default(now())
   subscription Json
-  source       String
-  userId       String?  @db.Uuid
-  user         User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  source       PushNotificationSource
+  userId       String?                @db.Uuid
+  user         User?                  @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

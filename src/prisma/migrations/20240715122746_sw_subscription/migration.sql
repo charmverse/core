@@ -1,9 +1,12 @@
+-- CreateEnum
+CREATE TYPE "PushNotificationSource" AS ENUM ('sunnyawards', 'connect', 'charmverse');
+
 -- CreateTable
 CREATE TABLE "PushNotificationSubscription" (
     "id" UUID NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "subscription" JSONB NOT NULL,
-    "source" TEXT NOT NULL,
+    "source" "PushNotificationSource" NOT NULL,
     "userId" UUID,
 
     CONSTRAINT "PushNotificationSubscription_pkey" PRIMARY KEY ("id")
