@@ -2,6 +2,7 @@
 CREATE TABLE "PushNotificationSubscription" (
     "id" UUID NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "subscription" JSONB NOT NULL,
     "source" TEXT NOT NULL,
     "userId" UUID,
 
