@@ -740,6 +740,7 @@ model User {
   farcasterUser                 FarcasterUser?
   proposalRubricCriteriaAnswers ProposalRubricCriteriaAnswer[]
   docusignAllowedRoleOrUsers    DocusignAllowedRoleOrUser[]
+  pushNotificationSubscription  PushNotificationSubscription[]
 
   @@index([createdAt(sort: Asc)])
 }
@@ -2571,9 +2572,10 @@ model GitcoinProjectAttestation {
   attestationUID String
 }
 
-model ServiceWorkerSubscriptions {
-  id           String    @id @default(uuid()) @db.Uuid
-  createdAt    DateTime  @default(now())
-  deletedAt    DateTime?
-  subscription Json
+model PushNotificationSubscription {
+  id        String   @id @default(uuid()) @db.Uuid
+  createdAt DateTime @default(now())
+  source    String
+  userId    String?  @db.Uuid
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
