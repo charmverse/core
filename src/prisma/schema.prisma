@@ -740,6 +740,7 @@ model User {
   farcasterUser                 FarcasterUser?
   proposalRubricCriteriaAnswers ProposalRubricCriteriaAnswer[]
   docusignAllowedRoleOrUsers    DocusignAllowedRoleOrUser[]
+  pushNotificationSubscription  PushNotificationSubscription[]
 
   @@index([createdAt(sort: Asc)])
 }
@@ -2569,4 +2570,19 @@ model GitcoinProjectAttestation {
   chainId        Int
   schemaId       String
   attestationUID String
+}
+
+enum PushNotificationSource {
+  sunnyawards
+  connect
+  charmverse
+}
+
+model PushNotificationSubscription {
+  id           String                 @id @default(uuid()) @db.Uuid
+  createdAt    DateTime               @default(now())
+  subscription Json
+  source       PushNotificationSource
+  userId       String?                @db.Uuid
+  user         User?                  @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
