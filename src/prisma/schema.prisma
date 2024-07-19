@@ -741,7 +741,7 @@ model User {
   proposalRubricCriteriaAnswers ProposalRubricCriteriaAnswer[]
   docusignAllowedRoleOrUsers    DocusignAllowedRoleOrUser[]
   pushNotificationSubscription  PushNotificationSubscription[]
-  proposalApprovers             ProposalApprover[]
+  proposalEvaluationApprovers             ProposalEvaluationApprover[]
 
   @@index([createdAt(sort: Asc)])
 }
@@ -1112,7 +1112,7 @@ model Role {
   proposalEvaluationPermissions ProposalEvaluationPermission[]
   proposalAppealReviewers       ProposalAppealReviewer[]
   docusignAllowedRoleOrUsers    DocusignAllowedRoleOrUser[]
-  proposalApprovers             ProposalApprover[]
+  proposalEvaluationApprovers             ProposalEvaluationApprover[]
 
   @@unique([spaceId, name])
   @@index([spaceId])
@@ -1296,7 +1296,7 @@ model Proposal {
   project                     Project?                            @relation(fields: [projectId], references: [id], onDelete: SetNull)
   documentToSign              DocumentToSign[]
   ProposalAppealReviewer      ProposalAppealReviewer[]
-  proposalApprovers           ProposalApprover[]
+  proposalEvaluationApprovers           ProposalEvaluationApprover[]
 
   @@index([spaceId])
   @@index([reviewedBy])
@@ -1380,7 +1380,7 @@ model ProposalEvaluation {
   reviews               ProposalEvaluationReview[]
   appealReviews         ProposalEvaluationAppealReview[]
   documentsToSign       DocumentToSign[]
-  proposalApprovers     ProposalApprover[]
+  proposalEvaluationApprovers     ProposalEvaluationApprover[]
 
   @@index([proposalId])
   @@index([index])
@@ -1462,7 +1462,7 @@ model ProposalReviewer {
   @@index([userId])
 }
 
-model ProposalApprover {
+model ProposalEvaluationApprover {
   id           String              @id @default(uuid()) @db.Uuid
   proposalId   String              @db.Uuid
   proposal     Proposal            @relation(fields: [proposalId], references: [id], onDelete: Cascade)
