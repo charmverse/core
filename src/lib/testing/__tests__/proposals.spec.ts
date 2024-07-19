@@ -1,5 +1,6 @@
 import type {
   ProposalEvaluation,
+  ProposalEvaluationApprover,
   ProposalEvaluationPermission,
   ProposalReviewer,
   ProposalRubricCriteria,
@@ -246,6 +247,9 @@ describe('generateProposal', () => {
       },
       include: {
         evaluationApprovers: true
+      },
+      orderBy: {
+        index: 'asc'
       }
     });
 
@@ -259,20 +263,18 @@ describe('generateProposal', () => {
           title: expect.any(String),
           type: 'rubric',
           evaluationApprovers: expect.arrayContaining([
-            {
-              approverId: approverUser.id,
+            expect.objectContaining<Partial<ProposalEvaluationApprover>>({
               evaluationId: expect.any(String),
               id: expect.any(String),
               roleId: null,
-              userId: null
-            },
-            {
-              approverId: null,
+              userId: approverUser.id
+            }),
+            expect.objectContaining<Partial<ProposalEvaluationApprover>>({
               evaluationId: expect.any(String),
               id: expect.any(String),
               roleId: approverRole.id,
               userId: null
-            }
+            })
           ])
         }),
         expect.objectContaining({
