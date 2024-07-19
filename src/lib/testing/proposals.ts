@@ -33,7 +33,7 @@ export type ProposalEvaluationTestInput = Partial<Omit<Prisma.ProposalEvaluation
   appealReviewers?: TargetPermissionGroup<'role' | 'user'>[];
   permissions: {
     assignee: { group: ProposalSystemRole } | TargetPermissionGroup<'role' | 'user'>;
-    operation: Extract<ProposalOperation, 'edit' | 'view' | 'move' | 'comment' | 'move_forward'>;
+    operation: Extract<ProposalOperation, 'edit' | 'view' | 'move' | 'comment' | 'complete_evaluation'>;
   }[];
   voteSettings?: any;
 };
