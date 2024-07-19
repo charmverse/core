@@ -741,6 +741,7 @@ model User {
   proposalRubricCriteriaAnswers ProposalRubricCriteriaAnswer[]
   docusignAllowedRoleOrUsers    DocusignAllowedRoleOrUser[]
   pushNotificationSubscription  PushNotificationSubscription[]
+  proposalApprovers             ProposalApprover[]
 
   @@index([createdAt(sort: Asc)])
 }
@@ -1111,6 +1112,7 @@ model Role {
   proposalEvaluationPermissions ProposalEvaluationPermission[]
   proposalAppealReviewers       ProposalAppealReviewer[]
   docusignAllowedRoleOrUsers    DocusignAllowedRoleOrUser[]
+  proposalApprovers             ProposalApprover[]
 
   @@unique([spaceId, name])
   @@index([spaceId])
@@ -1294,6 +1296,7 @@ model Proposal {
   project                     Project?                            @relation(fields: [projectId], references: [id], onDelete: SetNull)
   documentToSign              DocumentToSign[]
   ProposalAppealReviewer      ProposalAppealReviewer[]
+  proposalApprovers           ProposalApprover[]
 
   @@index([spaceId])
   @@index([reviewedBy])
@@ -1377,6 +1380,7 @@ model ProposalEvaluation {
   reviews               ProposalEvaluationReview[]
   appealReviews         ProposalEvaluationAppealReview[]
   documentsToSign       DocumentToSign[]
+  proposalApprovers     ProposalApprover[]
 
   @@index([proposalId])
   @@index([index])
@@ -1440,6 +1444,25 @@ model ProposalAuthor {
 }
 
 model ProposalReviewer {
+  id           String              @id @default(uuid()) @db.Uuid
+  proposalId   String              @db.Uuid
+  proposal     Proposal            @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  roleId       String?             @db.Uuid
+  userId       String?             @db.Uuid
+  // This should only use the all_members value of system role
+  systemRole   ProposalSystemRole?
+  role         Role?               @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  reviewer     User?               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  evaluationId String              @db.Uuid
+  evaluation   ProposalEvaluation  @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
+
+  @@index([evaluationId])
+  @@index([proposalId])
+  @@index([roleId])
+  @@index([userId])
+}
+
+model ProposalApprover {
   id           String              @id @default(uuid()) @db.Uuid
   proposalId   String              @db.Uuid
   proposal     Proposal            @relation(fields: [proposalId], references: [id], onDelete: Cascade)
