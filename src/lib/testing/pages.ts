@@ -37,29 +37,27 @@ type PageGenerateArgs = Pick<Page, 'createdBy' | 'spaceId'> &
   > &
   OptionalPagePermissionsToGenerate;
 
-export function generatePage(
-  {
-    id,
-    createdBy,
-    spaceId,
-    content = null,
-    contentText,
-    pagePermissions,
-    parentId,
-    title,
-    type,
-    path,
-    proposalId,
-    bountyId,
-    deletedAt,
-    index,
-    syncWithPageId,
-    additionalPaths,
-    sourceTemplateId,
-    isLocked,
-    lockedBy
-  }: PageGenerateArgs
-): Promise<Page> {
+export function generatePage({
+  id,
+  createdBy,
+  spaceId,
+  content = null,
+  contentText,
+  pagePermissions,
+  parentId,
+  title,
+  type,
+  path,
+  proposalId,
+  bountyId,
+  deletedAt,
+  index,
+  syncWithPageId,
+  additionalPaths,
+  sourceTemplateId,
+  isLocked,
+  lockedBy
+}: PageGenerateArgs): Promise<Page> {
   return prisma.page.create({
     data: {
       id: id ?? v4(),
@@ -131,19 +129,17 @@ export function generatePage(
 /**
  * This function provides a subset of Pages, which is enough to create simulated trees and assess tree resolution behaviour
  */
-export function generatePageNode(
-  {
-    // Default values for props reflects our app defaults
-    id = v4(),
-    parentId = null,
-    type = 'page',
-    index = -1,
-    deletedAt = null,
-    createdAt = new Date(),
-    title = 'Untitled',
-    spaceId = v4()
-  }: Partial<PageNode<Pick<Page, 'title'>>>
-): PageNode<Pick<Page, 'title'>> {
+export function generatePageNode({
+  // Default values for props reflects our app defaults
+  id = v4(),
+  parentId = null,
+  type = 'page',
+  index = -1,
+  deletedAt = null,
+  createdAt = new Date(),
+  title = 'Untitled',
+  spaceId = v4()
+}: Partial<PageNode<Pick<Page, 'title'>>>): PageNode<Pick<Page, 'title'>> {
   return {
     id,
     type,
@@ -170,22 +166,20 @@ export async function getPageWithPermissions(pageId: string): Promise<PageWithPe
     }
   });
 }
-export async function generateCommentWithThreadAndPage(
-  {
-    userId,
-    spaceId,
-    commentContent,
-    pagePermissions,
-    pageId,
-    threadId
-  }: {
-    userId: string;
-    spaceId: string;
-    commentContent: any;
-    pageId?: string;
-    threadId?: string;
-  } & OptionalPagePermissionsToGenerate
-): Promise<{ page: Page; thread: Thread; comment: Comment }> {
+export async function generateCommentWithThreadAndPage({
+  userId,
+  spaceId,
+  commentContent,
+  pagePermissions,
+  pageId,
+  threadId
+}: {
+  userId: string;
+  spaceId: string;
+  commentContent: any;
+  pageId?: string;
+  threadId?: string;
+} & OptionalPagePermissionsToGenerate): Promise<{ page: Page; thread: Thread; comment: Comment }> {
   if (threadId && !pageId) {
     throw new InvalidInputError(`Please also provide the page ID for the thread`);
   }
