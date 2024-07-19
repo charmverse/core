@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.71.1-rc-permissions-pro.1",
+  "version": "0.71.1-rc-permissions-pro.2",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
