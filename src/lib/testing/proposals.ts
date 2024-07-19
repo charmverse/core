@@ -30,10 +30,11 @@ export type ProposalEvaluationTestInput = Partial<Omit<Prisma.ProposalEvaluation
     | { group: Extract<ProposalSystemRole, 'space_member' | 'author'> }
     | TargetPermissionGroup<'role' | 'user'>
   )[];
+  approvers?: TargetPermissionGroup<'role' | 'user'>[];
   appealReviewers?: TargetPermissionGroup<'role' | 'user'>[];
   permissions: {
     assignee: { group: ProposalSystemRole } | TargetPermissionGroup<'role' | 'user'>;
-    operation: Extract<ProposalOperation, 'edit' | 'view' | 'move' | 'comment' | 'complete_evaluation'>;
+    operation: Extract<ProposalOperation, 'edit' | 'view' | 'move' | 'comment' | 'move_forward'>;
   }[];
   voteSettings?: any;
 };
@@ -234,6 +235,22 @@ export async function generateProposal({
               }) as Prisma.ProposalReviewerCreateManyInput
           ) ?? []
       );
+
+    const evaluationApproversToCreate: Prisma.ProposalEvaluationApproverCreateManyInput[] =
+      evaluationInputsWithIdAndIndex
+        .flatMap(
+          (input) =>
+            input.approvers?.map(
+              (reviewer) =>
+                ({
+                  proposalId,
+                  evaluationId: input.id,
+                  roleId: reviewer.group === 'role' ? reviewer.id : undefined,
+                  userId: reviewer.group === 'user' ? reviewer.id : undefined
+                }) as Prisma.ProposalReviewerCreateManyInput
+            ) ?? []
+        )
+        .filter(Boolean);
 
     await prisma.$transaction([
       prisma.proposalEvaluation.createMany({

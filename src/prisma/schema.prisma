@@ -741,7 +741,7 @@ model User {
   proposalRubricCriteriaAnswers ProposalRubricCriteriaAnswer[]
   docusignAllowedRoleOrUsers    DocusignAllowedRoleOrUser[]
   pushNotificationSubscription  PushNotificationSubscription[]
-  proposalEvaluationApprovers             ProposalEvaluationApprover[]
+  proposalEvaluationApprovers   ProposalEvaluationApprover[]
 
   @@index([createdAt(sort: Asc)])
 }
@@ -1380,7 +1380,7 @@ model ProposalEvaluation {
   reviews               ProposalEvaluationReview[]
   appealReviews         ProposalEvaluationAppealReview[]
   documentsToSign       DocumentToSign[]
-  proposalEvaluationApprovers     ProposalEvaluationApprover[]
+  evaluationApprovers   ProposalEvaluationApprover[]
 
   @@index([proposalId])
   @@index([index])
@@ -1468,8 +1468,6 @@ model ProposalEvaluationApprover {
   proposal     Proposal            @relation(fields: [proposalId], references: [id], onDelete: Cascade)
   roleId       String?             @db.Uuid
   userId       String?             @db.Uuid
-  // This should only use the all_members value of system role
-  systemRole   ProposalSystemRole?
   role         Role?               @relation(fields: [roleId], references: [id], onDelete: Cascade)
   reviewer     User?               @relation(fields: [userId], references: [id], onDelete: Cascade)
   evaluationId String              @db.Uuid

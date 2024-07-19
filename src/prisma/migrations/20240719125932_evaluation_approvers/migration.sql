@@ -7,7 +7,6 @@ CREATE TABLE "ProposalEvaluationApprover" (
     "proposalId" UUID NOT NULL,
     "roleId" UUID,
     "userId" UUID,
-    "systemRole" "ProposalSystemRole",
     "evaluationId" UUID NOT NULL,
 
     CONSTRAINT "ProposalEvaluationApprover_pkey" PRIMARY KEY ("id")
