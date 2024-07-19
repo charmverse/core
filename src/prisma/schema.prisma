@@ -1581,6 +1581,7 @@ enum ProposalOperation {
   unarchive
   move
   evaluate_appeal
+  move_forward
 }
 
 model MemberProperty {
