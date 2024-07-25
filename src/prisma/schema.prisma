@@ -2283,6 +2283,12 @@ model ProjectMember {
   @@index([userId])
 }
 
+enum SunnyAwardsProjectType {
+  creator
+  app
+  other
+}
+
 model Project {
   id                          String                       @id @default(uuid()) @db.Uuid
   createdAt                   DateTime                     @default(now())
@@ -2309,6 +2315,10 @@ model Project {
   communityUrl                String?
   otherUrl                    String?
   walletAddress               String?
+  primaryContractAddress      String?
+  primaryContractChainId      Int?
+  mintingWalletAddress        String?
+  sunnyAwardsProjectType      SunnyAwardsProjectType?
   source                      ProjectSource                @default(charmverse)
   user                        User                         @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   projectMembers              ProjectMember[]
