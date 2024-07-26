@@ -2316,6 +2316,8 @@ model Project {
   otherUrl                    String?
   walletAddress               String?
   primaryContractAddress      String?
+  primaryContractDeployer     String?
+  primaryContractDeployTxHash String?
   primaryContractChainId      Int?
   mintingWalletAddress        String?
   sunnyAwardsProjectType      SunnyAwardsProjectType?
