@@ -1275,6 +1275,7 @@ model Proposal {
   reviewedBy                  String?                             @db.Uuid
   reviewer                    User?                               @relation(fields: [reviewedBy], references: [id], onDelete: Cascade)
   reviewedAt                  DateTime?
+  publishedAt                 DateTime?
   publishToLens               Boolean?
   post                        Post[]
   rubricCriteria              ProposalRubricCriteria[]
@@ -2305,6 +2306,12 @@ model ProjectMember {
   @@index([userId])
 }
 
+enum SunnyAwardsProjectType {
+  creator
+  app
+  other
+}
+
 model Project {
   id                          String                       @id @default(uuid()) @db.Uuid
   createdAt                   DateTime                     @default(now())
@@ -2331,6 +2338,12 @@ model Project {
   communityUrl                String?
   otherUrl                    String?
   walletAddress               String?
+  primaryContractAddress      String?
+  primaryContractDeployer     String?
+  primaryContractDeployTxHash String?
+  primaryContractChainId      Int?
+  mintingWalletAddress        String?
+  sunnyAwardsProjectType      SunnyAwardsProjectType?
   source                      ProjectSource                @default(charmverse)
   user                        User                         @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   projectMembers              ProjectMember[]
