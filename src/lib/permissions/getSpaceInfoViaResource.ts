@@ -235,9 +235,10 @@ export type GetPermissionClient = {
   resourceIdType: ResourceIdEntity;
 };
 
-export async function getSpaceInfoViaResource(
-  { resourceId, resourceIdType }: GetPermissionClient
-): Promise<SpaceSubscriptionInfo> {
+export async function getSpaceInfoViaResource({
+  resourceId,
+  resourceIdType
+}: GetPermissionClient): Promise<SpaceSubscriptionInfo> {
   if (!isUUID(resourceId)) {
     throw new InvalidInputError(`Invalid resourceId: ${resourceId}`);
   }

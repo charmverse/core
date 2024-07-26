@@ -5,6 +5,7 @@ import type {
   Proposal,
   ProposalAuthor,
   ProposalEvaluation,
+  ProposalEvaluationApprover,
   ProposalEvaluationType,
   ProposalOperation,
   ProposalReviewer,
@@ -30,10 +31,11 @@ export type ProposalEvaluationTestInput = Partial<Omit<Prisma.ProposalEvaluation
     | { group: Extract<ProposalSystemRole, 'space_member' | 'author'> }
     | TargetPermissionGroup<'role' | 'user'>
   )[];
+  approvers?: TargetPermissionGroup<'role' | 'user'>[];
   appealReviewers?: TargetPermissionGroup<'role' | 'user'>[];
   permissions: {
     assignee: { group: ProposalSystemRole } | TargetPermissionGroup<'role' | 'user'>;
-    operation: Extract<ProposalOperation, 'edit' | 'view' | 'move' | 'comment'>;
+    operation: Extract<ProposalOperation, 'edit' | 'view' | 'move' | 'comment' | 'complete_evaluation'>;
   }[];
   voteSettings?: any;
 };
@@ -72,7 +74,11 @@ export type GenerateProposalInput = {
   sourceTemplateId?: string;
 };
 
-type TypedEvaluation = ProposalEvaluation & { permissions: PermissionJson[]; reviewers: ProposalReviewer[] };
+type TypedEvaluation = ProposalEvaluation & {
+  permissions: PermissionJson[];
+  reviewers: ProposalReviewer[];
+  evaluationApprovers: ProposalEvaluationApprover[];
+};
 export type GenerateProposalResponse = ProposalWithUsers & { page: Page; evaluations: TypedEvaluation[] };
 
 /**
@@ -80,27 +86,25 @@ export type GenerateProposalResponse = ProposalWithUsers & { page: Page; evaluat
  *
  * @reviewers Valid only for old tests, use `evaluationInputs` instead to define reviewers and permissions
  */
-export async function generateProposal(
-  {
-    userId,
-    spaceId,
-    fields = {},
-    proposalStatus = 'draft',
-    pageType = 'proposal',
-    title = 'Proposal',
-    authors = [],
-    reviewers,
-    deletedAt = null,
-    content,
-    archived,
-    evaluationType,
-    customProperties,
-    selectedCredentialTemplateIds,
-    sourceTemplateId,
-    evaluationInputs,
-    workflowId
-  }: GenerateProposalInput
-): Promise<GenerateProposalResponse> {
+export async function generateProposal({
+  userId,
+  spaceId,
+  fields = {},
+  proposalStatus = 'draft',
+  pageType = 'proposal',
+  title = 'Proposal',
+  authors = [],
+  reviewers,
+  deletedAt = null,
+  content,
+  archived,
+  evaluationType,
+  customProperties,
+  selectedCredentialTemplateIds,
+  sourceTemplateId,
+  evaluationInputs,
+  workflowId
+}: GenerateProposalInput): Promise<GenerateProposalResponse> {
   if (reviewers && evaluationInputs) {
     throw new InvalidInputError(
       'Cannot define both reviewers and evaluationInputs. Reviewers are a legacy feature. For new proposal tests, you should use the evaluation inputs field'
@@ -237,6 +241,22 @@ export async function generateProposal(
           ) ?? []
       );
 
+    const evaluationApproversToCreate: Prisma.ProposalEvaluationApproverCreateManyInput[] =
+      evaluationInputsWithIdAndIndex
+        .flatMap(
+          (input) =>
+            input.approvers?.map(
+              (reviewer) =>
+                ({
+                  proposalId,
+                  evaluationId: input.id,
+                  roleId: reviewer.group === 'role' ? reviewer.id : undefined,
+                  userId: reviewer.group === 'user' ? reviewer.id : undefined
+                }) as Prisma.ProposalEvaluationApproverCreateManyInput
+            ) ?? []
+        )
+        .filter(Boolean);
+
     await prisma.$transaction([
       prisma.proposalEvaluation.createMany({
         data: evaluationInputsWithIdAndIndex.map(
@@ -272,6 +292,9 @@ export async function generateProposal(
       }),
       prisma.proposalAppealReviewer.createMany({
         data: evaluationAppealReviewersToCreate
+      }),
+      prisma.proposalEvaluationApprover.createMany({
+        data: evaluationApproversToCreate
       })
     ]);
   }
@@ -287,7 +310,8 @@ export async function generateProposal(
       evaluations: {
         include: {
           permissions: true,
-          reviewers: true
+          reviewers: true,
+          evaluationApprovers: true
         }
       }
     }
@@ -296,18 +320,16 @@ export async function generateProposal(
   return result as GenerateProposalResponse;
 }
 
-export async function generateProposalNotes(
-  {
-    proposalPageId,
-    createdBy,
-    content
-  }: {
-    proposalPageId: string;
-    spaceId?: string;
-    createdBy?: string;
-    content?: any | null;
-  }
-): Promise<Omit<Page, 'parentId'> & { parentId: string }> {
+export async function generateProposalNotes({
+  proposalPageId,
+  createdBy,
+  content
+}: {
+  proposalPageId: string;
+  spaceId?: string;
+  createdBy?: string;
+  content?: any | null;
+}): Promise<Omit<Page, 'parentId'> & { parentId: string }> {
   const page = await prisma.page.findUniqueOrThrow({ where: { id: proposalPageId } });
   return generatePage({
     type: 'proposal_notes',
@@ -319,9 +341,14 @@ export async function generateProposalNotes(
   }) as Promise<Omit<Page, 'parentId'> & { parentId: string }>;
 }
 
-export async function generateProposalTemplate(
-  { spaceId, userId, authors, deletedAt, proposalStatus, reviewers }: GenerateProposalInput
-): Promise<ProposalWithUsers> {
+export async function generateProposalTemplate({
+  spaceId,
+  userId,
+  authors,
+  deletedAt,
+  proposalStatus,
+  reviewers
+}: GenerateProposalInput): Promise<ProposalWithUsers> {
   const proposal = await generateProposal({
     spaceId,
     userId,
