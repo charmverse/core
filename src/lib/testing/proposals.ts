@@ -5,6 +5,7 @@ import type {
   Proposal,
   ProposalAuthor,
   ProposalEvaluation,
+  ProposalEvaluationApprover,
   ProposalEvaluationType,
   ProposalOperation,
   ProposalReviewer,
@@ -30,10 +31,11 @@ export type ProposalEvaluationTestInput = Partial<Omit<Prisma.ProposalEvaluation
     | { group: Extract<ProposalSystemRole, 'space_member' | 'author'> }
     | TargetPermissionGroup<'role' | 'user'>
   )[];
+  approvers?: TargetPermissionGroup<'role' | 'user'>[];
   appealReviewers?: TargetPermissionGroup<'role' | 'user'>[];
   permissions: {
     assignee: { group: ProposalSystemRole } | TargetPermissionGroup<'role' | 'user'>;
-    operation: Extract<ProposalOperation, 'edit' | 'view' | 'move' | 'comment'>;
+    operation: Extract<ProposalOperation, 'edit' | 'view' | 'move' | 'comment' | 'complete_evaluation'>;
   }[];
   voteSettings?: any;
 };
@@ -72,7 +74,11 @@ export type GenerateProposalInput = {
   sourceTemplateId?: string;
 };
 
-type TypedEvaluation = ProposalEvaluation & { permissions: PermissionJson[]; reviewers: ProposalReviewer[] };
+type TypedEvaluation = ProposalEvaluation & {
+  permissions: PermissionJson[];
+  reviewers: ProposalReviewer[];
+  evaluationApprovers: ProposalEvaluationApprover[];
+};
 export type GenerateProposalResponse = ProposalWithUsers & { page: Page; evaluations: TypedEvaluation[] };
 
 /**
@@ -235,6 +241,22 @@ export async function generateProposal({
           ) ?? []
       );
 
+    const evaluationApproversToCreate: Prisma.ProposalEvaluationApproverCreateManyInput[] =
+      evaluationInputsWithIdAndIndex
+        .flatMap(
+          (input) =>
+            input.approvers?.map(
+              (reviewer) =>
+                ({
+                  proposalId,
+                  evaluationId: input.id,
+                  roleId: reviewer.group === 'role' ? reviewer.id : undefined,
+                  userId: reviewer.group === 'user' ? reviewer.id : undefined
+                }) as Prisma.ProposalEvaluationApproverCreateManyInput
+            ) ?? []
+        )
+        .filter(Boolean);
+
     await prisma.$transaction([
       prisma.proposalEvaluation.createMany({
         data: evaluationInputsWithIdAndIndex.map(
@@ -270,6 +292,9 @@ export async function generateProposal({
       }),
       prisma.proposalAppealReviewer.createMany({
         data: evaluationAppealReviewersToCreate
+      }),
+      prisma.proposalEvaluationApprover.createMany({
+        data: evaluationApproversToCreate
       })
     ]);
   }
@@ -285,7 +310,8 @@ export async function generateProposal({
       evaluations: {
         include: {
           permissions: true,
-          reviewers: true
+          reviewers: true,
+          evaluationApprovers: true
         }
       }
     }

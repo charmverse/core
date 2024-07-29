@@ -1,5 +1,6 @@
 import type {
   ProposalEvaluation,
+  ProposalEvaluationApprover,
   ProposalEvaluationPermission,
   ProposalReviewer,
   ProposalRubricCriteria,
@@ -8,6 +9,7 @@ import type {
   Space,
   User
 } from '@prisma/client';
+import { testUtilsUser } from 'test';
 import { v4 as uuid } from 'uuid';
 
 import { prisma } from '../../../prisma-client';
@@ -97,6 +99,15 @@ describe('generateProposal', () => {
   });
 
   it('should create the evaluation steps correctly along with attached permissions and rubric criteria', async () => {
+    const approverUser = await testUtilsUser.generateSpaceUser({
+      spaceId: space.id
+    });
+
+    const approverRole = await generateRole({
+      spaceId: space.id,
+      createdBy: user.id
+    });
+
     const proposalPageInput: Pick<GenerateProposalInput, 'deletedAt' | 'title' | 'content'> = {
       deletedAt: new Date(),
       content: { type: 'doc', content: [] },
@@ -131,6 +142,10 @@ describe('generateProposal', () => {
         reviewers: [
           { group: 'role', id: role.id },
           { group: 'user', id: user.id }
+        ],
+        approvers: [
+          { group: 'role', id: approverRole.id },
+          { group: 'user', id: approverUser.id }
         ]
       },
       {
@@ -229,6 +244,12 @@ describe('generateProposal', () => {
     const createdEvaluationSteps = await prisma.proposalEvaluation.findMany({
       where: {
         proposalId: proposal.id
+      },
+      include: {
+        evaluationApprovers: true
+      },
+      orderBy: {
+        index: 'asc'
       }
     });
 
@@ -240,7 +261,21 @@ describe('generateProposal', () => {
           index: 0,
           proposalId: proposal.id,
           title: expect.any(String),
-          type: 'rubric'
+          type: 'rubric',
+          evaluationApprovers: expect.arrayContaining([
+            expect.objectContaining<Partial<ProposalEvaluationApprover>>({
+              evaluationId: expect.any(String),
+              id: expect.any(String),
+              roleId: null,
+              userId: approverUser.id
+            }),
+            expect.objectContaining<Partial<ProposalEvaluationApprover>>({
+              evaluationId: expect.any(String),
+              id: expect.any(String),
+              roleId: approverRole.id,
+              userId: null
+            })
+          ])
         }),
         expect.objectContaining({
           completedAt: passFailStep.completedAt as Date,
