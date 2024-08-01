@@ -2636,7 +2636,7 @@ model CharmProjectCredential {
   metadataAttestationUID String
   metadataUrl            String
   metadata               Json
-  timeCreated            DateTime
+  createdAt           DateTime            @default(now())
   projectId              String?  @db.Uuid
   project                Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
   userId              String              @db.Uuid

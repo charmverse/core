@@ -22,7 +22,7 @@ CREATE TABLE "CharmProjectCredential" (
     "metadataAttestationUID" TEXT NOT NULL,
     "metadataUrl" TEXT NOT NULL,
     "metadata" JSONB NOT NULL,
-    "timeCreated" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "projectId" UUID,
     "userId" UUID NOT NULL,
 
