@@ -1302,6 +1302,7 @@ model Proposal {
   ProposalAppealReviewer          ProposalAppealReviewer[]
   charmQualifyingEventCredentials CharmQualifyingEventCredential[]
   proposalEvaluationApprovers     ProposalEvaluationApprover[]
+  makeRewardsPublic           Boolean?                            @default(false)
 
   @@index([spaceId])
   @@index([reviewedBy])
@@ -1332,6 +1333,7 @@ enum ProposalSystemRole {
   space_member
   current_reviewer
   all_reviewers
+  public
 }
 
 model ProposalEvaluationPermission {
