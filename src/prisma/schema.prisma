@@ -1295,6 +1295,7 @@ model Proposal {
   issuedCredentials           IssuedCredential[]
   projectId                   String?                             @db.Uuid
   project                     Project?                            @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  makeRewardsPublic           Boolean?                            @default(false)
   documentToSign              DocumentToSign[]
   ProposalAppealReviewer      ProposalAppealReviewer[]
   proposalEvaluationApprovers           ProposalEvaluationApprover[]
@@ -1328,6 +1329,7 @@ enum ProposalSystemRole {
   space_member
   current_reviewer
   all_reviewers
+  public
 }
 
 model ProposalEvaluationPermission {
