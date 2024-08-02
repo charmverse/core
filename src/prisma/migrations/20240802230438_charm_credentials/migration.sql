@@ -1,5 +1,14 @@
+/*
+  Warnings:
+
+  - You are about to drop the column `makeRewardsPublic` on the `Proposal` table. All the data in the column will be lost.
+
+*/
 -- CreateEnum
 CREATE TYPE "QualifyingEventType" AS ENUM ('proposal_published', 'pull_request_merged');
+
+-- AlterTable -- This column should never have been added
+ALTER TABLE "Proposal" DROP COLUMN "makeRewardsPublic";
 
 -- CreateTable
 CREATE TABLE "CharmUserCredential" (

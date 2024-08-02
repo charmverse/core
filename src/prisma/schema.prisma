@@ -1302,7 +1302,6 @@ model Proposal {
   ProposalAppealReviewer          ProposalAppealReviewer[]
   charmQualifyingEventCredentials CharmQualifyingEventCredential[]
   proposalEvaluationApprovers     ProposalEvaluationApprover[]
-  makeRewardsPublic           Boolean?                            @default(false)
 
   @@index([spaceId])
   @@index([reviewedBy])
