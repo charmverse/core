@@ -742,9 +742,9 @@ model User {
   docusignAllowedRoleOrUsers      DocusignAllowedRoleOrUser[]
   charmCredentials                CharmUserCredential[]
   charmQualifyingEventCredentials CharmQualifyingEventCredential[]
-  charmProjectCredentials          CharmProjectCredential[]
+  charmProjectCredentials         CharmProjectCredential[]
   pushNotificationSubscription    PushNotificationSubscription[]
-  proposalEvaluationApprovers     ProposalEvaluationApprover[]  
+  proposalEvaluationApprovers     ProposalEvaluationApprover[]
 
   @@index([createdAt(sort: Asc)])
 }
@@ -2303,6 +2303,7 @@ model ProjectMember {
   otherUrl         String?
   previousProjects String?
   farcasterId      Int?
+  socialUrls       String[]
   userId           String?  @db.Uuid
   user             User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
   projectId        String   @db.Uuid
@@ -2318,45 +2319,45 @@ enum SunnyAwardsProjectType {
 }
 
 model Project {
-  id                          String                       @id @default(uuid()) @db.Uuid
-  createdAt                   DateTime                     @default(now())
-  createdBy                   String                       @db.Uuid
-  updatedAt                   DateTime                     @default(now()) @updatedAt
-  updatedBy                   String                       @db.Uuid
-  deletedAt                   DateTime?
-  name                        String
-  path                        String?
-  excerpt                     String?
-  description                 String?
-  twitter                     String?
-  website                     String?
-  websites                    String[]                     @default([])
-  farcasterValues             String[]                     @default([])
-  category                    String?
-  avatar                      String?
-  coverImage                  String?
-  farcasterFrameImage         String?
-  mirror                      String?
-  github                      String?
-  blog                        String?
-  demoUrl                     String?
-  communityUrl                String?
-  otherUrl                    String?
-  walletAddress               String?
-  primaryContractAddress      String?
-  primaryContractDeployer     String?
-  primaryContractDeployTxHash String?
-  primaryContractChainId      Int?
-  mintingWalletAddress        String?
-  sunnyAwardsProjectType      SunnyAwardsProjectType?
-  source                      ProjectSource                @default(charmverse)
-  user                        User                         @relation(fields: [createdBy], references: [id], onDelete: Cascade)
-  projectMembers              ProjectMember[]
-  proposals                   Proposal[]
-  gitcoinProjectAttestations  GitcoinProjectAttestation[]
-  pptimismProjectAttestations OptimismProjectAttestation[]
-  charmProjectCredentials     CharmProjectCredential[]
-  charmQualifyingEventCredentialss       CharmQualifyingEventCredential[]
+  id                               String                           @id @default(uuid()) @db.Uuid
+  createdAt                        DateTime                         @default(now())
+  createdBy                        String                           @db.Uuid
+  updatedAt                        DateTime                         @default(now()) @updatedAt
+  updatedBy                        String                           @db.Uuid
+  deletedAt                        DateTime?
+  name                             String
+  path                             String?
+  excerpt                          String?
+  description                      String?
+  twitter                          String?
+  website                          String?
+  websites                         String[]                         @default([])
+  farcasterValues                  String[]                         @default([])
+  category                         String?
+  avatar                           String?
+  coverImage                       String?
+  farcasterFrameImage              String?
+  mirror                           String?
+  github                           String?
+  blog                             String?
+  demoUrl                          String?
+  communityUrl                     String?
+  otherUrl                         String?
+  walletAddress                    String?
+  primaryContractAddress           String?
+  primaryContractDeployer          String?
+  primaryContractDeployTxHash      String?
+  primaryContractChainId           Int?
+  mintingWalletAddress             String?
+  sunnyAwardsProjectType           SunnyAwardsProjectType?
+  source                           ProjectSource                    @default(charmverse)
+  user                             User                             @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  projectMembers                   ProjectMember[]
+  proposals                        Proposal[]
+  gitcoinProjectAttestations       GitcoinProjectAttestation[]
+  pptimismProjectAttestations      OptimismProjectAttestation[]
+  charmProjectCredentials          CharmProjectCredential[]
+  charmQualifyingEventCredentialss CharmQualifyingEventCredential[]
 
   @@index([createdBy])
 }
@@ -2637,13 +2638,12 @@ model CharmProjectCredential {
   metadataAttestationUID String
   metadataUrl            String
   metadata               Json
-  createdAt           DateTime            @default(now())
+  createdAt              DateTime @default(now())
   projectId              String?  @db.Uuid
   project                Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
-  userId              String              @db.Uuid
-  user                User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId                 String   @db.Uuid
+  user                   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
-
 
 model CharmQualifyingEventCredential {
   id                  String              @id @default(uuid()) @db.Uuid
