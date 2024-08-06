@@ -33,5 +33,4 @@ DROP COLUMN "otherUrl",
 DROP COLUMN "previousProjects",
 DROP COLUMN "telegram",
 DROP COLUMN "twitter",
-DROP COLUMN "warpcast",
-ADD COLUMN     "socialUrls" TEXT[];
+DROP COLUMN "warpcast";
