@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.73.1",
+  "version": "0.73.2-rc-upgrade-undici.0",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
@@ -151,7 +151,7 @@
     "nanoid": "^3.3.6",
     "nanoid-dictionary": "^3.0.0",
     "prisma": "^5.7.1",
-    "undici": "^5.26.5",
+    "undici": "^6.19.5",
     "utf-8-validate": "^5.0.10",
     "uuid": "^9.0.0",
     "viem": "^1.18.3"
