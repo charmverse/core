@@ -2303,6 +2303,7 @@ model ProjectMember {
   otherUrl         String?
   previousProjects String?
   farcasterId      Int?
+  socialUrls       String[]
   userId           String?  @db.Uuid
   user             User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
   projectId        String   @db.Uuid
