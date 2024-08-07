@@ -3,6 +3,7 @@ CREATE TYPE "FarcasterCastAction" AS ENUM ('like_created', 'like_removed', 'reca
 
 -- CreateTable
 CREATE TABLE "FarcasterCast" (
+    "id" UUID NOT NULL,
     "hash" TEXT NOT NULL,
     "totalLikes" INTEGER NOT NULL DEFAULT 0,
     "totalComments" INTEGER NOT NULL DEFAULT 0,
@@ -13,5 +14,8 @@ CREATE TABLE "FarcasterCast" (
     "authorFid" INTEGER NOT NULL,
     "action" "FarcasterCastAction" NOT NULL,
 
-    CONSTRAINT "FarcasterCast_pkey" PRIMARY KEY ("hash")
+    CONSTRAINT "FarcasterCast_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "FarcasterCast_hash_key" ON "FarcasterCast"("hash");

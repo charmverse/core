@@ -2685,7 +2685,8 @@ enum FarcasterCastAction {
 }
 
 model FarcasterCast {
-  hash          String              @id
+  id            String              @id @default(uuid()) @db.Uuid
+  hash          String              @unique
   totalLikes    Int                 @default(0)
   totalComments Int                 @default(0)
   totalRecasts  Int                 @default(0)
