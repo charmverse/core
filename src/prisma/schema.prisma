@@ -2676,3 +2676,25 @@ model PushNotificationSubscription {
   userId       String?                @db.Uuid
   user         User?                  @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
+
+enum FarcasterCastAction {
+  like_created
+  like_removed
+  recast_created
+  recast_removed
+  cast_created
+}
+
+model FarcasterCast {
+  id            String              @id @default(uuid()) @db.Uuid
+  hash          String              @unique
+  totalLikes    Int                 @default(0)
+  totalComments Int                 @default(0)
+  totalRecasts  Int                 @default(0)
+  text          String
+  channel       String?
+  embeds        Json[]
+  authorFid     Int
+  timestamp     DateTime
+  action        FarcasterCastAction
+}
