@@ -12,6 +12,7 @@ CREATE TABLE "FarcasterCast" (
     "channel" TEXT,
     "embeds" JSONB[],
     "authorFid" INTEGER NOT NULL,
+    "timestamp" TIMESTAMP(3) NOT NULL,
     "action" "FarcasterCastAction" NOT NULL,
 
     CONSTRAINT "FarcasterCast_pkey" PRIMARY KEY ("id")

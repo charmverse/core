@@ -2695,5 +2695,6 @@ model FarcasterCast {
   channel       String?
   embeds        Json[]
   authorFid     Int
+  timestamp     DateTime
   action        FarcasterCastAction
 }
