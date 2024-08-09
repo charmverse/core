@@ -2358,6 +2358,7 @@ model Project {
   pptimismProjectAttestations      OptimismProjectAttestation[]
   charmProjectCredentials          CharmProjectCredential[]
   charmQualifyingEventCredentialss CharmQualifyingEventCredential[]
+  composerActionFrames             ComposerActionFrame[]
 
   @@index([createdBy])
 }
@@ -2675,4 +2676,14 @@ model PushNotificationSubscription {
   source       PushNotificationSource
   userId       String?                @db.Uuid
   user         User?                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ComposerActionFrame {
+  id        String   @id @default(uuid()) @db.Uuid
+  text      String
+  image     String
+  authorFid Int
+  projectId String   @db.Uuid
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
 }
