@@ -3,7 +3,6 @@ CREATE TABLE "ProductUpdatesFarcasterFrame" (
     "id" UUID NOT NULL,
     "text" TEXT NOT NULL,
     "image" TEXT NOT NULL,
-    "authorFid" INTEGER NOT NULL,
     "createdBy" UUID NOT NULL,
     "projectId" UUID NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
