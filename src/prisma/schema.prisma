@@ -745,6 +745,7 @@ model User {
   charmProjectCredentials         CharmProjectCredential[]
   pushNotificationSubscription    PushNotificationSubscription[]
   proposalEvaluationApprovers     ProposalEvaluationApprover[]
+  productUpdatesFarcasterFrames   ProductUpdatesFarcasterFrame[]
 
   @@index([createdAt(sort: Asc)])
 }
@@ -2344,6 +2345,7 @@ model Project {
   pptimismProjectAttestations      OptimismProjectAttestation[]
   charmProjectCredentials          CharmProjectCredential[]
   charmQualifyingEventCredentialss CharmQualifyingEventCredential[]
+  productUpdatesFarcasterFrames    ProductUpdatesFarcasterFrame[]
 
   @@index([createdBy])
 }
@@ -2661,4 +2663,16 @@ model PushNotificationSubscription {
   source       PushNotificationSource
   userId       String?                @db.Uuid
   user         User?                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ProductUpdatesFarcasterFrame {
+  id             String   @id @default(uuid()) @db.Uuid
+  text           String
+  image          String
+  createdBy      String   @db.Uuid
+  author         User     @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  projectId      String   @db.Uuid
+  project        Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdAt      DateTime @default(now())
+  createdAtLocal String
 }
