@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.74.2-rc-feat-apps-farca.2",
+  "version": "0.74.2-rc-feat-apps-farca.3",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
