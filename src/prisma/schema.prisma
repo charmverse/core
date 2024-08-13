@@ -282,6 +282,7 @@ enum KycOption {
 enum ProjectSource {
   charmverse
   connect
+  farcaster
 }
 
 model Space {
