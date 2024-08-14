@@ -1,7 +1,7 @@
 -- CreateTable
 CREATE TABLE "ConnectWaitlistSlot" (
     "id" UUID NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "initialPosition" SERIAL NOT NULL,
     "fid" INTEGER NOT NULL,
     "username" TEXT NOT NULL,

@@ -2679,12 +2679,12 @@ model ProductUpdatesFarcasterFrame {
 
 model ConnectWaitlistSlot {
   id              String   @id @db.Uuid
-  createdAt       DateTime
+  createdAt       DateTime @default(now())
   initialPosition Int      @default(autoincrement())
   fid             Int      @unique
   username        String // TBD if we need this
   referredByFid   Int?
-  score           Int     @default(0)
+  score           Int      @default(0)
   // We should add this relation when we work on snapshots and scoring
   // tierSnapshots ConnectTierSnapshot[]
 
