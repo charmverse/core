@@ -2681,7 +2681,7 @@ model ConnectWaitlistSlot {
   id              String   @id @db.Uuid
   createdAt       DateTime
   initialPosition Int      @default(autoincrement())
-  fid             Int
+  fid             Int      @unique
   username        String // TBD if we need this
   referredByFid   Int
   score           Int
