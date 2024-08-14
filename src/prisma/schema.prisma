@@ -2676,3 +2676,17 @@ model ProductUpdatesFarcasterFrame {
   createdAt      DateTime @default(now())
   createdAtLocal String
 }
+
+model ConnectWaitlistSlot {
+  id              String   @id @db.Uuid
+  createdAt       DateTime
+  initialPosition Int      @default(autoincrement())
+  fid             Int
+  username        String // TBD if we need this
+  referredByFid   Int
+  score           Int
+  // We should add this relation when we work on snapshots
+  // tierSnapshots ConnectTierSnapshot[]
+
+  @@index([score])
+}
