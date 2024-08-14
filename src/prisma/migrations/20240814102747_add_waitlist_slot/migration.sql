@@ -16,3 +16,6 @@ CREATE UNIQUE INDEX "ConnectWaitlistSlot_fid_key" ON "ConnectWaitlistSlot"("fid"
 
 -- CreateIndex
 CREATE INDEX "ConnectWaitlistSlot_score_idx" ON "ConnectWaitlistSlot"("score");
+
+-- CreateIndex
+CREATE INDEX "ConnectWaitlistSlot_referredByFid_idx" ON "ConnectWaitlistSlot"("referredByFid");

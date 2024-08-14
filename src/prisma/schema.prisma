@@ -2689,4 +2689,5 @@ model ConnectWaitlistSlot {
   // tierSnapshots ConnectTierSnapshot[]
 
   @@index([score])
+  @@index([referredByFid])
 }
