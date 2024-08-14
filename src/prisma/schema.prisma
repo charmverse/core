@@ -2683,8 +2683,8 @@ model ConnectWaitlistSlot {
   initialPosition Int      @default(autoincrement())
   fid             Int      @unique
   username        String // TBD if we need this
-  referredByFid   Int
-  score           Int
+  referredByFid   Int?
+  score           Int     @default(0)
   // We should add this relation when we work on snapshots
   // tierSnapshots ConnectTierSnapshot[]
 

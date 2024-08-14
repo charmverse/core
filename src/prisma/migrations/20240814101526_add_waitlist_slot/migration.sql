@@ -5,8 +5,8 @@ CREATE TABLE "ConnectWaitlistSlot" (
     "initialPosition" SERIAL NOT NULL,
     "fid" INTEGER NOT NULL,
     "username" TEXT NOT NULL,
-    "referredByFid" INTEGER NOT NULL,
-    "score" INTEGER NOT NULL,
+    "referredByFid" INTEGER,
+    "score" INTEGER NOT NULL DEFAULT 0,
 
     CONSTRAINT "ConnectWaitlistSlot_pkey" PRIMARY KEY ("id")
 );
