@@ -282,6 +282,7 @@ enum KycOption {
 enum ProjectSource {
   charmverse
   connect
+  farcaster
 }
 
 model Space {
@@ -2668,6 +2669,7 @@ model PushNotificationSubscription {
 model ProductUpdatesFarcasterFrame {
   id             String   @id @default(uuid()) @db.Uuid
   text           String
+  textContent    Json?
   image          String
   createdBy      String   @db.Uuid
   author         User     @relation(fields: [createdBy], references: [id], onDelete: Cascade)
