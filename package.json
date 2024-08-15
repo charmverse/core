@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.75.1-rc-feat-waitlist.6",
+  "version": "0.76.0",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
