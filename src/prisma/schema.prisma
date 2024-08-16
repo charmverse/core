@@ -2338,6 +2338,7 @@ model Project {
   primaryContractDeployTxHash      String?
   primaryContractChainId           Int?
   mintingWalletAddress             String?
+  sunnyAwardsNumber                Int?                             @default(autoincrement())
   sunnyAwardsProjectType           SunnyAwardsProjectType?
   sunnyAwardsCategory              String?
   source                           ProjectSource                    @default(charmverse)
