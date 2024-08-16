@@ -2337,6 +2337,7 @@ model Project {
   primaryContractDeployTxHash      String?
   primaryContractChainId           Int?
   mintingWalletAddress             String?
+  ticketNo                         Int?                             @default(autoincrement())
   sunnyAwardsProjectType           SunnyAwardsProjectType?
   source                           ProjectSource                    @default(charmverse)
   user                             User                             @relation(fields: [createdBy], references: [id], onDelete: Cascade)
