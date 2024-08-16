@@ -2326,7 +2326,8 @@ model Project {
   twitter                          String?
   websites                         String[]                         @default([])
   farcasterValues                  String[]                         @default([])
-  category                         String?
+  category                         String? // deprecated - replaced by optimismCategory
+  optimismCategory                 String?
   avatar                           String?
   coverImage                       String?
   farcasterFrameImage              String?
@@ -2339,6 +2340,7 @@ model Project {
   mintingWalletAddress             String?
   sunnyAwardsNumber                Int?                             @default(autoincrement())
   sunnyAwardsProjectType           SunnyAwardsProjectType?
+  sunnyAwardsCategory              String?
   source                           ProjectSource                    @default(charmverse)
   user                             User                             @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   projectMembers                   ProjectMember[]
