@@ -1272,6 +1272,7 @@ model Proposal {
   spaceId                         String                              @db.Uuid
   status                          ProposalStatus
   archived                        Boolean?                            @default(false)
+  archivedByAdmin                 Boolean?                            @default(false)
   authors                         ProposalAuthor[]
   reviewers                       ProposalReviewer[]
   space                           Space                               @relation(fields: [spaceId], references: [id], onDelete: Cascade)
