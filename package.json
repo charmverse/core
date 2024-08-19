@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.78.2-rc-auditable-steps.0",
+  "version": "0.78.2-rc-auditable-steps.1",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
