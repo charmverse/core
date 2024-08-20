@@ -282,6 +282,7 @@ enum KycOption {
 enum ProjectSource {
   charmverse
   connect
+  sunny_awards
   farcaster
 }
 
@@ -2340,7 +2341,7 @@ model Project {
   primaryContractDeployTxHash      String?
   primaryContractChainId           Int?
   mintingWalletAddress             String?
-  sunnyAwardsNumber                Int?                             @default(autoincrement())
+  sunnyAwardsNumber                Int?
   sunnyAwardsProjectType           SunnyAwardsProjectType?
   sunnyAwardsCategory              String?
   source                           ProjectSource                    @default(charmverse)
