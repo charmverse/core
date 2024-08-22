@@ -2344,6 +2344,7 @@ model Project {
   sunnyAwardsNumber                Int?
   sunnyAwardsProjectType           SunnyAwardsProjectType?
   sunnyAwardsCategory              String?
+  sunnyAwardsCategoryDetails       String?
   source                           ProjectSource                    @default(charmverse)
   user                             User                             @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   projectMembers                   ProjectMember[]
