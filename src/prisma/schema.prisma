@@ -1380,6 +1380,7 @@ model ProposalEvaluation {
   appealReason          String?
   appealer              User?                               @relation(fields: [appealedBy], references: [id], onDelete: SetNull, name: "appealedBy")
   shareReviews          Boolean?                            @default(false)
+  dueDate               DateTime?
   rubricCriteria        ProposalRubricCriteria[]
   rubricAnswers         ProposalRubricCriteriaAnswer[]
   draftRubricAnswers    DraftProposalRubricCriteriaAnswer[]
