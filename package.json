@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.80.1-rc-gitcoin-attesta.0",
+  "version": "0.80.1",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
