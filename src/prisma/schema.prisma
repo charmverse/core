@@ -2602,12 +2602,18 @@ model OptimismProjectAttestation {
   project                Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
 }
 
+enum GitcoinProjectAttestationType {
+  application
+  profile
+}
+
 model GitcoinProjectAttestation {
-  id             String   @id @default(uuid()) @db.Uuid
-  createdAt      DateTime @default(now())
-  projectId      String   @db.Uuid
-  project        Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  id             String                        @id @default(uuid()) @db.Uuid
+  createdAt      DateTime                      @default(now())
+  projectId      String                        @db.Uuid
+  project        Project                       @relation(fields: [projectId], references: [id], onDelete: Cascade)
   chainId        Int
+  type           GitcoinProjectAttestationType
   schemaId       String
   attestationUID String
 }
