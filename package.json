@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.80.1",
+  "version": "0.80.3-rc-crypto-ecosyste.0",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
