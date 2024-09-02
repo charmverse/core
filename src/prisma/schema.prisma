@@ -2723,7 +2723,7 @@ model CryptoEcosystem {
 model CryptoEcosystemRepo {
   ecosystemTitle          String
   ecosystem               CryptoEcosystem              @relation(fields: [ecosystemTitle], references: [title], onDelete: Cascade)
-  githubId                Int                          @unique
+  githubId                String                       @unique
   url                     String
   assignableUsers         Int
   pullRequestAuthorsCount Int
@@ -2735,8 +2735,7 @@ model CryptoEcosystemRepo {
 }
 
 model CryptoEcosystemAuthor {
-  githubId     Int                          @unique
-  login        String
+  login        String                       @unique
   name         String?
   email        String?
   twitter      String?
@@ -2745,13 +2744,13 @@ model CryptoEcosystemAuthor {
 }
 
 model CryptoEcosystemPullRequest {
-  date           DateTime
-  githubId       Int                   @unique
-  repoGithubId   Int
-  userGithubId   Int
-  xtra           Json?
-  ecosystemTitle String
-  author         CryptoEcosystemAuthor @relation(fields: [userGithubId], references: [githubId], onDelete: Cascade)
-  repo           CryptoEcosystemRepo   @relation(fields: [repoGithubId], references: [githubId], onDelete: Cascade)
-  ecosystem      CryptoEcosystem       @relation(fields: [ecosystemTitle], references: [title], onDelete: Cascade)
+  date            DateTime
+  githubId        Int                   @unique
+  repoGithubId    String
+  userGithubLogin String
+  xtra            Json?
+  ecosystemTitle  String
+  author          CryptoEcosystemAuthor @relation(fields: [userGithubLogin], references: [login], onDelete: Cascade)
+  repo            CryptoEcosystemRepo   @relation(fields: [repoGithubId], references: [githubId], onDelete: Cascade)
+  ecosystem       CryptoEcosystem       @relation(fields: [ecosystemTitle], references: [title], onDelete: Cascade)
 }
