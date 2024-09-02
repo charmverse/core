@@ -2707,3 +2707,37 @@ model ConnectWaitlistSlot {
   @@index([score])
   @@index([referredByFid])
 }
+
+model DataEcosystem {
+  subEcosystems String[]
+  title         String   @unique
+  repos         String[]
+  organizations String[]
+
+  @@index([title])
+}
+
+model CryptoEcosystemRepo {
+  githubId                Int    @unique
+  url                     String
+  assignableUsers         Int
+  pullRequestAuthorsCount Int
+  stargazerCount          Int
+  watcherCount            Int
+  forkCount               Int
+}
+
+model CryptoEcosystemAuthor {
+  githubId Int     @unique
+  login    String
+  name     String?
+  email    String?
+  twitter  String?
+}
+
+model CryptoEcosystemPullRequest {
+  githubId     Int  @unique
+  repoGithubId Int
+  userGithubId Int
+  raw          Json
+}
