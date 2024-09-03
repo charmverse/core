@@ -2716,8 +2716,21 @@ model CryptoEcosystem {
   organizations String[]
   repos         CryptoEcosystemRepo[]
   pullRequests  CryptoEcosystemPullRequest[]
+  children      CryptoEcosystemChild[]       @relation("parent")
+  parents       CryptoEcosystemChild[]       @relation("child")
 
   @@index([title])
+}
+
+model CryptoEcosystemChild {
+  parentTitle String
+  parent      CryptoEcosystem @relation("parent", fields: [parentTitle], references: [title], onDelete: Cascade)
+  childTitle  String
+  child       CryptoEcosystem @relation("child", fields: [childTitle], references: [title], onDelete: Cascade)
+
+  @@unique([parentTitle, childTitle])
+  @@index([parentTitle])
+  @@index([childTitle])
 }
 
 model CryptoEcosystemRepo {
