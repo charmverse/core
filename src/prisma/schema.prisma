@@ -2590,17 +2590,17 @@ model DocusignAllowedRoleOrUser {
 }
 
 model OptimismProjectAttestation {
-  projectRefUID          String   @id
-  farcasterIds           Int[]
-  chainId                Int
-  name                   String
-  metadataAttestationUID String
-  metadataUrl            String
-  metadata               Json
-  timeCreated            DateTime
-  projectId              String?  @db.Uuid
-  project                Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
-  projectAttestationRevoked Boolean @default(false)
+  projectRefUID             String   @id
+  farcasterIds              Int[]
+  chainId                   Int
+  name                      String
+  metadataAttestationUID    String
+  metadataUrl               String
+  metadata                  Json
+  timeCreated               DateTime
+  projectId                 String?  @db.Uuid
+  project                   Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  projectAttestationRevoked Boolean  @default(false)
 }
 
 enum GitcoinProjectAttestationType {
@@ -2609,15 +2609,15 @@ enum GitcoinProjectAttestationType {
 }
 
 model GitcoinProjectAttestation {
-  id             String                        @id @default(uuid()) @db.Uuid
-  createdAt      DateTime                      @default(now())
-  projectId      String                        @db.Uuid
-  project        Project                       @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  chainId        Int
-  type           GitcoinProjectAttestationType
-  schemaId       String
-  attestationUID String
-  projectAttestationRevoked        Boolean                      @default(false)
+  id                        String                        @id @default(uuid()) @db.Uuid
+  createdAt                 DateTime                      @default(now())
+  projectId                 String                        @db.Uuid
+  project                   Project                       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  chainId                   Int
+  type                      GitcoinProjectAttestationType
+  schemaId                  String
+  attestationUID            String
+  projectAttestationRevoked Boolean                       @default(false)
 }
 
 enum QualifyingEventType {
@@ -2636,19 +2636,19 @@ model CharmUserCredential {
 }
 
 model CharmProjectCredential {
-  projectRefUID          String   @id
-  farcasterIds           Int[]
-  chainId                Int
-  name                   String
-  metadataAttestationUID String
-  metadataUrl            String
-  metadata               Json
-  createdAt              DateTime @default(now())
-  projectId              String?  @db.Uuid
-  project                Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
-  userId                 String   @db.Uuid
-  user                   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  projectAttestationRevoked Boolean @default(false)
+  projectRefUID             String   @id
+  farcasterIds              Int[]
+  chainId                   Int
+  name                      String
+  metadataAttestationUID    String
+  metadataUrl               String
+  metadata                  Json
+  createdAt                 DateTime @default(now())
+  projectId                 String?  @db.Uuid
+  project                   Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  userId                    String   @db.Uuid
+  user                      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  projectAttestationRevoked Boolean  @default(false)
 }
 
 model CharmQualifyingEventCredential {
@@ -2760,8 +2760,9 @@ model CryptoEcosystemAuthor {
 
 model CryptoEcosystemPullRequest {
   date            DateTime
-  githubId        Int                   @unique
+  githubId        String                @unique
   repoGithubId    String
+  title           String
   userGithubLogin String
   xtra            Json?
   ecosystemTitle  String
