@@ -2705,8 +2705,7 @@ model ConnectWaitlistSlot {
   referredByFid   Int?
   score           Int      @default(0)
   percentile      Int?
-  // We should add this relation when we work on snapshots and scoring
-  // tierSnapshots ConnectTierSnapshot[]
+  githubLogin     String?
 
   @@index([score])
   @@index([referredByFid])
