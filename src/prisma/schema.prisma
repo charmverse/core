@@ -2600,6 +2600,7 @@ model OptimismProjectAttestation {
   timeCreated            DateTime
   projectId              String?  @db.Uuid
   project                Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  projectAttestationRevoked Boolean @default(false)
 }
 
 enum GitcoinProjectAttestationType {
@@ -2616,6 +2617,7 @@ model GitcoinProjectAttestation {
   type           GitcoinProjectAttestationType
   schemaId       String
   attestationUID String
+  projectAttestationRevoked        Boolean                      @default(false)
 }
 
 enum QualifyingEventType {
@@ -2646,6 +2648,7 @@ model CharmProjectCredential {
   project                Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
   userId                 String   @db.Uuid
   user                   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  projectAttestationRevoked Boolean @default(false)
 }
 
 model CharmQualifyingEventCredential {
