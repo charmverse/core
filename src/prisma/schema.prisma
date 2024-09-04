@@ -2590,17 +2590,17 @@ model DocusignAllowedRoleOrUser {
 }
 
 model OptimismProjectAttestation {
-  projectRefUID          String   @id
-  farcasterIds           Int[]
-  chainId                Int
-  name                   String
-  metadataAttestationUID String
-  metadataUrl            String
-  metadata               Json
-  timeCreated            DateTime
-  projectId              String?  @db.Uuid
-  project                Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
-  projectAttestationRevoked Boolean @default(false)
+  projectRefUID             String   @id
+  farcasterIds              Int[]
+  chainId                   Int
+  name                      String
+  metadataAttestationUID    String
+  metadataUrl               String
+  metadata                  Json
+  timeCreated               DateTime
+  projectId                 String?  @db.Uuid
+  project                   Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  projectAttestationRevoked Boolean  @default(false)
 }
 
 enum GitcoinProjectAttestationType {
@@ -2609,15 +2609,15 @@ enum GitcoinProjectAttestationType {
 }
 
 model GitcoinProjectAttestation {
-  id             String                        @id @default(uuid()) @db.Uuid
-  createdAt      DateTime                      @default(now())
-  projectId      String                        @db.Uuid
-  project        Project                       @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  chainId        Int
-  type           GitcoinProjectAttestationType
-  schemaId       String
-  attestationUID String
-  projectAttestationRevoked        Boolean                      @default(false)
+  id                        String                        @id @default(uuid()) @db.Uuid
+  createdAt                 DateTime                      @default(now())
+  projectId                 String                        @db.Uuid
+  project                   Project                       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  chainId                   Int
+  type                      GitcoinProjectAttestationType
+  schemaId                  String
+  attestationUID            String
+  projectAttestationRevoked Boolean                       @default(false)
 }
 
 enum QualifyingEventType {
@@ -2636,19 +2636,19 @@ model CharmUserCredential {
 }
 
 model CharmProjectCredential {
-  projectRefUID          String   @id
-  farcasterIds           Int[]
-  chainId                Int
-  name                   String
-  metadataAttestationUID String
-  metadataUrl            String
-  metadata               Json
-  createdAt              DateTime @default(now())
-  projectId              String?  @db.Uuid
-  project                Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
-  userId                 String   @db.Uuid
-  user                   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  projectAttestationRevoked Boolean @default(false)
+  projectRefUID             String   @id
+  farcasterIds              Int[]
+  chainId                   Int
+  name                      String
+  metadataAttestationUID    String
+  metadataUrl               String
+  metadata                  Json
+  createdAt                 DateTime @default(now())
+  projectId                 String?  @db.Uuid
+  project                   Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  userId                    String   @db.Uuid
+  user                      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  projectAttestationRevoked Boolean  @default(false)
 }
 
 model CharmQualifyingEventCredential {
@@ -2709,4 +2709,64 @@ model ConnectWaitlistSlot {
 
   @@index([score])
   @@index([referredByFid])
+}
+
+model CryptoEcosystem {
+  subEcosystems String[]
+  title         String                       @unique
+  repoUrls      String[]
+  organizations String[]
+  repos         CryptoEcosystemRepo[]
+  pullRequests  CryptoEcosystemPullRequest[]
+  children      CryptoEcosystemChild[]       @relation("parent")
+  parents       CryptoEcosystemChild[]       @relation("child")
+
+  @@index([title])
+}
+
+model CryptoEcosystemChild {
+  parentTitle String
+  parent      CryptoEcosystem @relation("parent", fields: [parentTitle], references: [title], onDelete: Cascade)
+  childTitle  String
+  child       CryptoEcosystem @relation("child", fields: [childTitle], references: [title], onDelete: Cascade)
+
+  @@unique([parentTitle, childTitle])
+  @@index([parentTitle])
+  @@index([childTitle])
+}
+
+model CryptoEcosystemRepo {
+  ecosystemTitle          String
+  ecosystem               CryptoEcosystem              @relation(fields: [ecosystemTitle], references: [title], onDelete: Cascade)
+  githubId                String                       @unique
+  url                     String
+  assignableUsers         Int
+  pullRequestAuthorsCount Int
+  stargazerCount          Int
+  watcherCount            Int
+  forkCount               Int
+  xtra                    Json?
+  pullRequests            CryptoEcosystemPullRequest[]
+}
+
+model CryptoEcosystemAuthor {
+  login        String                       @unique
+  name         String?
+  email        String?
+  twitter      String?
+  xtra         Json?
+  pullRequests CryptoEcosystemPullRequest[]
+}
+
+model CryptoEcosystemPullRequest {
+  date            DateTime
+  githubId        String                @unique
+  repoGithubId    String
+  title           String
+  userGithubLogin String
+  xtra            Json?
+  ecosystemTitle  String
+  author          CryptoEcosystemAuthor @relation(fields: [userGithubLogin], references: [login], onDelete: Cascade)
+  repo            CryptoEcosystemRepo   @relation(fields: [repoGithubId], references: [githubId], onDelete: Cascade)
+  ecosystem       CryptoEcosystem       @relation(fields: [ecosystemTitle], references: [title], onDelete: Cascade)
 }
