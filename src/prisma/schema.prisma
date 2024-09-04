@@ -284,7 +284,6 @@ enum ProjectSource {
   connect
   sunny_awards
   farcaster
-  product_updates
 }
 
 model Space {
