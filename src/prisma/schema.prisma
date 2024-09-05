@@ -2776,7 +2776,7 @@ model Scout {
   email         String?
   username      String  @unique
   displayName   String
-  farcasterId   String? // every user only has one farcaster account
+  farcasterId   Int? // every user only has one farcaster account
   farcasterName String? // every user only has one farcaster account
   walletAddress String? // grab most recent wallet when someone signs in w/farcaster
   walletENS     String?

@@ -4,7 +4,7 @@ CREATE TABLE "Scout" (
     "email" TEXT,
     "username" TEXT NOT NULL,
     "displayName" TEXT NOT NULL,
-    "farcasterId" TEXT,
+    "farcasterId" INTEGER,
     "farcasterName" TEXT,
     "walletAddress" TEXT,
     "walletENS" TEXT,
