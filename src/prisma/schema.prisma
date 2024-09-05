@@ -2780,4 +2780,7 @@ model Scout {
   walletENS     String?
   avatar        String?
   builder       Boolean @default(false) // This means someone 'turned on' the builder profile. see Alternatives Considered
+  sendMarketing Boolean @default(false)
+  agreedToTOS   Boolean @default(false)
+  onboarded     Boolean @default(false)
 }
