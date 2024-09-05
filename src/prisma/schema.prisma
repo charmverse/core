@@ -2770,3 +2770,24 @@ model CryptoEcosystemPullRequest {
   repo            CryptoEcosystemRepo   @relation(fields: [repoGithubId], references: [githubId], onDelete: Cascade)
   ecosystem       CryptoEcosystem       @relation(fields: [ecosystemTitle], references: [title], onDelete: Cascade)
 }
+
+model Scout {
+  id            String  @id @default(uuid()) @db.Uuid
+  email         String?
+  username      String  @unique
+  displayName   String
+  farcasterId   Int? // every user only has one farcaster account
+  farcasterName String? // every user only has one farcaster account
+  walletAddress String? // grab most recent wallet when someone signs in w/farcaster
+  walletENS     String?
+  avatar        String?
+  bio           String?
+  builder       Boolean @default(false) // This means someone 'turned on' the builder profile. see Alternatives Considered
+  sendMarketing Boolean @default(false)
+  agreedToTOS   Boolean @default(false)
+  onboarded     Boolean @default(false)
+
+  @@index([username])
+  @@index([farcasterId])
+  @@index([walletAddress])
+}
