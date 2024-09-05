@@ -23,3 +23,9 @@ CREATE UNIQUE INDEX "Scout_username_key" ON "Scout"("username");
 
 -- CreateIndex
 CREATE INDEX "Scout_username_idx" ON "Scout"("username");
+
+-- CreateIndex
+CREATE INDEX "Scout_farcasterId_idx" ON "Scout"("farcasterId");
+
+-- CreateIndex
+CREATE INDEX "Scout_walletAddress_idx" ON "Scout"("walletAddress");

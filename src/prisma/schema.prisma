@@ -2788,4 +2788,6 @@ model Scout {
   onboarded     Boolean @default(false)
 
   @@index([username])
+  @@index([farcasterId])
+  @@index([walletAddress])
 }
