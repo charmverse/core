@@ -2775,12 +2775,13 @@ model Scout {
   id            String  @id @default(uuid()) @db.Uuid
   email         String?
   username      String  @unique
-  fullName      String
+  displayName   String
   farcasterId   String? // every user only has one farcaster account
   farcasterName String? // every user only has one farcaster account
   walletAddress String? // grab most recent wallet when someone signs in w/farcaster
   walletENS     String?
   avatar        String?
+  bio           String?
   builder       Boolean @default(false) // This means someone 'turned on' the builder profile. see Alternatives Considered
   sendMarketing Boolean @default(false)
   agreedToTOS   Boolean @default(false)
