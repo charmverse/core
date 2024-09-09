@@ -366,6 +366,7 @@ model Space {
   blockCounts                 BlockCount[]
   blockQuota                  Int                               @default(0)
   requireMembersTwoFactorAuth Boolean                           @default(false)
+  tokenGateMessage            Json?
   proposalBlocks              ProposalBlock[]
   rewardBlocks                RewardBlock[]
   userNotifications           UserNotificationMetadata[]
