@@ -2789,6 +2789,7 @@ model Scout {
   onboarded     Boolean         @default(false)
   bannedAt      DateTime?
   strikes       BuilderStrike[]
+  events        BuilderEvent[]
 
   @@index([username])
   @@index([farcasterId])
@@ -2799,5 +2800,13 @@ model BuilderStrike {
   id        String   @id @default(uuid()) @db.Uuid
   builderId String   @db.Uuid
   builder   Scout    @relation(fields: [builderId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+model BuilderEvent {
+  id        String   @id @default(uuid()) @db.Uuid
+  builderId String   @db.Uuid
+  builder   Scout    @relation(fields: [builderId], references: [id], onDelete: Cascade)
+  season    Int
   createdAt DateTime @default(now())
 }

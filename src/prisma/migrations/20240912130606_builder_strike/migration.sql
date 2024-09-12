@@ -10,5 +10,18 @@ CREATE TABLE "BuilderStrike" (
     CONSTRAINT "BuilderStrike_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "BuilderEvent" (
+    "id" UUID NOT NULL,
+    "builderId" UUID NOT NULL,
+    "season" INTEGER NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "BuilderEvent_pkey" PRIMARY KEY ("id")
+);
+
 -- AddForeignKey
 ALTER TABLE "BuilderStrike" ADD CONSTRAINT "BuilderStrike_builderId_fkey" FOREIGN KEY ("builderId") REFERENCES "Scout"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "BuilderEvent" ADD CONSTRAINT "BuilderEvent_builderId_fkey" FOREIGN KEY ("builderId") REFERENCES "Scout"("id") ON DELETE CASCADE ON UPDATE CASCADE;
