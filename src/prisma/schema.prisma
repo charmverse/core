@@ -2802,6 +2802,7 @@ model BuilderStrike {
   builderId      String       @db.Uuid
   builder        Scout        @relation(fields: [builderId], references: [id], onDelete: Cascade)
   createdAt      DateTime     @default(now())
+  deletedAt      DateTime?
   builderEventId String       @db.Uuid
   builderEvent   BuilderEvent @relation(fields: [builderEventId], references: [id], onDelete: Cascade)
 }

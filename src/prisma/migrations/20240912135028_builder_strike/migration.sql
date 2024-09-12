@@ -12,6 +12,7 @@ CREATE TABLE "BuilderStrike" (
     "id" UUID NOT NULL,
     "builderId" UUID NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "deletedAt" TIMESTAMP(3),
     "builderEventId" UUID NOT NULL,
 
     CONSTRAINT "BuilderStrike_pkey" PRIMARY KEY ("id")
