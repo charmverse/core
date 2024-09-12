@@ -2797,16 +2797,19 @@ model Scout {
 }
 
 model BuilderStrike {
-  id        String   @id @default(uuid()) @db.Uuid
-  builderId String   @db.Uuid
-  builder   Scout    @relation(fields: [builderId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
+  id             String       @id @default(uuid()) @db.Uuid
+  builderId      String       @db.Uuid
+  builder        Scout        @relation(fields: [builderId], references: [id], onDelete: Cascade)
+  createdAt      DateTime     @default(now())
+  builderEventId String       @db.Uuid
+  builderEvent   BuilderEvent @relation(fields: [builderEventId], references: [id], onDelete: Cascade)
 }
 
 model BuilderEvent {
-  id        String   @id @default(uuid()) @db.Uuid
-  builderId String   @db.Uuid
-  builder   Scout    @relation(fields: [builderId], references: [id], onDelete: Cascade)
+  id        String          @id @default(uuid()) @db.Uuid
+  builderId String          @db.Uuid
+  builder   Scout           @relation(fields: [builderId], references: [id], onDelete: Cascade)
   season    Int
-  createdAt DateTime @default(now())
+  createdAt DateTime        @default(now())
+  strikes   BuilderStrike[]
 }

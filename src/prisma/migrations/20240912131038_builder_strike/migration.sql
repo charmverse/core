@@ -6,6 +6,7 @@ CREATE TABLE "BuilderStrike" (
     "id" UUID NOT NULL,
     "builderId" UUID NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "builderEventId" UUID NOT NULL,
 
     CONSTRAINT "BuilderStrike_pkey" PRIMARY KEY ("id")
 );
@@ -22,6 +23,9 @@ CREATE TABLE "BuilderEvent" (
 
 -- AddForeignKey
 ALTER TABLE "BuilderStrike" ADD CONSTRAINT "BuilderStrike_builderId_fkey" FOREIGN KEY ("builderId") REFERENCES "Scout"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "BuilderStrike" ADD CONSTRAINT "BuilderStrike_builderEventId_fkey" FOREIGN KEY ("builderEventId") REFERENCES "BuilderEvent"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "BuilderEvent" ADD CONSTRAINT "BuilderEvent_builderId_fkey" FOREIGN KEY ("builderId") REFERENCES "Scout"("id") ON DELETE CASCADE ON UPDATE CASCADE;
