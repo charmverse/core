@@ -2790,6 +2790,7 @@ model Scout {
   bannedAt      DateTime?
   strikes       BuilderStrike[]
   events        BuilderEvent[]
+  githubUser    GithubUser[]
 
   @@index([username])
   @@index([farcasterId])
@@ -2812,4 +2813,37 @@ model BuilderEvent {
   season    Int
   createdAt DateTime        @default(now())
   strikes   BuilderStrike[]
+}
+
+model GithubUser {
+  id          Int           @id
+  builderId   String?       @db.Uuid
+  builder     Scout?        @relation(fields: [builderId], references: [id], onDelete: SetNull)
+  email       String?
+  displayName String?
+  login       String
+  events      GithubEvent[]
+}
+
+model GithubRepo {
+  id     String        @id
+  owner  String
+  name   String
+  events GithubEvent[]
+}
+
+enum GithubEventType {
+  merged_pull_request
+}
+
+model GithubEvent {
+  id                String          @id
+  repoId            String
+  repo              GithubRepo      @relation(fields: [repoId], references: [id], onDelete: Cascade)
+  pullRequestNumber Int
+  type              GithubEventType
+  title             String
+  createdBy         Int
+  githubUser        GithubUser      @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  createdAt         DateTime        @default(now())
 }
