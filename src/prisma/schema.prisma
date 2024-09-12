@@ -2806,13 +2806,24 @@ model BuilderStrike {
   builderEvent   BuilderEvent @relation(fields: [builderEventId], references: [id], onDelete: Cascade)
 }
 
+enum BuilderEventType {
+  github_event
+  waitlist_airdrop
+  nft_purchase
+  proposal_passed
+  gems_payout
+}
+
 model BuilderEvent {
-  id        String          @id @default(uuid()) @db.Uuid
-  builderId String          @db.Uuid
-  builder   Scout           @relation(fields: [builderId], references: [id], onDelete: Cascade)
-  season    Int
-  createdAt DateTime        @default(now())
-  strikes   BuilderStrike[]
+  id            String           @id @default(uuid()) @db.Uuid
+  builderId     String           @db.Uuid
+  builder       Scout            @relation(fields: [builderId], references: [id], onDelete: Cascade)
+  season        Int
+  type          BuilderEventType
+  createdAt     DateTime         @default(now())
+  strikes       BuilderStrike[]
+  githubEventId String?
+  githubEvent   GithubEvent?     @relation(fields: [githubEventId], references: [id], onDelete: SetNull)
 }
 
 model GithubUser {
@@ -2846,4 +2857,5 @@ model GithubEvent {
   createdBy         Int
   githubUser        GithubUser      @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   createdAt         DateTime        @default(now())
+  builderEvent      BuilderEvent[]
 }
