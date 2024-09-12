@@ -2707,6 +2707,7 @@ model ConnectWaitlistSlot {
   score           Int      @default(0)
   percentile      Int?
   githubLogin     String?
+  isPartnerAccount Boolean  @default(false)
 
   @@index([score])
   @@index([referredByFid])
