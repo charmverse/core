@@ -2797,13 +2797,13 @@ model Scout {
   githubUser        GithubUser[]
   gemsPayoutEvents  GemsPayoutEvent[]
   pointsReceipts    PointsReceipt[]
-  pointsReceived    PointsReceipt[]    @relation("points_receipt_recipient")
-  pointsSent        PointsReceipt[]    @relation("points_receipt_sender")
+  pointsReceived    PointsReceipt[]    @relation("pointsReceiptRecipient")
+  pointsSent        PointsReceipt[]    @relation("pointsReceiptSender")
   userWeeklyStats   UserWeeklyStats[]
   userSeasonStats   UserSeasonStats[]
   userAllTimeStats  UserAllTimeStats[]
-  nftSoldEvents     NFTPurchaseEvent[] @relation("nft_purchase_event_builder")
-  nftPurchaseEvents NFTPurchaseEvent[] @relation("nft_purchase_event_scout")
+  nftSoldEvents     NFTPurchaseEvent[] @relation("nftPurchaseEventBuilder")
+  nftPurchaseEvents NFTPurchaseEvent[] @relation("nftPurchaseEventScout")
 
   @@index([username])
   @@index([farcasterId])
@@ -2894,9 +2894,9 @@ model NFTPurchaseEvent {
   id              String   @id @default(uuid()) @db.Uuid
   createdAt       DateTime @default(now())
   builderId       String   @db.Uuid
-  builder         Scout    @relation(fields: [builderId], references: [id], onDelete: Cascade, name: "nft_purchase_event_builder")
+  builder         Scout    @relation(fields: [builderId], references: [id], onDelete: Cascade, name: "nftPurchaseEventBuilder")
   scoutId         String   @db.Uuid
-  scout           Scout    @relation(fields: [scoutId], references: [id], onDelete: Cascade, name: "nft_purchase_event_scout")
+  scout           Scout    @relation(fields: [scoutId], references: [id], onDelete: Cascade, name: "nftPurchaseEventScout")
   paidInPoints    Boolean?
   points          Int
   price           Float
@@ -2924,12 +2924,16 @@ model PointsReceipt {
   eventId     String       @db.Uuid
   event       BuilderEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
   recipientId String       @db.Uuid
-  recipient   Scout        @relation(fields: [recipientId], references: [id], onDelete: Cascade, name: "points_receipt_recipient")
+  recipient   Scout        @relation(fields: [recipientId], references: [id], onDelete: Cascade, name: "pointsReceiptRecipient")
   senderId    String       @db.Uuid
-  sender      Scout        @relation(fields: [senderId], references: [id], onDelete: Cascade, name: "points_receipt_sender")
+  sender      Scout        @relation(fields: [senderId], references: [id], onDelete: Cascade, name: "pointsReceiptSender")
   claimedAt   DateTime
-  Scout       Scout?       @relation(fields: [scoutId], references: [id])
   scoutId     String?      @db.Uuid
+  scout       Scout?       @relation(fields: [scoutId], references: [id])
+
+  @@index([recipientId])
+  @@index([senderId])
+  @@index([eventId])
 }
 
 enum GemReceiptType {
@@ -2944,6 +2948,8 @@ model GemsReceipt {
   event   BuilderEvent   @relation(fields: [eventId], references: [id], onDelete: Cascade)
   value   Int
   type    GemReceiptType
+
+  @@index([eventId])
 }
 
 model UserWeeklyStats {
@@ -2971,9 +2977,11 @@ model UserSeasonStats {
 
 model UserAllTimeStats {
   id                    String @id @default(uuid()) @db.Uuid
-  userId                String @db.Uuid
+  userId                String @unique @db.Uuid
   user                  Scout  @relation(fields: [userId], references: [id], onDelete: Cascade)
   pointsEarnedAsBuilder Int
   pointsEarnedAsScout   Int
   currentBalance        Int
+
+  @@index([userId])
 }

@@ -178,6 +178,18 @@ CREATE INDEX "GemsPayoutEvent_builderId_idx" ON "GemsPayoutEvent"("builderId");
 CREATE UNIQUE INDEX "GemsPayoutEvent_builderId_week_key" ON "GemsPayoutEvent"("builderId", "week");
 
 -- CreateIndex
+CREATE INDEX "PointsReceipt_recipientId_idx" ON "PointsReceipt"("recipientId");
+
+-- CreateIndex
+CREATE INDEX "PointsReceipt_senderId_idx" ON "PointsReceipt"("senderId");
+
+-- CreateIndex
+CREATE INDEX "PointsReceipt_eventId_idx" ON "PointsReceipt"("eventId");
+
+-- CreateIndex
+CREATE INDEX "GemsReceipt_eventId_idx" ON "GemsReceipt"("eventId");
+
+-- CreateIndex
 CREATE INDEX "UserWeeklyStats_userId_idx" ON "UserWeeklyStats"("userId");
 
 -- CreateIndex
@@ -188,6 +200,12 @@ CREATE INDEX "UserSeasonStats_userId_idx" ON "UserSeasonStats"("userId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "UserSeasonStats_userId_season_key" ON "UserSeasonStats"("userId", "season");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "UserAllTimeStats_userId_key" ON "UserAllTimeStats"("userId");
+
+-- CreateIndex
+CREATE INDEX "UserAllTimeStats_userId_idx" ON "UserAllTimeStats"("userId");
 
 -- AddForeignKey
 ALTER TABLE "BuilderStrike" ADD CONSTRAINT "BuilderStrike_builderId_fkey" FOREIGN KEY ("builderId") REFERENCES "Scout"("id") ON DELETE CASCADE ON UPDATE CASCADE;
