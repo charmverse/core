@@ -2,7 +2,7 @@
 CREATE TYPE "BuilderEventType" AS ENUM ('github_event', 'waitlist_airdrop', 'nft_purchase', 'proposal_passed', 'gems_payout');
 
 -- CreateEnum
-CREATE TYPE "GithubEventType" AS ENUM ('merged_pull_request');
+CREATE TYPE "GithubEventType" AS ENUM ('merged_pull_request', 'closed_pull_request');
 
 -- CreateEnum
 CREATE TYPE "GemReceiptType" AS ENUM ('first_pr', 'third_pr_in_streak', 'regular_pr');
@@ -29,7 +29,7 @@ CREATE TABLE "BuilderEvent" (
     "type" "BuilderEventType" NOT NULL,
     "week" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "githubEventId" TEXT,
+    "githubEventId" UUID,
     "gemsPayoutEventId" UUID,
 
     CONSTRAINT "BuilderEvent_pkey" PRIMARY KEY ("id")
@@ -57,7 +57,7 @@ CREATE TABLE "GithubRepo" (
 
 -- CreateTable
 CREATE TABLE "GithubEvent" (
-    "id" TEXT NOT NULL,
+    "id" UUID NOT NULL,
     "repoId" TEXT NOT NULL,
     "pullRequestNumber" INTEGER NOT NULL,
     "type" "GithubEventType" NOT NULL,

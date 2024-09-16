@@ -2838,7 +2838,7 @@ model BuilderEvent {
   week              String
   createdAt         DateTime         @default(now())
   strikes           BuilderStrike[]
-  githubEventId     String?
+  githubEventId     String?          @db.Uuid
   githubEvent       GithubEvent?     @relation(fields: [githubEventId], references: [id], onDelete: SetNull)
   gemsPayoutEventId String?          @db.Uuid
   gemsPayoutEvent   GemsPayoutEvent? @relation(fields: [gemsPayoutEventId], references: [id], onDelete: SetNull)
@@ -2871,10 +2871,11 @@ model GithubRepo {
 
 enum GithubEventType {
   merged_pull_request
+  closed_pull_request
 }
 
 model GithubEvent {
-  id                String          @id
+  id                String          @id @default(uuid()) @db.Uuid
   repoId            String
   repo              GithubRepo      @relation(fields: [repoId], references: [id], onDelete: Cascade)
   pullRequestNumber Int
