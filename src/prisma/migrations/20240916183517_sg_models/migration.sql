@@ -69,6 +69,23 @@ CREATE TABLE "GithubEvent" (
 );
 
 -- CreateTable
+CREATE TABLE "NFTPurchaseEvent" (
+    "id" UUID NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "builderId" UUID NOT NULL,
+    "scoutId" UUID NOT NULL,
+    "paidInPoints" BOOLEAN,
+    "points" INTEGER NOT NULL,
+    "price" DOUBLE PRECISION NOT NULL,
+    "chain" INTEGER NOT NULL,
+    "contractAddress" TEXT NOT NULL,
+    "tokenId" INTEGER NOT NULL,
+    "txHash" TEXT NOT NULL,
+
+    CONSTRAINT "NFTPurchaseEvent_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "GemsPayoutEvent" (
     "id" UUID NOT NULL,
     "builderId" UUID NOT NULL,
@@ -92,13 +109,13 @@ CREATE TABLE "PointsReceipt" (
 );
 
 -- CreateTable
-CREATE TABLE "GemReceipt" (
+CREATE TABLE "GemsReceipt" (
     "id" UUID NOT NULL,
     "eventId" UUID NOT NULL,
     "value" INTEGER NOT NULL,
     "type" "GemReceiptType" NOT NULL,
 
-    CONSTRAINT "GemReceipt_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "GemsReceipt_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -197,6 +214,12 @@ ALTER TABLE "GithubEvent" ADD CONSTRAINT "GithubEvent_repoId_fkey" FOREIGN KEY (
 ALTER TABLE "GithubEvent" ADD CONSTRAINT "GithubEvent_createdBy_fkey" FOREIGN KEY ("createdBy") REFERENCES "GithubUser"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "NFTPurchaseEvent" ADD CONSTRAINT "NFTPurchaseEvent_builderId_fkey" FOREIGN KEY ("builderId") REFERENCES "Scout"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "NFTPurchaseEvent" ADD CONSTRAINT "NFTPurchaseEvent_scoutId_fkey" FOREIGN KEY ("scoutId") REFERENCES "Scout"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "GemsPayoutEvent" ADD CONSTRAINT "GemsPayoutEvent_builderId_fkey" FOREIGN KEY ("builderId") REFERENCES "Scout"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -212,7 +235,7 @@ ALTER TABLE "PointsReceipt" ADD CONSTRAINT "PointsReceipt_senderId_fkey" FOREIGN
 ALTER TABLE "PointsReceipt" ADD CONSTRAINT "PointsReceipt_scoutId_fkey" FOREIGN KEY ("scoutId") REFERENCES "Scout"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "GemReceipt" ADD CONSTRAINT "GemReceipt_eventId_fkey" FOREIGN KEY ("eventId") REFERENCES "BuilderEvent"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "GemsReceipt" ADD CONSTRAINT "GemsReceipt_eventId_fkey" FOREIGN KEY ("eventId") REFERENCES "BuilderEvent"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "UserWeeklyStats" ADD CONSTRAINT "UserWeeklyStats_userId_fkey" FOREIGN KEY ("userId") REFERENCES "Scout"("id") ON DELETE CASCADE ON UPDATE CASCADE;

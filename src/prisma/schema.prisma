@@ -2698,18 +2698,18 @@ model ProductUpdatesFarcasterFrame {
 }
 
 model ConnectWaitlistSlot {
-  id                 String                  @id @default(uuid()) @db.Uuid
-  createdAt          DateTime                @default(now())
-  initialPosition    Int                     @default(autoincrement())
-  fid                Int                     @unique
-  username           String?                 // TBD if we need this
-  referredByFid      Int?                    
-  referrer           ConnectWaitlistSlot?    @relation("ReferralRelation", fields: [referredByFid], references: [fid], onDelete: SetNull)
-  referralsGenerated ConnectWaitlistSlot[]   @relation("ReferralRelation")
-  score              Int                     @default(0)
+  id                 String                @id @default(uuid()) @db.Uuid
+  createdAt          DateTime              @default(now())
+  initialPosition    Int                   @default(autoincrement())
+  fid                Int                   @unique
+  username           String? // TBD if we need this
+  referredByFid      Int?
+  referrer           ConnectWaitlistSlot?  @relation("ReferralRelation", fields: [referredByFid], references: [fid], onDelete: SetNull)
+  referralsGenerated ConnectWaitlistSlot[] @relation("ReferralRelation")
+  score              Int                   @default(0)
   percentile         Int?
   githubLogin        String?
-  isPartnerAccount   Boolean                 @default(false)
+  isPartnerAccount   Boolean               @default(false)
 
   @@index([githubLogin])
   @@index([score])
@@ -2777,31 +2777,33 @@ model CryptoEcosystemPullRequest {
 }
 
 model Scout {
-  id               String             @id @default(uuid()) @db.Uuid
-  email            String?
-  username         String             @unique
-  displayName      String
-  farcasterId      Int? // every user only has one farcaster account
-  farcasterName    String? // every user only has one farcaster account
-  walletAddress    String? // grab most recent wallet when someone signs in w/farcaster
-  walletENS        String?
-  avatar           String?
-  bio              String?
-  builder          Boolean            @default(false) // This means someone 'turned on' the builder profile. see Alternatives Considered
-  sendMarketing    Boolean            @default(false)
-  agreedToTOS      Boolean            @default(false)
-  onboarded        Boolean            @default(false)
-  bannedAt         DateTime?
-  strikes          BuilderStrike[]
-  events           BuilderEvent[]
-  githubUser       GithubUser[]
-  gemsPayoutEvents GemsPayoutEvent[]
-  pointsReceipts   PointsReceipt[]
-  pointsReceived   PointsReceipt[]    @relation("points_receipt_recipient")
-  pointsSent       PointsReceipt[]    @relation("points_receipt_sender")
-  userWeeklyStats  UserWeeklyStats[]
-  userSeasonStats  UserSeasonStats[]
-  userAllTimeStats UserAllTimeStats[]
+  id                String             @id @default(uuid()) @db.Uuid
+  email             String?
+  username          String             @unique
+  displayName       String
+  farcasterId       Int? // every user only has one farcaster account
+  farcasterName     String? // every user only has one farcaster account
+  walletAddress     String? // grab most recent wallet when someone signs in w/farcaster
+  walletENS         String?
+  avatar            String?
+  bio               String?
+  builder           Boolean            @default(false) // This means someone 'turned on' the builder profile. see Alternatives Considered
+  sendMarketing     Boolean            @default(false)
+  agreedToTOS       Boolean            @default(false)
+  onboarded         Boolean            @default(false)
+  bannedAt          DateTime?
+  strikes           BuilderStrike[]
+  events            BuilderEvent[]
+  githubUser        GithubUser[]
+  gemsPayoutEvents  GemsPayoutEvent[]
+  pointsReceipts    PointsReceipt[]
+  pointsReceived    PointsReceipt[]    @relation("points_receipt_recipient")
+  pointsSent        PointsReceipt[]    @relation("points_receipt_sender")
+  userWeeklyStats   UserWeeklyStats[]
+  userSeasonStats   UserSeasonStats[]
+  userAllTimeStats  UserAllTimeStats[]
+  nftSoldEvents     NFTPurchaseEvent[] @relation("nft_purchase_event_builder")
+  nftPurchaseEvents NFTPurchaseEvent[] @relation("nft_purchase_event_scout")
 
   @@index([username])
   @@index([farcasterId])
@@ -2842,7 +2844,7 @@ model BuilderEvent {
   gemsPayoutEventId String?          @db.Uuid
   gemsPayoutEvent   GemsPayoutEvent? @relation(fields: [gemsPayoutEventId], references: [id], onDelete: SetNull)
   pointsReceipts    PointsReceipt[]
-  gemReceipts       GemReceipt[]
+  gemsReceipts      GemsReceipt[]
 
   @@index([builderId])
   @@index([githubEventId])
@@ -2888,6 +2890,22 @@ model GithubEvent {
   @@index([createdBy])
 }
 
+model NFTPurchaseEvent {
+  id              String   @id @default(uuid()) @db.Uuid
+  createdAt       DateTime @default(now())
+  builderId       String   @db.Uuid
+  builder         Scout    @relation(fields: [builderId], references: [id], onDelete: Cascade, name: "nft_purchase_event_builder")
+  scoutId         String   @db.Uuid
+  scout           Scout    @relation(fields: [scoutId], references: [id], onDelete: Cascade, name: "nft_purchase_event_scout")
+  paidInPoints    Boolean?
+  points          Int
+  price           Float
+  chain           Int
+  contractAddress String
+  tokenId         Int
+  txHash          String
+}
+
 model GemsPayoutEvent {
   id            String         @id @default(uuid()) @db.Uuid
   builderId     String         @db.Uuid
@@ -2920,7 +2938,7 @@ enum GemReceiptType {
   regular_pr
 }
 
-model GemReceipt {
+model GemsReceipt {
   id      String         @id @default(uuid()) @db.Uuid
   eventId String         @db.Uuid
   event   BuilderEvent   @relation(fields: [eventId], references: [id], onDelete: Cascade)
