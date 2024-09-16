@@ -5,7 +5,7 @@ CREATE TYPE "BuilderEventType" AS ENUM ('github_event', 'waitlist_airdrop', 'nft
 CREATE TYPE "GithubEventType" AS ENUM ('merged_pull_request', 'closed_pull_request');
 
 -- CreateEnum
-CREATE TYPE "GemReceiptType" AS ENUM ('first_pr', 'third_pr_in_streak', 'regular_pr');
+CREATE TYPE "GemsReceiptType" AS ENUM ('first_pr', 'third_pr_in_streak', 'regular_pr');
 
 -- AlterTable
 ALTER TABLE "Scout" ADD COLUMN     "bannedAt" TIMESTAMP(3);
@@ -113,7 +113,7 @@ CREATE TABLE "GemsReceipt" (
     "id" UUID NOT NULL,
     "eventId" UUID NOT NULL,
     "value" INTEGER NOT NULL,
-    "type" "GemReceiptType" NOT NULL,
+    "type" "GemsReceiptType" NOT NULL,
 
     CONSTRAINT "GemsReceipt_pkey" PRIMARY KEY ("id")
 );

@@ -2935,18 +2935,18 @@ model PointsReceipt {
   @@index([eventId])
 }
 
-enum GemReceiptType {
+enum GemsReceiptType {
   first_pr
   third_pr_in_streak
   regular_pr
 }
 
 model GemsReceipt {
-  id      String         @id @default(uuid()) @db.Uuid
-  eventId String         @db.Uuid
-  event   BuilderEvent   @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  id      String          @id @default(uuid()) @db.Uuid
+  eventId String          @db.Uuid
+  event   BuilderEvent    @relation(fields: [eventId], references: [id], onDelete: Cascade)
   value   Int
-  type    GemReceiptType
+  type    GemsReceiptType
 
   @@index([eventId])
 }
