@@ -2698,16 +2698,20 @@ model ProductUpdatesFarcasterFrame {
 }
 
 model ConnectWaitlistSlot {
-  id              String   @id @default(uuid()) @db.Uuid
-  createdAt       DateTime @default(now())
-  initialPosition Int      @default(autoincrement())
-  fid             Int      @unique
-  username        String // TBD if we need this
-  referredByFid   Int?
-  score           Int      @default(0)
-  percentile      Int?
-  githubLogin     String?
+  id                 String                  @id @default(uuid()) @db.Uuid
+  createdAt          DateTime                @default(now())
+  initialPosition    Int                     @default(autoincrement())
+  fid                Int                     @unique
+  username           String?                 // TBD if we need this
+  referredByFid      Int?                    
+  referrer           ConnectWaitlistSlot?    @relation("ReferralRelation", fields: [referredByFid], references: [fid], onDelete: SetNull)
+  referralsGenerated ConnectWaitlistSlot[]   @relation("ReferralRelation")
+  score              Int                     @default(0)
+  percentile         Int?
+  githubLogin        String?
+  isPartnerAccount   Boolean                 @default(false)
 
+  @@index([githubLogin])
   @@index([score])
   @@index([referredByFid])
 }
