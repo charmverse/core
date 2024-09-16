@@ -99,11 +99,11 @@ CREATE TABLE "GemsPayoutEvent" (
 -- CreateTable
 CREATE TABLE "PointsReceipt" (
     "id" UUID NOT NULL,
+    "value" INTEGER NOT NULL,
+    "claimedAt" TIMESTAMP(3) NOT NULL,
     "eventId" UUID NOT NULL,
     "recipientId" UUID NOT NULL,
     "senderId" UUID NOT NULL,
-    "claimedAt" TIMESTAMP(3) NOT NULL,
-    "scoutId" UUID,
 
     CONSTRAINT "PointsReceipt_pkey" PRIMARY KEY ("id")
 );
@@ -248,9 +248,6 @@ ALTER TABLE "PointsReceipt" ADD CONSTRAINT "PointsReceipt_recipientId_fkey" FORE
 
 -- AddForeignKey
 ALTER TABLE "PointsReceipt" ADD CONSTRAINT "PointsReceipt_senderId_fkey" FOREIGN KEY ("senderId") REFERENCES "Scout"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "PointsReceipt" ADD CONSTRAINT "PointsReceipt_scoutId_fkey" FOREIGN KEY ("scoutId") REFERENCES "Scout"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "GemsReceipt" ADD CONSTRAINT "GemsReceipt_eventId_fkey" FOREIGN KEY ("eventId") REFERENCES "BuilderEvent"("id") ON DELETE CASCADE ON UPDATE CASCADE;

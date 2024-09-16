@@ -2796,7 +2796,6 @@ model Scout {
   events            BuilderEvent[]
   githubUser        GithubUser[]
   gemsPayoutEvents  GemsPayoutEvent[]
-  pointsReceipts    PointsReceipt[]
   pointsReceived    PointsReceipt[]    @relation("pointsReceiptRecipient")
   pointsSent        PointsReceipt[]    @relation("pointsReceiptSender")
   userWeeklyStats   UserWeeklyStats[]
@@ -2921,15 +2920,14 @@ model GemsPayoutEvent {
 
 model PointsReceipt {
   id          String       @id @default(uuid()) @db.Uuid
+  value       Int
+  claimedAt   DateTime
   eventId     String       @db.Uuid
   event       BuilderEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
   recipientId String       @db.Uuid
   recipient   Scout        @relation(fields: [recipientId], references: [id], onDelete: Cascade, name: "pointsReceiptRecipient")
   senderId    String       @db.Uuid
   sender      Scout        @relation(fields: [senderId], references: [id], onDelete: Cascade, name: "pointsReceiptSender")
-  claimedAt   DateTime
-  scoutId     String?      @db.Uuid
-  scout       Scout?       @relation(fields: [scoutId], references: [id])
 
   @@index([recipientId])
   @@index([senderId])
