@@ -2773,24 +2773,31 @@ model CryptoEcosystemPullRequest {
 }
 
 model Scout {
-  id            String          @id @default(uuid()) @db.Uuid
-  email         String?
-  username      String          @unique
-  displayName   String
-  farcasterId   Int? // every user only has one farcaster account
-  farcasterName String? // every user only has one farcaster account
-  walletAddress String? // grab most recent wallet when someone signs in w/farcaster
-  walletENS     String?
-  avatar        String?
-  bio           String?
-  builder       Boolean         @default(false) // This means someone 'turned on' the builder profile. see Alternatives Considered
-  sendMarketing Boolean         @default(false)
-  agreedToTOS   Boolean         @default(false)
-  onboarded     Boolean         @default(false)
-  bannedAt      DateTime?
-  strikes       BuilderStrike[]
-  events        BuilderEvent[]
-  githubUser    GithubUser[]
+  id               String             @id @default(uuid()) @db.Uuid
+  email            String?
+  username         String             @unique
+  displayName      String
+  farcasterId      Int? // every user only has one farcaster account
+  farcasterName    String? // every user only has one farcaster account
+  walletAddress    String? // grab most recent wallet when someone signs in w/farcaster
+  walletENS        String?
+  avatar           String?
+  bio              String?
+  builder          Boolean            @default(false) // This means someone 'turned on' the builder profile. see Alternatives Considered
+  sendMarketing    Boolean            @default(false)
+  agreedToTOS      Boolean            @default(false)
+  onboarded        Boolean            @default(false)
+  bannedAt         DateTime?
+  strikes          BuilderStrike[]
+  events           BuilderEvent[]
+  githubUser       GithubUser[]
+  gemsPayoutEvents GemsPayoutEvent[]
+  pointsReceipts   PointsReceipt[]
+  pointsReceived   PointsReceipt[]    @relation("points_receipt_recipient")
+  pointsSent       PointsReceipt[]    @relation("points_receipt_sender")
+  userWeeklyStats  UserWeeklyStats[]
+  userSeasonStats  UserSeasonStats[]
+  userAllTimeStats UserAllTimeStats[]
 
   @@index([username])
   @@index([farcasterId])
@@ -2805,6 +2812,8 @@ model BuilderStrike {
   deletedAt      DateTime?
   builderEventId String       @db.Uuid
   builderEvent   BuilderEvent @relation(fields: [builderEventId], references: [id], onDelete: Cascade)
+
+  @@index([builderId, deletedAt])
 }
 
 enum BuilderEventType {
@@ -2816,15 +2825,24 @@ enum BuilderEventType {
 }
 
 model BuilderEvent {
-  id            String           @id @default(uuid()) @db.Uuid
-  builderId     String           @db.Uuid
-  builder       Scout            @relation(fields: [builderId], references: [id], onDelete: Cascade)
-  season        Int
-  type          BuilderEventType
-  createdAt     DateTime         @default(now())
-  strikes       BuilderStrike[]
-  githubEventId String?
-  githubEvent   GithubEvent?     @relation(fields: [githubEventId], references: [id], onDelete: SetNull)
+  id                String           @id @default(uuid()) @db.Uuid
+  builderId         String           @db.Uuid
+  builder           Scout            @relation(fields: [builderId], references: [id], onDelete: Cascade)
+  season            Int
+  type              BuilderEventType
+  week              String
+  createdAt         DateTime         @default(now())
+  strikes           BuilderStrike[]
+  githubEventId     String?
+  githubEvent       GithubEvent?     @relation(fields: [githubEventId], references: [id], onDelete: SetNull)
+  gemsPayoutEventId String?          @db.Uuid
+  gemsPayoutEvent   GemsPayoutEvent? @relation(fields: [gemsPayoutEventId], references: [id], onDelete: SetNull)
+  pointsReceipts    PointsReceipt[]
+  gemReceipts       GemReceipt[]
+
+  @@index([builderId])
+  @@index([githubEventId])
+  @@index([gemsPayoutEventId])
 }
 
 model GithubUser {
@@ -2835,6 +2853,8 @@ model GithubUser {
   displayName String?
   login       String
   events      GithubEvent[]
+
+  @@index([builderId])
 }
 
 model GithubRepo {
@@ -2859,4 +2879,79 @@ model GithubEvent {
   githubUser        GithubUser      @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   createdAt         DateTime        @default(now())
   builderEvent      BuilderEvent[]
+
+  @@index([repoId])
+  @@index([createdBy])
+}
+
+model GemsPayoutEvent {
+  id            String         @id @default(uuid()) @db.Uuid
+  builderId     String         @db.Uuid
+  builder       Scout          @relation(fields: [builderId], references: [id], onDelete: Cascade)
+  gems          Int
+  points        Int
+  week          String
+  builderEvents BuilderEvent[]
+
+  @@unique([builderId, week])
+  @@index([builderId])
+}
+
+model PointsReceipt {
+  id          String       @id @default(uuid()) @db.Uuid
+  eventId     String       @db.Uuid
+  event       BuilderEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  recipientId String       @db.Uuid
+  recipient   Scout        @relation(fields: [recipientId], references: [id], onDelete: Cascade, name: "points_receipt_recipient")
+  senderId    String       @db.Uuid
+  sender      Scout        @relation(fields: [senderId], references: [id], onDelete: Cascade, name: "points_receipt_sender")
+  claimedAt   DateTime
+  Scout       Scout?       @relation(fields: [scoutId], references: [id])
+  scoutId     String?      @db.Uuid
+}
+
+enum GemReceiptType {
+  first_pr
+  third_pr_in_streak
+  regular_pr
+}
+
+model GemReceipt {
+  id      String         @id @default(uuid()) @db.Uuid
+  eventId String         @db.Uuid
+  event   BuilderEvent   @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  value   Int
+  type    GemReceiptType
+}
+
+model UserWeeklyStats {
+  id            String @id @default(uuid()) @db.Uuid
+  userId        String @db.Uuid
+  user          Scout  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  gemsCollected Int
+  week          String
+
+  @@unique([userId, week])
+  @@index([userId])
+}
+
+model UserSeasonStats {
+  id                    String @id @default(uuid()) @db.Uuid
+  userId                String @db.Uuid
+  user                  Scout  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pointsEarnedAsBuilder Int
+  pointsEarnedAsScout   Int
+  season                Int
+
+  @@unique([userId, season])
+  @@index([userId])
+}
+
+model UserAllTimeStats {
+  id                    String @id @default(uuid()) @db.Uuid
+  userId                String @db.Uuid
+  user                  Scout  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pointsEarnedAsBuilder Int
+  pointsEarnedAsScout   Int
+  currentBalance        Int
 }
