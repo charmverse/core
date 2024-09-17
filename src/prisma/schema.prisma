@@ -2886,7 +2886,7 @@ model GithubEvent {
   createdAt         DateTime        @default(now())
   builderEvents     BuilderEvent[]
 
-  @@unique([pullRequestNumber, repoId])
+  @@unique([pullRequestNumber, repoId, createdBy, type], name: "unique_github_event")
   @@index([repoId])
   @@index([createdBy])
 }

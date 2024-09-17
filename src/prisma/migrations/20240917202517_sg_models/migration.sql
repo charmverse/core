@@ -175,7 +175,7 @@ CREATE INDEX "GithubEvent_repoId_idx" ON "GithubEvent"("repoId");
 CREATE INDEX "GithubEvent_createdBy_idx" ON "GithubEvent"("createdBy");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "GithubEvent_pullRequestNumber_repoId_key" ON "GithubEvent"("pullRequestNumber", "repoId");
+CREATE UNIQUE INDEX "GithubEvent_pullRequestNumber_repoId_createdBy_type_key" ON "GithubEvent"("pullRequestNumber", "repoId", "createdBy", "type");
 
 -- CreateIndex
 CREATE INDEX "GemsPayoutEvent_builderId_idx" ON "GemsPayoutEvent"("builderId");
