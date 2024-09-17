@@ -2884,7 +2884,7 @@ model GithubEvent {
   createdBy         Int
   githubUser        GithubUser      @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   createdAt         DateTime        @default(now())
-  builderEvent      BuilderEvent[]
+  builderEvents     BuilderEvent[]
 
   @@index([repoId])
   @@index([createdBy])
