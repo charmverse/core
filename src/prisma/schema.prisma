@@ -2851,12 +2851,12 @@ model BuilderEvent {
 }
 
 model GithubUser {
-  id          Int           @id
+  id          String        @id @default(uuid()) @db.Uuid
   builderId   String?       @db.Uuid
   builder     Scout?        @relation(fields: [builderId], references: [id], onDelete: SetNull)
   email       String?
   displayName String?
-  login       String
+  login       String        @unique
   events      GithubEvent[]
 
   @@index([builderId])
@@ -2881,11 +2881,12 @@ model GithubEvent {
   pullRequestNumber Int
   type              GithubEventType
   title             String
-  createdBy         Int
+  createdBy         String          @db.Uuid
   githubUser        GithubUser      @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   createdAt         DateTime        @default(now())
   builderEvents     BuilderEvent[]
 
+  @@unique([pullRequestNumber, repoId])
   @@index([repoId])
   @@index([createdBy])
 }

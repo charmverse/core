@@ -37,7 +37,7 @@ CREATE TABLE "BuilderEvent" (
 
 -- CreateTable
 CREATE TABLE "GithubUser" (
-    "id" INTEGER NOT NULL,
+    "id" UUID NOT NULL,
     "builderId" UUID,
     "email" TEXT,
     "displayName" TEXT,
@@ -62,7 +62,7 @@ CREATE TABLE "GithubEvent" (
     "pullRequestNumber" INTEGER NOT NULL,
     "type" "GithubEventType" NOT NULL,
     "title" TEXT NOT NULL,
-    "createdBy" INTEGER NOT NULL,
+    "createdBy" UUID NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "GithubEvent_pkey" PRIMARY KEY ("id")
@@ -163,6 +163,9 @@ CREATE INDEX "BuilderEvent_githubEventId_idx" ON "BuilderEvent"("githubEventId")
 CREATE INDEX "BuilderEvent_gemsPayoutEventId_idx" ON "BuilderEvent"("gemsPayoutEventId");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "GithubUser_login_key" ON "GithubUser"("login");
+
+-- CreateIndex
 CREATE INDEX "GithubUser_builderId_idx" ON "GithubUser"("builderId");
 
 -- CreateIndex
@@ -170,6 +173,9 @@ CREATE INDEX "GithubEvent_repoId_idx" ON "GithubEvent"("repoId");
 
 -- CreateIndex
 CREATE INDEX "GithubEvent_createdBy_idx" ON "GithubEvent"("createdBy");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "GithubEvent_pullRequestNumber_repoId_key" ON "GithubEvent"("pullRequestNumber", "repoId");
 
 -- CreateIndex
 CREATE INDEX "GemsPayoutEvent_builderId_idx" ON "GemsPayoutEvent"("builderId");
