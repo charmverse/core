@@ -2867,6 +2867,8 @@ model GithubRepo {
   owner  String
   name   String
   events GithubEvent[]
+
+  @@index([id])
 }
 
 enum GithubEventType {
@@ -2880,6 +2882,7 @@ model GithubEvent {
   repo              GithubRepo      @relation(fields: [repoId], references: [id], onDelete: Cascade)
   pullRequestNumber Int
   type              GithubEventType
+  isFirstCommit     Boolean         @default(false)
   title             String
   createdAt         DateTime        @default(now())
   createdBy         Int
@@ -2958,9 +2961,9 @@ model GemsReceipt {
 }
 
 model UserWeeklyStats {
-  id            String @id @default(uuid()) @db.Uuid
-  userId        String @db.Uuid
-  user          Scout  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lastUpdated   DateTime @default(now())
+  userId        String   @db.Uuid
+  user          Scout    @relation(fields: [userId], references: [id], onDelete: Cascade)
   gemsCollected Int
   week          String
 
@@ -2969,9 +2972,9 @@ model UserWeeklyStats {
 }
 
 model UserSeasonStats {
-  id                    String @id @default(uuid()) @db.Uuid
-  userId                String @db.Uuid
-  user                  Scout  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lastUpdated           DateTime @default(now())
+  userId                String   @db.Uuid
+  user                  Scout    @relation(fields: [userId], references: [id], onDelete: Cascade)
   pointsEarnedAsBuilder Int
   pointsEarnedAsScout   Int
   season                Int
@@ -2981,9 +2984,9 @@ model UserSeasonStats {
 }
 
 model UserAllTimeStats {
-  id                    String @id @default(uuid()) @db.Uuid
-  userId                String @unique @db.Uuid
-  user                  Scout  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lastUpdated           DateTime @default(now())
+  userId                String   @unique @db.Uuid
+  user                  Scout    @relation(fields: [userId], references: [id], onDelete: Cascade)
   pointsEarnedAsBuilder Int
   pointsEarnedAsScout   Int
   currentBalance        Int

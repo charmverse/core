@@ -59,6 +59,7 @@ CREATE TABLE "GithubEvent" (
     "repoId" TEXT NOT NULL,
     "pullRequestNumber" INTEGER NOT NULL,
     "type" "GithubEventType" NOT NULL,
+    "isFirstCommit" BOOLEAN NOT NULL DEFAULT false,
     "title" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "createdBy" INTEGER NOT NULL,
@@ -120,34 +121,28 @@ CREATE TABLE "GemsReceipt" (
 
 -- CreateTable
 CREATE TABLE "UserWeeklyStats" (
-    "id" UUID NOT NULL,
+    "lastUpdated" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "userId" UUID NOT NULL,
     "gemsCollected" INTEGER NOT NULL,
-    "week" TEXT NOT NULL,
-
-    CONSTRAINT "UserWeeklyStats_pkey" PRIMARY KEY ("id")
+    "week" TEXT NOT NULL
 );
 
 -- CreateTable
 CREATE TABLE "UserSeasonStats" (
-    "id" UUID NOT NULL,
+    "lastUpdated" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "userId" UUID NOT NULL,
     "pointsEarnedAsBuilder" INTEGER NOT NULL,
     "pointsEarnedAsScout" INTEGER NOT NULL,
-    "season" INTEGER NOT NULL,
-
-    CONSTRAINT "UserSeasonStats_pkey" PRIMARY KEY ("id")
+    "season" INTEGER NOT NULL
 );
 
 -- CreateTable
 CREATE TABLE "UserAllTimeStats" (
-    "id" UUID NOT NULL,
+    "lastUpdated" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "userId" UUID NOT NULL,
     "pointsEarnedAsBuilder" INTEGER NOT NULL,
     "pointsEarnedAsScout" INTEGER NOT NULL,
-    "currentBalance" INTEGER NOT NULL,
-
-    CONSTRAINT "UserAllTimeStats_pkey" PRIMARY KEY ("id")
+    "currentBalance" INTEGER NOT NULL
 );
 
 -- CreateIndex
@@ -170,6 +165,9 @@ CREATE UNIQUE INDEX "GithubUser_login_key" ON "GithubUser"("login");
 
 -- CreateIndex
 CREATE INDEX "GithubUser_builderId_idx" ON "GithubUser"("builderId");
+
+-- CreateIndex
+CREATE INDEX "GithubRepo_id_idx" ON "GithubRepo"("id");
 
 -- CreateIndex
 CREATE INDEX "GithubEvent_repoId_idx" ON "GithubEvent"("repoId");
