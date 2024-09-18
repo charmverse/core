@@ -2850,7 +2850,6 @@ model BuilderEvent {
 }
 
 model GithubUser {
-  id          Int           @unique
   builderId   String?       @db.Uuid
   builder     Scout?        @relation(fields: [builderId], references: [id], onDelete: SetNull)
   email       String?
@@ -2884,8 +2883,8 @@ model GithubEvent {
   isFirstCommit     Boolean         @default(false)
   title             String
   createdAt         DateTime        @default(now())
-  createdBy         Int
-  githubUser        GithubUser      @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  createdBy         String
+  githubUser        GithubUser      @relation(fields: [createdBy], references: [login], onDelete: Cascade)
   builderEvents     BuilderEvent[]
   strikes           BuilderStrike[]
 

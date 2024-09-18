@@ -37,7 +37,6 @@ CREATE TABLE "BuilderEvent" (
 
 -- CreateTable
 CREATE TABLE "GithubUser" (
-    "id" INTEGER NOT NULL,
     "builderId" UUID,
     "email" TEXT,
     "displayName" TEXT,
@@ -62,7 +61,7 @@ CREATE TABLE "GithubEvent" (
     "isFirstCommit" BOOLEAN NOT NULL DEFAULT false,
     "title" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "createdBy" INTEGER NOT NULL,
+    "createdBy" TEXT NOT NULL,
 
     CONSTRAINT "GithubEvent_pkey" PRIMARY KEY ("id")
 );
@@ -158,9 +157,6 @@ CREATE INDEX "BuilderEvent_githubEventId_idx" ON "BuilderEvent"("githubEventId")
 CREATE INDEX "BuilderEvent_gemsPayoutEventId_idx" ON "BuilderEvent"("gemsPayoutEventId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "GithubUser_id_key" ON "GithubUser"("id");
-
--- CreateIndex
 CREATE UNIQUE INDEX "GithubUser_login_key" ON "GithubUser"("login");
 
 -- CreateIndex
@@ -242,7 +238,7 @@ ALTER TABLE "GithubUser" ADD CONSTRAINT "GithubUser_builderId_fkey" FOREIGN KEY 
 ALTER TABLE "GithubEvent" ADD CONSTRAINT "GithubEvent_repoId_fkey" FOREIGN KEY ("repoId") REFERENCES "GithubRepo"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "GithubEvent" ADD CONSTRAINT "GithubEvent_createdBy_fkey" FOREIGN KEY ("createdBy") REFERENCES "GithubUser"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "GithubEvent" ADD CONSTRAINT "GithubEvent_createdBy_fkey" FOREIGN KEY ("createdBy") REFERENCES "GithubUser"("login") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "NFTPurchaseEvent" ADD CONSTRAINT "NFTPurchaseEvent_builderId_fkey" FOREIGN KEY ("builderId") REFERENCES "Scout"("id") ON DELETE CASCADE ON UPDATE CASCADE;
