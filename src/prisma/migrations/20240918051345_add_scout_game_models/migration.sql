@@ -37,13 +37,11 @@ CREATE TABLE "BuilderEvent" (
 
 -- CreateTable
 CREATE TABLE "GithubUser" (
-    "id" UUID NOT NULL,
+    "id" INTEGER NOT NULL,
     "builderId" UUID,
     "email" TEXT,
     "displayName" TEXT,
-    "login" TEXT NOT NULL,
-
-    CONSTRAINT "GithubUser_pkey" PRIMARY KEY ("id")
+    "login" TEXT NOT NULL
 );
 
 -- CreateTable
@@ -62,8 +60,8 @@ CREATE TABLE "GithubEvent" (
     "pullRequestNumber" INTEGER NOT NULL,
     "type" "GithubEventType" NOT NULL,
     "title" TEXT NOT NULL,
-    "createdBy" UUID NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "createdBy" INTEGER NOT NULL,
 
     CONSTRAINT "GithubEvent_pkey" PRIMARY KEY ("id")
 );
@@ -76,7 +74,6 @@ CREATE TABLE "NFTPurchaseEvent" (
     "scoutId" UUID NOT NULL,
     "paidInPoints" BOOLEAN,
     "points" INTEGER NOT NULL,
-    "price" DOUBLE PRECISION NOT NULL,
     "chain" INTEGER NOT NULL,
     "contractAddress" TEXT NOT NULL,
     "tokenId" INTEGER NOT NULL,
@@ -88,6 +85,7 @@ CREATE TABLE "NFTPurchaseEvent" (
 -- CreateTable
 CREATE TABLE "GemsPayoutEvent" (
     "id" UUID NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "builderId" UUID NOT NULL,
     "gems" INTEGER NOT NULL,
     "points" INTEGER NOT NULL,
@@ -99,6 +97,7 @@ CREATE TABLE "GemsPayoutEvent" (
 -- CreateTable
 CREATE TABLE "PointsReceipt" (
     "id" UUID NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "value" INTEGER NOT NULL,
     "claimedAt" TIMESTAMP(3) NOT NULL,
     "eventId" UUID NOT NULL,
@@ -112,6 +111,7 @@ CREATE TABLE "PointsReceipt" (
 CREATE TABLE "GemsReceipt" (
     "id" UUID NOT NULL,
     "eventId" UUID NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "value" INTEGER NOT NULL,
     "type" "GemsReceiptType" NOT NULL,
 
@@ -163,6 +163,9 @@ CREATE INDEX "BuilderEvent_githubEventId_idx" ON "BuilderEvent"("githubEventId")
 CREATE INDEX "BuilderEvent_gemsPayoutEventId_idx" ON "BuilderEvent"("gemsPayoutEventId");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "GithubUser_id_key" ON "GithubUser"("id");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "GithubUser_login_key" ON "GithubUser"("login");
 
 -- CreateIndex
@@ -176,6 +179,12 @@ CREATE INDEX "GithubEvent_createdBy_idx" ON "GithubEvent"("createdBy");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "GithubEvent_pullRequestNumber_repoId_createdBy_type_key" ON "GithubEvent"("pullRequestNumber", "repoId", "createdBy", "type");
+
+-- CreateIndex
+CREATE INDEX "NFTPurchaseEvent_builderId_idx" ON "NFTPurchaseEvent"("builderId");
+
+-- CreateIndex
+CREATE INDEX "NFTPurchaseEvent_scoutId_idx" ON "NFTPurchaseEvent"("scoutId");
 
 -- CreateIndex
 CREATE INDEX "GemsPayoutEvent_builderId_idx" ON "GemsPayoutEvent"("builderId");

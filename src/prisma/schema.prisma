@@ -2851,7 +2851,7 @@ model BuilderEvent {
 }
 
 model GithubUser {
-  id          String        @id @default(uuid()) @db.Uuid
+  id          Int           @unique
   builderId   String?       @db.Uuid
   builder     Scout?        @relation(fields: [builderId], references: [id], onDelete: SetNull)
   email       String?
@@ -2881,9 +2881,9 @@ model GithubEvent {
   pullRequestNumber Int
   type              GithubEventType
   title             String
-  createdBy         String          @db.Uuid
-  githubUser        GithubUser      @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   createdAt         DateTime        @default(now())
+  createdBy         Int
+  githubUser        GithubUser      @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   builderEvents     BuilderEvent[]
 
   @@unique([pullRequestNumber, repoId, createdBy, type], name: "unique_github_event")
@@ -2900,15 +2900,18 @@ model NFTPurchaseEvent {
   scout           Scout    @relation(fields: [scoutId], references: [id], onDelete: Cascade, name: "nftPurchaseEventScout")
   paidInPoints    Boolean?
   points          Int
-  price           Float
   chain           Int
   contractAddress String
   tokenId         Int
   txHash          String
+
+  @@index([builderId])
+  @@index([scoutId])
 }
 
 model GemsPayoutEvent {
   id            String         @id @default(uuid()) @db.Uuid
+  createdAt     DateTime       @default(now())
   builderId     String         @db.Uuid
   builder       Scout          @relation(fields: [builderId], references: [id], onDelete: Cascade)
   gems          Int
@@ -2922,6 +2925,7 @@ model GemsPayoutEvent {
 
 model PointsReceipt {
   id          String       @id @default(uuid()) @db.Uuid
+  createdAt   DateTime     @default(now())
   value       Int
   claimedAt   DateTime
   eventId     String       @db.Uuid
@@ -2943,11 +2947,12 @@ enum GemsReceiptType {
 }
 
 model GemsReceipt {
-  id      String          @id @default(uuid()) @db.Uuid
-  eventId String          @db.Uuid
-  event   BuilderEvent    @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  value   Int
-  type    GemsReceiptType
+  id        String          @id @default(uuid()) @db.Uuid
+  eventId   String          @db.Uuid
+  createdAt DateTime        @default(now())
+  value     Int
+  event     BuilderEvent    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  type      GemsReceiptType
 
   @@index([eventId])
 }
