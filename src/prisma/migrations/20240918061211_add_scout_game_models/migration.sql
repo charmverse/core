@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "BuilderEventType" AS ENUM ('github_event', 'waitlist_airdrop', 'nft_purchase', 'proposal_passed', 'gems_payout');
+CREATE TYPE "BuilderEventType" AS ENUM ('merged_pull_request', 'waitlist_airdrop', 'nft_purchase', 'proposal_passed', 'gems_payout');
 
 -- CreateEnum
 CREATE TYPE "GithubEventType" AS ENUM ('merged_pull_request', 'closed_pull_request');
@@ -16,7 +16,7 @@ CREATE TABLE "BuilderStrike" (
     "builderId" UUID NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "deletedAt" TIMESTAMP(3),
-    "builderEventId" UUID NOT NULL,
+    "githubEventId" UUID,
 
     CONSTRAINT "BuilderStrike_pkey" PRIMARY KEY ("id")
 );
@@ -224,7 +224,7 @@ CREATE INDEX "UserAllTimeStats_userId_idx" ON "UserAllTimeStats"("userId");
 ALTER TABLE "BuilderStrike" ADD CONSTRAINT "BuilderStrike_builderId_fkey" FOREIGN KEY ("builderId") REFERENCES "Scout"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "BuilderStrike" ADD CONSTRAINT "BuilderStrike_builderEventId_fkey" FOREIGN KEY ("builderEventId") REFERENCES "BuilderEvent"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "BuilderStrike" ADD CONSTRAINT "BuilderStrike_githubEventId_fkey" FOREIGN KEY ("githubEventId") REFERENCES "GithubEvent"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "BuilderEvent" ADD CONSTRAINT "BuilderEvent_builderId_fkey" FOREIGN KEY ("builderId") REFERENCES "Scout"("id") ON DELETE CASCADE ON UPDATE CASCADE;

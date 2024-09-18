@@ -2810,19 +2810,19 @@ model Scout {
 }
 
 model BuilderStrike {
-  id             String       @id @default(uuid()) @db.Uuid
-  builderId      String       @db.Uuid
-  builder        Scout        @relation(fields: [builderId], references: [id], onDelete: Cascade)
-  createdAt      DateTime     @default(now())
-  deletedAt      DateTime?
-  builderEventId String       @db.Uuid
-  builderEvent   BuilderEvent @relation(fields: [builderEventId], references: [id], onDelete: Cascade)
+  id            String       @id @default(uuid()) @db.Uuid
+  builderId     String       @db.Uuid
+  builder       Scout        @relation(fields: [builderId], references: [id], onDelete: Cascade)
+  createdAt     DateTime     @default(now())
+  deletedAt     DateTime?
+  githubEventId String?      @db.Uuid
+  githubEvent   GithubEvent? @relation(fields: [githubEventId], references: [id], onDelete: SetNull)
 
   @@index([builderId, deletedAt])
 }
 
 enum BuilderEventType {
-  github_event
+  merged_pull_request
   waitlist_airdrop
   nft_purchase
   proposal_passed
@@ -2837,7 +2837,6 @@ model BuilderEvent {
   type              BuilderEventType
   week              String
   createdAt         DateTime         @default(now())
-  strikes           BuilderStrike[]
   githubEventId     String?          @db.Uuid
   githubEvent       GithubEvent?     @relation(fields: [githubEventId], references: [id], onDelete: SetNull)
   gemsPayoutEventId String?          @db.Uuid
@@ -2888,6 +2887,7 @@ model GithubEvent {
   createdBy         Int
   githubUser        GithubUser      @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   builderEvents     BuilderEvent[]
+  strikes           BuilderStrike[]
 
   @@unique([pullRequestNumber, repoId, createdBy, type], name: "unique_github_event")
   @@index([repoId])
