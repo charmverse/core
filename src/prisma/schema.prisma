@@ -2698,18 +2698,18 @@ model ProductUpdatesFarcasterFrame {
 }
 
 model ConnectWaitlistSlot {
-  id                 String                  @id @default(uuid()) @db.Uuid
-  createdAt          DateTime                @default(now())
-  initialPosition    Int                     @default(autoincrement())
-  fid                Int                     @unique
-  username           String?                 // TBD if we need this
-  referredByFid      Int?                    
-  referrer           ConnectWaitlistSlot?    @relation("ReferralRelation", fields: [referredByFid], references: [fid], onDelete: SetNull)
-  referralsGenerated ConnectWaitlistSlot[]   @relation("ReferralRelation")
-  score              Int                     @default(0)
+  id                 String                @id @default(uuid()) @db.Uuid
+  createdAt          DateTime              @default(now())
+  initialPosition    Int                   @default(autoincrement())
+  fid                Int                   @unique
+  username           String? // TBD if we need this
+  referredByFid      Int?
+  referrer           ConnectWaitlistSlot?  @relation("ReferralRelation", fields: [referredByFid], references: [fid], onDelete: SetNull)
+  referralsGenerated ConnectWaitlistSlot[] @relation("ReferralRelation")
+  score              Int                   @default(0)
   percentile         Int?
   githubLogin        String?
-  isPartnerAccount   Boolean                 @default(false)
+  isPartnerAccount   Boolean               @default(false)
 
   @@index([githubLogin])
   @@index([score])
@@ -2777,22 +2777,225 @@ model CryptoEcosystemPullRequest {
 }
 
 model Scout {
-  id            String  @id @default(uuid()) @db.Uuid
-  email         String?
-  username      String  @unique
-  displayName   String
-  farcasterId   Int? // every user only has one farcaster account
-  farcasterName String? // every user only has one farcaster account
-  walletAddress String? // grab most recent wallet when someone signs in w/farcaster
-  walletENS     String?
-  avatar        String?
-  bio           String?
-  builder       Boolean @default(false) // This means someone 'turned on' the builder profile. see Alternatives Considered
-  sendMarketing Boolean @default(false)
-  agreedToTOS   Boolean @default(false)
-  onboarded     Boolean @default(false)
+  id                String             @id @default(uuid()) @db.Uuid
+  email             String?
+  username          String             @unique
+  displayName       String
+  farcasterId       Int? // every user only has one farcaster account
+  farcasterName     String? // every user only has one farcaster account
+  walletAddress     String? // grab most recent wallet when someone signs in w/farcaster
+  walletENS         String?
+  avatar            String?
+  bio               String?
+  builder           Boolean            @default(false) // This means someone 'turned on' the builder profile. see Alternatives Considered
+  sendMarketing     Boolean            @default(false)
+  agreedToTOS       Boolean            @default(false)
+  onboarded         Boolean            @default(false)
+  bannedAt          DateTime?
+  strikes           BuilderStrike[]
+  events            BuilderEvent[]
+  githubUser        GithubUser[]
+  gemsPayoutEvents  GemsPayoutEvent[]
+  pointsReceived    PointsReceipt[]    @relation("pointsReceiptRecipient")
+  pointsSent        PointsReceipt[]    @relation("pointsReceiptSender")
+  userWeeklyStats   UserWeeklyStats[]
+  userSeasonStats   UserSeasonStats[]
+  userAllTimeStats  UserAllTimeStats[]
+  nftSoldEvents     NFTPurchaseEvent[] @relation("nftPurchaseEventBuilder")
+  nftPurchaseEvents NFTPurchaseEvent[] @relation("nftPurchaseEventScout")
 
   @@index([username])
   @@index([farcasterId])
   @@index([walletAddress])
+}
+
+model BuilderStrike {
+  id            String       @id @default(uuid()) @db.Uuid
+  builderId     String       @db.Uuid
+  builder       Scout        @relation(fields: [builderId], references: [id], onDelete: Cascade)
+  createdAt     DateTime     @default(now())
+  deletedAt     DateTime?
+  githubEventId String?      @unique @db.Uuid
+  githubEvent   GithubEvent? @relation(fields: [githubEventId], references: [id], onDelete: SetNull)
+
+  @@index([builderId, deletedAt])
+}
+
+enum BuilderEventType {
+  merged_pull_request
+  waitlist_airdrop
+  nft_purchase
+  proposal_passed
+  gems_payout
+}
+
+model BuilderEvent {
+  id                 String            @id @default(uuid()) @db.Uuid
+  builderId          String            @db.Uuid
+  builder            Scout             @relation(fields: [builderId], references: [id], onDelete: Cascade)
+  season             Int
+  type               BuilderEventType
+  week               String
+  createdAt          DateTime          @default(now())
+  githubEventId      String?           @unique @db.Uuid
+  githubEvent        GithubEvent?      @relation(fields: [githubEventId], references: [id], onDelete: SetNull)
+  gemsPayoutEventId  String?           @unique @db.Uuid
+  gemsPayoutEvent    GemsPayoutEvent?  @relation(fields: [gemsPayoutEventId], references: [id], onDelete: SetNull)
+  nftPurchaseEventId String?           @unique @db.Uuid
+  nftPurchaseEvent   NFTPurchaseEvent? @relation(fields: [nftPurchaseEventId], references: [id], onDelete: SetNull)
+  pointsReceipts     PointsReceipt[]
+  gemsReceipt        GemsReceipt?
+
+  @@index([builderId])
+  @@index([githubEventId])
+  @@index([gemsPayoutEventId])
+  @@index([nftPurchaseEventId])
+}
+
+model GithubUser {
+  id          Int           @id
+  builderId   String?       @db.Uuid
+  builder     Scout?        @relation(fields: [builderId], references: [id], onDelete: SetNull)
+  email       String?
+  displayName String?
+  login       String        @unique
+  events      GithubEvent[]
+
+  @@index([builderId])
+}
+
+model GithubRepo {
+  id            Int           @id
+  owner         String
+  name          String
+  defaultBranch String
+  events        GithubEvent[]
+
+  @@index([id])
+}
+
+enum GithubEventType {
+  merged_pull_request
+  closed_pull_request
+}
+
+model GithubEvent {
+  id                 String          @id @default(uuid()) @db.Uuid
+  repoId             Int
+  repo               GithubRepo      @relation(fields: [repoId], references: [id], onDelete: Cascade)
+  pullRequestNumber  Int
+  type               GithubEventType
+  isFirstPullRequest Boolean         @default(false)
+  title              String
+  url                String
+  createdAt          DateTime        @default(now())
+  createdBy          Int
+  githubUser         GithubUser      @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  strike             BuilderStrike?
+  builderEvent       BuilderEvent?
+
+  @@unique([pullRequestNumber, repoId, createdBy, type], name: "unique_github_event")
+  @@index([repoId])
+  @@index([createdBy])
+}
+
+model NFTPurchaseEvent {
+  id              String        @id @default(uuid()) @db.Uuid
+  createdAt       DateTime      @default(now())
+  builderId       String        @db.Uuid
+  builder         Scout         @relation(fields: [builderId], references: [id], onDelete: Cascade, name: "nftPurchaseEventBuilder")
+  scoutId         String        @db.Uuid
+  scout           Scout         @relation(fields: [scoutId], references: [id], onDelete: Cascade, name: "nftPurchaseEventScout")
+  paidInPoints    Boolean?
+  points          Int
+  chain           Int
+  contractAddress String
+  tokenId         Int
+  txHash          String
+  BuilderEvent    BuilderEvent?
+
+  @@index([builderId])
+  @@index([scoutId])
+}
+
+model GemsPayoutEvent {
+  id           String        @id @default(uuid()) @db.Uuid
+  createdAt    DateTime      @default(now())
+  builderId    String        @db.Uuid
+  builder      Scout         @relation(fields: [builderId], references: [id], onDelete: Cascade)
+  gems         Int
+  points       Int
+  week         String
+  builderEvent BuilderEvent?
+
+  @@unique([builderId, week])
+  @@index([builderId])
+}
+
+model PointsReceipt {
+  id          String       @id @default(uuid()) @db.Uuid
+  createdAt   DateTime     @default(now())
+  value       Int
+  claimedAt   DateTime
+  eventId     String       @db.Uuid
+  event       BuilderEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  recipientId String       @db.Uuid
+  recipient   Scout        @relation(fields: [recipientId], references: [id], onDelete: Cascade, name: "pointsReceiptRecipient")
+  senderId    String       @db.Uuid
+  sender      Scout        @relation(fields: [senderId], references: [id], onDelete: Cascade, name: "pointsReceiptSender")
+
+  @@index([recipientId])
+  @@index([senderId])
+  @@index([eventId])
+}
+
+enum GemsReceiptType {
+  first_pr
+  third_pr_in_streak
+  regular_pr
+}
+
+model GemsReceipt {
+  id        String          @id @default(uuid()) @db.Uuid
+  eventId   String          @unique @db.Uuid
+  createdAt DateTime        @default(now())
+  value     Int
+  event     BuilderEvent    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  type      GemsReceiptType
+
+  @@index([eventId])
+}
+
+model UserWeeklyStats {
+  lastUpdated   DateTime @default(now())
+  userId        String   @db.Uuid
+  user          Scout    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  gemsCollected Int
+  week          String
+
+  @@unique([userId, week])
+  @@index([userId])
+}
+
+model UserSeasonStats {
+  lastUpdated           DateTime @default(now())
+  userId                String   @db.Uuid
+  user                  Scout    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pointsEarnedAsBuilder Int
+  pointsEarnedAsScout   Int
+  season                Int
+
+  @@unique([userId, season])
+  @@index([userId])
+}
+
+model UserAllTimeStats {
+  lastUpdated           DateTime @default(now())
+  userId                String   @unique @db.Uuid
+  user                  Scout    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pointsEarnedAsBuilder Int
+  pointsEarnedAsScout   Int
+  currentBalance        Int
+
+  @@index([userId])
 }
