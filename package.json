@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.81.8-rc-feat-sg-ban.12",
+  "version": "0.81.8-rc-feat-sg-ban.13",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
