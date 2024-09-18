@@ -38,17 +38,21 @@ CREATE TABLE "BuilderEvent" (
 
 -- CreateTable
 CREATE TABLE "GithubUser" (
+    "id" INTEGER NOT NULL,
     "builderId" UUID,
     "email" TEXT,
     "displayName" TEXT,
-    "login" TEXT NOT NULL
+    "login" TEXT NOT NULL,
+
+    CONSTRAINT "GithubUser_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "GithubRepo" (
-    "id" TEXT NOT NULL,
+    "id" INTEGER NOT NULL,
     "owner" TEXT NOT NULL,
     "name" TEXT NOT NULL,
+    "defaultBranch" TEXT NOT NULL,
 
     CONSTRAINT "GithubRepo_pkey" PRIMARY KEY ("id")
 );
@@ -56,14 +60,14 @@ CREATE TABLE "GithubRepo" (
 -- CreateTable
 CREATE TABLE "GithubEvent" (
     "id" UUID NOT NULL,
-    "repoId" TEXT NOT NULL,
+    "repoId" INTEGER NOT NULL,
     "pullRequestNumber" INTEGER NOT NULL,
     "type" "GithubEventType" NOT NULL,
-    "isFirstCommit" BOOLEAN NOT NULL DEFAULT false,
+    "isFirstPullRequest" BOOLEAN NOT NULL DEFAULT false,
     "title" TEXT NOT NULL,
     "url" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "createdBy" TEXT NOT NULL,
+    "createdBy" INTEGER NOT NULL,
 
     CONSTRAINT "GithubEvent_pkey" PRIMARY KEY ("id")
 );
@@ -261,7 +265,7 @@ ALTER TABLE "GithubUser" ADD CONSTRAINT "GithubUser_builderId_fkey" FOREIGN KEY 
 ALTER TABLE "GithubEvent" ADD CONSTRAINT "GithubEvent_repoId_fkey" FOREIGN KEY ("repoId") REFERENCES "GithubRepo"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "GithubEvent" ADD CONSTRAINT "GithubEvent_createdBy_fkey" FOREIGN KEY ("createdBy") REFERENCES "GithubUser"("login") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "GithubEvent" ADD CONSTRAINT "GithubEvent_createdBy_fkey" FOREIGN KEY ("createdBy") REFERENCES "GithubUser"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "NFTPurchaseEvent" ADD CONSTRAINT "NFTPurchaseEvent_builderId_fkey" FOREIGN KEY ("builderId") REFERENCES "Scout"("id") ON DELETE CASCADE ON UPDATE CASCADE;

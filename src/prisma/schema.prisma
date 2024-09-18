@@ -2853,6 +2853,7 @@ model BuilderEvent {
 }
 
 model GithubUser {
+  id          Int           @id
   builderId   String?       @db.Uuid
   builder     Scout?        @relation(fields: [builderId], references: [id], onDelete: SetNull)
   email       String?
@@ -2864,10 +2865,11 @@ model GithubUser {
 }
 
 model GithubRepo {
-  id     String        @id
-  owner  String
-  name   String
-  events GithubEvent[]
+  id            Int           @id
+  owner         String
+  name          String
+  defaultBranch String
+  events        GithubEvent[]
 
   @@index([id])
 }
@@ -2878,19 +2880,19 @@ enum GithubEventType {
 }
 
 model GithubEvent {
-  id                String          @id @default(uuid()) @db.Uuid
-  repoId            String
-  repo              GithubRepo      @relation(fields: [repoId], references: [id], onDelete: Cascade)
-  pullRequestNumber Int
-  type              GithubEventType
-  isFirstCommit     Boolean         @default(false)
-  title             String
-  url               String
-  createdAt         DateTime        @default(now())
-  createdBy         String
-  githubUser        GithubUser      @relation(fields: [createdBy], references: [login], onDelete: Cascade)
-  strike            BuilderStrike?
-  builderEvent      BuilderEvent?
+  id                 String          @id @default(uuid()) @db.Uuid
+  repoId             Int
+  repo               GithubRepo      @relation(fields: [repoId], references: [id], onDelete: Cascade)
+  pullRequestNumber  Int
+  type               GithubEventType
+  isFirstPullRequest Boolean         @default(false)
+  title              String
+  url                String
+  createdAt          DateTime        @default(now())
+  createdBy          Int
+  githubUser         GithubUser      @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  strike             BuilderStrike?
+  builderEvent       BuilderEvent?
 
   @@unique([pullRequestNumber, repoId, createdBy, type], name: "unique_github_event")
   @@index([repoId])
