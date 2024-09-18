@@ -31,6 +31,7 @@ CREATE TABLE "BuilderEvent" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "githubEventId" UUID,
     "gemsPayoutEventId" UUID,
+    "nftPurchaseEventId" UUID,
 
     CONSTRAINT "BuilderEvent_pkey" PRIMARY KEY ("id")
 );
@@ -146,7 +147,19 @@ CREATE TABLE "UserAllTimeStats" (
 );
 
 -- CreateIndex
+CREATE UNIQUE INDEX "BuilderStrike_githubEventId_key" ON "BuilderStrike"("githubEventId");
+
+-- CreateIndex
 CREATE INDEX "BuilderStrike_builderId_deletedAt_idx" ON "BuilderStrike"("builderId", "deletedAt");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "BuilderEvent_githubEventId_key" ON "BuilderEvent"("githubEventId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "BuilderEvent_gemsPayoutEventId_key" ON "BuilderEvent"("gemsPayoutEventId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "BuilderEvent_nftPurchaseEventId_key" ON "BuilderEvent"("nftPurchaseEventId");
 
 -- CreateIndex
 CREATE INDEX "BuilderEvent_builderId_idx" ON "BuilderEvent"("builderId");
@@ -156,6 +169,9 @@ CREATE INDEX "BuilderEvent_githubEventId_idx" ON "BuilderEvent"("githubEventId")
 
 -- CreateIndex
 CREATE INDEX "BuilderEvent_gemsPayoutEventId_idx" ON "BuilderEvent"("gemsPayoutEventId");
+
+-- CreateIndex
+CREATE INDEX "BuilderEvent_nftPurchaseEventId_idx" ON "BuilderEvent"("nftPurchaseEventId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "GithubUser_login_key" ON "GithubUser"("login");
@@ -197,6 +213,9 @@ CREATE INDEX "PointsReceipt_senderId_idx" ON "PointsReceipt"("senderId");
 CREATE INDEX "PointsReceipt_eventId_idx" ON "PointsReceipt"("eventId");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "GemsReceipt_eventId_key" ON "GemsReceipt"("eventId");
+
+-- CreateIndex
 CREATE INDEX "GemsReceipt_eventId_idx" ON "GemsReceipt"("eventId");
 
 -- CreateIndex
@@ -231,6 +250,9 @@ ALTER TABLE "BuilderEvent" ADD CONSTRAINT "BuilderEvent_githubEventId_fkey" FORE
 
 -- AddForeignKey
 ALTER TABLE "BuilderEvent" ADD CONSTRAINT "BuilderEvent_gemsPayoutEventId_fkey" FOREIGN KEY ("gemsPayoutEventId") REFERENCES "GemsPayoutEvent"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "BuilderEvent" ADD CONSTRAINT "BuilderEvent_nftPurchaseEventId_fkey" FOREIGN KEY ("nftPurchaseEventId") REFERENCES "NFTPurchaseEvent"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "GithubUser" ADD CONSTRAINT "GithubUser_builderId_fkey" FOREIGN KEY ("builderId") REFERENCES "Scout"("id") ON DELETE SET NULL ON UPDATE CASCADE;
