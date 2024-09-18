@@ -60,6 +60,7 @@ CREATE TABLE "GithubEvent" (
     "type" "GithubEventType" NOT NULL,
     "isFirstCommit" BOOLEAN NOT NULL DEFAULT false,
     "title" TEXT NOT NULL,
+    "url" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "createdBy" TEXT NOT NULL,
 

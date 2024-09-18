@@ -2882,6 +2882,7 @@ model GithubEvent {
   type              GithubEventType
   isFirstCommit     Boolean         @default(false)
   title             String
+  url               String
   createdAt         DateTime        @default(now())
   createdBy         String
   githubUser        GithubUser      @relation(fields: [createdBy], references: [login], onDelete: Cascade)
