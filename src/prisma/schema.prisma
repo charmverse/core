@@ -2803,6 +2803,7 @@ model Scout {
   userAllTimeStats  UserAllTimeStats[]
   nftSoldEvents     NFTPurchaseEvent[] @relation("nftPurchaseEventBuilder")
   nftPurchaseEvents NFTPurchaseEvent[] @relation("nftPurchaseEventScout")
+  ScoutNft          ScoutNft[]
 
   @@index([username])
   @@index([farcasterId])
@@ -2998,4 +2999,22 @@ model UserAllTimeStats {
   currentBalance        Int
 
   @@index([userId])
+}
+
+model ScoutNft {
+  id              String   @id @default(uuid()) @db.Uuid
+  createdAt       DateTime @default(now())
+  builderId       String   @db.Uuid
+  builder         Scout    @relation(fields: [builderId], references: [id], onDelete: Cascade)
+  contract        String
+  chainId         Int
+  season          Int
+  contractAddress String
+  tokenId         Int
+
+  // Don't allow registering the same token id twice
+  @@unique([contractAddress, tokenId, chainId])
+
+  // Only 1 builder token per season
+  @@unique([builderId, season])
 }
