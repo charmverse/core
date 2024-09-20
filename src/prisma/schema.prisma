@@ -2777,6 +2777,7 @@ model CryptoEcosystemPullRequest {
 }
 
 model Scout {
+  createdAt         DateTime           @default(now())
   id                String             @id @default(uuid()) @db.Uuid
   email             String?
   username          String             @unique
@@ -2789,8 +2790,8 @@ model Scout {
   bio               String?
   builder           Boolean            @default(false) // This means someone 'turned on' the builder profile. see Alternatives Considered
   sendMarketing     Boolean            @default(false)
-  agreedToTOS       Boolean            @default(false)
-  onboarded         Boolean            @default(false)
+  agreedToTermsAt   DateTime?
+  onboardedAt       DateTime?
   bannedAt          DateTime?
   strikes           BuilderStrike[]
   events            BuilderEvent[]
