@@ -3006,6 +3006,7 @@ model BuilderNft {
   contract        String
   chainId         Int
   season          Int
+  currentPrice    Float
   contractAddress String
   tokenId         Int
   nftSoldEvents   NFTPurchaseEvent[]
