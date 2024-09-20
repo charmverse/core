@@ -3003,7 +3003,6 @@ model BuilderNft {
   createdAt       DateTime @default(now())
   builderId       String   @db.Uuid
   builder         Scout    @relation(fields: [builderId], references: [id], onDelete: Cascade)
-  contract        String
   chainId         Int
   season          Int
   currentPrice    Float

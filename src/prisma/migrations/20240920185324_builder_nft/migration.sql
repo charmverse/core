@@ -32,7 +32,6 @@ CREATE TABLE "BuilderNft" (
     "id" UUID NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "builderId" UUID NOT NULL,
-    "contract" TEXT NOT NULL,
     "chainId" INTEGER NOT NULL,
     "season" INTEGER NOT NULL,
     "currentPrice" DOUBLE PRECISION NOT NULL,
