@@ -3006,7 +3006,7 @@ model BuilderNft {
   builder         Scout    @relation(fields: [builderId], references: [id], onDelete: Cascade)
   chainId         Int
   season          Int
-  currentPrice    Float
+  currentPrice    BigInt
   contractAddress String
   tokenId         Int
   nftSoldEvents   NFTPurchaseEvent[]

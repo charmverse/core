@@ -34,7 +34,7 @@ CREATE TABLE "BuilderNft" (
     "builderId" UUID NOT NULL,
     "chainId" INTEGER NOT NULL,
     "season" INTEGER NOT NULL,
-    "currentPrice" DOUBLE PRECISION NOT NULL,
+    "currentPrice" BIGINT NOT NULL,
     "contractAddress" TEXT NOT NULL,
     "tokenId" INTEGER NOT NULL,
 
