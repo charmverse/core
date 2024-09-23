@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.82.3-rc-feat-gems-payou.0",
+  "version": "0.83.0",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
