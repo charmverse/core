@@ -2793,6 +2793,7 @@ model Scout {
   agreedToTermsAt   DateTime?
   onboardedAt       DateTime?
   bannedAt          DateTime?
+  currentBalance    Int                @default(0)
   strikes           BuilderStrike[]
   events            BuilderEvent[]
   githubUser        GithubUser[]
@@ -2935,13 +2936,13 @@ model PointsReceipt {
   id          String       @id @default(uuid()) @db.Uuid
   createdAt   DateTime     @default(now())
   value       Int
-  claimedAt   DateTime
+  claimedAt   DateTime?
   eventId     String       @db.Uuid
   event       BuilderEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  recipientId String       @db.Uuid
-  recipient   Scout        @relation(fields: [recipientId], references: [id], onDelete: Cascade, name: "pointsReceiptRecipient")
-  senderId    String       @db.Uuid
-  sender      Scout        @relation(fields: [senderId], references: [id], onDelete: Cascade, name: "pointsReceiptSender")
+  recipientId String?      @db.Uuid
+  recipient   Scout?       @relation(fields: [recipientId], references: [id], onDelete: Cascade, name: "pointsReceiptRecipient")
+  senderId    String?      @db.Uuid
+  sender      Scout?       @relation(fields: [senderId], references: [id], onDelete: Cascade, name: "pointsReceiptSender")
 
   @@index([recipientId])
   @@index([senderId])
@@ -2957,9 +2958,9 @@ enum GemsReceiptType {
 model GemsReceipt {
   id        String          @id @default(uuid()) @db.Uuid
   eventId   String          @unique @db.Uuid
+  event     BuilderEvent    @relation(fields: [eventId], references: [id], onDelete: Cascade)
   createdAt DateTime        @default(now())
   value     Int
-  event     BuilderEvent    @relation(fields: [eventId], references: [id], onDelete: Cascade)
   type      GemsReceiptType
 
   @@index([eventId])
@@ -2994,7 +2995,6 @@ model UserAllTimeStats {
   user                  Scout    @relation(fields: [userId], references: [id], onDelete: Cascade)
   pointsEarnedAsBuilder Int
   pointsEarnedAsScout   Int
-  currentBalance        Int
 
   @@index([userId])
 }
