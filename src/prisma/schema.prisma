@@ -2891,6 +2891,7 @@ model GithubEvent {
   url                String
   createdAt          DateTime        @default(now())
   createdBy          Int
+  completedAt        DateTime?
   githubUser         GithubUser      @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   strike             BuilderStrike?
   builderEvent       BuilderEvent?
