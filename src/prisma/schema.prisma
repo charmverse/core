@@ -2803,8 +2803,8 @@ model Scout {
   userWeeklyStats   UserWeeklyStats[]
   userSeasonStats   UserSeasonStats[]
   userAllTimeStats  UserAllTimeStats[]
-  nftSoldEvents     NFTPurchaseEvent[] @relation("nftPurchaseEventBuilder")
   nftPurchaseEvents NFTPurchaseEvent[] @relation("nftPurchaseEventScout")
+  builderNfts       BuilderNft[]
 
   @@index([username])
   @@index([farcasterId])
@@ -2905,19 +2905,16 @@ model GithubEvent {
 model NFTPurchaseEvent {
   id              String        @id @default(uuid()) @db.Uuid
   createdAt       DateTime      @default(now())
-  builderId       String        @db.Uuid
-  builder         Scout         @relation(fields: [builderId], references: [id], onDelete: Cascade, name: "nftPurchaseEventBuilder")
   scoutId         String        @db.Uuid
   scout           Scout         @relation(fields: [scoutId], references: [id], onDelete: Cascade, name: "nftPurchaseEventScout")
   paidInPoints    Boolean?
-  points          Int
-  chain           Int
-  contractAddress String
-  tokenId         Int
+  tokensPurchased Int
+  pointsValue     Int
+  builderNftId      String      @db.Uuid
+  builderNFT      BuilderNft    @relation(fields: [builderNftId], references: [id], onDelete: Cascade)
   txHash          String
-  BuilderEvent    BuilderEvent?
+  builderEvent    BuilderEvent?
 
-  @@index([builderId])
   @@index([scoutId])
 }
 
@@ -3000,4 +2997,23 @@ model UserAllTimeStats {
   pointsEarnedAsScout   Int
 
   @@index([userId])
+}
+
+model BuilderNft {
+  id              String   @id @default(uuid()) @db.Uuid
+  createdAt       DateTime @default(now())
+  builderId       String   @db.Uuid
+  builder         Scout    @relation(fields: [builderId], references: [id], onDelete: Cascade)
+  chainId         Int
+  season          Int
+  currentPrice    BigInt
+  contractAddress String
+  tokenId         Int
+  nftSoldEvents   NFTPurchaseEvent[]
+
+  // Don't allow registering the same token id twice
+  @@unique([contractAddress, tokenId, chainId])
+
+  // Only 1 builder token per season
+  @@unique([builderId, season])
 }
