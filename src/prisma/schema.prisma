@@ -2918,7 +2918,7 @@ model NFTPurchaseEvent {
   @@index([scoutId])
 }
 
-model GemsPayoutEvent {π
+model GemsPayoutEvent {
   id           String        @id @default(uuid()) @db.Uuid
   createdAt    DateTime      @default(now())
   builderId    String        @db.Uuid
