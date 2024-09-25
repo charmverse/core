@@ -2910,7 +2910,7 @@ model NFTPurchaseEvent {
   paidInPoints    Boolean?
   tokensPurchased Int
   pointsValue     Int
-  builderNftId      String      @db.Uuid
+  builderNftId    String        @db.Uuid
   builderNFT      BuilderNft    @relation(fields: [builderNftId], references: [id], onDelete: Cascade)
   txHash          String
   builderEvent    BuilderEvent?
@@ -2972,6 +2972,7 @@ model UserWeeklyStats {
   user          Scout    @relation(fields: [userId], references: [id], onDelete: Cascade)
   gemsCollected Int
   week          String
+  rank          Int      @default(0)
 
   @@unique([userId, week])
   @@index([userId])
@@ -3000,10 +3001,10 @@ model UserAllTimeStats {
 }
 
 model BuilderNft {
-  id              String   @id @default(uuid()) @db.Uuid
-  createdAt       DateTime @default(now())
-  builderId       String   @db.Uuid
-  builder         Scout    @relation(fields: [builderId], references: [id], onDelete: Cascade)
+  id              String             @id @default(uuid()) @db.Uuid
+  createdAt       DateTime           @default(now())
+  builderId       String             @db.Uuid
+  builder         Scout              @relation(fields: [builderId], references: [id], onDelete: Cascade)
   chainId         Int
   season          Int
   currentPrice    BigInt
@@ -3013,7 +3014,6 @@ model BuilderNft {
 
   // Don't allow registering the same token id twice
   @@unique([contractAddress, tokenId, chainId])
-
   // Only 1 builder token per season
   @@unique([builderId, season])
 }
