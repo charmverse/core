@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "ScoutGameActivityType" AS ENUM ('mint', 'gems', 'points', 'strike', 'builder_nft');
+CREATE TYPE "ScoutGameActivityType" AS ENUM ('mint', 'gems', 'points', 'strike', 'builder_registered');
 
 -- CreateEnum
 CREATE TYPE "PointsDirection" AS ENUM ('in', 'out');
@@ -12,6 +12,7 @@ CREATE TABLE "ScoutGameActivity" (
     "pointsDirection" "PointsDirection" NOT NULL,
     "amount" INTEGER NOT NULL,
     "userId" UUID NOT NULL,
+    "registeredBuilderNftId" UUID,
     "gemsPayoutEventId" UUID,
     "pointsReceiptId" UUID,
     "nftPurchaseEventId" UUID,
@@ -22,15 +23,6 @@ CREATE TABLE "ScoutGameActivity" (
 
     CONSTRAINT "ScoutGameActivity_pkey" PRIMARY KEY ("id")
 );
-
--- CreateIndex
-CREATE UNIQUE INDEX "ScoutGameActivity_gemsPayoutEventId_key" ON "ScoutGameActivity"("gemsPayoutEventId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "ScoutGameActivity_pointsReceiptId_key" ON "ScoutGameActivity"("pointsReceiptId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "ScoutGameActivity_nftPurchaseEventId_key" ON "ScoutGameActivity"("nftPurchaseEventId");
 
 -- CreateIndex
 CREATE INDEX "ScoutGameActivity_userId_idx" ON "ScoutGameActivity"("userId");
@@ -49,6 +41,9 @@ CREATE INDEX "ScoutGameActivity_pointsReceiptId_idx" ON "ScoutGameActivity"("poi
 
 -- CreateIndex
 CREATE INDEX "ScoutGameActivity_nftPurchaseEventId_idx" ON "ScoutGameActivity"("nftPurchaseEventId");
+
+-- CreateIndex
+CREATE INDEX "ScoutGameActivity_registeredBuilderNftId_idx" ON "ScoutGameActivity"("registeredBuilderNftId");
 
 -- CreateIndex
 CREATE INDEX "ScoutGameActivity_builderStrikeId_idx" ON "ScoutGameActivity"("builderStrikeId");
@@ -74,8 +69,14 @@ CREATE UNIQUE INDEX "ScoutGameActivity_userId_pointsDirection_nftPurchaseEventId
 -- CreateIndex
 CREATE UNIQUE INDEX "ScoutGameActivity_userId_pointsDirection_builderStrikeId_key" ON "ScoutGameActivity"("userId", "pointsDirection", "builderStrikeId");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "ScoutGameActivity_userId_pointsDirection_registeredBuilderN_key" ON "ScoutGameActivity"("userId", "pointsDirection", "registeredBuilderNftId");
+
 -- AddForeignKey
 ALTER TABLE "ScoutGameActivity" ADD CONSTRAINT "ScoutGameActivity_userId_fkey" FOREIGN KEY ("userId") REFERENCES "Scout"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ScoutGameActivity" ADD CONSTRAINT "ScoutGameActivity_registeredBuilderNftId_fkey" FOREIGN KEY ("registeredBuilderNftId") REFERENCES "BuilderNft"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "ScoutGameActivity" ADD CONSTRAINT "ScoutGameActivity_gemsPayoutEventId_fkey" FOREIGN KEY ("gemsPayoutEventId") REFERENCES "GemsPayoutEvent"("id") ON DELETE SET NULL ON UPDATE CASCADE;
