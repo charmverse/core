@@ -4,6 +4,11 @@ CREATE TYPE "ScoutGameActivityType" AS ENUM ('mint', 'gems', 'points', 'strike',
 -- CreateEnum
 CREATE TYPE "PointsDirection" AS ENUM ('in', 'out');
 
+-- AlterTable
+ALTER TABLE "UserSeasonStats" ADD COLUMN     "nftOwners" INTEGER,
+ADD COLUMN     "nftsPurchased" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "nftsSold" INTEGER;
+
 -- CreateTable
 CREATE TABLE "ScoutGameActivity" (
     "id" UUID NOT NULL,

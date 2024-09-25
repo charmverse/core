@@ -2990,6 +2990,10 @@ model UserSeasonStats {
   pointsEarnedAsBuilder Int
   pointsEarnedAsScout   Int
   season                Int
+  // Optional int as not all users have a builder nft to sell
+  nftOwners             Int?
+  nftsSold              Int?
+  nftsPurchased         Int     @default(0)
 
   @@unique([userId, season])
   @@index([userId])
