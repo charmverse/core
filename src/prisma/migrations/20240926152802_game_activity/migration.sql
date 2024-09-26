@@ -1,8 +1,14 @@
 -- CreateEnum
+CREATE TYPE "BuilderStatus" AS ENUM ('applied', 'rejected', 'approved', 'banned');
+
+-- CreateEnum
 CREATE TYPE "ScoutGameActivityType" AS ENUM ('mint', 'gems_from_pr', 'gems', 'points', 'strike', 'builder_registered');
 
 -- CreateEnum
 CREATE TYPE "PointsDirection" AS ENUM ('in', 'out');
+
+-- AlterTable
+ALTER TABLE "Scout" ADD COLUMN     "builderStatus" "BuilderStatus";
 
 -- AlterTable
 ALTER TABLE "UserSeasonStats" ADD COLUMN     "nftOwners" INTEGER,

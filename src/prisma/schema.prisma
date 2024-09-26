@@ -2777,6 +2777,13 @@ model CryptoEcosystemPullRequest {
   ecosystem       CryptoEcosystem       @relation(fields: [ecosystemTitle], references: [title], onDelete: Cascade)
 }
 
+enum BuilderStatus {
+  applied
+  rejected
+  approved
+  banned
+}
+
 model Scout {
   createdAt         DateTime            @default(now())
   id                String              @id @default(uuid()) @db.Uuid
@@ -2789,6 +2796,7 @@ model Scout {
   walletENS         String?
   avatar            String?
   bio               String?
+  builderStatus     BuilderStatus?
   builder           Boolean             @default(false) // This means someone 'turned on' the builder profile. see Alternatives Considered
   sendMarketing     Boolean             @default(false)
   agreedToTermsAt   DateTime?
