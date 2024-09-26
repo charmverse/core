@@ -3010,6 +3010,7 @@ model BuilderNft {
   currentPrice    BigInt
   contractAddress String
   tokenId         Int
+  imageUrl        String
   nftSoldEvents   NFTPurchaseEvent[]
 
   // Don't allow registering the same token id twice
