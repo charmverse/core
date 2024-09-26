@@ -2846,7 +2846,7 @@ model BuilderEvent {
   id                 String            @id @default(uuid()) @db.Uuid
   builderId          String            @db.Uuid
   builder            Scout             @relation(fields: [builderId], references: [id], onDelete: Cascade)
-  season             Int
+  season             String
   type               BuilderEventType
   week               String
   createdAt          DateTime          @default(now())
@@ -2999,7 +2999,7 @@ model UserSeasonStats {
   user                  Scout    @relation(fields: [userId], references: [id], onDelete: Cascade)
   pointsEarnedAsBuilder Int
   pointsEarnedAsScout   Int
-  season                Int
+  season                String
   // Optional int as not all users have a builder nft to sell
   nftOwners             Int?
   nftsSold              Int?
@@ -3025,7 +3025,7 @@ model BuilderNft {
   builderId       String              @db.Uuid
   builder         Scout               @relation(fields: [builderId], references: [id], onDelete: Cascade)
   chainId         Int
-  season          Int
+  season          String
   currentPrice    BigInt
   contractAddress String
   tokenId         Int
