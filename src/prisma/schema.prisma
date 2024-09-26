@@ -2979,6 +2979,7 @@ model UserWeeklyStats {
   user          Scout    @relation(fields: [userId], references: [id], onDelete: Cascade)
   gemsCollected Int
   week          String
+  rank          Int?
 
   @@unique([userId, week])
   @@index([userId])
