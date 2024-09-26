@@ -2685,14 +2685,15 @@ model PushNotificationSubscription {
 }
 
 model ProductUpdatesFarcasterFrame {
-  id             String   @id @default(uuid()) @db.Uuid
-  text           String
-  textContent    Json?
-  image          String
-  createdBy      String   @db.Uuid
-  author         User     @relation(fields: [createdBy], references: [id], onDelete: Cascade)
-  projectId      String   @db.Uuid
-  project        Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  id          String  @id @default(uuid()) @db.Uuid
+  text        String
+  textContent Json?
+  image       String
+  createdBy   String  @db.Uuid
+  author      User    @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  projectId   String  @db.Uuid
+  project     Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
   createdAt      DateTime @default(now())
   createdAtLocal String
 }
@@ -2776,11 +2777,18 @@ model CryptoEcosystemPullRequest {
   ecosystem       CryptoEcosystem       @relation(fields: [ecosystemTitle], references: [title], onDelete: Cascade)
 }
 
+enum BuilderStatus {
+  applied
+  rejected
+  approved
+  banned
+}
+
 model Scout {
-  createdAt         DateTime           @default(now())
-  id                String             @id @default(uuid()) @db.Uuid
+  createdAt         DateTime            @default(now())
+  id                String              @id @default(uuid()) @db.Uuid
   email             String?
-  username          String             @unique
+  username          String              @unique
   displayName       String
   farcasterId       Int? // every user only has one farcaster account
   farcasterName     String? // every user only has one farcaster account
@@ -2788,23 +2796,25 @@ model Scout {
   walletENS         String?
   avatar            String?
   bio               String?
-  builder           Boolean            @default(false) // This means someone 'turned on' the builder profile. see Alternatives Considered
-  sendMarketing     Boolean            @default(false)
+  builderStatus     BuilderStatus?
+  builder           Boolean             @default(false) // This means someone 'turned on' the builder profile. see Alternatives Considered
+  sendMarketing     Boolean             @default(false)
   agreedToTermsAt   DateTime?
   onboardedAt       DateTime?
   bannedAt          DateTime?
-  currentBalance    Int                @default(0)
+  currentBalance    Int                 @default(0)
   strikes           BuilderStrike[]
   events            BuilderEvent[]
   githubUser        GithubUser[]
   gemsPayoutEvents  GemsPayoutEvent[]
-  pointsReceived    PointsReceipt[]    @relation("pointsReceiptRecipient")
-  pointsSent        PointsReceipt[]    @relation("pointsReceiptSender")
+  pointsReceived    PointsReceipt[]     @relation("pointsReceiptRecipient")
+  pointsSent        PointsReceipt[]     @relation("pointsReceiptSender")
   userWeeklyStats   UserWeeklyStats[]
   userSeasonStats   UserSeasonStats[]
   userAllTimeStats  UserAllTimeStats[]
-  nftPurchaseEvents NFTPurchaseEvent[] @relation("nftPurchaseEventScout")
+  nftPurchaseEvents NFTPurchaseEvent[]  @relation("nftPurchaseEventScout")
   builderNfts       BuilderNft[]
+  activities        ScoutGameActivity[]
 
   @@index([username])
   @@index([farcasterId])
@@ -2812,13 +2822,14 @@ model Scout {
 }
 
 model BuilderStrike {
-  id            String       @id @default(uuid()) @db.Uuid
-  builderId     String       @db.Uuid
-  builder       Scout        @relation(fields: [builderId], references: [id], onDelete: Cascade)
-  createdAt     DateTime     @default(now())
+  id            String              @id @default(uuid()) @db.Uuid
+  builderId     String              @db.Uuid
+  builder       Scout               @relation(fields: [builderId], references: [id], onDelete: Cascade)
+  createdAt     DateTime            @default(now())
   deletedAt     DateTime?
-  githubEventId String?      @unique @db.Uuid
-  githubEvent   GithubEvent? @relation(fields: [githubEventId], references: [id], onDelete: SetNull)
+  githubEventId String?             @unique @db.Uuid
+  githubEvent   GithubEvent?        @relation(fields: [githubEventId], references: [id], onDelete: SetNull)
+  activities    ScoutGameActivity[]
 
   @@index([builderId, deletedAt])
 }
@@ -2903,46 +2914,49 @@ model GithubEvent {
 }
 
 model NFTPurchaseEvent {
-  id              String        @id @default(uuid()) @db.Uuid
-  createdAt       DateTime      @default(now())
-  scoutId         String        @db.Uuid
-  scout           Scout         @relation(fields: [scoutId], references: [id], onDelete: Cascade, name: "nftPurchaseEventScout")
+  id              String              @id @default(uuid()) @db.Uuid
+  createdAt       DateTime            @default(now())
+  scoutId         String              @db.Uuid
+  scout           Scout               @relation(fields: [scoutId], references: [id], onDelete: Cascade, name: "nftPurchaseEventScout")
   paidInPoints    Boolean?
   tokensPurchased Int
   pointsValue     Int
-  builderNftId    String        @db.Uuid
-  builderNFT      BuilderNft    @relation(fields: [builderNftId], references: [id], onDelete: Cascade)
+  builderNftId    String              @db.Uuid
+  builderNFT      BuilderNft          @relation(fields: [builderNftId], references: [id], onDelete: Cascade)
   txHash          String
   builderEvent    BuilderEvent?
+  activities      ScoutGameActivity[]
 
   @@index([scoutId])
 }
 
 model GemsPayoutEvent {
-  id           String        @id @default(uuid()) @db.Uuid
-  createdAt    DateTime      @default(now())
-  builderId    String        @db.Uuid
-  builder      Scout         @relation(fields: [builderId], references: [id], onDelete: Cascade)
+  id           String              @id @default(uuid()) @db.Uuid
+  createdAt    DateTime            @default(now())
+  builderId    String              @db.Uuid
+  builder      Scout               @relation(fields: [builderId], references: [id], onDelete: Cascade)
   gems         Int
   points       Int
   week         String
   builderEvent BuilderEvent?
+  activities   ScoutGameActivity[]
 
   @@unique([builderId, week])
   @@index([builderId])
 }
 
 model PointsReceipt {
-  id          String       @id @default(uuid()) @db.Uuid
-  createdAt   DateTime     @default(now())
+  id          String              @id @default(uuid()) @db.Uuid
+  createdAt   DateTime            @default(now())
   value       Int
   claimedAt   DateTime?
-  eventId     String       @db.Uuid
-  event       BuilderEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  recipientId String?      @db.Uuid
-  recipient   Scout?       @relation(fields: [recipientId], references: [id], onDelete: Cascade, name: "pointsReceiptRecipient")
-  senderId    String?      @db.Uuid
-  sender      Scout?       @relation(fields: [senderId], references: [id], onDelete: Cascade, name: "pointsReceiptSender")
+  eventId     String              @db.Uuid
+  event       BuilderEvent        @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  recipientId String?             @db.Uuid
+  recipient   Scout?              @relation(fields: [recipientId], references: [id], onDelete: Cascade, name: "pointsReceiptRecipient")
+  senderId    String?             @db.Uuid
+  sender      Scout?              @relation(fields: [senderId], references: [id], onDelete: Cascade, name: "pointsReceiptSender")
+  activities  ScoutGameActivity[]
 
   @@index([recipientId])
   @@index([senderId])
@@ -2956,12 +2970,13 @@ enum GemsReceiptType {
 }
 
 model GemsReceipt {
-  id        String          @id @default(uuid()) @db.Uuid
-  eventId   String          @unique @db.Uuid
-  event     BuilderEvent    @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  createdAt DateTime        @default(now())
-  value     Int
-  type      GemsReceiptType
+  id                String              @id @default(uuid()) @db.Uuid
+  eventId           String              @unique @db.Uuid
+  event             BuilderEvent        @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  createdAt         DateTime            @default(now())
+  value             Int
+  type              GemsReceiptType
+  ScoutGameActivity ScoutGameActivity[]
 
   @@index([eventId])
 }
@@ -2985,6 +3000,10 @@ model UserSeasonStats {
   pointsEarnedAsBuilder Int
   pointsEarnedAsScout   Int
   season                Int
+  // Optional int as not all users have a builder nft to sell
+  nftOwners             Int?
+  nftsSold              Int?
+  nftsPurchased         Int      @default(0)
 
   @@unique([userId, season])
   @@index([userId])
@@ -3001,19 +3020,84 @@ model UserAllTimeStats {
 }
 
 model BuilderNft {
-  id              String             @id @default(uuid()) @db.Uuid
-  createdAt       DateTime           @default(now())
-  builderId       String             @db.Uuid
-  builder         Scout              @relation(fields: [builderId], references: [id], onDelete: Cascade)
+  id              String              @id @default(uuid()) @db.Uuid
+  createdAt       DateTime            @default(now())
+  builderId       String              @db.Uuid
+  builder         Scout               @relation(fields: [builderId], references: [id], onDelete: Cascade)
   chainId         Int
   season          Int
   currentPrice    BigInt
   contractAddress String
   tokenId         Int
   nftSoldEvents   NFTPurchaseEvent[]
+  activities      ScoutGameActivity[]
 
   // Don't allow registering the same token id twice
   @@unique([contractAddress, tokenId, chainId])
   // Only 1 builder token per season
   @@unique([builderId, season])
+}
+
+enum ScoutGameActivityType {
+  mint
+  gems_from_pr
+  gems
+  points
+  strike
+  builder_registered
+}
+
+enum PointsDirection {
+  in
+  out
+}
+
+model ScoutGameActivity {
+  id              String                @id @default(uuid()) @db.Uuid
+  createdAt       DateTime              @default(now())
+  type            ScoutGameActivityType
+  pointsDirection PointsDirection
+  amount          Int
+  userId          String                @db.Uuid
+  user            Scout                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  registeredBuilderNftId String?     @db.Uuid
+  registeredBuilderNft   BuilderNft? @relation(fields: [registeredBuilderNftId], references: [id])
+
+  gemsPayoutEventId String?          @db.Uuid
+  gemsPayoutEvent   GemsPayoutEvent? @relation(fields: [gemsPayoutEventId], references: [id])
+
+  gemsReceiptId String?      @db.Uuid
+  gemsReceipt   GemsReceipt? @relation(fields: [gemsReceiptId], references: [id])
+
+  pointsReceiptId String?        @db.Uuid
+  pointsReceipt   PointsReceipt? @relation(fields: [pointsReceiptId], references: [id])
+
+  nftPurchaseEventId String?           @db.Uuid
+  nftPurchaseEvent   NFTPurchaseEvent? @relation(fields: [nftPurchaseEventId], references: [id])
+
+  builderStrikeId String?        @db.Uuid
+  builderStrike   BuilderStrike? @relation(fields: [builderStrikeId], references: [id])
+
+  notificationSentAt DateTime?
+
+  onchainTxHash  String?
+  onchainChainId Int?
+
+  @@unique([userId, pointsDirection, gemsPayoutEventId])
+  @@unique([userId, pointsDirection, pointsReceiptId])
+  @@unique([userId, pointsDirection, nftPurchaseEventId])
+  @@unique([userId, pointsDirection, builderStrikeId])
+  @@unique([userId, pointsDirection, registeredBuilderNftId])
+  @@unique([userId, pointsDirection, gemsReceiptId])
+  @@index([userId])
+  @@index([type])
+  @@index([userId, type])
+  @@index([gemsPayoutEventId])
+  @@index([pointsReceiptId])
+  @@index([nftPurchaseEventId])
+  @@index([registeredBuilderNftId])
+  @@index([builderStrikeId])
+  @@index([onchainChainId])
+  @@index([notificationSentAt])
 }
