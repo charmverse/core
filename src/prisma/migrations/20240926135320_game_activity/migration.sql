@@ -61,9 +61,6 @@ CREATE INDEX "ScoutGameActivity_onchainChainId_idx" ON "ScoutGameActivity"("onch
 CREATE INDEX "ScoutGameActivity_notificationSentAt_idx" ON "ScoutGameActivity"("notificationSentAt");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "ScoutGameActivity_onchainTxHash_onchainChainId_key" ON "ScoutGameActivity"("onchainTxHash", "onchainChainId");
-
--- CreateIndex
 CREATE UNIQUE INDEX "ScoutGameActivity_userId_pointsDirection_gemsPayoutEventId_key" ON "ScoutGameActivity"("userId", "pointsDirection", "gemsPayoutEventId");
 
 -- CreateIndex
@@ -77,6 +74,9 @@ CREATE UNIQUE INDEX "ScoutGameActivity_userId_pointsDirection_builderStrikeId_ke
 
 -- CreateIndex
 CREATE UNIQUE INDEX "ScoutGameActivity_userId_pointsDirection_registeredBuilderN_key" ON "ScoutGameActivity"("userId", "pointsDirection", "registeredBuilderNftId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "ScoutGameActivity_userId_pointsDirection_gemsReceiptId_key" ON "ScoutGameActivity"("userId", "pointsDirection", "gemsReceiptId");
 
 -- AddForeignKey
 ALTER TABLE "ScoutGameActivity" ADD CONSTRAINT "ScoutGameActivity_userId_fkey" FOREIGN KEY ("userId") REFERENCES "Scout"("id") ON DELETE CASCADE ON UPDATE CASCADE;

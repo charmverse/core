@@ -3076,12 +3076,12 @@ model ScoutGameActivity {
   onchainTxHash  String?
   onchainChainId Int?
 
-  @@unique([onchainTxHash, onchainChainId])
   @@unique([userId, pointsDirection, gemsPayoutEventId])
   @@unique([userId, pointsDirection, pointsReceiptId])
   @@unique([userId, pointsDirection, nftPurchaseEventId])
   @@unique([userId, pointsDirection, builderStrikeId])
   @@unique([userId, pointsDirection, registeredBuilderNftId])
+  @@unique([userId, pointsDirection, gemsReceiptId])
   @@index([userId])
   @@index([type])
   @@index([userId, type])
