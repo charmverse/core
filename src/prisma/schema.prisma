@@ -2846,9 +2846,9 @@ model BuilderEvent {
   id                 String            @id @default(uuid()) @db.Uuid
   builderId          String            @db.Uuid
   builder            Scout             @relation(fields: [builderId], references: [id], onDelete: Cascade)
-  season             String
   type               BuilderEventType
   week               String
+  season             String
   createdAt          DateTime          @default(now())
   githubEventId      String?           @unique @db.Uuid
   githubEvent        GithubEvent?      @relation(fields: [githubEventId], references: [id], onDelete: SetNull)
@@ -2938,6 +2938,7 @@ model GemsPayoutEvent {
   gems         Int
   points       Int
   week         String
+  season       String
   builderEvent BuilderEvent?
   activities   ScoutGameActivity[]
 
@@ -2987,6 +2988,7 @@ model UserWeeklyStats {
   user          Scout    @relation(fields: [userId], references: [id], onDelete: Cascade)
   gemsCollected Int
   week          String
+  season        String
   rank          Int?
 
   @@unique([userId, week])
