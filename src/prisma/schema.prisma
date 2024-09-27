@@ -2797,11 +2797,9 @@ model Scout {
   avatar            String?
   bio               String?
   builderStatus     BuilderStatus?
-  builder           Boolean             @default(false) // This means someone 'turned on' the builder profile. see Alternatives Considered
   sendMarketing     Boolean             @default(false)
   agreedToTermsAt   DateTime?
   onboardedAt       DateTime?
-  bannedAt          DateTime?
   currentBalance    Int                 @default(0)
   strikes           BuilderStrike[]
   events            BuilderEvent[]
