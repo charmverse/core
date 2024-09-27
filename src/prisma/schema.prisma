@@ -2848,6 +2848,7 @@ model BuilderEvent {
   week               String
   season             String
   createdAt          DateTime          @default(now())
+  bonusPartner       String?
   githubEventId      String?           @unique @db.Uuid
   githubEvent        GithubEvent?      @relation(fields: [githubEventId], references: [id], onDelete: SetNull)
   gemsPayoutEventId  String?           @unique @db.Uuid
