@@ -3030,6 +3030,7 @@ model BuilderNft {
   currentPrice    BigInt
   contractAddress String
   tokenId         Int
+  imageUrl        String
   nftSoldEvents   NFTPurchaseEvent[]
   activities      ScoutGameActivity[]
 
