@@ -3124,8 +3124,8 @@ model PendingNftTransaction {
   targetAmountReceived   BigInt
   targetCurrencyContractAddress  String
 
+  destinationChainId     Int
   destinationChainTxHash String?
-  destinationChainId     Int?
 
   // Token info
   contractAddress        String
