@@ -11,8 +11,12 @@
   - A unique constraint covering the columns `[userId,nftPurchaseEventId]` on the table `ScoutGameActivity` will be added. If there are existing duplicate values, this will fail.
   - A unique constraint covering the columns `[userId,builderStrikeId]` on the table `ScoutGameActivity` will be added. If there are existing duplicate values, this will fail.
   - A unique constraint covering the columns `[userId,gemsReceiptId]` on the table `ScoutGameActivity` will be added. If there are existing duplicate values, this will fail.
+  - Added the required column `recipientType` to the `ScoutGameActivity` table without a default value. This is not possible if the table is not empty.
 
 */
+-- CreateEnum
+CREATE TYPE "ActivityReceipientType" AS ENUM ('builder', 'scout');
+
 -- AlterEnum
 BEGIN;
 CREATE TYPE "ScoutGameActivityType_new" AS ENUM ('gems_first_pr', 'gems_third_pr_in_streak', 'gems_regular_pr', 'nft_purchase', 'builder_strike', 'builder_suspended', 'points');
@@ -60,7 +64,11 @@ ALTER TABLE "ScoutGameActivity" DROP COLUMN "gemsPayoutEventId",
 DROP COLUMN "onchainChainId",
 DROP COLUMN "onchainTxHash",
 DROP COLUMN "pointsDirection",
-DROP COLUMN "registeredBuilderNftId";
+DROP COLUMN "registeredBuilderNftId",
+ADD COLUMN     "recipientType" "ActivityReceipientType" NOT NULL;
+
+-- DropEnum
+DROP TYPE "PointsDirection";
 
 -- CreateIndex
 CREATE UNIQUE INDEX "ScoutGameActivity_userId_pointsReceiptId_key" ON "ScoutGameActivity"("userId", "pointsReceiptId");
