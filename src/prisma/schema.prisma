@@ -3057,19 +3057,12 @@ enum PointsDirection {
 }
 
 model ScoutGameActivity {
-  id              String                @id @default(uuid()) @db.Uuid
-  createdAt       DateTime              @default(now())
-  type            ScoutGameActivityType
-  pointsDirection PointsDirection
-  amount          Int
-  userId          String                @db.Uuid
-  user            Scout                 @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  registeredBuilderNftId String?     @db.Uuid
-  registeredBuilderNft   BuilderNft? @relation(fields: [registeredBuilderNftId], references: [id])
-
-  gemsPayoutEventId String?          @db.Uuid
-  gemsPayoutEvent   GemsPayoutEvent? @relation(fields: [gemsPayoutEventId], references: [id])
+  id        String                @id @default(uuid()) @db.Uuid
+  createdAt DateTime              @default(now())
+  type      ScoutGameActivityType
+  amount    Int
+  userId    String                @db.Uuid
+  user      Scout                 @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   gemsReceiptId String?      @db.Uuid
   gemsReceipt   GemsReceipt? @relation(fields: [gemsReceiptId], references: [id])
@@ -3085,22 +3078,22 @@ model ScoutGameActivity {
 
   notificationSentAt DateTime?
 
-  onchainTxHash  String?
-  onchainChainId Int?
+  onchainTxHash     String?
+  onchainChainId    Int?
+  BuilderNft        BuilderNft?      @relation(fields: [builderNftId], references: [id])
+  builderNftId      String?          @db.Uuid
+  GemsPayoutEvent   GemsPayoutEvent? @relation(fields: [gemsPayoutEventId], references: [id])
+  gemsPayoutEventId String?          @db.Uuid
 
-  @@unique([userId, pointsDirection, gemsPayoutEventId])
-  @@unique([userId, pointsDirection, pointsReceiptId])
-  @@unique([userId, pointsDirection, nftPurchaseEventId])
-  @@unique([userId, pointsDirection, builderStrikeId])
-  @@unique([userId, pointsDirection, registeredBuilderNftId])
-  @@unique([userId, pointsDirection, gemsReceiptId])
+  @@unique([userId, pointsReceiptId])
+  @@unique([userId, nftPurchaseEventId])
+  @@unique([userId, builderStrikeId])
+  @@unique([userId, gemsReceiptId])
   @@index([userId])
   @@index([type])
   @@index([userId, type])
-  @@index([gemsPayoutEventId])
   @@index([pointsReceiptId])
   @@index([nftPurchaseEventId])
-  @@index([registeredBuilderNftId])
   @@index([builderStrikeId])
   @@index([onchainChainId])
   @@index([notificationSentAt])
