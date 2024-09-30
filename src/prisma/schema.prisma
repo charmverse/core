@@ -3050,21 +3050,21 @@ enum ScoutGameActivityType {
   points
 }
 
-enum ActivityReceipientType {
+enum ActivityRecipientType {
   builder
   scout
 }
 
 model ScoutGameActivity {
-  id            String                 @id @default(uuid()) @db.Uuid
-  createdAt     DateTime               @default(now())
+  id            String                @id @default(uuid()) @db.Uuid
+  createdAt     DateTime              @default(now())
   type          ScoutGameActivityType
   amount        Int
-  userId        String                 @db.Uuid
-  user          Scout                  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  recipientType ActivityReceipientType
-  gemsReceiptId String?                @db.Uuid
-  gemsReceipt   GemsReceipt?           @relation(fields: [gemsReceiptId], references: [id])
+  userId        String                @db.Uuid
+  user          Scout                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recipientType ActivityRecipientType
+  gemsReceiptId String?               @db.Uuid
+  gemsReceipt   GemsReceipt?          @relation(fields: [gemsReceiptId], references: [id])
 
   pointsReceiptId String?        @db.Uuid
   pointsReceipt   PointsReceipt? @relation(fields: [pointsReceiptId], references: [id])
@@ -3075,19 +3075,16 @@ model ScoutGameActivity {
   builderStrikeId String?        @db.Uuid
   builderStrike   BuilderStrike? @relation(fields: [builderStrikeId], references: [id])
 
-  notificationSentAt DateTime?
-
-  @@unique([userId, pointsReceiptId])
-  @@unique([userId, nftPurchaseEventId])
-  @@unique([userId, builderStrikeId])
-  @@unique([userId, gemsReceiptId])
+  @@unique([userId, recipientType, pointsReceiptId])
+  @@unique([userId, recipientType, nftPurchaseEventId])
+  @@unique([userId, recipientType, builderStrikeId])
+  @@unique([userId, recipientType, gemsReceiptId])
   @@index([userId])
   @@index([type])
   @@index([userId, type])
   @@index([pointsReceiptId])
   @@index([nftPurchaseEventId])
   @@index([builderStrikeId])
-  @@index([notificationSentAt])
 }
 
 enum TransactionStatus {
