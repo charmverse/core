@@ -2,6 +2,9 @@
   Warnings:
 
   - The values [mint,gems_from_pr,gems,strike,builder_registered] on the enum `ScoutGameActivityType` will be removed. If these variants are still used in the database, this will fail.
+  - You are about to drop the column `gemsPayoutEventId` on the `ScoutGameActivity` table. All the data in the column will be lost.
+  - You are about to drop the column `onchainChainId` on the `ScoutGameActivity` table. All the data in the column will be lost.
+  - You are about to drop the column `onchainTxHash` on the `ScoutGameActivity` table. All the data in the column will be lost.
   - You are about to drop the column `pointsDirection` on the `ScoutGameActivity` table. All the data in the column will be lost.
   - You are about to drop the column `registeredBuilderNftId` on the `ScoutGameActivity` table. All the data in the column will be lost.
   - A unique constraint covering the columns `[userId,pointsReceiptId]` on the table `ScoutGameActivity` will be added. If there are existing duplicate values, this will fail.
@@ -20,10 +23,16 @@ DROP TYPE "ScoutGameActivityType_old";
 COMMIT;
 
 -- DropForeignKey
+ALTER TABLE "ScoutGameActivity" DROP CONSTRAINT "ScoutGameActivity_gemsPayoutEventId_fkey";
+
+-- DropForeignKey
 ALTER TABLE "ScoutGameActivity" DROP CONSTRAINT "ScoutGameActivity_registeredBuilderNftId_fkey";
 
 -- DropIndex
 DROP INDEX "ScoutGameActivity_gemsPayoutEventId_idx";
+
+-- DropIndex
+DROP INDEX "ScoutGameActivity_onchainChainId_idx";
 
 -- DropIndex
 DROP INDEX "ScoutGameActivity_registeredBuilderNftId_idx";
@@ -47,9 +56,11 @@ DROP INDEX "ScoutGameActivity_userId_pointsDirection_pointsReceiptId_key";
 DROP INDEX "ScoutGameActivity_userId_pointsDirection_registeredBuilderN_key";
 
 -- AlterTable
-ALTER TABLE "ScoutGameActivity" DROP COLUMN "pointsDirection",
-DROP COLUMN "registeredBuilderNftId",
-ADD COLUMN     "builderNftId" UUID;
+ALTER TABLE "ScoutGameActivity" DROP COLUMN "gemsPayoutEventId",
+DROP COLUMN "onchainChainId",
+DROP COLUMN "onchainTxHash",
+DROP COLUMN "pointsDirection",
+DROP COLUMN "registeredBuilderNftId";
 
 -- CreateIndex
 CREATE UNIQUE INDEX "ScoutGameActivity_userId_pointsReceiptId_key" ON "ScoutGameActivity"("userId", "pointsReceiptId");
@@ -62,6 +73,3 @@ CREATE UNIQUE INDEX "ScoutGameActivity_userId_builderStrikeId_key" ON "ScoutGame
 
 -- CreateIndex
 CREATE UNIQUE INDEX "ScoutGameActivity_userId_gemsReceiptId_key" ON "ScoutGameActivity"("userId", "gemsReceiptId");
-
--- AddForeignKey
-ALTER TABLE "ScoutGameActivity" ADD CONSTRAINT "ScoutGameActivity_builderNftId_fkey" FOREIGN KEY ("builderNftId") REFERENCES "BuilderNft"("id") ON DELETE SET NULL ON UPDATE CASCADE;

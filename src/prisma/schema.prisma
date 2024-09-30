@@ -2932,16 +2932,15 @@ model NFTPurchaseEvent {
 }
 
 model GemsPayoutEvent {
-  id           String              @id @default(uuid()) @db.Uuid
-  createdAt    DateTime            @default(now())
-  builderId    String              @db.Uuid
-  builder      Scout               @relation(fields: [builderId], references: [id], onDelete: Cascade)
+  id           String        @id @default(uuid()) @db.Uuid
+  createdAt    DateTime      @default(now())
+  builderId    String        @db.Uuid
+  builder      Scout         @relation(fields: [builderId], references: [id], onDelete: Cascade)
   gems         Int
   points       Int
   week         String
   season       String
   builderEvent BuilderEvent?
-  activities   ScoutGameActivity[]
 
   @@unique([builderId, week])
   @@index([builderId])
@@ -3023,10 +3022,10 @@ model UserAllTimeStats {
 }
 
 model BuilderNft {
-  id              String              @id @default(uuid()) @db.Uuid
-  createdAt       DateTime            @default(now())
-  builderId       String              @db.Uuid
-  builder         Scout               @relation(fields: [builderId], references: [id], onDelete: Cascade)
+  id              String             @id @default(uuid()) @db.Uuid
+  createdAt       DateTime           @default(now())
+  builderId       String             @db.Uuid
+  builder         Scout              @relation(fields: [builderId], references: [id], onDelete: Cascade)
   chainId         Int
   season          String
   currentPrice    BigInt
@@ -3034,7 +3033,6 @@ model BuilderNft {
   tokenId         Int
   imageUrl        String
   nftSoldEvents   NFTPurchaseEvent[]
-  activities      ScoutGameActivity[]
 
   // Don't allow registering the same token id twice
   @@unique([contractAddress, tokenId, chainId])
@@ -3079,13 +3077,6 @@ model ScoutGameActivity {
 
   notificationSentAt DateTime?
 
-  onchainTxHash     String?
-  onchainChainId    Int?
-  BuilderNft        BuilderNft?      @relation(fields: [builderNftId], references: [id])
-  builderNftId      String?          @db.Uuid
-  GemsPayoutEvent   GemsPayoutEvent? @relation(fields: [gemsPayoutEventId], references: [id])
-  gemsPayoutEventId String?          @db.Uuid
-
   @@unique([userId, pointsReceiptId])
   @@unique([userId, nftPurchaseEventId])
   @@unique([userId, builderStrikeId])
@@ -3096,7 +3087,6 @@ model ScoutGameActivity {
   @@index([pointsReceiptId])
   @@index([nftPurchaseEventId])
   @@index([builderStrikeId])
-  @@index([onchainChainId])
   @@index([notificationSentAt])
 }
 
