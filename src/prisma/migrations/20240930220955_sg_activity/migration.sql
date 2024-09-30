@@ -1,6 +1,7 @@
 /*
   Warnings:
 
+  - The values [mint,gems_from_pr,gems,strike,builder_registered] on the enum `ScoutGameActivityType` will be removed. If these variants are still used in the database, this will fail.
   - You are about to drop the column `pointsDirection` on the `ScoutGameActivity` table. All the data in the column will be lost.
   - You are about to drop the column `registeredBuilderNftId` on the `ScoutGameActivity` table. All the data in the column will be lost.
   - A unique constraint covering the columns `[userId,pointsReceiptId]` on the table `ScoutGameActivity` will be added. If there are existing duplicate values, this will fail.
@@ -9,6 +10,15 @@
   - A unique constraint covering the columns `[userId,gemsReceiptId]` on the table `ScoutGameActivity` will be added. If there are existing duplicate values, this will fail.
 
 */
+-- AlterEnum
+BEGIN;
+CREATE TYPE "ScoutGameActivityType_new" AS ENUM ('gems_first_pr', 'gems_third_pr_in_streak', 'gems_regular_pr', 'nft_purchase', 'builder_strike', 'builder_suspended', 'points');
+ALTER TABLE "ScoutGameActivity" ALTER COLUMN "type" TYPE "ScoutGameActivityType_new" USING ("type"::text::"ScoutGameActivityType_new");
+ALTER TYPE "ScoutGameActivityType" RENAME TO "ScoutGameActivityType_old";
+ALTER TYPE "ScoutGameActivityType_new" RENAME TO "ScoutGameActivityType";
+DROP TYPE "ScoutGameActivityType_old";
+COMMIT;
+
 -- DropForeignKey
 ALTER TABLE "ScoutGameActivity" DROP CONSTRAINT "ScoutGameActivity_registeredBuilderNftId_fkey";
 

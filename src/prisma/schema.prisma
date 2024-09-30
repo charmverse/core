@@ -3043,12 +3043,13 @@ model BuilderNft {
 }
 
 enum ScoutGameActivityType {
-  mint
-  gems_from_pr
-  gems
+  gems_first_pr
+  gems_third_pr_in_streak
+  gems_regular_pr
+  nft_purchase
+  builder_strike
+  builder_suspended
   points
-  strike
-  builder_registered
 }
 
 enum PointsDirection {
