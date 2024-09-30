@@ -2883,6 +2883,7 @@ model GithubRepo {
   name          String
   defaultBranch String
   events        GithubEvent[]
+  deletedAt     DateTime?
 
   @@index([id])
 }
@@ -3118,22 +3119,22 @@ model PendingNftTransaction {
   user      Scout    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   // Amount supposed to be received
-  sourceChainTxHash      String
-  sourceChainId          Int
+  sourceChainTxHash String
+  sourceChainId     Int
 
-  targetAmountReceived   BigInt
-  targetCurrencyContractAddress  String
+  targetAmountReceived          BigInt
+  targetCurrencyContractAddress String
 
   destinationChainId     Int
   destinationChainTxHash String?
 
   // Token info
-  contractAddress        String
-  tokenId                BigInt
-  tokenAmount            Int
+  contractAddress String
+  tokenId         BigInt
+  tokenAmount     Int
 
   // Wallet to mint to
-  senderAddress          String
+  senderAddress String
 
   status TransactionStatus @default(pending)
 
