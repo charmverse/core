@@ -70,7 +70,8 @@ DROP COLUMN "onchainChainId",
 DROP COLUMN "onchainTxHash",
 DROP COLUMN "pointsDirection",
 DROP COLUMN "registeredBuilderNftId",
-ADD COLUMN     "recipientType" "ActivityRecipientType" NOT NULL;
+ADD COLUMN     "recipientType" "ActivityRecipientType" NOT NULL,
+ALTER COLUMN "amount" DROP NOT NULL;
 
 -- DropEnum
 DROP TYPE "PointsDirection";
