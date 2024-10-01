@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.86.3-rc-feat-sg-notific.4",
+  "version": "0.86.3",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
