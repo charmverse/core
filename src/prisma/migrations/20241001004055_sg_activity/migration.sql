@@ -2,6 +2,7 @@
   Warnings:
 
   - The values [mint,gems_from_pr,gems,strike,builder_registered] on the enum `ScoutGameActivityType` will be removed. If these variants are still used in the database, this will fail.
+  - You are about to drop the column `amount` on the `ScoutGameActivity` table. All the data in the column will be lost.
   - You are about to drop the column `gemsPayoutEventId` on the `ScoutGameActivity` table. All the data in the column will be lost.
   - You are about to drop the column `notificationSentAt` on the `ScoutGameActivity` table. All the data in the column will be lost.
   - You are about to drop the column `onchainChainId` on the `ScoutGameActivity` table. All the data in the column will be lost.
@@ -64,14 +65,14 @@ DROP INDEX "ScoutGameActivity_userId_pointsDirection_pointsReceiptId_key";
 DROP INDEX "ScoutGameActivity_userId_pointsDirection_registeredBuilderN_key";
 
 -- AlterTable
-ALTER TABLE "ScoutGameActivity" DROP COLUMN "gemsPayoutEventId",
+ALTER TABLE "ScoutGameActivity" DROP COLUMN "amount",
+DROP COLUMN "gemsPayoutEventId",
 DROP COLUMN "notificationSentAt",
 DROP COLUMN "onchainChainId",
 DROP COLUMN "onchainTxHash",
 DROP COLUMN "pointsDirection",
 DROP COLUMN "registeredBuilderNftId",
-ADD COLUMN     "recipientType" "ActivityRecipientType" NOT NULL,
-ALTER COLUMN "amount" DROP NOT NULL;
+ADD COLUMN     "recipientType" "ActivityRecipientType" NOT NULL;
 
 -- DropEnum
 DROP TYPE "PointsDirection";
