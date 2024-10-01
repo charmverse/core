@@ -2971,13 +2971,13 @@ enum GemsReceiptType {
 }
 
 model GemsReceipt {
-  id                String              @id @default(uuid()) @db.Uuid
-  eventId           String              @unique @db.Uuid
-  event             BuilderEvent        @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  createdAt         DateTime            @default(now())
-  value             Int
-  type              GemsReceiptType
-  ScoutGameActivity ScoutGameActivity[]
+  id         String              @id @default(uuid()) @db.Uuid
+  eventId    String              @unique @db.Uuid
+  event      BuilderEvent        @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  createdAt  DateTime            @default(now())
+  value      Int
+  type       GemsReceiptType
+  activities ScoutGameActivity[]
 
   @@index([eventId])
 }
