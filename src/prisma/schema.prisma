@@ -2878,13 +2878,20 @@ model GithubUser {
   @@index([builderId])
 }
 
+enum GithubRepoOwnerType {
+  user
+  org
+}
+
 model GithubRepo {
-  id            Int           @id
+  id            Int                 @id
   owner         String
+  ownerType     GithubRepoOwnerType
+  handPicked    Boolean             @default(false)
   name          String
   defaultBranch String
   events        GithubEvent[]
-  createdAt     DateTime      @default(now())
+  createdAt     DateTime            @default(now())
   deletedAt     DateTime?
 
   @@index([id])
