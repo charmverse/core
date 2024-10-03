@@ -3022,17 +3022,18 @@ model UserAllTimeStats {
 }
 
 model BuilderNft {
-  id              String             @id @default(uuid()) @db.Uuid
-  createdAt       DateTime           @default(now())
-  builderId       String             @db.Uuid
-  builder         Scout              @relation(fields: [builderId], references: [id], onDelete: Cascade)
-  chainId         Int
-  season          String
-  currentPrice    BigInt
-  contractAddress String
-  tokenId         Int
-  imageUrl        String
-  nftSoldEvents   NFTPurchaseEvent[]
+  id               String             @id @default(uuid()) @db.Uuid
+  createdAt        DateTime           @default(now())
+  builderId        String             @db.Uuid
+  builder          Scout              @relation(fields: [builderId], references: [id], onDelete: Cascade)
+  chainId          Int
+  season           String
+  currentPrice     BigInt
+  contractAddress  String
+  tokenId          Int
+  imageUrl         String
+  congratsImageUrl String?
+  nftSoldEvents    NFTPurchaseEvent[]
 
   // Don't allow registering the same token id twice
   @@unique([contractAddress, tokenId, chainId])
