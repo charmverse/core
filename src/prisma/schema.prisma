@@ -2888,6 +2888,7 @@ model GithubRepo {
   owner         String
   ownerType     GithubRepoOwnerType
   handPicked    Boolean             @default(false)
+  fork          Boolean             @default(false)
   name          String
   defaultBranch String
   events        GithubEvent[]
