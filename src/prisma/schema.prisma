@@ -3063,16 +3063,16 @@ model ScoutGameActivity {
   user          Scout                 @relation(fields: [userId], references: [id], onDelete: Cascade)
   recipientType ActivityRecipientType
   gemsReceiptId String?               @db.Uuid
-  gemsReceipt   GemsReceipt?          @relation(fields: [gemsReceiptId], references: [id])
+  gemsReceipt   GemsReceipt?          @relation(fields: [gemsReceiptId], references: [id], onDelete: Cascade)
 
   pointsReceiptId String?        @db.Uuid
-  pointsReceipt   PointsReceipt? @relation(fields: [pointsReceiptId], references: [id])
+  pointsReceipt   PointsReceipt? @relation(fields: [pointsReceiptId], references: [id], onDelete: Cascade)
 
   nftPurchaseEventId String?           @db.Uuid
-  nftPurchaseEvent   NFTPurchaseEvent? @relation(fields: [nftPurchaseEventId], references: [id])
+  nftPurchaseEvent   NFTPurchaseEvent? @relation(fields: [nftPurchaseEventId], references: [id], onDelete: Cascade)
 
   builderStrikeId String?        @db.Uuid
-  builderStrike   BuilderStrike? @relation(fields: [builderStrikeId], references: [id])
+  builderStrike   BuilderStrike? @relation(fields: [builderStrikeId], references: [id], onDelete: Cascade)
 
   @@unique([userId, recipientType, pointsReceiptId])
   @@unique([userId, recipientType, nftPurchaseEventId])
