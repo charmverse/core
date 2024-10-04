@@ -2895,19 +2895,22 @@ model GithubRepo {
   createdAt     DateTime            @default(now())
   deletedAt     DateTime?
 
+  @@unique([owner, name])
   @@index([id])
 }
 
 enum GithubEventType {
   merged_pull_request
   closed_pull_request
+  commit
 }
 
 model GithubEvent {
   id                 String          @id @default(uuid()) @db.Uuid
   repoId             Int
   repo               GithubRepo      @relation(fields: [repoId], references: [id], onDelete: Cascade)
-  pullRequestNumber  Int
+  pullRequestNumber  Int?
+  commitHash         String?
   type               GithubEventType
   isFirstPullRequest Boolean         @default(false)
   title              String
