@@ -2981,6 +2981,7 @@ enum GemsReceiptType {
   first_pr
   third_pr_in_streak
   regular_pr
+  daily_commit
 }
 
 model GemsReceipt {
