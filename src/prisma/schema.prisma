@@ -2834,6 +2834,7 @@ model BuilderStrike {
 }
 
 enum BuilderEventType {
+  daily_commit
   merged_pull_request
   waitlist_airdrop
   nft_purchase
