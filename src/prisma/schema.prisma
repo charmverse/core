@@ -3059,6 +3059,7 @@ enum ScoutGameActivityType {
   gems_first_pr
   gems_third_pr_in_streak
   gems_regular_pr
+  daily_commit
   nft_purchase
   builder_strike
   builder_suspended
