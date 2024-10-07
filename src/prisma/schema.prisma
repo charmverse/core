@@ -2837,6 +2837,7 @@ enum BuilderEventType {
   daily_commit
   merged_pull_request
   waitlist_airdrop
+  misc_event // for offline events that don't fit any other category
   nft_purchase
   proposal_passed
   gems_payout
@@ -2850,6 +2851,7 @@ model BuilderEvent {
   week               String
   season             String
   createdAt          DateTime          @default(now())
+  description        String? // for misc_event type
   bonusPartner       String?
   githubEventId      String?           @unique @db.Uuid
   githubEvent        GithubEvent?      @relation(fields: [githubEventId], references: [id], onDelete: SetNull)
