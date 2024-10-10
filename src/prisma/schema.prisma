@@ -385,7 +385,7 @@ model Space {
   docusignCredentials         DocusignCredential[]
   documentsToSign             DocumentToSign[]
   docusignAllowedRoleOrUsers  DocusignAllowedRoleOrUser[]
-  proposalMyTaskColumns       ProposalMyTaskColumn[]
+  proposalMyTaskColumns       ProposalMyWorkColumn[]
 
   @@index([createdBy])
 }
@@ -2130,7 +2130,7 @@ model FormField {
   form                  Form                   @relation(fields: [formId], references: [id], onDelete: Cascade)
   fieldConfig           Json?
   answers               FormFieldAnswer[]
-  proposalMyTaskColumns ProposalMyTaskColumn[]
+  proposalMyTaskColumns ProposalMyWorkColumn[]
 
   @@index([formId])
 }
@@ -3146,7 +3146,7 @@ model PendingNftTransaction {
   @@index([status])
 }
 
-model ProposalMyTaskColumn {
+model ProposalMyWorkColumn {
   spaceId     String    @db.Uuid
   space       Space     @relation(fields: [spaceId], references: [id], onDelete: Cascade)
   formFieldId String    @db.Uuid
