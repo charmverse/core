@@ -1610,6 +1610,7 @@ enum ProposalOperation {
   create_vote
   comment
   evaluate
+  view_evaluations
   make_public
   archive
   unarchive
