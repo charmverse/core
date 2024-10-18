@@ -2899,9 +2899,11 @@ model GithubRepo {
   events        GithubEvent[]
   createdAt     DateTime            @default(now())
   deletedAt     DateTime?
+  bonusPartner  String?
 
   @@unique([owner, name])
   @@index([id])
+  @@index([bonusPartner])
 }
 
 enum GithubEventType {
