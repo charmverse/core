@@ -2903,6 +2903,7 @@ model GithubRepo {
 
   @@unique([owner, name])
   @@index([id])
+  @@index([bonusPartner])
 }
 
 enum GithubEventType {
