@@ -3020,12 +3020,12 @@ model UserSeasonStats {
   lastUpdated           DateTime @default(now())
   userId                String   @db.Uuid
   user                  Scout    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  pointsEarnedAsBuilder Int
-  pointsEarnedAsScout   Int
+  pointsEarnedAsBuilder Int      @default(0)
+  pointsEarnedAsScout   Int      @default(0)
   season                String
   // Optional int as not all users have a builder nft to sell
-  nftOwners             Int?
-  nftsSold              Int?
+  nftOwners             Int?     @default(0)
+  nftsSold              Int?     @default(0)
   nftsPurchased         Int      @default(0)
 
   @@unique([userId, season])
@@ -3036,8 +3036,8 @@ model UserAllTimeStats {
   lastUpdated           DateTime @default(now())
   userId                String   @unique @db.Uuid
   user                  Scout    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  pointsEarnedAsBuilder Int
-  pointsEarnedAsScout   Int
+  pointsEarnedAsBuilder Int      @default(0)
+  pointsEarnedAsScout   Int      @default(0)
 
   @@index([userId])
 }
