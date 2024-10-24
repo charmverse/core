@@ -1383,7 +1383,6 @@ model ProposalEvaluation {
   appealer              User?                               @relation(fields: [appealedBy], references: [id], onDelete: SetNull, name: "appealedBy")
   shareReviews          Boolean?                            @default(false)
   dueDate               DateTime?
-  publishCommentsAndScores  Boolean?
   showAuthorResultsOnRubricFail Boolean?
   rubricCriteria        ProposalRubricCriteria[]
   rubricAnswers         ProposalRubricCriteriaAnswer[]
