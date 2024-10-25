@@ -277,7 +277,11 @@ export async function generateProposal({
               appealable: input.appealable,
               appealRequiredReviews: input.appealRequiredReviews,
               finalStep: input.finalStep,
-              dueDate: input.dueDate
+              dueDate: input.dueDate,
+              showAuthorResultsOnRubricFail: input.showAuthorResultsOnRubricFail,
+              shareReviews: input.shareReviews,
+              actionLabels: input.actionLabels,
+              notificationLabels: input.notificationLabels
             }) as Prisma.ProposalEvaluationCreateManyInput
         ),
         skipDuplicates: true
