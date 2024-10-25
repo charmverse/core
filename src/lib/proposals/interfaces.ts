@@ -31,6 +31,7 @@ export type WorkflowEvaluationJson = Pick<ProposalEvaluation, 'id' | 'title' | '
     reject?: string;
   } | null;
   dueDate?: Date | null;
+  showAuthorResultsOnRubricFail?: boolean | null;
 };
 
 export type ProposalWorkflowTyped = Omit<ProposalWorkflow, 'evaluations'> & {
