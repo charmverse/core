@@ -2816,6 +2816,7 @@ model Scout {
   builderNfts           BuilderNft[]
   activities            ScoutGameActivity[]
   PendingNftTransaction PendingNftTransaction[]
+  builderCardActivities BuilderCardActivity[]
 
   @@index([username])
   @@index([farcasterId])
@@ -3155,4 +3156,10 @@ model ProposalMyWorkColumn {
   formField   FormField @relation(fields: [formFieldId], references: [id], onDelete: Cascade)
 
   @@unique([spaceId, formFieldId])
+}
+
+model BuilderCardActivity {
+  builderId String @id @db.Uuid
+  builder   Scout  @relation(fields: [builderId], references: [id], onDelete: Cascade)
+  last7Days Json
 }
