@@ -1356,46 +1356,46 @@ model ProposalEvaluationPermission {
 }
 
 model ProposalEvaluation {
-  id                    String                              @id @default(uuid()) @db.Uuid
-  index                 Int // tells us what order
-  title                 String
-  type                  ProposalEvaluationType
-  completedAt           DateTime?
-  declinedAt            DateTime? // Required to keep track of when the evaluation was declined for an appealable step
-  snapshotId            String?
-  snapshotExpiry        DateTime?
-  decidedBy             String?                             @db.Uuid
-  decider               User?                               @relation(fields: [decidedBy], references: [id], onDelete: SetNull, name: "decidedBy")
-  proposalId            String                              @db.Uuid
-  proposal              Proposal                            @relation(fields: [proposalId], references: [id], onDelete: Cascade)
-  voteSettings          Json?
-  voteId                String?                             @unique @db.Uuid
-  vote                  Vote?                               @relation(fields: [voteId], references: [id], onDelete: SetNull)
-  actionLabels          Json?
-  notificationLabels    Json?
-  requiredReviews       Int                                 @default(1)
-  finalStep             Boolean?
-  appealRequiredReviews Int?
-  appealable            Boolean?                            @default(false)
-  appealedAt            DateTime?
-  appealedBy            String?                             @db.Uuid
-  appealReason          String?
-  appealer              User?                               @relation(fields: [appealedBy], references: [id], onDelete: SetNull, name: "appealedBy")
-  shareReviews          Boolean?                            @default(false)
-  dueDate               DateTime?
+  id                            String                              @id @default(uuid()) @db.Uuid
+  index                         Int // tells us what order
+  title                         String
+  type                          ProposalEvaluationType
+  completedAt                   DateTime?
+  declinedAt                    DateTime? // Required to keep track of when the evaluation was declined for an appealable step
+  snapshotId                    String?
+  snapshotExpiry                DateTime?
+  decidedBy                     String?                             @db.Uuid
+  decider                       User?                               @relation(fields: [decidedBy], references: [id], onDelete: SetNull, name: "decidedBy")
+  proposalId                    String                              @db.Uuid
+  proposal                      Proposal                            @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  voteSettings                  Json?
+  voteId                        String?                             @unique @db.Uuid
+  vote                          Vote?                               @relation(fields: [voteId], references: [id], onDelete: SetNull)
+  actionLabels                  Json?
+  notificationLabels            Json?
+  requiredReviews               Int                                 @default(1)
+  finalStep                     Boolean?
+  appealRequiredReviews         Int?
+  appealable                    Boolean?                            @default(false)
+  appealedAt                    DateTime?
+  appealedBy                    String?                             @db.Uuid
+  appealReason                  String?
+  appealer                      User?                               @relation(fields: [appealedBy], references: [id], onDelete: SetNull, name: "appealedBy")
+  shareReviews                  Boolean?                            @default(false)
+  dueDate                       DateTime?
   showAuthorResultsOnRubricFail Boolean?
-  rubricCriteria        ProposalRubricCriteria[]
-  rubricAnswers         ProposalRubricCriteriaAnswer[]
-  draftRubricAnswers    DraftProposalRubricCriteriaAnswer[]
-  result                ProposalEvaluationResult?
-  reviewers             ProposalReviewer[]
-  appealReviewers       ProposalAppealReviewer[]
-  permissions           ProposalEvaluationPermission[]
-  proposalNotification  ProposalNotification[]
-  reviews               ProposalEvaluationReview[]
-  appealReviews         ProposalEvaluationAppealReview[]
-  documentsToSign       DocumentToSign[]
-  evaluationApprovers   ProposalEvaluationApprover[]
+  rubricCriteria                ProposalRubricCriteria[]
+  rubricAnswers                 ProposalRubricCriteriaAnswer[]
+  draftRubricAnswers            DraftProposalRubricCriteriaAnswer[]
+  result                        ProposalEvaluationResult?
+  reviewers                     ProposalReviewer[]
+  appealReviewers               ProposalAppealReviewer[]
+  permissions                   ProposalEvaluationPermission[]
+  proposalNotification          ProposalNotification[]
+  reviews                       ProposalEvaluationReview[]
+  appealReviews                 ProposalEvaluationAppealReview[]
+  documentsToSign               DocumentToSign[]
+  evaluationApprovers           ProposalEvaluationApprover[]
 
   @@index([proposalId])
   @@index([index])
@@ -2804,6 +2804,7 @@ model Scout {
   agreedToTermsAt       DateTime?
   onboardedAt           DateTime?
   currentBalance        Int                     @default(0)
+  scoutWallet           ScoutWallet[]
   strikes               BuilderStrike[]
   events                BuilderEvent[]
   githubUser            GithubUser[]
@@ -3165,4 +3166,12 @@ model BuilderCardActivity {
   last7Days Json
 
   @@unique([builderId])
+}
+
+model ScoutWallet {
+  id        String   @id @default(uuid()) @db.Uuid
+  createdAt DateTime @default(now())
+  address   String   @unique
+  scoutId   String   @db.Uuid
+  scout     Scout    @relation(fields: [scoutId], references: [id], onDelete: Cascade)
 }
