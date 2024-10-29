@@ -3176,4 +3176,5 @@ model ScoutWallet {
   scout     Scout    @relation(fields: [scoutId], references: [id], onDelete: Cascade)
 
   @@index([address])
+  @@index([scoutId])
 }
