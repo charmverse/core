@@ -3169,9 +3169,10 @@ model BuilderCardActivity {
 }
 
 model ScoutWallet {
-  id        String   @id @default(uuid()) @db.Uuid
   createdAt DateTime @default(now())
   address   String   @unique
   scoutId   String   @db.Uuid
   scout     Scout    @relation(fields: [scoutId], references: [id], onDelete: Cascade)
+
+  @@index([address])
 }
