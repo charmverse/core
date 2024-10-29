@@ -2791,7 +2791,8 @@ model Scout {
   createdAt             DateTime                @default(now())
   id                    String                  @id @default(uuid()) @db.Uuid
   email                 String?
-  username              String                  @unique
+  username              String?
+  path                  String?                 @unique
   displayName           String
   farcasterId           Int?                    @unique
   farcasterName         String? // every user only has one farcaster account
@@ -2820,7 +2821,7 @@ model Scout {
   PendingNftTransaction PendingNftTransaction[]
   builderCardActivities BuilderCardActivity[]
 
-  @@index([username])
+  @@index([path])
   @@index([farcasterId])
   @@index([walletAddress])
 }
