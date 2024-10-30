@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.91.1-rc-feat-sg-wallet.1",
+  "version": "0.92.0",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
