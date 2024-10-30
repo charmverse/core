@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.92.2-rc-feat-sg-farcast.0",
+  "version": "0.93.0",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
