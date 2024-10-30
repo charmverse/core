@@ -2791,8 +2791,7 @@ model Scout {
   createdAt             DateTime                @default(now())
   id                    String                  @id @default(uuid()) @db.Uuid
   email                 String?
-  username              String?
-  path                  String?                 @unique
+  path                  String                  @unique
   displayName           String
   farcasterId           Int?                    @unique
   farcasterName         String? // every user only has one farcaster account
