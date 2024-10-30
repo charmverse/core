@@ -2795,7 +2795,6 @@ model Scout {
   displayName           String
   farcasterId           Int?                    @unique
   farcasterName         String? // every user only has one farcaster account
-  walletAddress         String? // grab most recent wallet when someone signs in w/farcaster
   walletENS             String?
   avatar                String?
   bio                   String?
@@ -2822,7 +2821,6 @@ model Scout {
 
   @@index([path])
   @@index([farcasterId])
-  @@index([walletAddress])
 }
 
 model BuilderStrike {
