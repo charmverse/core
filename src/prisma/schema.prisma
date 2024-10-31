@@ -3175,3 +3175,12 @@ model ScoutWallet {
   @@index([address])
   @@index([scoutId])
 }
+
+model WeeklyClaims {
+  createdAt      DateTime @default(now())
+  season         String
+  week           String   @unique
+  merkleTreeRoot String
+  totalClaimable Int
+  claims         Json
+}
