@@ -2803,7 +2803,7 @@ model Scout {
   agreedToTermsAt       DateTime?
   onboardedAt           DateTime?
   currentBalance        Int                     @default(0)
-  scoutWallet           ScoutWallet[]
+  wallets               ScoutWallet[]
   strikes               BuilderStrike[]
   events                BuilderEvent[]
   githubUser            GithubUser[]
