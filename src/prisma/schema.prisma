@@ -2818,6 +2818,8 @@ model Scout {
   activities            ScoutGameActivity[]
   PendingNftTransaction PendingNftTransaction[]
   builderCardActivities BuilderCardActivity[]
+  tokensReceived        TokensReceipt[]         @relation("tokenReceiptRecipient")
+  tokensSent            TokensReceipt[]         @relation("tokenReceiptSender")
 
   @@index([path])
   @@index([farcasterId])
@@ -2864,6 +2866,9 @@ model BuilderEvent {
   nftPurchaseEvent   NFTPurchaseEvent? @relation(fields: [nftPurchaseEventId], references: [id], onDelete: SetNull)
   pointsReceipts     PointsReceipt[]
   gemsReceipt        GemsReceipt?
+  weeklyClaimId      String?           @db.Uuid
+  weeklyClaim        WeeklyClaims?     @relation(fields: [weeklyClaimId], references: [id], onDelete: SetNull)
+  tokensReceipts     TokensReceipt[]
 
   @@index([builderId])
   @@index([githubEventId])
@@ -2993,13 +2998,16 @@ enum GemsReceiptType {
 }
 
 model GemsReceipt {
-  id         String              @id @default(uuid()) @db.Uuid
-  eventId    String              @unique @db.Uuid
-  event      BuilderEvent        @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  createdAt  DateTime            @default(now())
-  value      Int
-  type       GemsReceiptType
-  activities ScoutGameActivity[]
+  id                        String              @id @default(uuid()) @db.Uuid
+  eventId                   String              @unique @db.Uuid
+  event                     BuilderEvent        @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  createdAt                 DateTime            @default(now())
+  value                     Int
+  type                      GemsReceiptType
+  activities                ScoutGameActivity[]
+  onchainAttestationUid     String?
+  onchainChainId            Int?
+  onchainAttestationRevoked Boolean?            @default(false)
 
   @@index([eventId])
 }
@@ -3097,6 +3105,8 @@ model ScoutGameActivity {
 
   builderStrikeId String?        @db.Uuid
   builderStrike   BuilderStrike? @relation(fields: [builderStrikeId], references: [id], onDelete: Cascade)
+  tokensReceipt   TokensReceipt? @relation(fields: [tokensReceiptId], references: [id])
+  tokensReceiptId String?        @db.Uuid
 
   @@unique([userId, recipientType, pointsReceiptId])
   @@unique([userId, recipientType, nftPurchaseEventId])
@@ -3177,10 +3187,31 @@ model ScoutWallet {
 }
 
 model WeeklyClaims {
-  createdAt      DateTime @default(now())
+  id             String         @id @default(uuid()) @db.Uuid
+  createdAt      DateTime       @default(now())
   season         String
-  week           String   @unique
+  week           String         @unique
   merkleTreeRoot String
   totalClaimable Int
   claims         Json
+  proofsMap      Json
+  builderEvents  BuilderEvent[]
+}
+
+model TokensReceipt {
+  id          String              @id @default(uuid()) @db.Uuid
+  createdAt   DateTime            @default(now())
+  value       Int
+  claimedAt   DateTime?
+  eventId     String              @db.Uuid
+  event       BuilderEvent        @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  recipientId String?             @db.Uuid
+  recipient   Scout?              @relation(fields: [recipientId], references: [id], onDelete: Cascade, name: "tokenReceiptRecipient")
+  senderId    String?             @db.Uuid
+  sender      Scout?              @relation(fields: [senderId], references: [id], onDelete: Cascade, name: "tokenReceiptSender")
+  activities  ScoutGameActivity[]
+
+  @@index([recipientId])
+  @@index([senderId])
+  @@index([eventId])
 }
