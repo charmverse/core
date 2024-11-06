@@ -2795,6 +2795,7 @@ model Scout {
   displayName           String
   farcasterId           Int?                    @unique
   farcasterName         String? // every user only has one farcaster account
+  telegramId            Int?                    @unique
   walletENS             String?
   avatar                String?
   bio                   String?
@@ -2803,7 +2804,6 @@ model Scout {
   agreedToTermsAt       DateTime?
   onboardedAt           DateTime?
   currentBalance        Int                     @default(0)
-  telegramUser          ScoutTelegramUser?
   scoutWallet           ScoutWallet[]
   strikes               BuilderStrike[]
   events                BuilderEvent[]
@@ -2822,6 +2822,7 @@ model Scout {
 
   @@index([path])
   @@index([farcasterId])
+  @@index([telegramId])
 }
 
 model BuilderStrike {
@@ -3177,18 +3178,5 @@ model ScoutWallet {
   purchaseEvents NFTPurchaseEvent[]
 
   @@index([address])
-  @@index([scoutId])
-}
-
-model ScoutTelegramUser {
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @default(now())
-  scoutId    String   @unique @db.Uuid
-  telegramId BigInt   @id
-  username   String
-  avatar     String?
-  scout      Scout    @relation(fields: [scoutId], references: [id], onDelete: Cascade)
-
-  @@index([telegramId])
   @@index([scoutId])
 }
