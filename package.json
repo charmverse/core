@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.94.1-rc-feat-sg-quest-p.0",
+  "version": "0.94.1-rc-feat-sg-quest-p.1",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
