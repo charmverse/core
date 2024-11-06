@@ -2818,6 +2818,7 @@ model Scout {
   activities            ScoutGameActivity[]
   PendingNftTransaction PendingNftTransaction[]
   builderCardActivities BuilderCardActivity[]
+  quest                 ScoutQuest?
 
   @@index([path])
   @@index([farcasterId])
@@ -2844,6 +2845,7 @@ enum BuilderEventType {
   nft_purchase
   proposal_passed
   gems_payout
+  daily_claim
 }
 
 model BuilderEvent {
@@ -3177,4 +3179,10 @@ model ScoutWallet {
 
   @@index([address])
   @@index([scoutId])
+}
+
+model ScoutQuest {
+  userId          String @id @unique @db.Uuid
+  user            Scout  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  completedQuests Json[]
 }
