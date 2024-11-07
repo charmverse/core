@@ -1,17 +1,17 @@
 import { SchemaEncoder } from '@ethereum-attestation-service/eas-sdk';
 import type { EASSchema } from 'protocol';
 
-const githubContributionReceiptEASSchema =
+const contributionReceiptEASSchema =
   'bytes32 userRefUID,string description,string url,string metadataUrl,uint256 value,string type';
 
-const githubContributionReceiptSchemaName = 'Github Contribution Receipt';
+const contributionReceiptSchemaName = 'Github Contribution Receipt';
 
-export const githubContributionSchemaDefinition: EASSchema = {
-  schema: githubContributionReceiptEASSchema,
-  name: githubContributionReceiptSchemaName
+export const contributionSchemaDefinition: EASSchema = {
+  schema: contributionReceiptEASSchema,
+  name: contributionReceiptSchemaName
 };
 
-export type GithubContributionReceiptAttestation = {
+export type ContributionReceiptAttestation = {
   userRefUID: `0x${string}`;
   description: string;
   url: string;
@@ -20,11 +20,9 @@ export type GithubContributionReceiptAttestation = {
   type: string;
 };
 
-const encoder = new SchemaEncoder(githubContributionReceiptEASSchema);
+const encoder = new SchemaEncoder(contributionReceiptEASSchema);
 
-export function encodeGithubContributionReceiptAttestation(
-  attestation: GithubContributionReceiptAttestation
-): `0x${string}` {
+export function encodeContributionReceiptAttestation(attestation: ContributionReceiptAttestation): `0x${string}` {
   const encodedData = encoder.encodeData([
     { name: 'userRefUID', type: 'bytes32', value: attestation.userRefUID },
     { name: 'description', type: 'string', value: attestation.description },
@@ -45,10 +43,10 @@ export function encodeGithubContributionReceiptAttestation(
   return encodedData as `0x${string}`;
 }
 
-export function decodeGithubContributionReceiptAttestation(rawData: string): GithubContributionReceiptAttestation {
+export function decodeContributionReceiptAttestation(rawData: string): ContributionReceiptAttestation {
   const parsed = encoder.decodeData(rawData);
   const values = parsed.reduce((acc, item) => {
-    const key = item.name as keyof GithubContributionReceiptAttestation;
+    const key = item.name as keyof ContributionReceiptAttestation;
 
     if (key === 'value') {
       acc[key] = parseInt(item.value.value as string);
@@ -58,7 +56,7 @@ export function decodeGithubContributionReceiptAttestation(rawData: string): Git
       acc[key] = item.value.value as string;
     }
     return acc;
-  }, {} as GithubContributionReceiptAttestation);
+  }, {} as ContributionReceiptAttestation);
 
-  return values as GithubContributionReceiptAttestation;
+  return values as ContributionReceiptAttestation;
 }
