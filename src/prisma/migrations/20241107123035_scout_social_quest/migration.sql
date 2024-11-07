@@ -7,6 +7,7 @@
 
 
 ALTER TYPE "BuilderEventType" ADD VALUE 'daily_claim';
+ALTER TYPE "BuilderEventType" ADD VALUE 'daily_claim_streak';
 ALTER TYPE "BuilderEventType" ADD VALUE 'social_quest';
 
 -- AlterTable
