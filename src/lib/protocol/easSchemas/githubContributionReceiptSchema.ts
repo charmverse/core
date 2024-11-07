@@ -6,7 +6,7 @@ export const githubContributionReceiptEASSchema =
 export const githubContributionReceiptSchemaName = 'Github Contribution Receipt';
 
 export type GithubContributionReceiptAttestation = {
-  userRefUID: string;
+  userRefUID: `0x${string}`;
   description: string;
   url: string;
   metadataUrl: string;
@@ -46,6 +46,8 @@ export function decodeGithubContributionReceiptAttestation(rawData: string): Git
 
     if (key === 'value') {
       acc[key] = parseInt(item.value.value as string);
+    } else if (key === 'userRefUID') {
+      acc[key] = item.value.value as `0x${string}`;
     } else {
       acc[key] = item.value.value as string;
     }
