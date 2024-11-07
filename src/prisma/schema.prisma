@@ -2795,6 +2795,7 @@ model Scout {
   displayName           String
   farcasterId           Int?                    @unique
   farcasterName         String? // every user only has one farcaster account
+  telegramId            Int?                    @unique
   walletENS             String?
   avatar                String?
   bio                   String?
@@ -2823,6 +2824,7 @@ model Scout {
 
   @@index([path])
   @@index([farcasterId])
+  @@index([telegramId])
 }
 
 model BuilderStrike {
