@@ -4,7 +4,7 @@ import type { EASSchema } from 'protocol';
 const contributionReceiptEASSchema =
   'bytes32 userRefUID,string description,string url,string metadataUrl,uint256 value,string type';
 
-const contributionReceiptSchemaName = 'Github Contribution Receipt';
+const contributionReceiptSchemaName = 'Contribution Receipt';
 
 export const contributionSchemaDefinition: EASSchema = {
   schema: contributionReceiptEASSchema,
