@@ -20,7 +20,7 @@ export function encodeGithubContributionReceiptAttestation(
   attestation: GithubContributionReceiptAttestation
 ): `0x${string}` {
   const encodedData = encoder.encodeData([
-    { name: 'userRefUID', type: 'string', value: attestation.userRefUID },
+    { name: 'userRefUID', type: 'bytes32', value: attestation.userRefUID },
     { name: 'description', type: 'string', value: attestation.description },
     {
       name: 'url',
