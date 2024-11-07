@@ -7,7 +7,8 @@ ALTER TABLE "Scout" ALTER COLUMN "telegramId" SET DATA TYPE BIGINT;
 -- CreateTable
 CREATE TABLE "ScoutSocialQuest" (
     "type" TEXT NOT NULL,
-    "userId" UUID NOT NULL
+    "userId" UUID NOT NULL,
+    "completedAt" TIMESTAMP(3) NOT NULL
 );
 
 -- CreateIndex

@@ -3184,9 +3184,10 @@ model ScoutWallet {
 }
 
 model ScoutSocialQuest {
-  type   String
-  userId String @db.Uuid
-  user   Scout  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type        String
+  userId      String   @db.Uuid
+  user        Scout    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  completedAt DateTime
 
   @@unique([type, userId])
   @@index([userId])
