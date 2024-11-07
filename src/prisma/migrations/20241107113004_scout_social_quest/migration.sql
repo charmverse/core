@@ -16,7 +16,7 @@ ALTER TABLE "Scout" ALTER COLUMN "telegramId" SET DATA TYPE BIGINT;
 CREATE TABLE "ScoutSocialQuest" (
     "type" TEXT NOT NULL,
     "userId" UUID NOT NULL,
-    "completedAt" TIMESTAMP(3) NOT NULL
+    "completedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- CreateIndex
