@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.94.1-rc-weekly-claims.6",
+  "version": "0.94.1-rc-weekly-claims.7",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
