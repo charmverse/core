@@ -2821,6 +2821,8 @@ model Scout {
   builderCardActivities BuilderCardActivity[]
   tokensReceived        TokensReceipt[]         @relation("tokenReceiptRecipient")
   tokensSent            TokensReceipt[]         @relation("tokenReceiptSender")
+  onchainProfileAttestationUid  String?
+  onchainProfileAttestationChainId Int?
 
   @@index([path])
   @@index([farcasterId])

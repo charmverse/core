@@ -7,6 +7,10 @@ ADD COLUMN     "onchainAttestationUid" TEXT,
 ADD COLUMN     "onchainChainId" INTEGER;
 
 -- AlterTable
+ALTER TABLE "Scout" ADD COLUMN     "onchainProfileAttestationChainId" INTEGER,
+ADD COLUMN     "onchainProfileAttestationUid" TEXT;
+
+-- AlterTable
 ALTER TABLE "ScoutGameActivity" ADD COLUMN     "tokensReceiptId" UUID;
 
 -- CreateTable
