@@ -28,7 +28,7 @@ const claimsInput: ProvableClaim[] = [
 
 describe('verifyMerkleClaim', () => {
   it('should return true if the claim is valid', () => {
-    const { tree } = generateMerkleTree(claimsInput);
+    const { tree, rootHash } = generateMerkleTree(claimsInput);
     const claim = claimsInput[0];
     const proofs = getMerkleProofs(tree, claim);
 

@@ -1,9 +1,15 @@
 import { SchemaEncoder } from '@ethereum-attestation-service/eas-sdk';
+import type { EASSchema } from 'protocol';
 
-export const githubContributionReceiptEASSchema =
+const githubContributionReceiptEASSchema =
   'bytes32 userRefUID,string description,string url,string metadataUrl,uint256 value,string type';
 
-export const githubContributionReceiptSchemaName = 'Github Contribution Receipt';
+const githubContributionReceiptSchemaName = 'Github Contribution Receipt';
+
+export const githubContributionSchemaDefinition: EASSchema = {
+  schema: githubContributionReceiptEASSchema,
+  name: githubContributionReceiptSchemaName
+};
 
 export type GithubContributionReceiptAttestation = {
   userRefUID: `0x${string}`;

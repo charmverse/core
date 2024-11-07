@@ -1,8 +1,14 @@
 import { SchemaEncoder } from '@ethereum-attestation-service/eas-sdk';
+import type { EASSchema } from 'protocol';
 
-export const scoutGameUserProfileEASSchema = 'string id,string metadataUrl';
+const scoutGameUserProfileEASSchema = 'string id,string metadataUrl';
 
-export const scoutGameUserProfileSchemaName = 'Scout Game User Profile';
+const scoutGameUserProfileSchemaName = 'Scout Game User Profile';
+
+export const scoutGameUserProfileSchemaDefinition: EASSchema = {
+  schema: scoutGameUserProfileEASSchema,
+  name: scoutGameUserProfileSchemaName
+};
 
 export type ScoutGameUserProfileAttestation = {
   id: string;
