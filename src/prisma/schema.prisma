@@ -2848,6 +2848,7 @@ enum BuilderEventType {
   proposal_passed
   gems_payout
   daily_claim
+  social_quest
 }
 
 model BuilderEvent {
