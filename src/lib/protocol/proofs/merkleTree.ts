@@ -27,8 +27,8 @@ export function generateMerkleTree(claims: ProvableClaim[]): { tree: MerkleTree;
   };
 }
 
-export function getMerkleProofs(tree: MerkleTree, claim: ProvableClaim): string[] {
-  return tree.getHexProof(hashLeaf(claim));
+export function getMerkleProofs(tree: MerkleTree, claim: ProvableClaim): `0x${string}`[] {
+  return tree.getHexProof(hashLeaf(claim)) as `0x${string}`[];
 }
 
 export function verifyMerkleClaim(tree: MerkleTree, claim: ProvableClaim, proof: string[]): boolean {
