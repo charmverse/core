@@ -2823,6 +2823,9 @@ model Scout {
   tokensSent            TokensReceipt[]         @relation("tokenReceiptSender")
   onchainProfileAttestationUid  String?
   onchainProfileAttestationChainId Int?
+  scoutSocialQuests      ScoutSocialQuest[]
+  dailyClaimEvents       ScoutDailyClaimEvent[]
+  dailyClaimStreakEvents ScoutDailyClaimStreakEvent[]
 
   @@index([path])
   @@index([farcasterId])
@@ -2850,6 +2853,9 @@ enum BuilderEventType {
   nft_purchase
   proposal_passed
   gems_payout
+  daily_claim
+  daily_claim_streak
+  social_quest
 }
 
 model BuilderEvent {
@@ -2873,6 +2879,8 @@ model BuilderEvent {
   weeklyClaimId      String?           @db.Uuid
   weeklyClaim        WeeklyClaims?     @relation(fields: [weeklyClaimId], references: [id], onDelete: SetNull)
   tokensReceipts     TokensReceipt[]
+  scoutSocialQuestId      String?                     @unique @db.Uuid
+  scoutSocialQuest        ScoutSocialQuest?           @relation(fields: [scoutSocialQuestId], references: [id], onDelete: SetNull)
 
   @@index([builderId])
   @@index([githubEventId])
@@ -3221,4 +3229,38 @@ model TokensReceipt {
   @@index([recipientId])
   @@index([senderId])
   @@index([eventId])
+}
+model ScoutSocialQuest {
+  id          String        @id @default(uuid()) @db.Uuid
+  type        String
+  userId      String        @db.Uuid
+  user        Scout         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  completedAt DateTime      @default(now())
+  event       BuilderEvent?
+
+  @@unique([type, userId])
+  @@index([userId])
+}
+
+model ScoutDailyClaimEvent {
+  id        String        @id @default(uuid()) @db.Uuid
+  userId    String        @db.Uuid
+  user      Scout         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  week      String // '2024-W40'
+  dayOfWeek Int
+  event     BuilderEvent?
+
+  @@unique([userId, week, dayOfWeek])
+  @@index([userId, week])
+}
+
+model ScoutDailyClaimStreakEvent {
+  id     String        @id @default(uuid()) @db.Uuid
+  userId String        @db.Uuid
+  user   Scout         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  week   String // '2024-W40'
+  event  BuilderEvent?
+
+  @@unique([userId, week])
+  @@index([userId, week])
 }
