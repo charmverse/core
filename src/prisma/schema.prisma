@@ -1605,6 +1605,7 @@ model WorkspaceEvent {
 // Note: eventually this will just be view, edit, comment, and move once we migrate to the new permissions flow
 enum ProposalOperation {
   edit
+  edit_rewards
   view
   view_notes
   view_private_fields
