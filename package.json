@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.95.2-rc-editable-reward.0",
+  "version": "0.95.2",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
