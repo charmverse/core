@@ -2789,44 +2789,47 @@ enum BuilderStatus {
 }
 
 model Scout {
-  createdAt             DateTime                @default(now())
-  id                    String                  @id @default(uuid()) @db.Uuid
-  email                 String?
-  path                  String                  @unique
-  displayName           String
-  farcasterId           Int?                    @unique
-  farcasterName         String? // every user only has one farcaster account
-  telegramId             BigInt?                      @unique
-  walletENS             String?
-  avatar                String?
-  bio                   String?
-  builderStatus         BuilderStatus?
-  sendMarketing         Boolean                 @default(false)
-  agreedToTermsAt       DateTime?
-  onboardedAt           DateTime?
-  currentBalance        Int                     @default(0)
-  scoutWallet           ScoutWallet[]
-  strikes               BuilderStrike[]
-  events                BuilderEvent[]
-  githubUser            GithubUser[]
-  gemsPayoutEvents      GemsPayoutEvent[]
-  pointsReceived        PointsReceipt[]         @relation("pointsReceiptRecipient")
-  pointsSent            PointsReceipt[]         @relation("pointsReceiptSender")
-  userWeeklyStats       UserWeeklyStats[]
-  userSeasonStats       UserSeasonStats[]
-  userAllTimeStats      UserAllTimeStats[]
-  nftPurchaseEvents     NFTPurchaseEvent[]      @relation("nftPurchaseEventScout")
-  builderNfts           BuilderNft[]
-  activities            ScoutGameActivity[]
-  PendingNftTransaction PendingNftTransaction[]
-  builderCardActivities BuilderCardActivity[]
-  tokensReceived        TokensReceipt[]         @relation("tokenReceiptRecipient")
-  tokensSent            TokensReceipt[]         @relation("tokenReceiptSender")
-  onchainProfileAttestationUid  String?
+  createdAt                        DateTime                     @default(now())
+  id                               String                       @id @default(uuid()) @db.Uuid
+  email                            String?
+  path                             String                       @unique
+  displayName                      String
+  farcasterId                      Int?                         @unique
+  farcasterName                    String? // every user only has one farcaster account
+  telegramId                       BigInt?                      @unique
+  walletENS                        String?
+  avatar                           String?
+  bio                              String?
+  builderStatus                    BuilderStatus?
+  sendMarketing                    Boolean                      @default(false)
+  agreedToTermsAt                  DateTime?
+  onboardedAt                      DateTime?
+  currentBalance                   Int                          @default(0)
+  scoutWallet                      ScoutWallet[]
+  strikes                          BuilderStrike[]
+  events                           BuilderEvent[]
+  githubUser                       GithubUser[]
+  gemsPayoutEvents                 GemsPayoutEvent[]
+  pointsReceived                   PointsReceipt[]              @relation("pointsReceiptRecipient")
+  pointsSent                       PointsReceipt[]              @relation("pointsReceiptSender")
+  userWeeklyStats                  UserWeeklyStats[]
+  userSeasonStats                  UserSeasonStats[]
+  userAllTimeStats                 UserAllTimeStats[]
+  nftPurchaseEvents                NFTPurchaseEvent[]           @relation("nftPurchaseEventScout")
+  builderNfts                      BuilderNft[]
+  activities                       ScoutGameActivity[]
+  PendingNftTransaction            PendingNftTransaction[]
+  builderCardActivities            BuilderCardActivity[]
+  tokensReceived                   TokensReceipt[]              @relation("tokenReceiptRecipient")
+  tokensSent                       TokensReceipt[]              @relation("tokenReceiptSender")
+  onchainProfileAttestationUid     String?
   onchainProfileAttestationChainId Int?
-  scoutSocialQuests      ScoutSocialQuest[]
-  dailyClaimEvents       ScoutDailyClaimEvent[]
-  dailyClaimStreakEvents ScoutDailyClaimStreakEvent[]
+  scoutSocialQuests                ScoutSocialQuest[]
+  dailyClaimEvents                 ScoutDailyClaimEvent[]
+  dailyClaimStreakEvents           ScoutDailyClaimStreakEvent[]
+  referralCode                     String?                      @unique @default(cuid()) @db.VarChar(10)
+  referrerCodeEvent                ReferralCodeEvent[]          @relation("referrer")
+  refereeCodeEvent                 ReferralCodeEvent[]          @relation("referee")
 
   @@index([path])
   @@index([farcasterId])
@@ -2860,26 +2863,26 @@ enum BuilderEventType {
 }
 
 model BuilderEvent {
-  id                 String            @id @default(uuid()) @db.Uuid
-  builderId          String            @db.Uuid
-  builder            Scout             @relation(fields: [builderId], references: [id], onDelete: Cascade)
-  type               BuilderEventType
-  week               String
-  season             String
-  createdAt          DateTime          @default(now())
-  description        String? // for misc_event type
-  bonusPartner       String?
-  githubEventId      String?           @unique @db.Uuid
-  githubEvent        GithubEvent?      @relation(fields: [githubEventId], references: [id], onDelete: SetNull)
-  gemsPayoutEventId  String?           @unique @db.Uuid
-  gemsPayoutEvent    GemsPayoutEvent?  @relation(fields: [gemsPayoutEventId], references: [id], onDelete: SetNull)
-  nftPurchaseEventId String?           @unique @db.Uuid
-  nftPurchaseEvent   NFTPurchaseEvent? @relation(fields: [nftPurchaseEventId], references: [id], onDelete: SetNull)
-  pointsReceipts     PointsReceipt[]
-  gemsReceipt        GemsReceipt?
-  weeklyClaimId      String?           @db.Uuid
-  weeklyClaim        WeeklyClaims?     @relation(fields: [weeklyClaimId], references: [id], onDelete: SetNull)
-  tokensReceipts     TokensReceipt[]
+  id                      String                      @id @default(uuid()) @db.Uuid
+  builderId               String                      @db.Uuid
+  builder                 Scout                       @relation(fields: [builderId], references: [id], onDelete: Cascade)
+  type                    BuilderEventType
+  week                    String
+  season                  String
+  createdAt               DateTime                    @default(now())
+  description             String? // for misc_event type
+  bonusPartner            String?
+  githubEventId           String?                     @unique @db.Uuid
+  githubEvent             GithubEvent?                @relation(fields: [githubEventId], references: [id], onDelete: SetNull)
+  gemsPayoutEventId       String?                     @unique @db.Uuid
+  gemsPayoutEvent         GemsPayoutEvent?            @relation(fields: [gemsPayoutEventId], references: [id], onDelete: SetNull)
+  nftPurchaseEventId      String?                     @unique @db.Uuid
+  nftPurchaseEvent        NFTPurchaseEvent?           @relation(fields: [nftPurchaseEventId], references: [id], onDelete: SetNull)
+  pointsReceipts          PointsReceipt[]
+  gemsReceipt             GemsReceipt?
+  weeklyClaimId           String?                     @db.Uuid
+  weeklyClaim             WeeklyClaims?               @relation(fields: [weeklyClaimId], references: [id], onDelete: SetNull)
+  tokensReceipts          TokensReceipt[]
   scoutSocialQuestId      String?                     @unique @db.Uuid
   scoutSocialQuest        ScoutSocialQuest?           @relation(fields: [scoutSocialQuestId], references: [id], onDelete: SetNull)
   dailyClaimEventId       String?                     @unique @db.Uuid
@@ -3235,6 +3238,7 @@ model TokensReceipt {
   @@index([senderId])
   @@index([eventId])
 }
+
 model ScoutSocialQuest {
   id          String        @id @default(uuid()) @db.Uuid
   type        String
@@ -3268,4 +3272,24 @@ model ScoutDailyClaimStreakEvent {
 
   @@unique([userId, week])
   @@index([userId, week])
+}
+
+enum ReferralPlatform {
+  telegram
+  webapp
+  unknown
+}
+
+model ReferralCodeEvent {
+  id         String           @id @default(uuid()) @db.Uuid
+  createdAt  DateTime         @default(now())
+  referrerId String           @db.Uuid
+  referrer   Scout            @relation("referrer", fields: [referrerId], references: [id], onDelete: Cascade)
+  refereeId  String           @db.Uuid
+  referee    Scout            @relation("referee", fields: [refereeId], references: [id], onDelete: Cascade)
+  platform   ReferralPlatform @default(webapp)
+
+  @@unique([referrerId, refereeId])
+  @@index([referrerId])
+  @@index([refereeId])
 }
