@@ -2827,7 +2827,7 @@ model Scout {
   scoutSocialQuests                ScoutSocialQuest[]
   dailyClaimEvents                 ScoutDailyClaimEvent[]
   dailyClaimStreakEvents           ScoutDailyClaimStreakEvent[]
-  referralCode                     String?                      @unique @default(cuid()) @db.VarChar(10)
+  referralCode                     String?                      @unique @db.VarChar(10)
   referrerCodeEvent                ReferralCodeEvent[]          @relation("referrer")
   refereeCodeEvent                 ReferralCodeEvent[]          @relation("referee")
 
