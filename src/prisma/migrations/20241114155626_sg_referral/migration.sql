@@ -8,7 +8,7 @@
 CREATE TYPE "ReferralPlatform" AS ENUM ('telegram', 'webapp', 'unknown');
 
 -- AlterTable
-ALTER TABLE "Scout" ADD COLUMN     "referralCode" VARCHAR(10);
+ALTER TABLE "Scout" ADD COLUMN     "referralCode" TEXT;
 
 -- CreateTable
 CREATE TABLE "ReferralCodeEvent" (
