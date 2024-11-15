@@ -2860,6 +2860,7 @@ enum BuilderEventType {
   daily_claim
   daily_claim_streak
   social_quest
+  referral
 }
 
 model BuilderEvent {

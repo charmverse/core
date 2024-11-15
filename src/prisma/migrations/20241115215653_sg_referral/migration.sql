@@ -7,6 +7,9 @@
 -- CreateEnum
 CREATE TYPE "ReferralPlatform" AS ENUM ('telegram', 'webapp', 'unknown');
 
+-- AlterEnum
+ALTER TYPE "BuilderEventType" ADD VALUE 'referral';
+
 -- AlterTable
 ALTER TABLE "Scout" ADD COLUMN     "referralCode" TEXT;
 
