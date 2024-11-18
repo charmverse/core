@@ -2828,8 +2828,7 @@ model Scout {
   dailyClaimEvents                 ScoutDailyClaimEvent[]
   dailyClaimStreakEvents           ScoutDailyClaimStreakEvent[]
   referralCode                     String?                      @unique
-  referrerCodeEvent                ReferralCodeEvent[]          @relation("referrer")
-  refereeCodeEvent                 ReferralCodeEvent[]          @relation("referee")
+  referralCodeEvent                ReferralCodeEvent[]
 
   @@index([path])
   @@index([farcasterId])
@@ -2890,6 +2889,7 @@ model BuilderEvent {
   dailyClaimEvent         ScoutDailyClaimEvent?       @relation(fields: [dailyClaimEventId], references: [id], onDelete: SetNull)
   dailyClaimStreakEventId String?                     @unique @db.Uuid
   dailyClaimStreakEvent   ScoutDailyClaimStreakEvent? @relation(fields: [dailyClaimStreakEventId], references: [id], onDelete: SetNull)
+  referralCodeEvent       ReferralCodeEvent?
 
   @@index([builderId])
   @@index([githubEventId])
@@ -3277,20 +3277,21 @@ model ScoutDailyClaimStreakEvent {
 
 enum ReferralPlatform {
   telegram
+  farcaster
   webapp
   unknown
 }
 
 model ReferralCodeEvent {
-  id         String           @id @default(uuid()) @db.Uuid
-  createdAt  DateTime         @default(now())
-  referrerId String           @db.Uuid
-  referrer   Scout            @relation("referrer", fields: [referrerId], references: [id], onDelete: Cascade)
-  refereeId  String           @db.Uuid
-  referee    Scout            @relation("referee", fields: [refereeId], references: [id], onDelete: Cascade)
-  platform   ReferralPlatform @default(webapp)
+  id             String           @id @default(uuid()) @db.Uuid
+  createdAt      DateTime         @default(now())
+  builderEventId String           @unique @db.Uuid
+  builderEvent   BuilderEvent     @relation(fields: [builderEventId], references: [id], onDelete: Cascade) // builderId from BuilderEvent table is the referrer
+  refereeId      String           @db.Uuid
+  referee        Scout            @relation(fields: [refereeId], references: [id], onDelete: Cascade) // scoutId that used the referral code
+  platform       ReferralPlatform @default(unknown)
 
-  @@unique([referrerId, refereeId])
-  @@index([referrerId])
+  @@unique([builderEventId, refereeId])
+  @@index([builderEventId])
   @@index([refereeId])
 }

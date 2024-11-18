@@ -5,7 +5,7 @@
 
 */
 -- CreateEnum
-CREATE TYPE "ReferralPlatform" AS ENUM ('telegram', 'webapp', 'unknown');
+CREATE TYPE "ReferralPlatform" AS ENUM ('telegram', 'farcaster', 'webapp', 'unknown');
 
 -- AlterEnum
 ALTER TYPE "BuilderEventType" ADD VALUE 'referral';
@@ -17,27 +17,30 @@ ALTER TABLE "Scout" ADD COLUMN     "referralCode" TEXT;
 CREATE TABLE "ReferralCodeEvent" (
     "id" UUID NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "referrerId" UUID NOT NULL,
+    "builderEventId" UUID NOT NULL,
     "refereeId" UUID NOT NULL,
-    "platform" "ReferralPlatform" NOT NULL DEFAULT 'webapp',
+    "platform" "ReferralPlatform" NOT NULL DEFAULT 'unknown',
 
     CONSTRAINT "ReferralCodeEvent_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
-CREATE INDEX "ReferralCodeEvent_referrerId_idx" ON "ReferralCodeEvent"("referrerId");
+CREATE UNIQUE INDEX "ReferralCodeEvent_builderEventId_key" ON "ReferralCodeEvent"("builderEventId");
+
+-- CreateIndex
+CREATE INDEX "ReferralCodeEvent_builderEventId_idx" ON "ReferralCodeEvent"("builderEventId");
 
 -- CreateIndex
 CREATE INDEX "ReferralCodeEvent_refereeId_idx" ON "ReferralCodeEvent"("refereeId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "ReferralCodeEvent_referrerId_refereeId_key" ON "ReferralCodeEvent"("referrerId", "refereeId");
+CREATE UNIQUE INDEX "ReferralCodeEvent_builderEventId_refereeId_key" ON "ReferralCodeEvent"("builderEventId", "refereeId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Scout_referralCode_key" ON "Scout"("referralCode");
 
 -- AddForeignKey
-ALTER TABLE "ReferralCodeEvent" ADD CONSTRAINT "ReferralCodeEvent_referrerId_fkey" FOREIGN KEY ("referrerId") REFERENCES "Scout"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "ReferralCodeEvent" ADD CONSTRAINT "ReferralCodeEvent_builderEventId_fkey" FOREIGN KEY ("builderEventId") REFERENCES "BuilderEvent"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "ReferralCodeEvent" ADD CONSTRAINT "ReferralCodeEvent_refereeId_fkey" FOREIGN KEY ("refereeId") REFERENCES "Scout"("id") ON DELETE CASCADE ON UPDATE CASCADE;
