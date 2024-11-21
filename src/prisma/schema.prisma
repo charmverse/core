@@ -2805,6 +2805,7 @@ model Scout {
   agreedToTermsAt                  DateTime?
   onboardedAt                      DateTime?
   currentBalance                   Int                          @default(0)
+  hasMoxieProfile                  Boolean                      @default(false)
   scoutWallet                      ScoutWallet[]
   strikes                          BuilderStrike[]
   events                           BuilderEvent[]
@@ -2830,7 +2831,6 @@ model Scout {
   referralCode                     String?                      @unique
   referralCodeEvent                ReferralCodeEvent[]
   talentProfile                    TalentProfile?
-  moxieProfile                     MoxieProfile?
 
   @@index([path])
   @@index([farcasterId])
@@ -3301,14 +3301,6 @@ model ReferralCodeEvent {
 model TalentProfile {
   id        Int    @id // passport_id
   score     Int
-  builderId String @unique @db.Uuid
-  builder   Scout  @relation(fields: [builderId], references: [id], onDelete: Cascade)
-
-  @@index([builderId])
-}
-
-model MoxieProfile {
-  id        Int    @id // fid
   builderId String @unique @db.Uuid
   builder   Scout  @relation(fields: [builderId], references: [id], onDelete: Cascade)
 
