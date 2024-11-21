@@ -3299,7 +3299,7 @@ model ReferralCodeEvent {
 }
 
 model TalentProfile {
-  id        Int    @id
+  id        String @id
   score     Int
   builderId String @unique @db.Uuid
   builder   Scout  @relation(fields: [builderId], references: [id], onDelete: Cascade)
