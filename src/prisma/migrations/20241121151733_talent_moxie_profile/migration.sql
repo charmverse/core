@@ -1,6 +1,6 @@
 -- CreateTable
 CREATE TABLE "TalentProfile" (
-    "id" TEXT NOT NULL,
+    "id" INTEGER NOT NULL,
     "score" INTEGER NOT NULL,
     "builderId" UUID NOT NULL,
 
