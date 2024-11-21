@@ -2829,6 +2829,8 @@ model Scout {
   dailyClaimStreakEvents           ScoutDailyClaimStreakEvent[]
   referralCode                     String?                      @unique
   referralCodeEvent                ReferralCodeEvent[]
+  talentProfile                    TalentProfile?
+  moxieProfile                     MoxieProfile?
 
   @@index([path])
   @@index([farcasterId])
@@ -3294,4 +3296,21 @@ model ReferralCodeEvent {
   @@unique([builderEventId, refereeId])
   @@index([builderEventId])
   @@index([refereeId])
+}
+
+model TalentProfile {
+  id        Int    @id
+  score     Int
+  builderId String @unique @db.Uuid
+  builder   Scout  @relation(fields: [builderId], references: [id], onDelete: Cascade)
+
+  @@index([builderId])
+}
+
+model MoxieProfile {
+  id        Int    @id // fid
+  builderId String @unique @db.Uuid
+  builder   Scout  @relation(fields: [builderId], references: [id], onDelete: Cascade)
+
+  @@index([builderId])
 }
