@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.96.0",
+  "version": "0.96.1-rc-feat-talent-mox.4",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
