@@ -3299,10 +3299,12 @@ model ReferralCodeEvent {
 }
 
 model TalentProfile {
-  id        Int    @id // passport_id
+  id        Int      @id // passport_id
   score     Int
-  builderId String @unique @db.Uuid
-  builder   Scout  @relation(fields: [builderId], references: [id], onDelete: Cascade)
+  builderId String   @unique @db.Uuid
+  builder   Scout    @relation(fields: [builderId], references: [id], onDelete: Cascade)
+  address   String   @unique
+  updatedAt DateTime @default(now())
 
   @@index([builderId])
 }
