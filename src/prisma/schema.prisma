@@ -3080,6 +3080,10 @@ model UserAllTimeStats {
   @@index([userId])
 }
 
+enum BuilderNftType {
+  season_1_starter_pack
+}
+
 model BuilderNft {
   id               String             @id @default(uuid()) @db.Uuid
   createdAt        DateTime           @default(now())
@@ -3087,6 +3091,7 @@ model BuilderNft {
   builder          Scout              @relation(fields: [builderId], references: [id], onDelete: Cascade)
   chainId          Int
   season           String
+  nftType          BuilderNftType?
   currentPrice     BigInt
   contractAddress  String
   tokenId          Int
