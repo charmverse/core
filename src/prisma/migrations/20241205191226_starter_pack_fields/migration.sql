@@ -5,7 +5,7 @@
 
 */
 -- CreateEnum
-CREATE TYPE "BuilderNftType" AS ENUM ('default', 'season_1_starter_pack');
+CREATE TYPE "BuilderNftType" AS ENUM ('default', 'starter_pack');
 
 -- DropIndex
 DROP INDEX "BuilderNft_builderId_season_key";

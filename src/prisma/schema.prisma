@@ -3082,7 +3082,7 @@ model UserAllTimeStats {
 
 enum BuilderNftType {
   default
-  season_1_starter_pack
+  starter_pack
 }
 
 model BuilderNft {
