@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.93.2-rc-scout-wallets.0",
+  "version": "0.98.0",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
@@ -65,6 +65,10 @@
     "./http": {
       "import": "./dist/esm/http.js",
       "require": "./dist/cjs/http.js"
+    },
+    "./protocol": {
+      "import": "./dist/esm/protocol.js",
+      "require": "./dist/cjs/protocol.js"
     }
   },
   "files": [
@@ -142,19 +146,21 @@
   },
   "dependencies": {
     "@datadog/browser-logs": "^4.42.2",
+    "@ethereum-attestation-service/eas-sdk": "^0.29.1",
     "@prisma/client": "^5.7.1",
     "async-sema": "^3.1.1",
     "fetch-retry": "^5.0.6",
     "lodash": "^4.17.21",
     "loglevel": "^1.8.1",
     "luxon": "^3.3.0",
+    "merkletreejs": "^0.4.0",
     "nanoid": "^3.3.6",
     "nanoid-dictionary": "^3.0.0",
     "prisma": "^5.7.1",
     "undici": "^6.19.5",
     "utf-8-validate": "^5.0.10",
     "uuid": "^9.0.0",
-    "viem": "^1.18.3"
+    "viem": "^2.21.42"
   },
   "license": "GPLv3"
 }
