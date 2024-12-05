@@ -207,6 +207,8 @@ describe('generateProposal', () => {
     expect(proposal.reviewers).toMatchObject(
       expect.arrayContaining<ProposalReviewer>([
         {
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
           evaluationId: expect.any(String),
           id: expect.any(String),
           proposalId: proposal.id,
@@ -215,6 +217,8 @@ describe('generateProposal', () => {
           systemRole: null
         },
         {
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
           evaluationId: expect.any(String),
           id: expect.any(String),
           proposalId: proposal.id,
@@ -223,6 +227,8 @@ describe('generateProposal', () => {
           systemRole: null
         },
         {
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
           evaluationId: passFailStep.id,
           id: expect.any(String),
           proposalId: proposal.id,
@@ -231,6 +237,8 @@ describe('generateProposal', () => {
           systemRole: null
         },
         {
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
           evaluationId: expect.any(String),
           id: expect.any(String),
           proposalId: proposal.id,
