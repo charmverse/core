@@ -2916,9 +2916,13 @@ model BuilderEvent {
   referralCodeEvent       ReferralCodeEvent?
 
   @@index([builderId])
+  @@index([type])
   @@index([githubEventId])
   @@index([gemsPayoutEventId])
   @@index([nftPurchaseEventId])
+  @@index([dailyClaimEventId])
+  @@index([dailyClaimStreakEventId])
+  @@index([weeklyClaimId])
 }
 
 model GithubUser {
@@ -3002,6 +3006,7 @@ model NFTPurchaseEvent {
   scoutWallet     ScoutWallet?        @relation(fields: [walletAddress], references: [address], onDelete: Cascade)
 
   @@index([scoutId])
+  @@index([builderNftId])
 }
 
 model GemsPayoutEvent {
@@ -3116,6 +3121,7 @@ model BuilderNft {
   @@unique([contractAddress, tokenId, chainId])
   // Only 1 builder token per season
   @@unique([builderId, season])
+  @@index([builderId])
 }
 
 enum ScoutGameActivityType {
