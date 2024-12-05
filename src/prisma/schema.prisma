@@ -2833,7 +2833,7 @@ model Scout {
   scoutSocialQuests                ScoutSocialQuest[]
   dailyClaimEvents                 ScoutDailyClaimEvent[]
   dailyClaimStreakEvents           ScoutDailyClaimStreakEvent[]
-  referralCode                     String?                      @unique
+  referralCode                     String                       @unique
   referralCodeEvent                ReferralCodeEvent[]
   talentProfile                    TalentProfile?
   mergedFromEvents                 ScoutMergeEvent[]            @relation("mergedFromScout")
