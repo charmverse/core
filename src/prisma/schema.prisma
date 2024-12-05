@@ -2842,6 +2842,8 @@ model Scout {
   @@index([path])
   @@index([farcasterId])
   @@index([telegramId])
+  @@index([deletedAt])
+  @@index([builderStatus])
 }
 
 model ScoutMergeEvent {
