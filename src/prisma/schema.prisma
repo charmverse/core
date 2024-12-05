@@ -1537,8 +1537,8 @@ model ProposalRubricCriteria {
 }
 
 model ProposalRubricCriteriaAnswer {
-  createdAt    DateTime            @default(now())
-  updatedAt    DateTime            @default(now())
+  createdAt        DateTime               @default(now())
+  updatedAt        DateTime               @default(now())
   rubricCriteriaId String                 @db.Uuid
   rubricCriteria   ProposalRubricCriteria @relation(fields: [rubricCriteriaId], references: [id], onDelete: Cascade)
   proposalId       String                 @db.Uuid
@@ -2794,6 +2794,9 @@ enum BuilderStatus {
 
 model Scout {
   createdAt                        DateTime                     @default(now())
+  mergedTo                         String?                      @db.Uuid
+  mergedToScout                    Scout?                       @relation(fields: [mergedTo], references: [id], onDelete: SetNull, name: "mergedToScout")
+  deletedAt                        DateTime?
   id                               String                       @id @default(uuid()) @db.Uuid
   email                            String?
   path                             String                       @unique
@@ -2835,6 +2838,7 @@ model Scout {
   referralCode                     String?                      @unique
   referralCodeEvent                ReferralCodeEvent[]
   talentProfile                    TalentProfile?
+  mergedFromScouts                 Scout[]                      @relation("mergedToScout")
 
   @@index([path])
   @@index([farcasterId])
