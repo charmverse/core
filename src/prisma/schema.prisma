@@ -2833,7 +2833,7 @@ model Scout {
   dailyClaimEvents                 ScoutDailyClaimEvent[]
   dailyClaimStreakEvents           ScoutDailyClaimStreakEvent[]
   referralCode                     String                       @unique
-  referralCodeEvent                ReferralCodeEvent[]
+  referralCodeEvents               ReferralCodeEvent[]
   talentProfile                    TalentProfile?
 
   @@index([path])
