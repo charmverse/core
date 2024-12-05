@@ -19,6 +19,24 @@ CREATE INDEX "ScoutMergeEvent_mergedToId_idx" ON "ScoutMergeEvent"("mergedToId")
 CREATE UNIQUE INDEX "ScoutMergeEvent_mergedFromId_mergedToId_key" ON "ScoutMergeEvent"("mergedFromId", "mergedToId");
 
 -- CreateIndex
+CREATE INDEX "BuilderEvent_type_idx" ON "BuilderEvent"("type");
+
+-- CreateIndex
+CREATE INDEX "BuilderEvent_dailyClaimEventId_idx" ON "BuilderEvent"("dailyClaimEventId");
+
+-- CreateIndex
+CREATE INDEX "BuilderEvent_dailyClaimStreakEventId_idx" ON "BuilderEvent"("dailyClaimStreakEventId");
+
+-- CreateIndex
+CREATE INDEX "BuilderEvent_weeklyClaimId_idx" ON "BuilderEvent"("weeklyClaimId");
+
+-- CreateIndex
+CREATE INDEX "BuilderNft_builderId_idx" ON "BuilderNft"("builderId");
+
+-- CreateIndex
+CREATE INDEX "NFTPurchaseEvent_builderNftId_idx" ON "NFTPurchaseEvent"("builderNftId");
+
+-- CreateIndex
 CREATE INDEX "Scout_deletedAt_idx" ON "Scout"("deletedAt");
 
 -- CreateIndex
