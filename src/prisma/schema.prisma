@@ -2794,6 +2794,7 @@ enum BuilderStatus {
 
 model Scout {
   createdAt                        DateTime                     @default(now())
+  deletedAt                        DateTime?
   id                               String                       @id @default(uuid()) @db.Uuid
   email                            String?
   path                             String                       @unique
@@ -2835,10 +2836,27 @@ model Scout {
   referralCode                     String                       @unique
   referralCodeEvents               ReferralCodeEvent[]
   talentProfile                    TalentProfile?
+  mergedFromEvents                 ScoutMergeEvent[]            @relation("mergedFromScout")
+  mergedToEvents                   ScoutMergeEvent[]            @relation("mergedToScout")
 
   @@index([path])
   @@index([farcasterId])
   @@index([telegramId])
+  @@index([deletedAt])
+  @@index([builderStatus])
+}
+
+model ScoutMergeEvent {
+  createdAt       DateTime @default(now())
+  mergedFromId    String   @db.Uuid
+  mergedFromScout Scout    @relation(fields: [mergedFromId], references: [id], onDelete: Cascade, name: "mergedFromScout")
+  mergedToId      String   @db.Uuid
+  mergedToScout   Scout    @relation(fields: [mergedToId], references: [id], onDelete: Cascade, name: "mergedToScout")
+  mergedRecords   Json
+
+  @@unique([mergedFromId, mergedToId])
+  @@index([mergedFromId])
+  @@index([mergedToId])
 }
 
 model BuilderStrike {
@@ -2898,9 +2916,13 @@ model BuilderEvent {
   referralCodeEvent       ReferralCodeEvent?
 
   @@index([builderId])
+  @@index([type])
   @@index([githubEventId])
   @@index([gemsPayoutEventId])
   @@index([nftPurchaseEventId])
+  @@index([dailyClaimEventId])
+  @@index([dailyClaimStreakEventId])
+  @@index([weeklyClaimId])
 }
 
 model GithubUser {
@@ -2984,6 +3006,7 @@ model NFTPurchaseEvent {
   scoutWallet     ScoutWallet?        @relation(fields: [walletAddress], references: [address], onDelete: Cascade)
 
   @@index([scoutId])
+  @@index([builderNftId])
 }
 
 model GemsPayoutEvent {
@@ -3098,6 +3121,7 @@ model BuilderNft {
   @@unique([contractAddress, tokenId, chainId])
   // Only 1 builder token per season
   @@unique([builderId, season])
+  @@index([builderId])
 }
 
 enum ScoutGameActivityType {
