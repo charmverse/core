@@ -3103,6 +3103,11 @@ model UserAllTimeStats {
   @@index([userId])
 }
 
+enum BuilderNftType {
+  default
+  starter_pack
+}
+
 model BuilderNft {
   id               String             @id @default(uuid()) @db.Uuid
   createdAt        DateTime           @default(now())
@@ -3110,6 +3115,7 @@ model BuilderNft {
   builder          Scout              @relation(fields: [builderId], references: [id], onDelete: Cascade)
   chainId          Int
   season           String
+  nftType          BuilderNftType      @default(default)
   currentPrice     BigInt
   contractAddress  String
   tokenId          Int
@@ -3120,7 +3126,7 @@ model BuilderNft {
   // Don't allow registering the same token id twice
   @@unique([contractAddress, tokenId, chainId])
   // Only 1 builder token per season
-  @@unique([builderId, season])
+  @@unique([builderId, season, nftType])
   @@index([builderId])
 }
 
