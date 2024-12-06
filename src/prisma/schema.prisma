@@ -3129,6 +3129,7 @@ model BuilderNft {
   // Only 1 builder token per season
   @@unique([builderId, season, nftType])
   @@index([builderId])
+  @@index([season, nftType])
 }
 
 enum ScoutGameActivityType {
