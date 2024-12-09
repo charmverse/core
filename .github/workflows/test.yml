@@ -70,6 +70,7 @@ jobs:
             echo "webapp_workflow_branch=${WEBAPP_WORKFLOW_BRANCH:-main}" >> $GITHUB_OUTPUT
             echo "permissionapi_workflow_branch=${PERMISSION_WORKFLOW_BRANCH:-main}" >> $GITHUB_OUTPUT
             echo "scoutgame_workflow_branch=${SCOUTGAME_WORKFLOW_BRANCH:-main}" >> $GITHUB_OUTPUT
+          fi
 
       - name: Checkout ref of the event that triggered this workflow. (first time run)
         uses: actions/checkout@v4
