@@ -133,7 +133,7 @@ jobs:
         with:
           owner: ${{ matrix.owner }}
           repo: ${{ matrix.repo }}
-          github_token: ${{ secrets.WORKFLOW_TRIGGER_PAT }}
+          github_token: ${{ secrets.CHARMED_BOT_PAT }}
           github_user: charmed-bot
           workflow_file_name: ${{ matrix.workflow_file }}
           ref: ${{ matrix.branch }}
