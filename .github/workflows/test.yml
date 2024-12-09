@@ -169,7 +169,7 @@ jobs:
         run: ${{matrix.test_command}}
 
   trigger-pkg-upgrade:
-    # if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     name: Bump Core pkg in ${{ matrix.repo }}
     runs-on: ubuntu-latest
     permissions:
@@ -180,12 +180,12 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # - owner: "charmverse"
-          #   repo: "app.charmverse.io"
-          #   core_pkg_version: "${{needs.push-package.outputs.pkg_version}}"
-          # - owner: "charmverse"
-          #   repo: "permissions.charmverse.io"
-          #   core_pkg_version: "${{needs.push-package.outputs.pkg_version}}"
+          - owner: "charmverse"
+            repo: "app.charmverse.io"
+            core_pkg_version: "${{needs.push-package.outputs.pkg_version}}"
+          - owner: "charmverse"
+            repo: "permissions.charmverse.io"
+            core_pkg_version: "${{needs.push-package.outputs.pkg_version}}"
           - owner: "scoutgame"
             repo: "scoutgame.xyz"
             core_pkg_version: "${{needs.push-package.outputs.pkg_version}}"
