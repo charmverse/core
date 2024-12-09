@@ -103,12 +103,20 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - repo: "app.charmverse.io"
+          - owner: "charmverse"
+            repo: "app.charmverse.io"
             branch: "${{ needs.push-package.outputs.webapp_workflow_branch }}"
             workflow_file: "test_new_core_pkg.yml"
             workflow_payload: |
               { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}" }
-          - repo: "permissions.charmverse.io"
+          - owner: "charmverse"
+            repo: "permissions.charmverse.io"
+            branch: "${{ needs.push-package.outputs.permissionapi_workflow_branch }}"
+            workflow_file: "test_core_pkg.yml"
+            workflow_payload: |
+              { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}" }
+          - owner: "scoutgame"
+            repo: "scoutgame.xyz"
             branch: "${{ needs.push-package.outputs.permissionapi_workflow_branch }}"
             workflow_file: "test_core_pkg.yml"
             workflow_payload: |
@@ -117,7 +125,7 @@ jobs:
       - name: Trigger tests on repo ${{ matrix.repo }}
         uses: convictional/trigger-workflow-and-wait@v1.6.5
         with:
-          owner: charmverse
+          owner: ${{ matrix.owner }}
           repo: ${{ matrix.repo }}
           github_token: ${{ secrets.WORKFLOW_TRIGGER_PAT }}
           github_user: charmed-bot
