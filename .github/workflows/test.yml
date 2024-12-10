@@ -16,12 +16,16 @@ on:
       permissionapi_branch:
         description: "Permissions api branch to test against"
         required: true
+      scoutgame_branch:
+        description: "Scoutgame branch to test against"
+        required: true
 
 # Change the below to get your PR CI to run tests against a specific branch
 #   Overrides the input, as inputs always have a default value
 env:
   WEBAPP_WORKFLOW_BRANCH:
   PERMISSION_WORKFLOW_BRANCH:
+  SCOUTGAME_WORKFLOW_BRANCH:
 
 jobs:
   build-test-env:
@@ -45,6 +49,7 @@ jobs:
       pkg_version: ${{ steps.publish_pkg.outputs.pkg_version }}
       webapp_workflow_branch: ${{ steps.set_downstream_repo_branch.outputs.webapp_workflow_branch }}
       permissionapi_workflow_branch: ${{ steps.set_downstream_repo_branch.outputs.permissionapi_workflow_branch }}
+      scoutgame_workflow_branch: ${{ steps.set_downstream_repo_branch.outputs.scoutgame_workflow_branch }}
     steps:
       - name: Determine downstream repo branch to run tests against
         id: set_downstream_repo_branch
@@ -55,14 +60,16 @@ jobs:
           if [[ "${{ github.event_name }}" == "push" && "${{ github.ref }}" == "refs/heads/main" ]]; then
             echo "webapp_workflow_branch='main'" >> $GITHUB_OUTPUT
             echo "permissionapi_workflow_branch='main'" >> $GITHUB_OUTPUT
+            echo "scoutgame_workflow_branch='main'" >> $GITHUB_OUTPUT
 
           elif [[ ${{ github.event_name }} == 'workflow_dispatch' ]]; then
             echo "webapp_workflow_branch=${{inputs.webapp_branch}}" >> $GITHUB_OUTPUT
             echo "permissionapi_workflow_branch=${{inputs.permissionapi_branch}}" >> $GITHUB_OUTPUT
-
+            echo "scoutgame_workflow_branch=${{inputs.scoutgame_branch}}" >> $GITHUB_OUTPUT
           else
             echo "webapp_workflow_branch=${WEBAPP_WORKFLOW_BRANCH:-main}" >> $GITHUB_OUTPUT
             echo "permissionapi_workflow_branch=${PERMISSION_WORKFLOW_BRANCH:-main}" >> $GITHUB_OUTPUT
+            echo "scoutgame_workflow_branch=${SCOUTGAME_WORKFLOW_BRANCH:-main}" >> $GITHUB_OUTPUT
           fi
 
       - name: Checkout ref of the event that triggered this workflow. (first time run)
@@ -103,23 +110,31 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - repo: "app.charmverse.io"
+          - owner: "charmverse"
+            repo: "app.charmverse.io"
             branch: "${{ needs.push-package.outputs.webapp_workflow_branch }}"
             workflow_file: "test_new_core_pkg.yml"
             workflow_payload: |
               { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}" }
-          - repo: "permissions.charmverse.io"
+          - owner: "charmverse"
+            repo: "permissions.charmverse.io"
             branch: "${{ needs.push-package.outputs.permissionapi_workflow_branch }}"
             workflow_file: "test_core_pkg.yml"
+            workflow_payload: |
+              { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}" }
+          - owner: "scoutgame"
+            repo: "scoutgame.xyz"
+            branch: "${{ needs.push-package.outputs.scoutgame_workflow_branch }}"
+            workflow_file: "test_new_core_pkg.yml"
             workflow_payload: |
               { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}" }
     steps:
       - name: Trigger tests on repo ${{ matrix.repo }}
         uses: convictional/trigger-workflow-and-wait@v1.6.5
         with:
-          owner: charmverse
+          owner: ${{ matrix.owner }}
           repo: ${{ matrix.repo }}
-          github_token: ${{ secrets.WORKFLOW_TRIGGER_PAT }}
+          github_token: ${{ secrets.CHARMED_BOT_PAT }}
           github_user: charmed-bot
           workflow_file_name: ${{ matrix.workflow_file }}
           ref: ${{ matrix.branch }}
@@ -180,9 +195,14 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - repo: "app.charmverse.io"
+          - owner: "charmverse"
+            repo: "app.charmverse.io"
             core_pkg_version: "${{needs.push-package.outputs.pkg_version}}"
-          - repo: "permissions.charmverse.io"
+          - owner: "charmverse"
+            repo: "permissions.charmverse.io"
+            core_pkg_version: "${{needs.push-package.outputs.pkg_version}}"
+          - owner: "scoutgame"
+            repo: "scoutgame.xyz"
             core_pkg_version: "${{needs.push-package.outputs.pkg_version}}"
 
     steps:
@@ -193,7 +213,7 @@ jobs:
           set -e
             echo "Processing ${{matrix.repo}} ${{secrets.CHARMED_BOT_PAT}}"
 
-            git clone --depth=1 https://$GITHUB_TOKEN@github.com/charmverse/${{matrix.repo}}.git ~/${{matrix.repo}}
+            git clone --depth=1 https://$GITHUB_TOKEN@github.com/${{ matrix.owner }}/${{matrix.repo}}.git ~/${{matrix.repo}}
             cd ~/${{matrix.repo}}
 
             # Don't download deps, we don't need them
