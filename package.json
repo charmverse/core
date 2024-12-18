@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.98.7-rc-onchain-token-m.1",
+  "version": "0.98.7-rc-onchain-token-m.2",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
