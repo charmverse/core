@@ -2839,6 +2839,7 @@ model Scout {
   mergedFromEvents                 ScoutMergeEvent[]            @relation("mergedFromScout")
   mergedToEvents                   ScoutMergeEvent[]            @relation("mergedToScout")
   PartnerRewardEvent               PartnerRewardEvent[]
+  scoutedNFTs                         ScoutNFT[]
 
   @@index([path])
   @@index([farcasterId])
@@ -3123,6 +3124,7 @@ model BuilderNft {
   imageUrl         String
   congratsImageUrl String?
   nftSoldEvents    NFTPurchaseEvent[]
+  nftOwners        ScoutNFT[]
 
   // Don't allow registering the same token id twice
   @@unique([contractAddress, tokenId, chainId])
@@ -3261,21 +3263,36 @@ model WeeklyClaims {
 }
 
 model TokensReceipt {
-  id          String              @id @default(uuid()) @db.Uuid
-  createdAt   DateTime            @default(now())
-  value       Int
-  claimedAt   DateTime?
-  eventId     String              @db.Uuid
-  event       BuilderEvent        @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  recipientId String?             @db.Uuid
-  recipient   Scout?              @relation(fields: [recipientId], references: [id], onDelete: Cascade, name: "tokenReceiptRecipient")
-  senderId    String?             @db.Uuid
-  sender      Scout?              @relation(fields: [senderId], references: [id], onDelete: Cascade, name: "tokenReceiptSender")
-  activities  ScoutGameActivity[]
+  id            String              @id @default(uuid()) @db.Uuid
+  createdAt     DateTime            @default(now())
+  value         Int
+  claimedAt     DateTime?
+  eventId       String              @db.Uuid
+  event         BuilderEvent        @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  walletAddress String
+  recipientId   String?             @db.Uuid
+  recipient     Scout?              @relation(fields: [recipientId], references: [id], onDelete: Cascade, name: "tokenReceiptRecipient")
+  senderId      String?             @db.Uuid
+  sender        Scout?              @relation(fields: [senderId], references: [id], onDelete: Cascade, name: "tokenReceiptSender")
+  activities    ScoutGameActivity[]
 
   @@index([recipientId])
   @@index([senderId])
   @@index([eventId])
+}
+
+model ScoutNFT {
+  id           String     @id @default(uuid()) @db.Uuid
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  builderNftId String     @db.Uuid
+  builderNft   BuilderNft @relation(fields: [builderNftId], references: [id], onDelete: Cascade)
+  scoutId      String     @db.Uuid
+  scout        Scout      @relation(fields: [scoutId], references: [id], onDelete: Cascade)
+  balance      Int
+
+  @@index([builderNftId])
+  @@index([scoutId])
 }
 
 model ScoutSocialQuest {
