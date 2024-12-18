@@ -2882,6 +2882,7 @@ enum BuilderEventType {
   nft_purchase
   proposal_passed
   gems_payout
+  onchain_gems_payout
   daily_claim
   daily_claim_streak
   social_quest

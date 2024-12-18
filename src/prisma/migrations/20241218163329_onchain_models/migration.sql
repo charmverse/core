@@ -4,6 +4,9 @@
   - Added the required column `walletAddress` to the `TokensReceipt` table without a default value. This is not possible if the table is not empty.
 
 */
+-- AlterEnum
+ALTER TYPE "BuilderEventType" ADD VALUE 'onchain_gems_payout';
+
 -- AlterTable
 ALTER TABLE "TokensReceipt" ADD COLUMN     "walletAddress" TEXT NOT NULL;
 
