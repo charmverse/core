@@ -28,6 +28,9 @@ CREATE INDEX "ScoutNFT_builderNftId_idx" ON "ScoutNFT"("builderNftId");
 -- CreateIndex
 CREATE INDEX "ScoutNFT_scoutId_idx" ON "ScoutNFT"("scoutId");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "ScoutNFT_builderNftId_scoutId_key" ON "ScoutNFT"("builderNftId", "scoutId");
+
 -- AddForeignKey
 ALTER TABLE "ScoutNFT" ADD CONSTRAINT "ScoutNFT_builderNftId_fkey" FOREIGN KEY ("builderNftId") REFERENCES "BuilderNft"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 

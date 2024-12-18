@@ -3294,6 +3294,8 @@ model ScoutNFT {
 
   @@index([builderNftId])
   @@index([scoutId])
+
+  @@unique([builderNftId, scoutId])
 }
 
 model ScoutSocialQuest {
