@@ -1396,7 +1396,6 @@ model ProposalEvaluation {
   appealReviews                 ProposalEvaluationAppealReview[]
   documentsToSign               DocumentToSign[]
   evaluationApprovers           ProposalEvaluationApprover[]
-  dependentFormFields           FormField[]
 
   @@index([proposalId])
   @@index([index])
@@ -2138,8 +2137,7 @@ model FormField {
   fieldConfig           Json?
   answers               FormFieldAnswer[]
   proposalMyTaskColumns ProposalMyWorkColumn[]
-  dependsOnEvaluationId String?                @db.Uuid
-  dependsOnEvaluation   ProposalEvaluation?    @relation(fields: [dependsOnEvaluationId], references: [id], onDelete: SetNull)
+  dependsOnStepIndex    Int?
 
   @@index([formId])
 }
