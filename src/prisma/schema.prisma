@@ -1396,6 +1396,7 @@ model ProposalEvaluation {
   appealReviews                 ProposalEvaluationAppealReview[]
   documentsToSign               DocumentToSign[]
   evaluationApprovers           ProposalEvaluationApprover[]
+  FormFieldAnswer               FormFieldAnswer[]
 
   @@index([proposalId])
   @@index([index])
@@ -2142,14 +2143,16 @@ model FormField {
 }
 
 model FormFieldAnswer {
-  id         String        @id @default(uuid()) @db.Uuid
-  fieldId    String        @db.Uuid
-  field      FormField     @relation(fields: [fieldId], references: [id], onDelete: Cascade)
-  type       FormFieldType
-  value      Json
-  proposalId String        @db.Uuid
-  proposal   Proposal      @relation(fields: [proposalId], references: [id], onDelete: Cascade)
-  threads    Thread[]
+  id                    String              @id @default(uuid()) @db.Uuid
+  fieldId               String              @db.Uuid
+  field                 FormField           @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+  type                  FormFieldType
+  value                 Json
+  proposalId            String              @db.Uuid
+  proposal              Proposal            @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  dependsOnEvaluationId String?             @db.Uuid
+  dependsOnEvaluation   ProposalEvaluation? @relation(fields: [dependsOnEvaluationId], references: [id], onDelete: SetNull)
+  threads               Thread[]
 
   @@index([fieldId])
   @@index([proposalId])
