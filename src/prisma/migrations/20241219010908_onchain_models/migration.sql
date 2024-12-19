@@ -7,6 +7,9 @@
 -- AlterEnum
 ALTER TYPE "BuilderEventType" ADD VALUE 'onchain_gems_payout';
 
+-- DropForeignKey
+ALTER TABLE "BuilderEvent" DROP CONSTRAINT "BuilderEvent_weeklyClaimId_fkey";
+
 -- AlterTable
 ALTER TABLE "TokensReceipt" ADD COLUMN     "walletAddress" TEXT NOT NULL;
 
@@ -30,6 +33,9 @@ CREATE INDEX "ScoutNFT_scoutId_idx" ON "ScoutNFT"("scoutId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "ScoutNFT_builderNftId_scoutId_key" ON "ScoutNFT"("builderNftId", "scoutId");
+
+-- AddForeignKey
+ALTER TABLE "BuilderEvent" ADD CONSTRAINT "BuilderEvent_weeklyClaimId_fkey" FOREIGN KEY ("weeklyClaimId") REFERENCES "WeeklyClaims"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "ScoutNFT" ADD CONSTRAINT "ScoutNFT_builderNftId_fkey" FOREIGN KEY ("builderNftId") REFERENCES "BuilderNft"("id") ON DELETE CASCADE ON UPDATE CASCADE;

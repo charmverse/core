@@ -2907,8 +2907,9 @@ model BuilderEvent {
   nftPurchaseEvent        NFTPurchaseEvent?           @relation(fields: [nftPurchaseEventId], references: [id], onDelete: SetNull)
   pointsReceipts          PointsReceipt[]
   gemsReceipt             GemsReceipt?
+  // If deleting a weekly claim, we want to delete the builder event
   weeklyClaimId           String?                     @db.Uuid
-  weeklyClaim             WeeklyClaims?               @relation(fields: [weeklyClaimId], references: [id], onDelete: SetNull)
+  weeklyClaim             WeeklyClaims?               @relation(fields: [weeklyClaimId], references: [id], onDelete: Cascade)
   tokensReceipts          TokensReceipt[]
   scoutSocialQuestId      String?                     @unique @db.Uuid
   scoutSocialQuest        ScoutSocialQuest?           @relation(fields: [scoutSocialQuestId], references: [id], onDelete: SetNull)
