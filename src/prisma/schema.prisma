@@ -2137,6 +2137,7 @@ model FormField {
   fieldConfig           Json?
   answers               FormFieldAnswer[]
   proposalMyTaskColumns ProposalMyWorkColumn[]
+  dependsOnStepIndex    Int?
 
   @@index([formId])
 }
