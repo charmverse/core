@@ -3338,6 +3338,7 @@ enum ReferralPlatform {
   telegram
   farcaster
   webapp
+  onchain_webapp
   unknown
 }
 

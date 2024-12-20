@@ -5,6 +5,9 @@
   - You are about to drop the column `senderId` on the `TokensReceipt` table. All the data in the column will be lost.
 
 */
+-- AlterEnum
+ALTER TYPE "ReferralPlatform" ADD VALUE 'onchain_webapp';
+
 -- DropForeignKey
 ALTER TABLE "BuilderEvent" DROP CONSTRAINT "BuilderEvent_weeklyClaimId_fkey";
 
