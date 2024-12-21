@@ -3345,6 +3345,7 @@ enum ReferralPlatform {
 model ReferralCodeEvent {
   id             String           @id @default(uuid()) @db.Uuid
   createdAt      DateTime         @default(now())
+  completedAt    DateTime?
   builderEventId String           @unique @db.Uuid
   builderEvent   BuilderEvent     @relation(fields: [builderEventId], references: [id], onDelete: Cascade) // builderId from BuilderEvent table is the referrer
   refereeId      String           @db.Uuid
