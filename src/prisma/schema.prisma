@@ -3036,6 +3036,7 @@ model PointsReceipt {
   recipient   Scout?              @relation(fields: [recipientId], references: [id], onDelete: Cascade, name: "pointsReceiptRecipient")
   senderId    String?             @db.Uuid
   sender      Scout?              @relation(fields: [senderId], references: [id], onDelete: Cascade, name: "pointsReceiptSender")
+  season      String?
   activities  ScoutGameActivity[]
 
   @@index([recipientId])
@@ -3273,9 +3274,9 @@ model TokensReceipt {
   claimTxHash            String?
   eventId                String              @db.Uuid
   event                  BuilderEvent        @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  recipientWalletAddress String?             
+  recipientWalletAddress String?
   recipientWallet        ScoutWallet?        @relation(fields: [recipientWalletAddress], references: [address], onDelete: Cascade, name: "tokenReceiptRecipient")
-  senderWalletAddress    String?             
+  senderWalletAddress    String?
   senderWallet           ScoutWallet?        @relation(fields: [senderWalletAddress], references: [address], onDelete: Cascade, name: "tokenReceiptSender")
   activities             ScoutGameActivity[]
 
@@ -3290,7 +3291,7 @@ model ScoutNft {
   updatedAt     DateTime    @updatedAt
   builderNftId  String      @db.Uuid
   builderNft    BuilderNft  @relation(fields: [builderNftId], references: [id], onDelete: Cascade)
-  walletAddress String      
+  walletAddress String
   scoutWallet   ScoutWallet @relation(fields: [walletAddress], references: [address], onDelete: Cascade)
   balance       Int
 
