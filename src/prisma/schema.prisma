@@ -2915,7 +2915,8 @@ model BuilderEvent {
   dailyClaimEvent         ScoutDailyClaimEvent?       @relation(fields: [dailyClaimEventId], references: [id], onDelete: SetNull)
   dailyClaimStreakEventId String?                     @unique @db.Uuid
   dailyClaimStreakEvent   ScoutDailyClaimStreakEvent? @relation(fields: [dailyClaimStreakEventId], references: [id], onDelete: SetNull)
-  referralCodeEvent       ReferralCodeEvent?
+  referralCodeEvent       ReferralCodeEvent?          @relation("builderEvent")
+  referralBonusEvent      ReferralCodeEvent?          @relation("bonusBuilderEvent")
 
   @@index([builderId])
   @@index([type])
@@ -3349,12 +3350,15 @@ model ReferralCodeEvent {
   createdAt      DateTime         @default(now())
   completedAt    DateTime?
   builderEventId String           @unique @db.Uuid
-  builderEvent   BuilderEvent     @relation(fields: [builderEventId], references: [id], onDelete: Cascade) // builderId from BuilderEvent table is the referrer
+  builderEvent   BuilderEvent     @relation(fields: [builderEventId], references: [id], onDelete: Cascade, name: "builderEvent") // builderId from BuilderEvent table is the referrer
   refereeId      String           @db.Uuid
   referee        Scout            @relation(fields: [refereeId], references: [id], onDelete: Cascade) // scoutId that used the referral code
   platform       ReferralPlatform @default(unknown)
+  bonusEventId   String?          @unique @db.Uuid
+  bonusEvent     BuilderEvent?    @relation(fields: [bonusEventId], references: [id], name: "bonusBuilderEvent")
 
   @@unique([builderEventId, refereeId])
+  @@unique([bonusEventId, refereeId])
   @@index([builderEventId])
   @@index([refereeId])
 }
