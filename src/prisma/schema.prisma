@@ -2884,6 +2884,7 @@ enum BuilderEventType {
   daily_claim_streak
   social_quest
   referral
+  referral_bonus
 }
 
 model BuilderEvent {
@@ -2914,7 +2915,8 @@ model BuilderEvent {
   dailyClaimEvent         ScoutDailyClaimEvent?       @relation(fields: [dailyClaimEventId], references: [id], onDelete: SetNull)
   dailyClaimStreakEventId String?                     @unique @db.Uuid
   dailyClaimStreakEvent   ScoutDailyClaimStreakEvent? @relation(fields: [dailyClaimStreakEventId], references: [id], onDelete: SetNull)
-  referralCodeEvent       ReferralCodeEvent?
+  referralCodeEvent       ReferralCodeEvent?          @relation("builderEvent")
+  referralBonusEvent      ReferralCodeEvent?          @relation("bonusBuilderEvent")
 
   @@index([builderId])
   @@index([type])
@@ -3036,6 +3038,7 @@ model PointsReceipt {
   recipient   Scout?              @relation(fields: [recipientId], references: [id], onDelete: Cascade, name: "pointsReceiptRecipient")
   senderId    String?             @db.Uuid
   sender      Scout?              @relation(fields: [senderId], references: [id], onDelete: Cascade, name: "pointsReceiptSender")
+  season      String?
   activities  ScoutGameActivity[]
 
   @@index([recipientId])
@@ -3273,9 +3276,9 @@ model TokensReceipt {
   claimTxHash            String?
   eventId                String              @db.Uuid
   event                  BuilderEvent        @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  recipientWalletAddress String?             
+  recipientWalletAddress String?
   recipientWallet        ScoutWallet?        @relation(fields: [recipientWalletAddress], references: [address], onDelete: Cascade, name: "tokenReceiptRecipient")
-  senderWalletAddress    String?             
+  senderWalletAddress    String?
   senderWallet           ScoutWallet?        @relation(fields: [senderWalletAddress], references: [address], onDelete: Cascade, name: "tokenReceiptSender")
   activities             ScoutGameActivity[]
 
@@ -3290,7 +3293,7 @@ model ScoutNft {
   updatedAt     DateTime    @updatedAt
   builderNftId  String      @db.Uuid
   builderNft    BuilderNft  @relation(fields: [builderNftId], references: [id], onDelete: Cascade)
-  walletAddress String      
+  walletAddress String
   scoutWallet   ScoutWallet @relation(fields: [walletAddress], references: [address], onDelete: Cascade)
   balance       Int
 
@@ -3347,12 +3350,15 @@ model ReferralCodeEvent {
   createdAt      DateTime         @default(now())
   completedAt    DateTime?
   builderEventId String           @unique @db.Uuid
-  builderEvent   BuilderEvent     @relation(fields: [builderEventId], references: [id], onDelete: Cascade) // builderId from BuilderEvent table is the referrer
+  builderEvent   BuilderEvent     @relation(fields: [builderEventId], references: [id], onDelete: Cascade, name: "builderEvent") // builderId from BuilderEvent table is the referrer
   refereeId      String           @db.Uuid
   referee        Scout            @relation(fields: [refereeId], references: [id], onDelete: Cascade) // scoutId that used the referral code
   platform       ReferralPlatform @default(unknown)
+  bonusEventId   String?          @unique @db.Uuid
+  bonusEvent     BuilderEvent?    @relation(fields: [bonusEventId], references: [id], name: "bonusBuilderEvent")
 
   @@unique([builderEventId, refereeId])
+  @@unique([bonusEventId, refereeId])
   @@index([builderEventId])
   @@index([refereeId])
 }
