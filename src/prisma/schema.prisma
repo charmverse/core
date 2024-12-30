@@ -3036,7 +3036,7 @@ model PointsReceipt {
   recipient   Scout?              @relation(fields: [recipientId], references: [id], onDelete: Cascade, name: "pointsReceiptRecipient")
   senderId    String?             @db.Uuid
   sender      Scout?              @relation(fields: [senderId], references: [id], onDelete: Cascade, name: "pointsReceiptSender")
-  season      String?
+  season      String
   activities  ScoutGameActivity[]
 
   @@index([recipientId])
