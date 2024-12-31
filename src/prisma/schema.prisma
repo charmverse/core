@@ -2884,6 +2884,7 @@ enum BuilderEventType {
   daily_claim_streak
   social_quest
   referral
+  referral_bonus
 }
 
 model BuilderEvent {
@@ -2914,7 +2915,8 @@ model BuilderEvent {
   dailyClaimEvent         ScoutDailyClaimEvent?       @relation(fields: [dailyClaimEventId], references: [id], onDelete: SetNull)
   dailyClaimStreakEventId String?                     @unique @db.Uuid
   dailyClaimStreakEvent   ScoutDailyClaimStreakEvent? @relation(fields: [dailyClaimStreakEventId], references: [id], onDelete: SetNull)
-  referralCodeEvent       ReferralCodeEvent?
+  referralCodeEvent       ReferralCodeEvent?          @relation("builderEvent")
+  referralBonusEvent      ReferralCodeEvent?          @relation("bonusBuilderEvent")
 
   @@index([builderId])
   @@index([type])
@@ -3344,16 +3346,19 @@ enum ReferralPlatform {
 }
 
 model ReferralCodeEvent {
-  id             String           @id @default(uuid()) @db.Uuid
-  createdAt      DateTime         @default(now())
-  completedAt    DateTime?
-  builderEventId String           @unique @db.Uuid
-  builderEvent   BuilderEvent     @relation(fields: [builderEventId], references: [id], onDelete: Cascade) // builderId from BuilderEvent table is the referrer
-  refereeId      String           @db.Uuid
-  referee        Scout            @relation(fields: [refereeId], references: [id], onDelete: Cascade) // scoutId that used the referral code
-  platform       ReferralPlatform @default(unknown)
+  id                  String           @id @default(uuid()) @db.Uuid
+  createdAt           DateTime         @default(now())
+  completedAt         DateTime?
+  builderEventId      String           @unique @db.Uuid
+  builderEvent        BuilderEvent     @relation(fields: [builderEventId], references: [id], onDelete: Cascade, name: "builderEvent") // builderId from BuilderEvent table is the referrer
+  refereeId           String           @db.Uuid
+  referee             Scout            @relation(fields: [refereeId], references: [id], onDelete: Cascade) // scoutId that used the referral code
+  platform            ReferralPlatform @default(unknown)
+  bonusBuilderEventId String?          @unique @db.Uuid
+  bonusBuilderEvent   BuilderEvent?    @relation(fields: [bonusBuilderEventId], references: [id], name: "bonusBuilderEvent")
 
   @@unique([builderEventId, refereeId])
+  @@unique([bonusBuilderEventId, refereeId])
   @@index([builderEventId])
   @@index([refereeId])
 }
