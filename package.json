@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.100.1-rc-feat-referral-b.0",
+  "version": "0.101.0",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
