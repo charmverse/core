@@ -2,9 +2,12 @@ import { MerkleTree } from 'merkletreejs';
 import type { Address } from 'viem';
 import { keccak256, encodePacked } from 'viem/utils';
 
+/**
+ * @amount a bigint value as a string with 18 decimals for $SCOUT
+ */
 export type ProvableClaim = {
   address: Address;
-  amount: number;
+  amount: string;
 };
 
 function hashLeaf(claim: ProvableClaim): string {
