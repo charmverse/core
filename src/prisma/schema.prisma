@@ -3312,7 +3312,7 @@ model ScoutSocialQuest {
   season      String?
   event       BuilderEvent?
 
-  @@unique([type, userId])
+  @@unique([type, userId, season])
   @@index([userId])
 }
 
