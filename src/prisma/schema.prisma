@@ -3309,7 +3309,7 @@ model ScoutSocialQuest {
   userId      String        @db.Uuid
   user        Scout         @relation(fields: [userId], references: [id], onDelete: Cascade)
   completedAt DateTime      @default(now())
-  season      String?
+  season      String
   event       BuilderEvent?
 
   @@unique([type, userId, season])
