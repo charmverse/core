@@ -3093,7 +3093,7 @@ model UserSeasonStats {
   nftOwners             Int?     @default(0)
   nftsSold              Int?     @default(0)
   nftsPurchased         Int      @default(0)
-  estimatedPayout       Int?
+
   level                 Int?
 
   @@unique([userId, season])
@@ -3128,6 +3128,7 @@ model BuilderNft {
   tokenId          Int
   imageUrl         String
   congratsImageUrl String?
+  estimatedPayout       Int?
   nftSoldEvents    NFTPurchaseEvent[]
   nftOwners        ScoutNft[]
 
