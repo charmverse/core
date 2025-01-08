@@ -1,11 +1,13 @@
 /*
   Warnings:
 
+  - You are about to drop the column `last7Days` on the `BuilderCardActivity` table. All the data in the column will be lost.
   - Added the required column `last14Days` to the `BuilderCardActivity` table without a default value. This is not possible if the table is not empty.
 
 */
 -- AlterTable
-ALTER TABLE "BuilderCardActivity" ADD COLUMN     "last14Days" JSONB NOT NULL;
+ALTER TABLE "BuilderCardActivity" DROP COLUMN "last7Days",
+ADD COLUMN     "last14Days" JSONB NOT NULL;
 
 -- CreateTable
 CREATE TABLE "BuilderDailyGemsAverage" (
