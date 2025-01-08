@@ -3235,9 +3235,10 @@ model ProposalMyWorkColumn {
 }
 
 model BuilderCardActivity {
-  builderId String @id @db.Uuid
-  builder   Scout  @relation(fields: [builderId], references: [id], onDelete: Cascade)
-  last7Days Json
+  builderId  String @id @db.Uuid
+  builder    Scout  @relation(fields: [builderId], references: [id], onDelete: Cascade)
+  last7Days  Json
+  last14Days Json
 
   @@unique([builderId])
 }
