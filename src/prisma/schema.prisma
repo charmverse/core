@@ -3388,3 +3388,10 @@ model PartnerRewardEvent {
   @@unique([userId, partner, week, season])
   @@index([userId])
 }
+
+model BuilderDailyGemsAverage {
+  id   String   @id @default(uuid()) @db.Uuid
+  date DateTime @unique @default(now())
+  week String
+  gems Float
+}
