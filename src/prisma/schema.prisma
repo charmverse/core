@@ -2900,6 +2900,7 @@ enum BuilderEventType {
   social_quest
   referral
   referral_bonus
+  top_connector
 }
 
 model BuilderEvent {
