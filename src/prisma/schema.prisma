@@ -2151,7 +2151,9 @@ model FormFieldAnswer {
   proposalId String        @db.Uuid
   proposal   Proposal      @relation(fields: [proposalId], references: [id], onDelete: Cascade)
   threads    Thread[]
+  createdAt  DateTime      @default(now())
 
+  @@unique([proposalId, fieldId])
   @@index([fieldId])
   @@index([proposalId])
 }
