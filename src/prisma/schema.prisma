@@ -2838,13 +2838,25 @@ model Scout {
   talentProfile                    TalentProfile?
   mergedFromEvents                 ScoutMergeEvent[]            @relation("mergedFromScout")
   mergedToEvents                   ScoutMergeEvent[]            @relation("mergedToScout")
-  PartnerRewardEvent               PartnerRewardEvent[]
+  partnerRewardEvents              PartnerRewardEvent[]
+  emailVerifications               ScoutEmailVerification[]
 
   @@index([path])
   @@index([farcasterId])
   @@index([telegramId])
   @@index([deletedAt])
   @@index([builderStatus])
+}
+
+model ScoutEmailVerification {
+  code        String    @id
+  sentAt      DateTime  @default(now())
+  completedAt DateTime?
+  email       String
+  scoutId     String    @db.Uuid
+  scout       Scout     @relation(fields: [scoutId], references: [id], onDelete: Cascade)
+
+  @@index([completedAt, scoutId])
 }
 
 model ScoutMergeEvent {
