@@ -3417,8 +3417,8 @@ model AgentTelegramMessage {
   sender            MessageSender
   message           String
   toolCalls         Json?
-  userTelegramId    BigInt
+  conversationTelegramId    BigInt
   messageTelegramId BigInt
 
-  @@index([userTelegramId])
+  @@index([conversationTelegramId])
 }
