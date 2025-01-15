@@ -3405,3 +3405,20 @@ model PartnerRewardEvent {
   @@unique([userId, partner, week, season])
   @@index([userId])
 }
+
+enum MessageSender {
+  user
+  agent
+}
+
+model AgentTelegramMessage {
+  id                String        @id @default(uuid()) @db.Uuid
+  createdAt         DateTime      @default(now())
+  sender            MessageSender
+  message           String
+  toolCalls         Json?
+  userTelegramId    BigInt
+  messageTelegramId BigInt
+
+  @@index([userTelegramId])
+}
