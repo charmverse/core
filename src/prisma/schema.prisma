@@ -3010,6 +3010,7 @@ model GithubEvent {
 model NFTPurchaseEvent {
   id              String              @id @default(uuid()) @db.Uuid
   createdAt       DateTime            @default(now())
+  // We should deprecate scoutId and use walletAddress instead
   scoutId         String              @db.Uuid
   scout           Scout               @relation(fields: [scoutId], references: [id], onDelete: Cascade, name: "nftPurchaseEventScout")
   paidInPoints    Boolean?
@@ -3021,7 +3022,9 @@ model NFTPurchaseEvent {
   builderEvent    BuilderEvent?
   activities      ScoutGameActivity[]
   walletAddress   String?
-  scoutWallet     ScoutWallet?        @relation(fields: [walletAddress], references: [address], onDelete: Cascade)
+  scoutWallet     ScoutWallet?        @relation(fields: [walletAddress], references: [address], onDelete: Cascade, name: "nftRecipientWallet")
+  senderWalletAddress String?
+  senderWallet    ScoutWallet?        @relation(fields: [senderWalletAddress], references: [address], onDelete: Cascade, name: "nftSenderWallet")
 
   @@index([scoutId])
   @@index([builderNftId])
@@ -3264,7 +3267,8 @@ model ScoutWallet {
   address        String             @unique
   scoutId        String             @db.Uuid
   scout          Scout              @relation(fields: [scoutId], references: [id], onDelete: Cascade)
-  purchaseEvents NFTPurchaseEvent[]
+  purchaseEvents NFTPurchaseEvent[] @relation("nftRecipientWallet")
+  saleEvents     NFTPurchaseEvent[] @relation("nftSenderWallet")
 
   scoutedNfts    ScoutNft[]
   tokensReceived TokensReceipt[] @relation("tokenReceiptRecipient")
