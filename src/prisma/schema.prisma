@@ -3012,8 +3012,8 @@ model NFTPurchaseEvent {
   id              String              @id @default(uuid()) @db.Uuid
   createdAt       DateTime            @default(now())
   // We should deprecate scoutId and use walletAddress instead
-  scoutId         String              @db.Uuid
-  scout           Scout               @relation(fields: [scoutId], references: [id], onDelete: Cascade, name: "nftPurchaseEventScout")
+  scoutId         String?              @db.Uuid
+  scout           Scout?               @relation(fields: [scoutId], references: [id], onDelete: Cascade, name: "nftPurchaseEventScout")
   paidInPoints    Boolean?
   tokensPurchased Int
   pointsValue     Int
