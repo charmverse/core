@@ -2805,6 +2805,7 @@ model Scout {
   farcasterId                      Int?                         @unique
   farcasterName                    String? // every user only has one farcaster account
   telegramId                       BigInt?                      @unique
+  telegramName                     String?
   walletENS                        String?
   avatar                           String?
   bio                              String?
@@ -3408,4 +3409,21 @@ model PartnerRewardEvent {
 
   @@unique([userId, partner, week, season])
   @@index([userId])
+}
+
+enum MessageSender {
+  user
+  agent
+}
+
+model AgentTelegramMessage {
+  id                String        @id @default(uuid()) @db.Uuid
+  sentAt         DateTime      @default(now())
+  sender            MessageSender
+  message           String
+  toolCalls         Json?
+  conversationTelegramId    BigInt
+  messageTelegramId BigInt
+
+  @@index([conversationTelegramId])
 }
