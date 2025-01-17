@@ -2805,6 +2805,7 @@ model Scout {
   farcasterId                      Int?                         @unique
   farcasterName                    String? // every user only has one farcaster account
   telegramId                       BigInt?                      @unique
+  telegramName                     String?
   walletENS                        String?
   avatar                           String?
   bio                              String?
