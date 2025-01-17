@@ -3413,7 +3413,7 @@ enum MessageSender {
 
 model AgentTelegramMessage {
   id                String        @id @default(uuid()) @db.Uuid
-  createdAt         DateTime      @default(now())
+  sentAt         DateTime      @default(now())
   sender            MessageSender
   message           String
   toolCalls         Json?
