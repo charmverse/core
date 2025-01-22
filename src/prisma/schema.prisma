@@ -3429,3 +3429,17 @@ model AgentTelegramMessage {
 
   @@index([conversationTelegramId])
 }
+
+model ScoutProjectContractTransaction {
+  contractId  String @db.Uuid
+  from        String
+  to          String
+  txHash      String @id
+  txData      Json
+  blockNumber Int
+  gasUsed     Int
+
+  @@unique([contractId, txHash])
+  @@index([txHash])
+  @@index([blockNumber])
+}
