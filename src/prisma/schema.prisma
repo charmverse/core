@@ -3020,6 +3020,7 @@ model NFTPurchaseEvent {
   builderNftId    String              @db.Uuid
   builderNft      BuilderNft          @relation(fields: [builderNftId], references: [id], onDelete: Cascade)
   txHash          String
+  txLogIndex      Int?
   builderEvent    BuilderEvent?
   activities      ScoutGameActivity[]
   walletAddress   String?
