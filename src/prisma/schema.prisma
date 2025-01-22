@@ -3030,6 +3030,8 @@ model NFTPurchaseEvent {
 
   @@index([scoutId])
   @@index([builderNftId])
+
+  @@unique([txHash, txLogIndex, builderNftId, tokensPurchased, senderWalletAddress, walletAddress], name: "unique_nft_purchase_event")
 }
 
 model GemsPayoutEvent {
