@@ -3435,17 +3435,20 @@ model ScoutProject {
   id                    String                 @id @default(uuid()) @db.Uuid
   createdAt             DateTime               @default(now())
   updatedAt             DateTime               @updatedAt
-  avatar                String
   name                  String
-  description           String
-  website               String
-  github                String
+  avatar                String                 @default("")
+  path                  String                 @default("")
+  description           String                 @default("")
+  website               String                 @default("")
+  github                String                 @default("")
   deletedAt             DateTime?
   scoutProjectMembers   ScoutProjectMember[]
   scoutProjectContracts ScoutProjectContract[]
   scoutProjectDeployer  ScoutProjectDeployer[]
 
+  @@unique([path])
   @@index([deletedAt])
+  @@index([path])
 }
 
 enum ScoutProjectMemberRole {
@@ -3482,7 +3485,7 @@ model ScoutProjectContract {
   deployerId   String                            @db.Uuid
   deployer     ScoutProjectDeployer              @relation(fields: [deployerId], references: [id], onDelete: Restrict)
   deployTxHash String
-  blockNumber  Int
+  blockNumber  BigInt
   deletedAt    DateTime?
   transactions ScoutProjectContractTransaction[]
 
@@ -3514,7 +3517,7 @@ model ScoutProjectContractTransaction {
   to          String
   txHash      String               @id
   txData      Json
-  blockNumber Int
+  blockNumber BigInt
   gasUsed     Int
 
   @@unique([contractId, txHash])
