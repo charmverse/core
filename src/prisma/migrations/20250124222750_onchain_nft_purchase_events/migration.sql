@@ -14,3 +14,9 @@ DROP INDEX "NFTPurchaseEvent_scoutId_idx";
 -- AlterTable
 ALTER TABLE "NFTPurchaseEvent" DROP COLUMN "scoutId",
 ALTER COLUMN "txLogIndex" SET NOT NULL;
+
+-- CreateIndex
+CREATE INDEX "NFTPurchaseEvent_senderWalletAddress_idx" ON "NFTPurchaseEvent"("senderWalletAddress");
+
+-- CreateIndex
+CREATE INDEX "NFTPurchaseEvent_walletAddress_idx" ON "NFTPurchaseEvent"("walletAddress");

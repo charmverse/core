@@ -3024,8 +3024,12 @@ model NFTPurchaseEvent {
   scoutWallet     ScoutWallet?        @relation(fields: [walletAddress], references: [address], onDelete: Cascade, name: "nftRecipientWallet")
   senderWalletAddress String?
   senderWallet    ScoutWallet?        @relation(fields: [senderWalletAddress], references: [address], onDelete: Cascade, name: "nftSenderWallet")
+ 
   @@unique([txHash, txLogIndex, builderNftId, tokensPurchased, senderWalletAddress, walletAddress], name: "unique_nft_purchase_event")
 
+
+  @@index([senderWalletAddress])
+  @@index([walletAddress])
   @@index([builderNftId])
 }
 
