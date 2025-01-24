@@ -3519,10 +3519,11 @@ model ScoutProjectContractTransactioData {
   to          String
   status      String
   txHash      String               @id
+  logIndex    Int
   txData      Json
   blockNumber BigInt
 
-  @@unique([contractId, txHash])
+  @@unique([contractId, txHash, logIndex])
   @@index([txHash])
   @@index([blockNumber])
 }
@@ -3533,10 +3534,11 @@ model ScoutProjectContractTransaction {
   from        String
   to          String
   txHash      String               @id
+  logIndex    Int
   blockNumber BigInt
   gasUsed     Int
 
-  @@unique([contractId, txHash])
+  @@unique([contractId, txHash, logIndex])
   @@index([txHash])
   @@index([blockNumber])
 }
