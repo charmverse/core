@@ -2842,6 +2842,7 @@ model Scout {
   mergedToEvents                   ScoutMergeEvent[]            @relation("mergedToScout")
   partnerRewardEvents              PartnerRewardEvent[]
   emailVerifications               ScoutEmailVerification[]
+  ScoutProjectMember               ScoutProjectMember[]
 
   @@index([path])
   @@index([farcasterId])
@@ -3023,10 +3024,9 @@ model NFTPurchaseEvent {
   scoutWallet     ScoutWallet?        @relation(fields: [walletAddress], references: [address], onDelete: Cascade, name: "nftRecipientWallet")
   senderWalletAddress String?
   senderWallet    ScoutWallet?        @relation(fields: [senderWalletAddress], references: [address], onDelete: Cascade, name: "nftSenderWallet")
+  @@unique([txHash, txLogIndex, builderNftId, tokensPurchased, senderWalletAddress, walletAddress], name: "unique_nft_purchase_event")
 
   @@index([builderNftId])
-
-  @@unique([txHash, txLogIndex, builderNftId, tokensPurchased, senderWalletAddress, walletAddress], name: "unique_nft_purchase_event")
 }
 
 model GemsPayoutEvent {
@@ -3415,13 +3415,88 @@ enum MessageSender {
 }
 
 model AgentTelegramMessage {
-  id                String        @id @default(uuid()) @db.Uuid
-  sentAt         DateTime      @default(now())
-  sender            MessageSender
-  message           String
-  toolCalls         Json?
-  conversationTelegramId    BigInt
-  messageTelegramId BigInt
+  id                     String        @id @default(uuid()) @db.Uuid
+  sentAt                 DateTime      @default(now())
+  sender                 MessageSender
+  message                String
+  toolCalls              Json?
+  conversationTelegramId BigInt
+  messageTelegramId      BigInt
 
   @@index([conversationTelegramId])
+}
+
+model ScoutProject {
+  id                    String                 @id @default(uuid()) @db.Uuid
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  avatar                String
+  name                  String
+  description           String
+  website               String
+  github                String
+  deletedAt             DateTime?
+  scoutProjectMembers   ScoutProjectMember[]
+  scoutProjectContracts ScoutProjectContract[]
+  scoutProjectDeployer  ScoutProjectDeployer[]
+
+  @@index([deletedAt])
+}
+
+enum ScoutProjectMemberRole {
+  owner
+  member
+}
+
+model ScoutProjectMember {
+  projectId String                 @db.Uuid
+  project   ScoutProject           @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  userId    String                 @db.Uuid
+  user      Scout                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      ScoutProjectMemberRole
+  createdAt DateTime               @default(now())
+  updatedAt DateTime               @updatedAt
+  createdBy String                 @db.Uuid
+  deletedAt DateTime?
+
+  @@unique([projectId, userId])
+  @@index([projectId])
+  @@index([userId])
+  @@index([deletedAt])
+}
+
+model ScoutProjectContract {
+  id           String               @id @default(uuid()) @db.Uuid
+  createdAt    DateTime             @default(now())
+  createdBy    String               @db.Uuid
+  deployedAt   DateTime
+  projectId    String               @db.Uuid
+  project      ScoutProject         @relation(fields: [projectId], references: [id], onDelete: Restrict)
+  address      String
+  chainId      Int
+  deployerId   String               @db.Uuid
+  deployer     ScoutProjectDeployer @relation(fields: [deployerId], references: [id], onDelete: Restrict)
+  deployTxHash String
+  blockNumber  Int
+  deletedAt    DateTime?
+
+  @@unique([address, chainId])
+  @@index([projectId])
+  @@index([address])
+  @@index([deletedAt])
+}
+
+model ScoutProjectDeployer {
+  id                    String                 @id @default(uuid()) @db.Uuid
+  projectId             String                 @db.Uuid
+  project               ScoutProject           @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  address               String
+  createdAt             DateTime               @default(now())
+  verifiedAt            DateTime?
+  verifiedBy            String?                @db.Uuid
+  scoutProjectContracts ScoutProjectContract[]
+
+  @@unique([projectId, address])
+  @@index([projectId])
+  @@index([address])
 }
