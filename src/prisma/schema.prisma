@@ -2826,7 +2826,6 @@ model Scout {
   userWeeklyStats                  UserWeeklyStats[]
   userSeasonStats                  UserSeasonStats[]
   userAllTimeStats                 UserAllTimeStats[]
-  nftPurchaseEvents                NFTPurchaseEvent[]           @relation("nftPurchaseEventScout")
   builderNfts                      BuilderNft[]
   activities                       ScoutGameActivity[]
   pendingNftTransactions           PendingNftTransaction[]
@@ -3010,27 +3009,27 @@ model GithubEvent {
 }
 
 model NFTPurchaseEvent {
-  id                  String              @id @default(uuid()) @db.Uuid
-  createdAt           DateTime            @default(now())
-  // We should deprecate scoutId and use walletAddress instead
-  scoutId             String              @db.Uuid
-  scout               Scout               @relation(fields: [scoutId], references: [id], onDelete: Cascade, name: "nftPurchaseEventScout")
-  paidInPoints        Boolean?
-  tokensPurchased     Int
-  pointsValue         Int
-  builderNftId        String              @db.Uuid
-  builderNft          BuilderNft          @relation(fields: [builderNftId], references: [id], onDelete: Cascade)
-  txHash              String
-  txLogIndex          Int?
-  builderEvent        BuilderEvent?
-  activities          ScoutGameActivity[]
-  walletAddress       String?
-  scoutWallet         ScoutWallet?        @relation(fields: [walletAddress], references: [address], onDelete: Cascade, name: "nftRecipientWallet")
+  id              String              @id @default(uuid()) @db.Uuid
+  createdAt       DateTime            @default(now())
+  paidInPoints    Boolean?
+  tokensPurchased Int
+  pointsValue     Int
+  builderNftId    String              @db.Uuid
+  builderNft      BuilderNft          @relation(fields: [builderNftId], references: [id], onDelete: Cascade)
+  txHash          String
+  txLogIndex      Int
+  builderEvent    BuilderEvent?
+  activities      ScoutGameActivity[]
+  walletAddress   String?
+  scoutWallet     ScoutWallet?        @relation(fields: [walletAddress], references: [address], onDelete: Cascade, name: "nftRecipientWallet")
   senderWalletAddress String?
-  senderWallet        ScoutWallet?        @relation(fields: [senderWalletAddress], references: [address], onDelete: Cascade, name: "nftSenderWallet")
-
+  senderWallet    ScoutWallet?        @relation(fields: [senderWalletAddress], references: [address], onDelete: Cascade, name: "nftSenderWallet")
+ 
   @@unique([txHash, txLogIndex, builderNftId, tokensPurchased, senderWalletAddress, walletAddress], name: "unique_nft_purchase_event")
-  @@index([scoutId])
+
+
+  @@index([senderWalletAddress])
+  @@index([walletAddress])
   @@index([builderNftId])
 }
 
