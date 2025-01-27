@@ -3069,6 +3069,7 @@ enum GemsReceiptType {
   first_pr
   third_pr_in_streak
   regular_pr
+  regular_pr_unreviewed
   daily_commit
 }
 
