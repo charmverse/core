@@ -2826,7 +2826,6 @@ model Scout {
   userWeeklyStats                  UserWeeklyStats[]
   userSeasonStats                  UserSeasonStats[]
   userAllTimeStats                 UserAllTimeStats[]
-  nftPurchaseEvents                NFTPurchaseEvent[]           @relation("nftPurchaseEventScout")
   builderNfts                      BuilderNft[]
   activities                       ScoutGameActivity[]
   pendingNftTransactions           PendingNftTransaction[]
@@ -3012,16 +3011,13 @@ model GithubEvent {
 model NFTPurchaseEvent {
   id                  String              @id @default(uuid()) @db.Uuid
   createdAt           DateTime            @default(now())
-  // We should deprecate scoutId and use walletAddress instead
-  scoutId             String              @db.Uuid
-  scout               Scout               @relation(fields: [scoutId], references: [id], onDelete: Cascade, name: "nftPurchaseEventScout")
   paidInPoints        Boolean?
   tokensPurchased     Int
   pointsValue         Int
   builderNftId        String              @db.Uuid
   builderNft          BuilderNft          @relation(fields: [builderNftId], references: [id], onDelete: Cascade)
   txHash              String
-  txLogIndex          Int?
+  txLogIndex          Int
   builderEvent        BuilderEvent?
   activities          ScoutGameActivity[]
   walletAddress       String?
@@ -3030,7 +3026,8 @@ model NFTPurchaseEvent {
   senderWallet        ScoutWallet?        @relation(fields: [senderWalletAddress], references: [address], onDelete: Cascade, name: "nftSenderWallet")
 
   @@unique([txHash, txLogIndex, builderNftId, tokensPurchased, senderWalletAddress, walletAddress], name: "unique_nft_purchase_event")
-  @@index([scoutId])
+  @@index([senderWalletAddress])
+  @@index([walletAddress])
   @@index([builderNftId])
 }
 
@@ -3474,21 +3471,21 @@ model ScoutProjectMember {
 }
 
 model ScoutProjectContract {
-  id                                 String                               @id @default(uuid()) @db.Uuid
-  createdAt                          DateTime                             @default(now())
-  createdBy                          String                               @db.Uuid
-  deployedAt                         DateTime
-  projectId                          String                               @db.Uuid
-  project                            ScoutProject                         @relation(fields: [projectId], references: [id], onDelete: Restrict)
-  address                            String
-  chainId                            Int
-  deployerId                         String                               @db.Uuid
-  deployer                           ScoutProjectDeployer                 @relation(fields: [deployerId], references: [id], onDelete: Restrict)
-  deployTxHash                       String
-  blockNumber                        BigInt
-  deletedAt                          DateTime?
-  transactions                       ScoutProjectContractTransaction[]
-  ScoutProjectContractTransactioData ScoutProjectContractTransactioData[]
+  id           String                               @id @default(uuid()) @db.Uuid
+  createdAt    DateTime                             @default(now())
+  createdBy    String                               @db.Uuid
+  deployedAt   DateTime
+  projectId    String                               @db.Uuid
+  project      ScoutProject                         @relation(fields: [projectId], references: [id], onDelete: Restrict)
+  address      String
+  chainId      Int
+  deployerId   String                               @db.Uuid
+  deployer     ScoutProjectDeployer                 @relation(fields: [deployerId], references: [id], onDelete: Restrict)
+  deployTxHash String
+  blockNumber  BigInt
+  deletedAt    DateTime?
+  logs         ScoutProjectContractLogEvent[]
+  transactions ScoutProjectContractTransactioData[]
 
   @@unique([address, chainId])
   @@index([projectId])
@@ -3497,14 +3494,14 @@ model ScoutProjectContract {
 }
 
 model ScoutProjectDeployer {
-  id                    String                 @id @default(uuid()) @db.Uuid
-  projectId             String                 @db.Uuid
-  project               ScoutProject           @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  address               String
-  createdAt             DateTime               @default(now())
-  verifiedAt            DateTime?
-  verifiedBy            String?                @db.Uuid
-  scoutProjectContracts ScoutProjectContract[]
+  id         String                 @id @default(uuid()) @db.Uuid
+  projectId  String                 @db.Uuid
+  project    ScoutProject           @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  address    String
+  createdAt  DateTime               @default(now())
+  verifiedAt DateTime?
+  verifiedBy String?                @db.Uuid
+  contracts  ScoutProjectContract[]
 
   @@unique([projectId, address])
   @@index([projectId])
@@ -3519,24 +3516,22 @@ model ScoutProjectContractTransactioData {
   to          String
   status      String
   txHash      String               @id
-  logIndex    Int
   txData      Json
   blockNumber BigInt
+  gasUsed     Int
 
-  @@unique([contractId, txHash, logIndex])
+  @@unique([contractId, txHash])
   @@index([txHash])
   @@index([blockNumber])
 }
 
-model ScoutProjectContractTransaction {
+model ScoutProjectContractLogEvent {
   contractId  String               @db.Uuid
   contract    ScoutProjectContract @relation(fields: [contractId], references: [id], onDelete: Cascade)
   from        String
-  to          String
   txHash      String               @id
   logIndex    Int
   blockNumber BigInt
-  gasUsed     Int
 
   @@unique([contractId, txHash, logIndex])
   @@index([txHash])
