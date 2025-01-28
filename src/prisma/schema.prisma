@@ -3434,6 +3434,7 @@ model ScoutProject {
   createdAt             DateTime               @default(now())
   updatedAt             DateTime               @updatedAt
   avatar                String
+  path                  String                 @unique
   name                  String
   description           String
   website               String
@@ -3441,7 +3442,7 @@ model ScoutProject {
   deletedAt             DateTime?
   scoutProjectMembers   ScoutProjectMember[]
   scoutProjectContracts ScoutProjectContract[]
-  scoutProjectDeployer  ScoutProjectDeployer[]
+  scoutProjectDeployers ScoutProjectDeployer[]
 
   @@index([deletedAt])
 }
