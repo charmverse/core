@@ -3442,7 +3442,7 @@ model ScoutProject {
   deletedAt             DateTime?
   scoutProjectMembers   ScoutProjectMember[]
   scoutProjectContracts ScoutProjectContract[]
-  scoutProjectDeployer  ScoutProjectDeployer[]
+  scoutProjectDeployers ScoutProjectDeployer[]
 
   @@index([deletedAt])
 }
