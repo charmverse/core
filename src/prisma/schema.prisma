@@ -3278,6 +3278,7 @@ model ScoutWallet {
 
   @@index([address])
   @@index([scoutId])
+  @@index([primary, scoutId])
 }
 
 model WeeklyClaims {
