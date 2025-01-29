@@ -17,9 +17,7 @@ CREATE TABLE "ScoutProjectContractTransaction" (
     "txHash" TEXT NOT NULL,
     "txData" JSONB NOT NULL,
     "blockNumber" BIGINT NOT NULL,
-    "gasUsed" BIGINT NOT NULL,
-
-    CONSTRAINT "ScoutProjectContractTransaction_pkey" PRIMARY KEY ("txHash")
+    "gasUsed" BIGINT NOT NULL
 );
 
 -- CreateTable
@@ -28,9 +26,7 @@ CREATE TABLE "ScoutProjectContractLog" (
     "from" TEXT NOT NULL,
     "txHash" TEXT NOT NULL,
     "logIndex" INTEGER NOT NULL,
-    "blockNumber" BIGINT NOT NULL,
-
-    CONSTRAINT "ScoutProjectContractLog_pkey" PRIMARY KEY ("txHash")
+    "blockNumber" BIGINT NOT NULL
 );
 
 -- CreateIndex

@@ -3519,7 +3519,7 @@ model ScoutProjectContractTransaction {
   from        String
   to          String
   status      String
-  txHash      String               @id
+  txHash      String
   txData      Json
   blockNumber BigInt
   gasUsed     BigInt
@@ -3533,7 +3533,7 @@ model ScoutProjectContractLog {
   contractId  String               @db.Uuid
   contract    ScoutProjectContract @relation(fields: [contractId], references: [id], onDelete: Cascade)
   from        String
-  txHash      String               @id
+  txHash      String
   logIndex    Int
   blockNumber BigInt
 
