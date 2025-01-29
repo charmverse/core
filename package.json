@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.110.1",
+  "version": "0.110.2-rc-remove-lodash.0",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
@@ -124,7 +124,6 @@
   "devDependencies": {
     "@jest/globals": "^29.6.1",
     "@types/jest": "^29.5.0",
-    "@types/lodash": "^4.14.198",
     "@types/luxon": "^3.3.2",
     "@types/nanoid-dictionary": "^4.2.0",
     "@types/node": "^18.15.11",
@@ -150,7 +149,6 @@
     "@prisma/client": "^5.7.1",
     "async-sema": "^3.1.1",
     "fetch-retry": "^5.0.6",
-    "lodash": "^4.17.21",
     "loglevel": "^1.8.1",
     "luxon": "^3.3.0",
     "merkletreejs": "^0.4.0",

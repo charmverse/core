@@ -59,3 +59,40 @@ export function asyncSeries<T, U>(
 export function extractUuids<T extends { id: string }>(items: T[]): string[] {
   return items.map((item) => item.id);
 }
+
+// sortBy, where key is a string or an array of strings
+export function sortBy<T>(array: T[], key: keyof T | (keyof T)[]): T[] {
+  const keys = Array.isArray(key) ? key : [key];
+  return array.sort((a, b) => {
+    // Handle array of keys by comparing each in order
+    for (const k of keys) {
+      const aVal = a[k];
+      const bVal = b[k];
+
+      if (aVal === bVal) {
+        // eslint-disable-next-line no-continue
+        continue;
+      }
+
+      if (typeof aVal === 'number' && typeof bVal === 'number') {
+        return aVal - bVal;
+      }
+
+      if (aVal instanceof Date && bVal instanceof Date) {
+        return aVal.getTime() - bVal.getTime();
+      }
+
+      return String(aVal).localeCompare(String(bVal));
+    }
+    return 0;
+  });
+}
+
+// based off lodash/chunk
+export function chunk<T>(array: T[], size: number): T[][] {
+  return array.reduce((acc, _, i) => {
+    if (i % size === 0) acc.push([]);
+    acc[acc.length - 1].push(array[i]);
+    return acc;
+  }, [] as T[][]);
+}
