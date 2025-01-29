@@ -2942,6 +2942,8 @@ model BuilderEvent {
   @@index([dailyClaimEventId])
   @@index([dailyClaimStreakEventId])
   @@index([weeklyClaimId])
+  @@index([week, season])
+  @@index([createdAt])
 }
 
 model GithubUser {
@@ -3442,7 +3444,7 @@ model ScoutProject {
   deletedAt             DateTime?
   scoutProjectMembers   ScoutProjectMember[]
   scoutProjectContracts ScoutProjectContract[]
-  scoutProjectDeployer  ScoutProjectDeployer[]
+  scoutProjectDeployers ScoutProjectDeployer[]
 
   @@unique([path])
   @@index([deletedAt])
