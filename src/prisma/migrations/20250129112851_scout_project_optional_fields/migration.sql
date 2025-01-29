@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "ScoutProject" ALTER COLUMN "avatar" DROP NOT NULL,
+ALTER COLUMN "description" DROP NOT NULL,
+ALTER COLUMN "website" DROP NOT NULL,
+ALTER COLUMN "github" DROP NOT NULL;
