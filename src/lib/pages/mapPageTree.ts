@@ -1,6 +1,5 @@
-import sortBy from 'lodash/sortBy';
-
 import { PageNotFoundError } from '../errors';
+import { sortBy } from '../utilities/array';
 
 import type { PageNode, PageNodeWithChildren, PageTreeMappingInput, TargetPageTree } from './interfaces';
 
