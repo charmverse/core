@@ -3439,9 +3439,9 @@ model ScoutProject {
   avatar                String?
   path                  String                 @unique
   name                  String
-  description           String?
-  website               String?
-  github                String?
+  description           String                 @default("")
+  website               String                 @default("")
+  github                String                 @default("")
   deletedAt             DateTime?
   scoutProjectMembers   ScoutProjectMember[]
   scoutProjectContracts ScoutProjectContract[]
