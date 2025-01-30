@@ -1,7 +1,6 @@
 import type { SubscriptionTier, User } from '@prisma/client';
 import { v4 as uuid } from 'uuid';
 
-import { uid } from '../../lib/utilities/strings';
 import { prisma } from '../../prisma-client';
 
 export async function generateSpaceUser({
@@ -17,7 +16,7 @@ export async function generateSpaceUser({
 }): Promise<User> {
   return prisma.user.create({
     data: {
-      path: uid(),
+      path: uuid(),
       identityType: 'Discord',
       username: 'Username',
       wallets: wallet ? { create: { address: wallet } } : undefined,
@@ -110,7 +109,7 @@ export async function generateUserAndSpace({
           }
         }
       },
-      path: uid(),
+      path: uuid(),
       wallets: wallet
         ? {
             create: {
@@ -160,7 +159,7 @@ export async function generateUserAndSpace({
 export function generateUser(): Promise<User> {
   return prisma.user.create({
     data: {
-      path: uid(),
+      path: uuid(),
       username: `Test user ${Math.random()}`,
       identityType: 'RandomName'
     }

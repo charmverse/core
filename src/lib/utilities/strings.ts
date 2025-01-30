@@ -1,6 +1,4 @@
 import type { UserWallet } from '@prisma/client';
-import { customAlphabet } from 'nanoid';
-import * as dictionaries from 'nanoid-dictionary';
 import { validate } from 'uuid';
 import { isAddress } from 'viem';
 
@@ -72,27 +70,6 @@ export function stringToHue(name: string) {
   return h;
 }
 
-// A future update can use https://www.npmjs.com/package/friendly-url
-// Info for japanese title characters: https://gist.github.com/ryanmcgrath/982242
-export function stringToValidPath(input: string, maxLength?: number): string {
-  const sanitizedInput = input
-    .slice(0, maxLength)
-    .toLowerCase()
-    .replace(/&/g, ' ')
-    .replace(
-      /[^a-zA-Z\d\s\u3000-\u303F\u3040-\u309F\u30A0-\u30FF\uFF00-\uFFEF\u4E00-\u9FAF\u2605-\u2606\u2190-\u2195\u203B]{1,}/g,
-      ' '
-    )
-    .trim()
-    .replace(/\s{1,}/g, '_');
-
-  if (sanitizedInput.length < 3) {
-    return `${sanitizedInput}_${uid()}`;
-  } else {
-    return sanitizedInput;
-  }
-}
-
 export const shortenHex = (hex: string = '', length = 4): string => {
   return `${hex.substring(0, length + 2)}…${hex.substring(hex.length - length)}`;
 };
@@ -114,12 +91,6 @@ export function isUUID(uuid: string) {
   return validate(uuid);
 }
 
-const uidGenerator = customAlphabet(dictionaries.lowercase + dictionaries.numbers, 8);
-
-// use this to generate smaller unique ids than uuid for storage
-export function uid(): string {
-  return uidGenerator();
-}
 /**
  * Converts a list of string to human friendly gramatically correct comma list, with an and / or at the end
  * Won't add the conjunction if there is less than 2 items in the list

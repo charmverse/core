@@ -1,5 +1,6 @@
 import type { ProposalEvaluation, ProposalEvaluationType } from '@prisma/client';
-import sortBy from 'lodash/sortBy';
+
+import { sortBy } from '../utilities/array';
 
 /**
  * find the first evalation that does not have a result
