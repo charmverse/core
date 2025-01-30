@@ -3523,6 +3523,8 @@ model ScoutProjectContractTransaction {
   txData      Json
   blockNumber BigInt
   gasUsed     BigInt
+  gasPrice    BigInt
+  gasCost     BigInt
 
   @@unique([contractId, txHash])
   @@index([txHash])
@@ -3540,4 +3542,16 @@ model ScoutProjectContractLog {
   @@unique([contractId, txHash, logIndex])
   @@index([txHash])
   @@index([blockNumber])
+}
+
+model ScoutProjectContractPollEvent {
+  contractId      String   @db.Uuid
+  fromBlockNumber BigInt
+  toBlockNumber   BigInt
+  processedAt     DateTime
+  processTime     Int
+
+  @@unique([contractId, toBlockNumber])
+  @@index([contractId])
+  @@index([toBlockNumber])
 }
