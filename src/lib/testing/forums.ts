@@ -3,7 +3,6 @@ import { v4 } from 'uuid';
 
 import { prisma } from '../../prisma-client';
 import type { PostCategoryPermissionAssignment } from '../permissions/forums/interfaces';
-import { stringToValidPath } from '../utilities/strings';
 
 export async function generatePostCategory({
   spaceId,
@@ -18,7 +17,7 @@ export async function generatePostCategory({
     data: {
       name,
       spaceId,
-      path: stringToValidPath(name, 50),
+      path: Math.random().toString(36).substring(2, 15),
       postCategoryPermissions: {
         createMany: {
           data: permissions.map((p) => ({
