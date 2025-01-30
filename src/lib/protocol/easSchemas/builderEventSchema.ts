@@ -1,7 +1,7 @@
 import { SchemaEncoder } from '@ethereum-attestation-service/eas-sdk';
 import type { EASSchema } from 'protocol';
 
-const builderEventEASSchema = 'bytes32 userRefUID,string description,string type';
+const builderEventEASSchema = 'string description,string type';
 
 const builderEventSchemaName = 'Scout Game Builder Event';
 
@@ -10,19 +10,17 @@ export const builderEventSchemaDefinition: EASSchema = {
   name: builderEventSchemaName
 };
 
-type BuilderEventType = 'registered' | 'banned' | 'unbanned';
+export type BuilderEventAttestationType = 'registered' | 'banned' | 'unbanned';
 
-export type builderEventAttestation = {
-  userRefUID: `0x${string}`;
+export type BuilderEventAttestation = {
   description: string;
-  type: BuilderEventType;
+  type: BuilderEventAttestationType;
 };
 
 const encoder = new SchemaEncoder(builderEventEASSchema);
 
-export function encodeBuilderEventAttestation(attestation: builderEventAttestation): `0x${string}` {
+export function encodeBuilderEventAttestation(attestation: BuilderEventAttestation): `0x${string}` {
   const encodedData = encoder.encodeData([
-    { name: 'userRefUID', type: 'bytes32', value: attestation.userRefUID },
     { name: 'description', type: 'string', value: attestation.description },
     { name: 'type', type: 'string', value: attestation.type }
   ]);
@@ -30,20 +28,18 @@ export function encodeBuilderEventAttestation(attestation: builderEventAttestati
   return encodedData as `0x${string}`;
 }
 
-export function decodebuilderEventAttestation(rawData: string): builderEventAttestation {
+export function decodeBuilderEventAttestation(rawData: string): BuilderEventAttestation {
   const parsed = encoder.decodeData(rawData);
   const values = parsed.reduce((acc, item) => {
-    const key = item.name as keyof builderEventAttestation;
+    const key = item.name as keyof BuilderEventAttestation;
 
-    if (key === 'userRefUID') {
-      acc[key] = item.value.value as `0x${string}`;
-    } else if (key === 'type') {
-      acc[key] = item.value.value as BuilderEventType;
+    if (key === 'type') {
+      acc[key] = item.value.value as BuilderEventAttestationType;
     } else {
       acc[key] = item.value.value as string;
     }
     return acc;
-  }, {} as builderEventAttestation);
+  }, {} as BuilderEventAttestation);
 
-  return values as builderEventAttestation;
+  return values as BuilderEventAttestation;
 }
