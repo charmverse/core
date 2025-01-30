@@ -1,7 +1,7 @@
 import { SchemaEncoder } from '@ethereum-attestation-service/eas-sdk';
 import type { EASSchema } from 'protocol';
 
-const builderEventEASSchema = 'string description,string type';
+const builderEventEASSchema = 'string description,string type,string season';
 
 const builderEventSchemaName = 'Scout Game Builder Event';
 
@@ -15,6 +15,7 @@ export type BuilderEventAttestationType = 'registered' | 'banned' | 'unbanned';
 export type BuilderEventAttestation = {
   description: string;
   type: BuilderEventAttestationType;
+  season: string;
 };
 
 const encoder = new SchemaEncoder(builderEventEASSchema);
@@ -22,7 +23,8 @@ const encoder = new SchemaEncoder(builderEventEASSchema);
 export function encodeBuilderEventAttestation(attestation: BuilderEventAttestation): `0x${string}` {
   const encodedData = encoder.encodeData([
     { name: 'description', type: 'string', value: attestation.description },
-    { name: 'type', type: 'string', value: attestation.type }
+    { name: 'type', type: 'string', value: attestation.type },
+    { name: 'season', type: 'string', value: attestation.season }
   ]);
 
   return encodedData as `0x${string}`;
