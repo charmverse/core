@@ -128,12 +128,6 @@ jobs:
             workflow_file: "test_new_core_pkg.yml"
             workflow_payload: |
               { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}" }
-          - owner: "scoutgame"
-            repo: "scout-protocol"
-            branch: "${{ needs.push-package.outputs.scoutgame_workflow_branch }}"
-            workflow_file: "test_new_core_pkg.yml"
-            workflow_payload: |
-              { "core_pkg_version": "${{ needs.push-package.outputs.pkg_version }}" }
     steps:
       - name: Trigger tests on repo ${{ matrix.repo }}
         uses: convictional/trigger-workflow-and-wait@v1.6.5
@@ -209,9 +203,6 @@ jobs:
             core_pkg_version: "${{needs.push-package.outputs.pkg_version}}"
           - owner: "scoutgame"
             repo: "scoutgame.xyz"
-            core_pkg_version: "${{needs.push-package.outputs.pkg_version}}"
-          - owner: "scoutgame"
-            repo: "scout-protocol"
             core_pkg_version: "${{needs.push-package.outputs.pkg_version}}"
 
     steps:
