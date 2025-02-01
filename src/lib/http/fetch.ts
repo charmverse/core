@@ -1,4 +1,4 @@
-import type { RequestInitWithRetry } from 'fetch-retry';
+import type { FetchLibrary, RequestInitWithRetry } from 'fetch-retry';
 import fetchRetry from 'fetch-retry';
 import { fetch as nativeFetch } from 'undici';
 
@@ -6,7 +6,7 @@ import { HTTPFetchError } from './errors';
 
 const delayMultiplier = process.env.NODE_ENV === 'test' ? 1 : 1000;
 
-const fetchAndRetry = fetchRetry(nativeFetch as any, {
+const fetchAndRetry = fetchRetry<FetchLibrary>(nativeFetch as any, {
   retries: 5,
   retryOn: [500, 501, 502, 503],
   retryDelay(attempt: number) {
@@ -40,7 +40,10 @@ export async function transformResponse(response: Response) {
   });
 }
 
-export default function fetchWrapper<T>(url: Parameters<typeof fetch>[0], init?: RequestInitWithRetry): Promise<T> {
+export default function fetchWrapper<T>(
+  url: Parameters<typeof fetch>[0],
+  init?: RequestInitWithRetry<FetchLibrary>
+): Promise<T> {
   return fetchAndRetry(url, init)
     .then((r) => transformResponse(r as unknown as Response)) //  as Promise<T>
     .catch((e) => {
