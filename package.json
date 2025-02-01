@@ -143,19 +143,19 @@
     "typescript": "^5.4.2"
   },
   "dependencies": {
-    "@datadog/browser-logs": "^4.42.2",
+    "@datadog/browser-logs": "^6.1.0",
     "@ethereum-attestation-service/eas-sdk": "^2.7.0",
     "@prisma/client": "^5.7.1",
     "async-sema": "^3.1.1",
-    "fetch-retry": "^5.0.6",
-    "loglevel": "^1.8.1",
-    "luxon": "^3.3.0",
+    "fetch-retry": "^6.0.0",
+    "loglevel": "^1.9.2",
+    "luxon": "^3.5.0",
     "merkletreejs": "^0.4.0",
     "prisma": "^5.7.1",
-    "undici": "^6.19.5",
+    "undici": "^7.3.0",
     "utf-8-validate": "^5.0.10",
-    "uuid": "^9.0.0",
-    "viem": "^2.21.42"
+    "uuid": "^11.0.5",
+    "viem": "^2.22.17"
   },
   "license": "GPLv3"
 }
