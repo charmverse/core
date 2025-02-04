@@ -1,10 +1,10 @@
-import type { RequestInitWithRetry } from 'fetch-retry';
+import type { FetchLibrary, RequestInitWithRetry } from 'fetch-retry';
 
 import { SystemError } from '../errors';
 
 type HTTPMeta = {
   message?: string;
-  method: RequestInitWithRetry['method'];
+  method: RequestInitWithRetry<FetchLibrary>['method'];
   requestBody?: any;
   requestUrl: string;
   responseCode: number | string;
