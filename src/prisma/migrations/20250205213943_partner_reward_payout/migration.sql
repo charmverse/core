@@ -4,7 +4,7 @@ CREATE TABLE "PartnerRewardPayout" (
     "userId" UUID NOT NULL,
     "amount" BIGINT NOT NULL,
     "claimedAt" TIMESTAMP(3),
-    "txHash" TEXT NOT NULL,
+    "txHash" TEXT,
     "payoutContractId" UUID NOT NULL,
 
     CONSTRAINT "PartnerRewardPayout_pkey" PRIMARY KEY ("id")
