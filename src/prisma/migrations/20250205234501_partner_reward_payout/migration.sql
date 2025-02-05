@@ -23,6 +23,7 @@ CREATE TABLE "PartnerRewardPayoutContract" (
     "tokenDecimals" INTEGER NOT NULL,
     "partner" TEXT NOT NULL,
     "deployTxHash" TEXT NOT NULL,
+    "cid" TEXT NOT NULL,
 
     CONSTRAINT "PartnerRewardPayoutContract_pkey" PRIMARY KEY ("id")
 );

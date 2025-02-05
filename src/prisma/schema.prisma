@@ -3535,6 +3535,7 @@ model PartnerRewardPayoutContract {
   tokenDecimals   Int
   partner         String
   deployTxHash    String
+  cid             String
 
   rewardPayouts PartnerRewardPayout[]
 }
