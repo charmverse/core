@@ -2843,7 +2843,7 @@ model Scout {
   partnerRewardEvents              PartnerRewardEvent[]
   emailVerifications               ScoutEmailVerification[]
   ScoutProjectMember               ScoutProjectMember[]
-  partnerRewards                   PartnerReward[]
+  partnerRewardPayouts             PartnerRewardPayout[]
 
   @@index([path])
   @@index([farcasterId])
@@ -3509,25 +3509,30 @@ model ScoutProjectDeployer {
   @@index([address])
 }
 
-model PartnerReward {
-  id              String    @id @default(uuid()) @db.Uuid
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+model PartnerRewardPayout {
+  id               String                      @id @default(uuid()) @db.Uuid
+  userId           String                      @db.Uuid
+  user             Scout                       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  amount           BigInt
+  claimedAt        DateTime?
+  txHash           String
+  payoutContractId String                      @db.Uuid
+  payoutContract   PartnerRewardPayoutContract @relation(fields: [payoutContractId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([payoutContractId])
+}
+
+model PartnerRewardPayoutContract {
+  id              String   @id @default(uuid()) @db.Uuid
   season          String
   week            String
-  userId          String    @db.Uuid
-  user            Scout     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt       DateTime @default(now())
   contractAddress String
+  chainId         Int
   tokenAddress    String
   partner         String
-  chainId         Int
-  amount          Int
-  txHash          String
-  claimedAt       DateTime?
+  deployTxHash    String
 
-  @@unique([userId, contractAddress, chainId, partner])
-  @@index([userId])
-  @@index([contractAddress])
-  @@index([chainId])
-  @@index([claimedAt])
+  rewardPayouts PartnerRewardPayout[]
 }
