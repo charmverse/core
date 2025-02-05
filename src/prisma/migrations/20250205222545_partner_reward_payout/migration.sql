@@ -6,6 +6,7 @@ CREATE TABLE "PartnerRewardPayout" (
     "claimedAt" TIMESTAMP(3),
     "txHash" TEXT,
     "payoutContractId" UUID NOT NULL,
+    "meta" JSONB,
 
     CONSTRAINT "PartnerRewardPayout_pkey" PRIMARY KEY ("id")
 );
@@ -19,6 +20,7 @@ CREATE TABLE "PartnerRewardPayoutContract" (
     "contractAddress" TEXT NOT NULL,
     "chainId" INTEGER NOT NULL,
     "tokenAddress" TEXT NOT NULL,
+    "tokenDecimals" INTEGER NOT NULL,
     "partner" TEXT NOT NULL,
     "deployTxHash" TEXT NOT NULL,
 

@@ -3518,6 +3518,7 @@ model PartnerRewardPayout {
   txHash           String?
   payoutContractId String                      @db.Uuid
   payoutContract   PartnerRewardPayoutContract @relation(fields: [payoutContractId], references: [id], onDelete: Cascade)
+  meta             Json?
 
   @@index([userId])
   @@index([payoutContractId])
@@ -3531,6 +3532,7 @@ model PartnerRewardPayoutContract {
   contractAddress String
   chainId         Int
   tokenAddress    String
+  tokenDecimals   Int
   partner         String
   deployTxHash    String
 
