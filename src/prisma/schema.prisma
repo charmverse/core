@@ -3436,18 +3436,20 @@ model ScoutProject {
   id                    String                 @id @default(uuid()) @db.Uuid
   createdAt             DateTime               @default(now())
   updatedAt             DateTime               @updatedAt
-  avatar                String
-  path                  String                 @unique
   name                  String
-  description           String
-  website               String
-  github                String
+  avatar                String                 @default("")
+  path                  String                 @default("")
+  description           String                 @default("")
+  website               String                 @default("")
+  github                String                 @default("")
   deletedAt             DateTime?
   scoutProjectMembers   ScoutProjectMember[]
   scoutProjectContracts ScoutProjectContract[]
   scoutProjectDeployers ScoutProjectDeployer[]
 
+  @@unique([path])
   @@index([deletedAt])
+  @@index([path])
 }
 
 enum ScoutProjectMemberRole {
@@ -3473,19 +3475,21 @@ model ScoutProjectMember {
 }
 
 model ScoutProjectContract {
-  id           String               @id @default(uuid()) @db.Uuid
-  createdAt    DateTime             @default(now())
-  createdBy    String               @db.Uuid
+  id           String                            @id @default(uuid()) @db.Uuid
+  createdAt    DateTime                          @default(now())
+  createdBy    String                            @db.Uuid
   deployedAt   DateTime
-  projectId    String               @db.Uuid
-  project      ScoutProject         @relation(fields: [projectId], references: [id], onDelete: Restrict)
+  projectId    String                            @db.Uuid
+  project      ScoutProject                      @relation(fields: [projectId], references: [id], onDelete: Restrict)
   address      String
   chainId      Int
-  deployerId   String               @db.Uuid
-  deployer     ScoutProjectDeployer @relation(fields: [deployerId], references: [id], onDelete: Restrict)
+  deployerId   String                            @db.Uuid
+  deployer     ScoutProjectDeployer              @relation(fields: [deployerId], references: [id], onDelete: Restrict)
   deployTxHash String
-  blockNumber  Int
+  blockNumber  BigInt
   deletedAt    DateTime?
+  // logs         ScoutProjectContractLog[]
+  transactions ScoutProjectContractTransaction[]
 
   @@unique([address, chainId])
   @@index([projectId])
@@ -3494,16 +3498,61 @@ model ScoutProjectContract {
 }
 
 model ScoutProjectDeployer {
-  id                    String                 @id @default(uuid()) @db.Uuid
-  projectId             String                 @db.Uuid
-  project               ScoutProject           @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  address               String
-  createdAt             DateTime               @default(now())
-  verifiedAt            DateTime?
-  verifiedBy            String?                @db.Uuid
-  scoutProjectContracts ScoutProjectContract[]
+  id         String                 @id @default(uuid()) @db.Uuid
+  projectId  String                 @db.Uuid
+  project    ScoutProject           @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  address    String
+  createdAt  DateTime               @default(now())
+  verifiedAt DateTime?
+  verifiedBy String?                @db.Uuid
+  contracts  ScoutProjectContract[]
 
   @@unique([projectId, address])
   @@index([projectId])
   @@index([address])
+}
+
+// the raw data, not intended to be used in production processes
+model ScoutProjectContractTransaction {
+  contractId  String               @db.Uuid
+  contract    ScoutProjectContract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  createdAt   DateTime
+  from        String
+  to          String
+  status      String
+  txHash      String
+  txData      Json
+  blockNumber BigInt
+  gasUsed     BigInt
+  gasPrice    BigInt
+  gasCost     BigInt
+
+  @@unique([contractId, txHash])
+  @@index([txHash])
+  @@index([blockNumber])
+  @@index([createdAt])
+}
+
+// model ScoutProjectContractLog {
+//   contractId  String               @db.Uuid
+//   contract    ScoutProjectContract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+//   txHash      String
+//   logIndex    Int
+//   blockNumber BigInt
+
+//   @@unique([contractId, txHash, logIndex])
+//   @@index([txHash])
+//   @@index([blockNumber])
+// }
+
+model ScoutProjectContractPollEvent {
+  contractId      String   @db.Uuid
+  fromBlockNumber BigInt
+  toBlockNumber   BigInt
+  processedAt     DateTime
+  processTime     Int
+
+  @@unique([contractId, toBlockNumber])
+  @@index([contractId])
+  @@index([toBlockNumber])
 }
