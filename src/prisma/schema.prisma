@@ -3516,6 +3516,7 @@ model ScoutProjectDeployer {
 model ScoutProjectContractTransaction {
   contractId  String               @db.Uuid
   contract    ScoutProjectContract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  createdAt   DateTime
   from        String
   to          String
   status      String
@@ -3529,6 +3530,7 @@ model ScoutProjectContractTransaction {
   @@unique([contractId, txHash])
   @@index([txHash])
   @@index([blockNumber])
+  @@index([createdAt])
 }
 
 // model ScoutProjectContractLog {
