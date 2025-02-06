@@ -3533,6 +3533,7 @@ model PartnerRewardPayoutContract {
   chainId         Int
   tokenAddress    String
   tokenDecimals   Int
+  tokenSymbol     String
   partner         String
   deployTxHash    String
   cid             String

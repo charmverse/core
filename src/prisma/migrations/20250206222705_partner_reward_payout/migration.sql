@@ -21,6 +21,7 @@ CREATE TABLE "PartnerRewardPayoutContract" (
     "chainId" INTEGER NOT NULL,
     "tokenAddress" TEXT NOT NULL,
     "tokenDecimals" INTEGER NOT NULL,
+    "tokenSymbol" TEXT NOT NULL,
     "partner" TEXT NOT NULL,
     "deployTxHash" TEXT NOT NULL,
     "cid" TEXT NOT NULL,
