@@ -3488,7 +3488,7 @@ model ScoutProjectContract {
   deployTxHash String
   blockNumber  BigInt
   deletedAt    DateTime?
-  logs         ScoutProjectContractLog[]
+  // logs         ScoutProjectContractLog[]
   transactions ScoutProjectContractTransaction[]
 
   @@unique([address, chainId])
@@ -3531,18 +3531,17 @@ model ScoutProjectContractTransaction {
   @@index([blockNumber])
 }
 
-model ScoutProjectContractLog {
-  contractId  String               @db.Uuid
-  contract    ScoutProjectContract @relation(fields: [contractId], references: [id], onDelete: Cascade)
-  from        String
-  txHash      String
-  logIndex    Int
-  blockNumber BigInt
+// model ScoutProjectContractLog {
+//   contractId  String               @db.Uuid
+//   contract    ScoutProjectContract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+//   txHash      String
+//   logIndex    Int
+//   blockNumber BigInt
 
-  @@unique([contractId, txHash, logIndex])
-  @@index([txHash])
-  @@index([blockNumber])
-}
+//   @@unique([contractId, txHash, logIndex])
+//   @@index([txHash])
+//   @@index([blockNumber])
+// }
 
 model ScoutProjectContractPollEvent {
   contractId      String   @db.Uuid
