@@ -3513,7 +3513,7 @@ model PartnerRewardPayout {
   id               String                      @id @default(uuid()) @db.Uuid
   userId           String                      @db.Uuid
   user             Scout                       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  amount           BigInt
+  amount           String
   claimedAt        DateTime?
   txHash           String?
   payoutContractId String                      @db.Uuid
