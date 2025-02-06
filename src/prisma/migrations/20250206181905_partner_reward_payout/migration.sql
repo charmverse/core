@@ -2,7 +2,7 @@
 CREATE TABLE "PartnerRewardPayout" (
     "id" UUID NOT NULL,
     "userId" UUID NOT NULL,
-    "amount" DECIMAL(30,18) NOT NULL,
+    "amount" TEXT NOT NULL,
     "claimedAt" TIMESTAMP(3),
     "txHash" TEXT,
     "payoutContractId" UUID NOT NULL,
