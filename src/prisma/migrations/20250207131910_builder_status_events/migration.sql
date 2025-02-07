@@ -11,7 +11,7 @@ ADD COLUMN     "onchainStrikeChainId" INTEGER;
 -- CreateTable
 CREATE TABLE "BuilderStatusEvent" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "attestationUid" UUID NOT NULL,
+    "attestationUid" TEXT NOT NULL,
     "chainId" INTEGER NOT NULL,
     "status" "BuilderStatusEventType" NOT NULL,
     "builderId" UUID NOT NULL,

@@ -3524,7 +3524,7 @@ enum BuilderStatusEventType {
 
 model BuilderStatusEvent {
   createdAt             DateTime                @default(now())
-  attestationUid        String                  @id @default(uuid()) @db.Uuid
+  attestationUid        String                  @id
   chainId               Int
   status                BuilderStatusEventType
 
