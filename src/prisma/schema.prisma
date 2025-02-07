@@ -3520,10 +3520,14 @@ enum OnchainBuilderEventType {
 
 model BuilderStatusEvent {
   createdAt             DateTime                @default(now())
-  onchainAttestationUid String                  @id @default(uuid()) @db.Uuid
-  onchainChainId        Int
-  type                  OnchainBuilderEventType
+  attestationUid        String                  @id @default(uuid()) @db.Uuid
+  chainId               Int
+  status                BuilderStatus
 
   builderId String @db.Uuid
   builder   Scout  @relation(fields: [builderId], references: [id], onDelete: Cascade)
+
+  @@index([builderId])
+
+  @@index([createdAt])
 }
