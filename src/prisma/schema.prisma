@@ -2843,7 +2843,7 @@ model Scout {
   partnerRewardEvents              PartnerRewardEvent[]
   emailVerifications               ScoutEmailVerification[]
   ScoutProjectMember               ScoutProjectMember[]
-  onchainBuilderEvents             OnchainBuilderEvent[]
+  builderStatusEvents              BuilderStatusEvent[]
 
   @@index([path])
   @@index([farcasterId])
@@ -3518,7 +3518,7 @@ enum OnchainBuilderEventType {
   unbanned
 }
 
-model OnchainBuilderEvent {
+model BuilderStatusEvent {
   createdAt             DateTime                @default(now())
   onchainAttestationUid String                  @id @default(uuid()) @db.Uuid
   onchainChainId        Int
