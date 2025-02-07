@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.111.3-rc-synced-attestat.0",
+  "version": "0.111.3-rc-synced-attestat.1",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
