@@ -3530,10 +3530,10 @@ model PartnerRewardPayout {
 }
 
 model PartnerRewardPayoutContract {
-  id              String   @id @default(uuid()) @db.Uuid
+  id              String                @id @default(uuid()) @db.Uuid
   season          String
   week            String
-  createdAt       DateTime @default(now())
+  createdAt       DateTime              @default(now())
   contractAddress String
   chainId         Int
   tokenAddress    String
@@ -3541,9 +3541,9 @@ model PartnerRewardPayoutContract {
   tokenSymbol     String
   partner         String
   deployTxHash    String
-  cid             String
-
-  rewardPayouts PartnerRewardPayout[]
+  ipfsCid         String
+  merkleTreeJson  Json
+  rewardPayouts   PartnerRewardPayout[]
 }
 
 // the raw data, not intended to be used in production processes

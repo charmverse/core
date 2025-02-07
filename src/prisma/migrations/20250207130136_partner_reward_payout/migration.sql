@@ -25,7 +25,8 @@ CREATE TABLE "PartnerRewardPayoutContract" (
     "tokenSymbol" TEXT NOT NULL,
     "partner" TEXT NOT NULL,
     "deployTxHash" TEXT NOT NULL,
-    "cid" TEXT NOT NULL,
+    "ipfsCid" TEXT NOT NULL,
+    "merkleTreeJson" JSONB NOT NULL,
 
     CONSTRAINT "PartnerRewardPayoutContract_pkey" PRIMARY KEY ("id")
 );
