@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "OnchainBuilderEventType" AS ENUM ('registered', 'banned', 'unbanned');
+CREATE TYPE "BuilderStatusEventType" AS ENUM ('registered', 'banned', 'unbanned');
 
 -- AlterEnum
 ALTER TYPE "ReferralPlatform" ADD VALUE 'onchain_cron';
@@ -13,7 +13,7 @@ CREATE TABLE "BuilderStatusEvent" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "attestationUid" UUID NOT NULL,
     "chainId" INTEGER NOT NULL,
-    "status" "BuilderStatus" NOT NULL,
+    "status" "BuilderStatusEventType" NOT NULL,
     "builderId" UUID NOT NULL,
 
     CONSTRAINT "BuilderStatusEvent_pkey" PRIMARY KEY ("attestationUid")

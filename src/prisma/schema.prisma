@@ -3516,7 +3516,7 @@ model ScoutProjectDeployer {
   @@index([address])
 }
 
-enum OnchainBuilderEventType {
+enum BuilderStatusEventType {
   registered
   banned
   unbanned
@@ -3526,7 +3526,7 @@ model BuilderStatusEvent {
   createdAt             DateTime                @default(now())
   attestationUid        String                  @id @default(uuid()) @db.Uuid
   chainId               Int
-  status                BuilderStatus
+  status                BuilderStatusEventType
 
   builderId String @db.Uuid
   builder   Scout  @relation(fields: [builderId], references: [id], onDelete: Cascade)
