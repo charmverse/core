@@ -4,25 +4,25 @@ const claimsInput: ProvableClaim[] = [
   {
     // Key here so we can copy to other tests: 57b7b9b29419b66ac8156f844a7b0eb18d94f729699b3f15a3d8817d3f5980a3
     address: '0x3F2A655d4e39E6c4470703e1063e9a843586886A',
-    amount: 100
+    amount: '100'
   },
   {
     // Key here so we can copy to other tests: aa03d22263ff3e4df4105a20d08f62873f5e100974862fdc1f99083ba11e6adc
     address: '0x2Fe1B8C9C8722f0D3e5B9a9D4115559bB8f04931',
-    amount: 200
+    amount: '200'
   },
   {
     // Key here so we can copy to other tests: c674865dde0163f480f818a78fc4d316c64d60b05666600734df8e8f37147f64
     address: '0x03F8B139fF6dbbb7475bAA5A71c16fcDD9495cc4',
-    amount: 300
+    amount: '300'
   },
   {
     address: '0x36446eF671954753801f9d73C415a80C0e550b32',
-    amount: 400
+    amount: '400'
   },
   {
     address: '0xD02953857250D32EC72064d9E2320B43296E52C0',
-    amount: 500
+    amount: '500'
   }
 ];
 
@@ -39,7 +39,7 @@ describe('verifyMerkleClaim', () => {
     const { tree } = generateMerkleTree(claimsInput);
     const claim: ProvableClaim = {
       address: '0x36446eF671954753801f9d73C415a80C0e550b32',
-      amount: 200
+      amount: '200'
     };
     const proof = getMerkleProofs(tree, claim);
     expect(verifyMerkleClaim(tree, claim, proof)).toBe(false);
