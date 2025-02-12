@@ -3147,6 +3147,7 @@ model BuilderNft {
   season           String
   nftType          BuilderNftType     @default(default)
   currentPrice     BigInt
+  currentPriceInScoutToken String?
   contractAddress  String
   tokenId          Int
   imageUrl         String
