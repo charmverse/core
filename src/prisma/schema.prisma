@@ -2842,6 +2842,7 @@ model Scout {
   mergedToEvents                   ScoutMergeEvent[]            @relation("mergedToScout")
   partnerRewardEvents              PartnerRewardEvent[]
   emailVerifications               ScoutEmailVerification[]
+  builderStatusEvents              BuilderStatusEvent[]
   scoutProjectMembers              ScoutProjectMember[]
 
   @@index([path])
@@ -2876,14 +2877,16 @@ model ScoutMergeEvent {
 }
 
 model BuilderStrike {
-  id            String              @id @default(uuid()) @db.Uuid
-  builderId     String              @db.Uuid
-  builder       Scout               @relation(fields: [builderId], references: [id], onDelete: Cascade)
-  createdAt     DateTime            @default(now())
-  deletedAt     DateTime?
-  githubEventId String?             @unique @db.Uuid
-  githubEvent   GithubEvent?        @relation(fields: [githubEventId], references: [id], onDelete: SetNull)
-  activities    ScoutGameActivity[]
+  id                          String              @id @default(uuid()) @db.Uuid
+  builderId                   String              @db.Uuid
+  builder                     Scout               @relation(fields: [builderId], references: [id], onDelete: Cascade)
+  createdAt                   DateTime            @default(now())
+  deletedAt                   DateTime?
+  githubEventId               String?             @unique @db.Uuid
+  githubEvent                 GithubEvent?        @relation(fields: [githubEventId], references: [id], onDelete: SetNull)
+  activities                  ScoutGameActivity[]
+  onchainStrikeChainId        Int?
+  onchainStrikeAttestationUid String?
 
   @@index([builderId, deletedAt])
 }
@@ -3371,6 +3374,7 @@ enum ReferralPlatform {
   farcaster
   webapp
   onchain_webapp
+  onchain_cron
   unknown
 }
 
@@ -3513,6 +3517,25 @@ model ScoutProjectDeployer {
   @@index([address])
 }
 
+enum BuilderStatusEventType {
+  registered
+  banned
+  unbanned
+}
+
+model BuilderStatusEvent {
+  createdAt             DateTime                @default(now())
+  attestationUid        String                  @id
+  chainId               Int
+  status                BuilderStatusEventType
+
+  builderId String @db.Uuid
+  builder   Scout  @relation(fields: [builderId], references: [id], onDelete: Cascade)
+
+  @@index([builderId])
+
+  @@index([createdAt])
+}
 model PartnerRewardPayout {
   id               String                      @id @default(uuid()) @db.Uuid
   walletAddress    String
