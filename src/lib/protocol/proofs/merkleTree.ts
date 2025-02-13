@@ -4,7 +4,7 @@ import { keccak256, encodePacked } from 'viem/utils';
 
 export type ProvableClaim = {
   address: Address;
-  amount: number;
+  amount: string;
 };
 
 function hashLeaf(claim: ProvableClaim): string {
