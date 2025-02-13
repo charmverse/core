@@ -3497,7 +3497,8 @@ model ScoutProjectContract {
   deletedAt    DateTime?
 
   // logs         ScoutProjectContractLog[]
-  transactions ScoutProjectContractTransaction[]
+  transactions                  ScoutProjectContractTransaction[]
+  ScoutProjectContractPollEvent ScoutProjectContractPollEvent[]
 
   @@unique([address, chainId])
   @@index([projectId])
@@ -3535,6 +3536,7 @@ model ScoutProjectWallet {
   // logs         ScoutProjectContractLog[]
   // transactions ScoutProjectContractTransaction[]
   ScoutProjectWalletTransaction ScoutProjectWalletTransaction[]
+  ScoutProjectWalletPollEvent   ScoutProjectWalletPollEvent[]
 
   @@unique([address, chainId])
   @@index([projectId])
@@ -3650,13 +3652,27 @@ model ScoutProjectWalletTransaction {
 // }
 
 model ScoutProjectContractPollEvent {
-  contractId      String   @db.Uuid
+  contractId      String               @db.Uuid
   fromBlockNumber BigInt
   toBlockNumber   BigInt
   processedAt     DateTime
   processTime     Int
+  contract        ScoutProjectContract @relation(fields: [contractId], references: [id], onDelete: Cascade)
 
   @@unique([contractId, toBlockNumber])
   @@index([contractId])
+  @@index([toBlockNumber])
+}
+
+model ScoutProjectWalletPollEvent {
+  walletId        String             @db.Uuid
+  fromBlockNumber BigInt
+  toBlockNumber   BigInt
+  processedAt     DateTime
+  processTime     Int
+  wallet          ScoutProjectWallet @relation(fields: [walletId], references: [id], onDelete: Cascade)
+
+  @@unique([walletId, toBlockNumber])
+  @@index([walletId])
   @@index([toBlockNumber])
 }
