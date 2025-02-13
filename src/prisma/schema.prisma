@@ -2816,6 +2816,7 @@ model Scout {
   onboardedAt                      DateTime?
   currentBalance                   Int                          @default(0)
   hasMoxieProfile                  Boolean                      @default(false)
+  utmCampaign                      String?
   wallets                          ScoutWallet[]
   strikes                          BuilderStrike[]
   events                           BuilderEvent[]
@@ -3139,22 +3140,22 @@ enum BuilderNftType {
 }
 
 model BuilderNft {
-  id               String             @id @default(uuid()) @db.Uuid
-  createdAt        DateTime           @default(now())
-  builderId        String             @db.Uuid
-  builder          Scout              @relation(fields: [builderId], references: [id], onDelete: Cascade)
-  chainId          Int
-  season           String
-  nftType          BuilderNftType     @default(default)
-  currentPrice     BigInt
+  id                       String             @id @default(uuid()) @db.Uuid
+  createdAt                DateTime           @default(now())
+  builderId                String             @db.Uuid
+  builder                  Scout              @relation(fields: [builderId], references: [id], onDelete: Cascade)
+  chainId                  Int
+  season                   String
+  nftType                  BuilderNftType     @default(default)
+  currentPrice             BigInt
   currentPriceInScoutToken String?
-  contractAddress  String
-  tokenId          Int
-  imageUrl         String
-  congratsImageUrl String?
-  estimatedPayout  Int                @default(0)
-  nftSoldEvents    NFTPurchaseEvent[]
-  nftOwners        ScoutNft[]
+  contractAddress          String
+  tokenId                  Int
+  imageUrl                 String
+  congratsImageUrl         String?
+  estimatedPayout          Int                @default(0)
+  nftSoldEvents            NFTPurchaseEvent[]
+  nftOwners                ScoutNft[]
 
   // Don't allow registering the same token id twice
   @@unique([contractAddress, tokenId, chainId])
@@ -3525,18 +3526,18 @@ enum BuilderStatusEventType {
 }
 
 model BuilderStatusEvent {
-  createdAt             DateTime                @default(now())
-  attestationUid        String                  @id
-  chainId               Int
-  status                BuilderStatusEventType
+  createdAt      DateTime               @default(now())
+  attestationUid String                 @id
+  chainId        Int
+  status         BuilderStatusEventType
 
   builderId String @db.Uuid
   builder   Scout  @relation(fields: [builderId], references: [id], onDelete: Cascade)
 
   @@index([builderId])
-
   @@index([createdAt])
 }
+
 model PartnerRewardPayout {
   id               String                      @id @default(uuid()) @db.Uuid
   walletAddress    String
