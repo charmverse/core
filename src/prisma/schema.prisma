@@ -3139,22 +3139,22 @@ enum BuilderNftType {
 }
 
 model BuilderNft {
-  id               String             @id @default(uuid()) @db.Uuid
-  createdAt        DateTime           @default(now())
-  builderId        String             @db.Uuid
-  builder          Scout              @relation(fields: [builderId], references: [id], onDelete: Cascade)
-  chainId          Int
-  season           String
-  nftType          BuilderNftType     @default(default)
-  currentPrice     BigInt
+  id                       String             @id @default(uuid()) @db.Uuid
+  createdAt                DateTime           @default(now())
+  builderId                String             @db.Uuid
+  builder                  Scout              @relation(fields: [builderId], references: [id], onDelete: Cascade)
+  chainId                  Int
+  season                   String
+  nftType                  BuilderNftType     @default(default)
+  currentPrice             BigInt
   currentPriceInScoutToken String?
-  contractAddress  String
-  tokenId          Int
-  imageUrl         String
-  congratsImageUrl String?
-  estimatedPayout  Int                @default(0)
-  nftSoldEvents    NFTPurchaseEvent[]
-  nftOwners        ScoutNft[]
+  contractAddress          String
+  tokenId                  Int
+  imageUrl                 String
+  congratsImageUrl         String?
+  estimatedPayout          Int                @default(0)
+  nftSoldEvents            NFTPurchaseEvent[]
+  nftOwners                ScoutNft[]
 
   // Don't allow registering the same token id twice
   @@unique([contractAddress, tokenId, chainId])
@@ -3480,11 +3480,16 @@ model ScoutProjectMember {
   @@index([deletedAt])
 }
 
+enum ScoutProjectContractType {
+  contract
+  wallet
+}
+
 model ScoutProjectContract {
   id           String                            @id @default(uuid()) @db.Uuid
   createdAt    DateTime                          @default(now())
   createdBy    String                            @db.Uuid
-  deployedAt   DateTime
+  deployedAt   DateTime?
   projectId    String                            @db.Uuid
   project      ScoutProject                      @relation(fields: [projectId], references: [id], onDelete: Restrict)
   address      String
@@ -3494,6 +3499,7 @@ model ScoutProjectContract {
   deployTxHash String
   blockNumber  BigInt
   deletedAt    DateTime?
+  type         ScoutProjectContractType          @default(contract)
   // logs         ScoutProjectContractLog[]
   transactions ScoutProjectContractTransaction[]
 
@@ -3501,6 +3507,7 @@ model ScoutProjectContract {
   @@index([projectId])
   @@index([address])
   @@index([deletedAt])
+  @@index([type])
 }
 
 model ScoutProjectDeployer {
@@ -3525,18 +3532,18 @@ enum BuilderStatusEventType {
 }
 
 model BuilderStatusEvent {
-  createdAt             DateTime                @default(now())
-  attestationUid        String                  @id
-  chainId               Int
-  status                BuilderStatusEventType
+  createdAt      DateTime               @default(now())
+  attestationUid String                 @id
+  chainId        Int
+  status         BuilderStatusEventType
 
   builderId String @db.Uuid
   builder   Scout  @relation(fields: [builderId], references: [id], onDelete: Cascade)
 
   @@index([builderId])
-
   @@index([createdAt])
 }
+
 model PartnerRewardPayout {
   id               String                      @id @default(uuid()) @db.Uuid
   walletAddress    String
