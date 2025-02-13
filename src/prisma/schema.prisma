@@ -3474,11 +3474,16 @@ model ScoutProjectMember {
   @@index([deletedAt])
 }
 
+enum ScoutProjectContractType {
+  contract
+  wallet
+}
+
 model ScoutProjectContract {
   id           String                            @id @default(uuid()) @db.Uuid
   createdAt    DateTime                          @default(now())
   createdBy    String                            @db.Uuid
-  deployedAt   DateTime
+  deployedAt   DateTime?
   projectId    String                            @db.Uuid
   project      ScoutProject                      @relation(fields: [projectId], references: [id], onDelete: Restrict)
   address      String
@@ -3488,6 +3493,7 @@ model ScoutProjectContract {
   deployTxHash String
   blockNumber  BigInt
   deletedAt    DateTime?
+  type         ScoutProjectContractType          @default(wallet)
   // logs         ScoutProjectContractLog[]
   transactions ScoutProjectContractTransaction[]
 
@@ -3495,6 +3501,7 @@ model ScoutProjectContract {
   @@index([projectId])
   @@index([address])
   @@index([deletedAt])
+  @@index([type])
 }
 
 model ScoutProjectDeployer {
