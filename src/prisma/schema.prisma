@@ -2816,6 +2816,7 @@ model Scout {
   onboardedAt                      DateTime?
   currentBalance                   Int                          @default(0)
   hasMoxieProfile                  Boolean                      @default(false)
+  utmCampaign                      String?
   wallets                          ScoutWallet[]
   strikes                          BuilderStrike[]
   events                           BuilderEvent[]
