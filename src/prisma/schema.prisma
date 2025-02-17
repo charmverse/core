@@ -2187,7 +2187,7 @@ model IssuedCredential {
   rewardApplicationId  String?              @db.Uuid
   rewardApplication    Application?         @relation(fields: [rewardApplicationId], references: [id], onDelete: Cascade)
   schemaId             String?
-  // Fields specific to ceramic
+  // Fields specific to ceramic (deprecated)
   ceramicId            String?              @unique
   ceramicRecord        Json?
   // Fields specific to on chain credentials
