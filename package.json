@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.113.2-rc-remove-offchain.0",
+  "version": "0.113.2",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
