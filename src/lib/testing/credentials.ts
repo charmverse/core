@@ -42,33 +42,6 @@ export type GenerateIssuedCredentialInput = {
   credentialEvent: CredentialEventType;
 };
 
-export type GenerateIssuedOffchainCredentialInput = GenerateIssuedCredentialInput & {
-  ceramicId?: string;
-  ceramicRecord?: any;
-};
-
-export async function generateIssuedOffchainCredential({
-  userId,
-  proposalId,
-  rewardApplicationId,
-  credentialEvent,
-  credentialTemplateId,
-  ceramicId,
-  ceramicRecord
-}: GenerateIssuedOffchainCredentialInput): Promise<IssuedCredential> {
-  return prisma.issuedCredential.create({
-    data: {
-      credentialEvent,
-      ceramicId: ceramicId || uuid(),
-      ceramicRecord: ceramicRecord || { test: uuid() },
-      credentialTemplate: { connect: { id: credentialTemplateId } },
-      proposal: proposalId ? { connect: { id: proposalId } } : undefined,
-      rewardApplication: rewardApplicationId ? { connect: { id: rewardApplicationId } } : undefined,
-      user: { connect: { id: userId } }
-    }
-  });
-}
-
 export type GenerateIssuedOnchainCredentialInput = GenerateIssuedCredentialInput & {
   onchainChainId?: number;
   onchainAttestationId?: string;
