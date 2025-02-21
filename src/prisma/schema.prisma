@@ -2975,6 +2975,7 @@ model GithubRepo {
   handPicked    Boolean             @default(false)
   fork          Boolean             @default(false)
   name          String
+  avatar        String?
   defaultBranch String
   events        GithubEvent[]
   createdAt     DateTime            @default(now())
