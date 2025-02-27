@@ -2845,6 +2845,7 @@ model Scout {
   emailVerifications               ScoutEmailVerification[]
   builderStatusEvents              BuilderStatusEvent[]
   scoutProjectMembers              ScoutProjectMember[]
+  ScoutNotification                ScoutNotification[]
 
   @@index([path])
   @@index([farcasterId])
@@ -3677,4 +3678,42 @@ model ScoutProjectWalletPollEvent {
   @@unique([walletId, toBlockNumber])
   @@index([walletId])
   @@index([toBlockNumber])
+}
+
+enum ScoutNotificationChannel {
+  farcaster
+  email
+}
+
+model ScoutNotification {
+  id                     String                       @id @default(uuid()) @db.Uuid
+  userId                 String                       @db.Uuid
+  user                   Scout                        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sentAt                 DateTime                     @default(now())
+  channel                ScoutNotificationChannel
+  notificationType       String
+  farcasterNotifications ScoutFarcasterNotification[]
+  emailNotifications     ScoutEmailNotification[]
+
+  @@unique([userId, notificationType, channel])
+  @@index([userId])
+}
+
+model ScoutFarcasterNotification {
+  id             String            @id @default(uuid()) @db.Uuid
+  fid            Int
+  notificationId String            @db.Uuid
+  notification   ScoutNotification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+
+  @@index([notificationId])
+}
+
+model ScoutEmailNotification {
+  id                String            @id @default(uuid()) @db.Uuid
+  email             String
+  templateVariables Json
+  notificationId    String            @db.Uuid
+  notification      ScoutNotification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+
+  @@index([notificationId])
 }
