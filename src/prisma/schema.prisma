@@ -2818,8 +2818,7 @@ model Scout {
   hasMoxieProfile                  Boolean                      @default(false)
   utmCampaign                      String?
   framesNotificationToken          String?
-  farcasterNotification            Boolean?
-  emailNotification                Boolean?
+  sendFarcasterNotification        Boolean?
   wallets                          ScoutWallet[]
   strikes                          BuilderStrike[]
   events                           BuilderEvent[]
