@@ -2817,6 +2817,8 @@ model Scout {
   currentBalance                   Int                          @default(0)
   hasMoxieProfile                  Boolean                      @default(false)
   utmCampaign                      String?
+  framesNotificationToken          String?
+  sendFarcasterNotification        Boolean                      @default(true)
   wallets                          ScoutWallet[]
   strikes                          BuilderStrike[]
   events                           BuilderEvent[]
