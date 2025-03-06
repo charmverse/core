@@ -3689,12 +3689,13 @@ enum ScoutNotificationChannel {
 }
 
 model ScoutFarcasterNotification {
-  id               String   @id @default(uuid()) @db.Uuid
-  fid              Int
-  userId           String   @db.Uuid
-  user             Scout    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  notificationType String
-  createdAt        DateTime @default(now())
+  id                String   @id @default(uuid()) @db.Uuid
+  fid               Int
+  userId            String   @db.Uuid
+  user              Scout    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  notificationType  String
+  templateVariables Json     @default("{}")
+  createdAt         DateTime @default(now())
 }
 
 model ScoutEmailNotification {

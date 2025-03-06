@@ -7,6 +7,7 @@ CREATE TABLE "ScoutFarcasterNotification" (
     "fid" INTEGER NOT NULL,
     "userId" UUID NOT NULL,
     "notificationType" TEXT NOT NULL,
+    "templateVariables" JSONB NOT NULL DEFAULT '{}',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "ScoutFarcasterNotification_pkey" PRIMARY KEY ("id")
