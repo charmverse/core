@@ -3527,6 +3527,11 @@ model ScoutProjectDeployer {
   @@index([address])
 }
 
+enum ChainType {
+  evm
+  solana
+}
+
 model ScoutProjectWallet {
   id         String       @id @default(uuid()) @db.Uuid
   createdAt  DateTime     @default(now())
@@ -3534,20 +3539,34 @@ model ScoutProjectWallet {
   projectId  String       @db.Uuid
   project    ScoutProject @relation(fields: [projectId], references: [id], onDelete: Restrict)
   address    String
-  chainId    Int
+  chainId    Int? // for evm chains
+  chainType  ChainType?
   deletedAt  DateTime?
   verifiedAt DateTime?
   verifiedBy String?      @db.Uuid
 
-  // logs         ScoutProjectContractLog[]
-  // transactions ScoutProjectContractTransaction[]
-  ScoutProjectWalletTransaction ScoutProjectWalletTransaction[]
-  ScoutProjectWalletPollEvent   ScoutProjectWalletPollEvent[]
+  transactions                 ScoutProjectWalletTransaction[]
+  pollEvents                   ScoutProjectWalletPollEvent[]
+  ScoutProjectWalletDailyStats ScoutProjectWalletDailyStats[]
 
   @@unique([address, chainId])
   @@index([projectId])
   @@index([address])
   @@index([deletedAt])
+}
+
+model ScoutProjectWalletDailyStats {
+  createdAt    DateTime           @default(now())
+  walletId     String             @db.Uuid
+  wallet       ScoutProjectWallet @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  day          DateTime
+  accounts     Int
+  transactions Int
+  gasFees      String
+
+  @@unique([walletId, day])
+  @@index([walletId])
+  @@index([day])
 }
 
 enum BuilderStatusEventType {
