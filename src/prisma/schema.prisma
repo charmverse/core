@@ -3488,23 +3488,22 @@ model ScoutProjectMember {
 }
 
 model ScoutProjectContract {
-  id           String               @id @default(uuid()) @db.Uuid
-  createdAt    DateTime             @default(now())
-  createdBy    String               @db.Uuid
-  deployedAt   DateTime
-  projectId    String               @db.Uuid
-  project      ScoutProject         @relation(fields: [projectId], references: [id], onDelete: Restrict)
-  address      String
-  chainId      Int
-  deployerId   String               @db.Uuid
-  deployer     ScoutProjectDeployer @relation(fields: [deployerId], references: [id], onDelete: Restrict)
-  deployTxHash String
-  blockNumber  BigInt
-  deletedAt    DateTime?
-
-  // logs         ScoutProjectContractLog[]
-  transactions                  ScoutProjectContractTransaction[]
-  ScoutProjectContractPollEvent ScoutProjectContractPollEvent[]
+  id                     String                            @id @default(uuid()) @db.Uuid
+  createdAt              DateTime                          @default(now())
+  createdBy              String                            @db.Uuid
+  deployedAt             DateTime
+  projectId              String                            @db.Uuid
+  project                ScoutProject                      @relation(fields: [projectId], references: [id], onDelete: Restrict)
+  address                String
+  chainId                Int
+  deployerId             String                            @db.Uuid
+  deployer               ScoutProjectDeployer              @relation(fields: [deployerId], references: [id], onDelete: Restrict)
+  deployTxHash           String
+  blockNumber            BigInt
+  deletedAt              DateTime?
+  transactions           ScoutProjectContractTransaction[]
+  transactionsPollEvents ScoutProjectContractPollEvent[]
+  dailyStats             ScoutProjectContractDailyStats[]
 
   @@unique([address, chainId])
   @@index([projectId])
@@ -3533,26 +3532,41 @@ enum ChainType {
 }
 
 model ScoutProjectWallet {
-  id         String       @id @default(uuid()) @db.Uuid
-  createdAt  DateTime     @default(now())
-  createdBy  String       @db.Uuid
-  projectId  String       @db.Uuid
-  project    ScoutProject @relation(fields: [projectId], references: [id], onDelete: Restrict)
-  address    String
-  chainId    Int? // for evm chains
-  chainType  ChainType?
-  deletedAt  DateTime?
-  verifiedAt DateTime?
-  verifiedBy String?      @db.Uuid
-
-  transactions                 ScoutProjectWalletTransaction[]
-  pollEvents                   ScoutProjectWalletPollEvent[]
-  ScoutProjectWalletDailyStats ScoutProjectWalletDailyStats[]
+  id           String                          @id @default(uuid()) @db.Uuid
+  createdAt    DateTime                        @default(now())
+  createdBy    String                          @db.Uuid
+  projectId    String                          @db.Uuid
+  project      ScoutProject                    @relation(fields: [projectId], references: [id], onDelete: Restrict)
+  address      String
+  chainId      Int? // for evm chains
+  chainType    ChainType
+  deletedAt    DateTime?
+  verifiedAt   DateTime?
+  verifiedBy   String?                         @db.Uuid
+  transactions ScoutProjectWalletTransaction[]
+  pollEvents   ScoutProjectWalletPollEvent[]
+  dailyStats   ScoutProjectWalletDailyStats[]
 
   @@unique([address, chainId])
   @@index([projectId])
   @@index([address])
   @@index([deletedAt])
+}
+
+model ScoutProjectContractDailyStats {
+  createdAt    DateTime             @default(now())
+  contractId   String               @db.Uuid
+  contract     ScoutProjectContract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  day          DateTime
+  accounts     Int
+  transactions Int
+  gasFees      String
+  week         String
+
+  @@unique([contractId, day])
+  @@index([contractId])
+  @@index([day])
+  @@index([week])
 }
 
 model ScoutProjectWalletDailyStats {
@@ -3563,10 +3577,12 @@ model ScoutProjectWalletDailyStats {
   accounts     Int
   transactions Int
   gasFees      String
+  week         String
 
   @@unique([walletId, day])
   @@index([walletId])
   @@index([day])
+  @@index([week])
 }
 
 enum BuilderStatusEventType {
