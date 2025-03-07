@@ -2847,6 +2847,8 @@ model Scout {
   emailVerifications               ScoutEmailVerification[]
   builderStatusEvents              BuilderStatusEvent[]
   scoutProjectMembers              ScoutProjectMember[]
+  scoutFarcasterNotifications      ScoutFarcasterNotification[]
+  scoutEmailNotifications          ScoutEmailNotification[]
 
   @@index([path])
   @@index([farcasterId])
@@ -3275,17 +3277,17 @@ model BuilderCardActivity {
 }
 
 model ScoutWallet {
-  createdAt           DateTime              @default(now())
-  address             String                @unique
-  scoutId             String                @db.Uuid
-  primary             Boolean               @default(false)
-  scout               Scout                 @relation(fields: [scoutId], references: [id], onDelete: Cascade)
-  purchaseEvents      NFTPurchaseEvent[]    @relation("nftRecipientWallet")
-  saleEvents          NFTPurchaseEvent[]    @relation("nftSenderWallet")
-  scoutedNfts         ScoutNft[]
-  tokensReceived      TokensReceipt[]       @relation("tokenReceiptRecipient")
-  tokensSent          TokensReceipt[]       @relation("tokenReceiptSender")
-  PartnerRewardPayout PartnerRewardPayout[]
+  createdAt            DateTime              @default(now())
+  address              String                @unique
+  scoutId              String                @db.Uuid
+  primary              Boolean               @default(false)
+  scout                Scout                 @relation(fields: [scoutId], references: [id], onDelete: Cascade)
+  purchaseEvents       NFTPurchaseEvent[]    @relation("nftRecipientWallet")
+  saleEvents           NFTPurchaseEvent[]    @relation("nftSenderWallet")
+  scoutedNfts          ScoutNft[]
+  tokensReceived       TokensReceipt[]       @relation("tokenReceiptRecipient")
+  tokensSent           TokensReceipt[]       @relation("tokenReceiptSender")
+  partnerRewardPayouts PartnerRewardPayout[]
 
   @@index([address])
   @@index([scoutId])
@@ -3714,4 +3716,24 @@ model ScoutProjectWalletPollEvent {
   @@unique([walletId, toBlockNumber])
   @@index([walletId])
   @@index([toBlockNumber])
+}
+
+model ScoutFarcasterNotification {
+  id                String   @id @default(uuid()) @db.Uuid
+  fid               Int
+  userId            String   @db.Uuid
+  user              Scout    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  notificationType  String
+  templateVariables Json     @default("{}")
+  createdAt         DateTime @default(now())
+}
+
+model ScoutEmailNotification {
+  id                String   @id @default(uuid()) @db.Uuid
+  email             String
+  templateVariables Json
+  userId            String   @db.Uuid
+  user              Scout    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  notificationType  String
+  createdAt         DateTime @default(now())
 }
