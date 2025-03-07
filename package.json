@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.116.2-rc-feat-email-noti.1",
+  "version": "0.117.0",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
