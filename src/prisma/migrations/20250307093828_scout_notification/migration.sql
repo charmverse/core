@@ -1,6 +1,3 @@
--- CreateEnum
-CREATE TYPE "ScoutNotificationChannel" AS ENUM ('farcaster', 'email');
-
 -- CreateTable
 CREATE TABLE "ScoutFarcasterNotification" (
     "id" UUID NOT NULL,

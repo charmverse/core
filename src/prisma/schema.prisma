@@ -3702,11 +3702,6 @@ model ScoutProjectWalletPollEvent {
   @@index([toBlockNumber])
 }
 
-enum ScoutNotificationChannel {
-  farcaster
-  email
-}
-
 model ScoutFarcasterNotification {
   id                String   @id @default(uuid()) @db.Uuid
   fid               Int
