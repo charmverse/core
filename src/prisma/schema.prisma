@@ -3538,7 +3538,7 @@ model ScoutProjectWallet {
   project    ScoutProject @relation(fields: [projectId], references: [id], onDelete: Restrict)
   address    String
   chainId    Int? // for evm chains
-  chainType  ChainType?
+  chainType  ChainType
   deletedAt  DateTime?
   verifiedAt DateTime?
   verifiedBy String?      @db.Uuid
