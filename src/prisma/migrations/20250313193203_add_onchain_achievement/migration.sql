@@ -4,6 +4,9 @@ CREATE TYPE "OnchainAchievementTier" AS ENUM ('bronze', 'silver', 'gold');
 -- AlterEnum
 ALTER TYPE "BuilderEventType" ADD VALUE 'onchain_achievement';
 
+-- AlterEnum
+ALTER TYPE "GemsReceiptType" ADD VALUE 'onchain_achievement';
+
 -- AlterTable
 ALTER TABLE "BuilderEvent" ADD COLUMN     "onchainActivityEventId" UUID;
 

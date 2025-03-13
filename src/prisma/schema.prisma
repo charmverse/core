@@ -3085,6 +3085,7 @@ enum GemsReceiptType {
   regular_pr
   regular_pr_unreviewed
   daily_commit
+  onchain_achievement
 }
 
 model GemsReceipt {
