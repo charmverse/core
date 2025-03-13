@@ -2942,8 +2942,8 @@ model BuilderEvent {
   dailyClaimStreakEvent   ScoutDailyClaimStreakEvent?     @relation(fields: [dailyClaimStreakEventId], references: [id], onDelete: SetNull)
   referralCodeEvent       ReferralCodeEvent?              @relation("builderEvent")
   referralBonusEvent      ReferralCodeEvent?              @relation("bonusBuilderEvent")
-  onchainActivityEventId  String?                         @db.Uuid
-  onchainActivityEvent    ScoutProjectOnchainAchievement? @relation(fields: [onchainActivityEventId], references: [id], onDelete: SetNull)
+  onchainAchievementId    String?                         @db.Uuid
+  onchainAchievement      ScoutProjectOnchainAchievement? @relation(fields: [onchainAchievementId], references: [id], onDelete: SetNull)
 
   @@index([builderId])
   @@index([type])

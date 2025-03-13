@@ -8,7 +8,7 @@ ALTER TYPE "BuilderEventType" ADD VALUE 'onchain_achievement';
 ALTER TYPE "GemsReceiptType" ADD VALUE 'onchain_achievement';
 
 -- AlterTable
-ALTER TABLE "BuilderEvent" ADD COLUMN     "onchainActivityEventId" UUID;
+ALTER TABLE "BuilderEvent" ADD COLUMN     "onchainAchievementId" UUID;
 
 -- CreateTable
 CREATE TABLE "ScoutProjectOnchainAchievement" (
@@ -31,7 +31,7 @@ CREATE INDEX "ScoutProjectOnchainAchievement_week_idx" ON "ScoutProjectOnchainAc
 CREATE UNIQUE INDEX "ScoutProjectOnchainAchievement_projectId_week_tier_key" ON "ScoutProjectOnchainAchievement"("projectId", "week", "tier");
 
 -- AddForeignKey
-ALTER TABLE "BuilderEvent" ADD CONSTRAINT "BuilderEvent_onchainActivityEventId_fkey" FOREIGN KEY ("onchainActivityEventId") REFERENCES "ScoutProjectOnchainAchievement"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "BuilderEvent" ADD CONSTRAINT "BuilderEvent_onchainAchievementId_fkey" FOREIGN KEY ("onchainAchievementId") REFERENCES "ScoutProjectOnchainAchievement"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "ScoutProjectOnchainAchievement" ADD CONSTRAINT "ScoutProjectOnchainAchievement_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "ScoutProject"("id") ON DELETE CASCADE ON UPDATE CASCADE;
