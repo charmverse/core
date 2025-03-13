@@ -3589,18 +3589,18 @@ model ScoutProjectWalletDailyStats {
   @@index([week])
 }
 
-enum OnchainActivityTier {
+enum OnchainAchievementTier {
   bronze
   silver
   gold
 }
 
 model ScoutProjectOnchainAchievement {
-  id            String              @id @default(uuid()) @db.Uuid
-  projectId     String              @db.Uuid
-  project       ScoutProject        @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  createdAt     DateTime            @default(now())
-  tier          OnchainActivityTier
+  id            String                 @id @default(uuid()) @db.Uuid
+  projectId     String                 @db.Uuid
+  project       ScoutProject           @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdAt     DateTime               @default(now())
+  tier          OnchainAchievementTier
   week          String
   builderEvents BuilderEvent[]
 

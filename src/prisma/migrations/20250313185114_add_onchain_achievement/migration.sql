@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "OnchainActivityTier" AS ENUM ('bronze', 'silver', 'gold');
+CREATE TYPE "OnchainAchievementTier" AS ENUM ('bronze', 'silver', 'gold');
 
 -- AlterEnum
 ALTER TYPE "BuilderEventType" ADD VALUE 'onchain_achievement';
@@ -12,7 +12,7 @@ CREATE TABLE "ScoutProjectOnchainAchievement" (
     "id" UUID NOT NULL,
     "projectId" UUID NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "tier" "OnchainActivityTier" NOT NULL,
+    "tier" "OnchainAchievementTier" NOT NULL,
     "week" TEXT NOT NULL,
 
     CONSTRAINT "ScoutProjectOnchainAchievement_pkey" PRIMARY KEY ("id")
