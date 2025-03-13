@@ -2909,9 +2909,7 @@ enum BuilderEventType {
   social_quest
   referral
   referral_bonus
-  onchain_activity_bronze
-  onchain_activity_silver
-  onchain_activity_gold
+  onchain_activity
 }
 
 model BuilderEvent {
