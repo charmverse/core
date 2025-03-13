@@ -2909,38 +2909,41 @@ enum BuilderEventType {
   social_quest
   referral
   referral_bonus
+  onchain_achievement
 }
 
 model BuilderEvent {
-  id                      String                      @id @default(uuid()) @db.Uuid
-  builderId               String                      @db.Uuid
-  builder                 Scout                       @relation(fields: [builderId], references: [id], onDelete: Cascade)
+  id                      String                          @id @default(uuid()) @db.Uuid
+  builderId               String                          @db.Uuid
+  builder                 Scout                           @relation(fields: [builderId], references: [id], onDelete: Cascade)
   type                    BuilderEventType
   week                    String
   season                  String
-  createdAt               DateTime                    @default(now())
+  createdAt               DateTime                        @default(now())
   description             String? // for misc_event type
   bonusPartner            String?
-  githubEventId           String?                     @unique @db.Uuid
-  githubEvent             GithubEvent?                @relation(fields: [githubEventId], references: [id], onDelete: SetNull)
-  gemsPayoutEventId       String?                     @unique @db.Uuid
-  gemsPayoutEvent         GemsPayoutEvent?            @relation(fields: [gemsPayoutEventId], references: [id], onDelete: SetNull)
-  nftPurchaseEventId      String?                     @unique @db.Uuid
-  nftPurchaseEvent        NFTPurchaseEvent?           @relation(fields: [nftPurchaseEventId], references: [id], onDelete: SetNull)
+  githubEventId           String?                         @unique @db.Uuid
+  githubEvent             GithubEvent?                    @relation(fields: [githubEventId], references: [id], onDelete: SetNull)
+  gemsPayoutEventId       String?                         @unique @db.Uuid
+  gemsPayoutEvent         GemsPayoutEvent?                @relation(fields: [gemsPayoutEventId], references: [id], onDelete: SetNull)
+  nftPurchaseEventId      String?                         @unique @db.Uuid
+  nftPurchaseEvent        NFTPurchaseEvent?               @relation(fields: [nftPurchaseEventId], references: [id], onDelete: SetNull)
   pointsReceipts          PointsReceipt[]
   gemsReceipt             GemsReceipt?
   // If deleting a weekly claim, we want to delete the builder event
-  weeklyClaimId           String?                     @db.Uuid
-  weeklyClaim             WeeklyClaims?               @relation(fields: [weeklyClaimId], references: [id], onDelete: Cascade)
+  weeklyClaimId           String?                         @db.Uuid
+  weeklyClaim             WeeklyClaims?                   @relation(fields: [weeklyClaimId], references: [id], onDelete: Cascade)
   tokensReceipts          TokensReceipt[]
-  scoutSocialQuestId      String?                     @unique @db.Uuid
-  scoutSocialQuest        ScoutSocialQuest?           @relation(fields: [scoutSocialQuestId], references: [id], onDelete: SetNull)
-  dailyClaimEventId       String?                     @unique @db.Uuid
-  dailyClaimEvent         ScoutDailyClaimEvent?       @relation(fields: [dailyClaimEventId], references: [id], onDelete: SetNull)
-  dailyClaimStreakEventId String?                     @unique @db.Uuid
-  dailyClaimStreakEvent   ScoutDailyClaimStreakEvent? @relation(fields: [dailyClaimStreakEventId], references: [id], onDelete: SetNull)
-  referralCodeEvent       ReferralCodeEvent?          @relation("builderEvent")
-  referralBonusEvent      ReferralCodeEvent?          @relation("bonusBuilderEvent")
+  scoutSocialQuestId      String?                         @unique @db.Uuid
+  scoutSocialQuest        ScoutSocialQuest?               @relation(fields: [scoutSocialQuestId], references: [id], onDelete: SetNull)
+  dailyClaimEventId       String?                         @unique @db.Uuid
+  dailyClaimEvent         ScoutDailyClaimEvent?           @relation(fields: [dailyClaimEventId], references: [id], onDelete: SetNull)
+  dailyClaimStreakEventId String?                         @unique @db.Uuid
+  dailyClaimStreakEvent   ScoutDailyClaimStreakEvent?     @relation(fields: [dailyClaimStreakEventId], references: [id], onDelete: SetNull)
+  referralCodeEvent       ReferralCodeEvent?              @relation("builderEvent")
+  referralBonusEvent      ReferralCodeEvent?              @relation("bonusBuilderEvent")
+  onchainAchievementId    String?                         @db.Uuid
+  onchainAchievement      ScoutProjectOnchainAchievement? @relation(fields: [onchainAchievementId], references: [id], onDelete: SetNull)
 
   @@index([builderId])
   @@index([type])
@@ -3082,6 +3085,7 @@ enum GemsReceiptType {
   regular_pr
   regular_pr_unreviewed
   daily_commit
+  onchain_achievement
 }
 
 model GemsReceipt {
@@ -3445,20 +3449,21 @@ model AgentTelegramMessage {
 }
 
 model ScoutProject {
-  id          String                 @id @default(uuid()) @db.Uuid
-  createdAt   DateTime               @default(now())
-  updatedAt   DateTime               @updatedAt
-  name        String
-  avatar      String                 @default("")
-  path        String                 @default("")
-  description String                 @default("")
-  website     String                 @default("")
-  github      String                 @default("")
-  deletedAt   DateTime?
-  members     ScoutProjectMember[]
-  contracts   ScoutProjectContract[]
-  deployers   ScoutProjectDeployer[]
-  wallets     ScoutProjectWallet[]
+  id                  String                           @id @default(uuid()) @db.Uuid
+  createdAt           DateTime                         @default(now())
+  updatedAt           DateTime                         @updatedAt
+  name                String
+  avatar              String                           @default("")
+  path                String                           @default("")
+  description         String                           @default("")
+  website             String                           @default("")
+  github              String                           @default("")
+  deletedAt           DateTime?
+  members             ScoutProjectMember[]
+  contracts           ScoutProjectContract[]
+  deployers           ScoutProjectDeployer[]
+  wallets             ScoutProjectWallet[]
+  onchainAchievements ScoutProjectOnchainAchievement[]
 
   @@unique([path])
   @@index([deletedAt])
@@ -3582,6 +3587,26 @@ model ScoutProjectWalletDailyStats {
   @@unique([walletId, day])
   @@index([walletId])
   @@index([day])
+  @@index([week])
+}
+
+enum OnchainAchievementTier {
+  bronze
+  silver
+  gold
+}
+
+model ScoutProjectOnchainAchievement {
+  id            String                 @id @default(uuid()) @db.Uuid
+  projectId     String                 @db.Uuid
+  project       ScoutProject           @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdAt     DateTime               @default(now())
+  tier          OnchainAchievementTier
+  week          String
+  builderEvents BuilderEvent[]
+
+  @@unique([projectId, week, tier])
+  @@index([projectId])
   @@index([week])
 }
 
