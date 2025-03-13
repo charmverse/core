@@ -5,7 +5,16 @@ CREATE TYPE "OnchainAchievementTier" AS ENUM ('bronze', 'silver', 'gold');
 ALTER TYPE "BuilderEventType" ADD VALUE 'onchain_achievement';
 
 -- AlterEnum
-ALTER TYPE "GemsReceiptType" ADD VALUE 'onchain_achievement';
+-- This migration adds more than one value to an enum.
+-- With PostgreSQL versions 11 and earlier, this is not possible
+-- in a single migration. This can be worked around by creating
+-- multiple migrations, each migration adding only one value to
+-- the enum.
+
+
+ALTER TYPE "GemsReceiptType" ADD VALUE 'onchain_bronze_achievement';
+ALTER TYPE "GemsReceiptType" ADD VALUE 'onchain_silver_achievement';
+ALTER TYPE "GemsReceiptType" ADD VALUE 'onchain_gold_achievement';
 
 -- AlterTable
 ALTER TABLE "BuilderEvent" ADD COLUMN     "onchainAchievementId" UUID;
