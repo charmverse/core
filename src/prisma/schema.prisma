@@ -3156,7 +3156,7 @@ model BuilderNft {
   chainId                  Int
   season                   String
   nftType                  BuilderNftType     @default(default)
-  currentPrice             BigInt
+  currentPrice             BigInt?
   currentPriceInScoutToken String?
   contractAddress          String
   tokenId                  Int
