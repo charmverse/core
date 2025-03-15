@@ -3304,7 +3304,7 @@ model WeeklyClaims {
   season         String
   week           String         @unique
   merkleTreeRoot String
-  totalClaimable Int
+  totalClaimable String
   claims         Json
   proofsMap      Json
   builderEvents  BuilderEvent[]
