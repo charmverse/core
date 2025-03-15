@@ -3313,7 +3313,7 @@ model WeeklyClaims {
 model TokensReceipt {
   id                     String              @id @default(uuid()) @db.Uuid
   createdAt              DateTime            @default(now())
-  value                  Int
+  value                  String // Amount in wei (18 decimals)
   claimedAt              DateTime?
   claimTxHash            String?
   eventId                String              @db.Uuid
