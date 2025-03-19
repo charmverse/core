@@ -5,7 +5,7 @@ CREATE TABLE "ScoutAppNotification" (
     "notificationType" TEXT NOT NULL,
     "read" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "meta" JSONB NOT NULL,
+    "templateVariables" JSONB NOT NULL,
 
     CONSTRAINT "ScoutAppNotification_pkey" PRIMARY KEY ("id")
 );
