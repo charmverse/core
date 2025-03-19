@@ -2849,6 +2849,7 @@ model Scout {
   scoutProjectMembers              ScoutProjectMember[]
   scoutFarcasterNotifications      ScoutFarcasterNotification[]
   scoutEmailNotifications          ScoutEmailNotification[]
+  scoutAppNotifications            ScoutAppNotification[]
 
   @@index([path])
   @@index([farcasterId])
@@ -3761,4 +3762,13 @@ model ScoutEmailNotification {
   user              Scout    @relation(fields: [userId], references: [id], onDelete: Cascade)
   notificationType  String
   createdAt         DateTime @default(now())
+}
+
+model ScoutAppNotification {
+  id               String   @id @default(uuid()) @db.Uuid
+  userId           String   @db.Uuid
+  user             Scout    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  notificationType String
+  createdAt        DateTime @default(now())
+  meta             Json
 }
