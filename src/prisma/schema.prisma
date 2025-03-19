@@ -3769,6 +3769,7 @@ model ScoutAppNotification {
   userId           String   @db.Uuid
   user             Scout    @relation(fields: [userId], references: [id], onDelete: Cascade)
   notificationType String
+  read             Boolean  @default(false)
   createdAt        DateTime @default(now())
   meta             Json
 }
