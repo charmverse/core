@@ -3285,8 +3285,6 @@ model ScoutWallet {
   address              String                @unique
   scoutId              String                @db.Uuid
   primary              Boolean               @default(false)
-  blacklisted          Boolean               @default(false)
-  blacklistedCheckedAt DateTime?
   scout                Scout                 @relation(fields: [scoutId], references: [id], onDelete: Cascade)
   purchaseEvents       NFTPurchaseEvent[]    @relation("nftRecipientWallet")
   saleEvents           NFTPurchaseEvent[]    @relation("nftSenderWallet")
@@ -3298,6 +3296,14 @@ model ScoutWallet {
   @@index([address])
   @@index([scoutId])
   @@index([primary, scoutId])
+}
+
+model WalletSanctionStatus {
+  address      String   @id
+  isSanctioned Boolean  @default(false)
+  checkedAt    DateTime @default(now())
+
+  @@unique([address])
 }
 
 model WeeklyClaims {
