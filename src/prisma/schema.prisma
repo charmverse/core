@@ -3285,6 +3285,8 @@ model ScoutWallet {
   address              String                @unique
   scoutId              String                @db.Uuid
   primary              Boolean               @default(false)
+  blacklisted          Boolean               @default(false)
+  blacklistedCheckedAt DateTime?
   scout                Scout                 @relation(fields: [scoutId], references: [id], onDelete: Cascade)
   purchaseEvents       NFTPurchaseEvent[]    @relation("nftRecipientWallet")
   saleEvents           NFTPurchaseEvent[]    @relation("nftSenderWallet")
