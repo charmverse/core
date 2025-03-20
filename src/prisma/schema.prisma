@@ -2849,6 +2849,8 @@ model Scout {
   scoutProjectMembers              ScoutProjectMember[]
   scoutFarcasterNotifications      ScoutFarcasterNotification[]
   scoutEmailNotifications          ScoutEmailNotification[]
+  ScoutMatchUp                     ScoutMatchUp[]
+  ScoutMatchUpSelection            ScoutMatchUpSelection[]
 
   @@index([path])
   @@index([farcasterId])
@@ -2910,6 +2912,7 @@ enum BuilderEventType {
   referral
   referral_bonus
   onchain_achievement
+  matchup_winner
 }
 
 model BuilderEvent {
@@ -3761,4 +3764,32 @@ model ScoutEmailNotification {
   user              Scout    @relation(fields: [userId], references: [id], onDelete: Cascade)
   notificationType  String
   createdAt         DateTime @default(now())
+}
+
+model ScoutMatchUp {
+  id         String                  @id @default(uuid()) @db.Uuid
+  scoutId    String                  @db.Uuid
+  scout      Scout                   @relation(fields: [scoutId], references: [id], onDelete: Cascade)
+  week       String
+  totalScore Int                     @default(0)
+  createdAt  DateTime                @default(now())
+  selections ScoutMatchUpSelection[]
+  rank       Int?
+
+  @@unique([scoutId, week])
+  @@index([scoutId])
+  @@index([week])
+}
+
+model ScoutMatchUpSelection {
+  id         String       @id @default(uuid()) @db.Uuid
+  matchUpId  String       @db.Uuid
+  matchUp    ScoutMatchUp @relation(fields: [matchUpId], references: [id], onDelete: Cascade)
+  builderId  String       @db.Uuid
+  builder    Scout        @relation(fields: [builderId], references: [id], onDelete: Cascade)
+  gemsEarned Int          @default(0)
+
+  @@unique([matchUpId, builderId])
+  @@index([matchUpId])
+  @@index([builderId])
 }
