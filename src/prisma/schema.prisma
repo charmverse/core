@@ -3302,8 +3302,6 @@ model WalletSanctionStatus {
   address      String   @id
   isSanctioned Boolean  @default(false)
   checkedAt    DateTime @default(now())
-
-  @@unique([address])
 }
 
 model WeeklyClaims {

@@ -6,6 +6,3 @@ CREATE TABLE "WalletSanctionStatus" (
 
     CONSTRAINT "WalletSanctionStatus_pkey" PRIMARY KEY ("address")
 );
-
--- CreateIndex
-CREATE UNIQUE INDEX "WalletSanctionStatus_address_key" ON "WalletSanctionStatus"("address");
