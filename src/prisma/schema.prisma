@@ -3299,15 +3299,16 @@ model ScoutWallet {
 }
 
 model WeeklyClaims {
-  id             String         @id @default(uuid()) @db.Uuid
-  createdAt      DateTime       @default(now())
-  season         String
-  week           String         @unique
-  merkleTreeRoot String
-  totalClaimable String
-  claims         Json
-  proofsMap      Json
-  builderEvents  BuilderEvent[]
+  id                         String         @id @default(uuid()) @db.Uuid
+  createdAt                  DateTime       @default(now())
+  season                     String
+  week                       String         @unique
+  merkleTreeRoot             String
+  totalClaimable             Int?
+  totalClaimableInScoutToken String?
+  claims                     Json
+  proofsMap                  Json
+  builderEvents              BuilderEvent[]
 }
 
 model TokensReceipt {
