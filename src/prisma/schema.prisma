@@ -3281,27 +3281,23 @@ model BuilderCardActivity {
 }
 
 model ScoutWallet {
-  createdAt            DateTime              @default(now())
-  address              String                @unique
-  scoutId              String                @db.Uuid
-  primary              Boolean               @default(false)
-  scout                Scout                 @relation(fields: [scoutId], references: [id], onDelete: Cascade)
-  purchaseEvents       NFTPurchaseEvent[]    @relation("nftRecipientWallet")
-  saleEvents           NFTPurchaseEvent[]    @relation("nftSenderWallet")
-  scoutedNfts          ScoutNft[]
-  tokensReceived       TokensReceipt[]       @relation("tokenReceiptRecipient")
-  tokensSent           TokensReceipt[]       @relation("tokenReceiptSender")
-  partnerRewardPayouts PartnerRewardPayout[]
+  createdAt             DateTime              @default(now())
+  address               String                @unique
+  scoutId               String                @db.Uuid
+  primary               Boolean               @default(false)
+  isSanctioned          Boolean               @default(false)
+  lastSanctionCheckedAt DateTime?
+  scout                 Scout                 @relation(fields: [scoutId], references: [id], onDelete: Cascade)
+  purchaseEvents        NFTPurchaseEvent[]    @relation("nftRecipientWallet")
+  saleEvents            NFTPurchaseEvent[]    @relation("nftSenderWallet")
+  scoutedNfts           ScoutNft[]
+  tokensReceived        TokensReceipt[]       @relation("tokenReceiptRecipient")
+  tokensSent            TokensReceipt[]       @relation("tokenReceiptSender")
+  partnerRewardPayouts  PartnerRewardPayout[]
 
   @@index([address])
   @@index([scoutId])
   @@index([primary, scoutId])
-}
-
-model WalletSanctionStatus {
-  address      String   @id
-  isSanctioned Boolean  @default(false)
-  checkedAt    DateTime @default(now())
 }
 
 model WeeklyClaims {
