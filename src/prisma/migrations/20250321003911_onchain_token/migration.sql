@@ -1,5 +1,7 @@
 -- AlterTable
-ALTER TABLE "BuilderNft" ALTER COLUMN "currentPrice" DROP NOT NULL;
+ALTER TABLE "BuilderNft" ADD COLUMN     "estimatedPayoutInScoutToken" TEXT,
+ALTER COLUMN "currentPrice" DROP NOT NULL,
+ALTER COLUMN "estimatedPayout" DROP NOT NULL;
 
 -- AlterTable
 ALTER TABLE "TokensReceipt" ALTER COLUMN "value" SET DATA TYPE TEXT;
