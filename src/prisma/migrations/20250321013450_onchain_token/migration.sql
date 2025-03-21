@@ -4,6 +4,10 @@ ALTER COLUMN "currentPrice" DROP NOT NULL,
 ALTER COLUMN "estimatedPayout" DROP NOT NULL;
 
 -- AlterTable
+ALTER TABLE "Scout" ADD COLUMN     "currentBalanceInScoutToken" TEXT DEFAULT '0',
+ALTER COLUMN "currentBalance" DROP NOT NULL;
+
+-- AlterTable
 ALTER TABLE "TokensReceipt" ALTER COLUMN "value" SET DATA TYPE TEXT;
 
 -- AlterTable

@@ -2814,7 +2814,8 @@ model Scout {
   sendTransactionEmails            Boolean                      @default(true)
   agreedToTermsAt                  DateTime?
   onboardedAt                      DateTime?
-  currentBalance                   Int                          @default(0)
+  currentBalance                   Int?                         @default(0)
+  currentBalanceInScoutToken       String?                      @default("0")
   hasMoxieProfile                  Boolean                      @default(false)
   utmCampaign                      String?
   framesNotificationToken          String?
