@@ -3752,6 +3752,8 @@ model ScoutFarcasterNotification {
   notificationType  String
   templateVariables Json     @default("{}")
   createdAt         DateTime @default(now())
+
+  @@index([userId])
 }
 
 model ScoutEmailNotification {
@@ -3762,6 +3764,8 @@ model ScoutEmailNotification {
   user              Scout    @relation(fields: [userId], references: [id], onDelete: Cascade)
   notificationType  String
   createdAt         DateTime @default(now())
+
+  @@index([userId])
 }
 
 model ScoutAppNotification {
@@ -3772,4 +3776,7 @@ model ScoutAppNotification {
   read              Boolean  @default(false)
   createdAt         DateTime @default(now())
   templateVariables Json
+
+  @@index([userId])
+  @@index([read])
 }
