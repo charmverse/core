@@ -3105,6 +3105,7 @@ model GemsReceipt {
 }
 
 model UserWeeklyStats {
+  id            Int      @id @default(autoincrement())
   lastUpdated   DateTime @default(now())
   userId        String   @db.Uuid
   user          Scout    @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -3114,10 +3115,13 @@ model UserWeeklyStats {
   rank          Int?
 
   @@unique([userId, week])
+  // for sorting
+  @@unique([id, gemsCollected, season])
   @@index([userId])
 }
 
 model UserSeasonStats {
+  id                    Int      @id @default(autoincrement())
   lastUpdated           DateTime @default(now())
   userId                String   @db.Uuid
   user                  Scout    @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -3131,6 +3135,8 @@ model UserSeasonStats {
   level                 Int      @default(0)
 
   @@unique([userId, season])
+  // for sorting
+  @@unique([id, level, season])
   @@index([userId])
 }
 
@@ -3171,6 +3177,8 @@ model BuilderNft {
   @@unique([contractAddress, tokenId, chainId])
   // Only 1 builder token per season
   @@unique([builderId, season, nftType])
+  @@unique([currentPrice, createdAt, season, nftType]) // for sorting by price
+  @@unique([estimatedPayout, createdAt, season, nftType]) // for sorting by est payout
   @@index([builderId])
   @@index([season, nftType])
 }
