@@ -143,6 +143,7 @@
     "typescript": "^5.4.2"
   },
   "dependencies": {
+    "@charmverse/core": "^0.119.0",
     "@datadog/browser-logs": "^6.1.0",
     "@ethereum-attestation-service/eas-sdk": "^2.7.0",
     "@prisma/client": "^5.7.1",
