@@ -3115,8 +3115,7 @@ model UserWeeklyStats {
   rank          Int?
 
   @@unique([userId, week])
-  // for sorting
-  @@unique([id, gemsCollected, season])
+  @@unique([id, gemsCollected]) // for sorting by gems
   @@index([userId])
 }
 
@@ -3133,10 +3132,11 @@ model UserSeasonStats {
   nftsSold              Int?     @default(0)
   nftsPurchased         Int      @default(0)
   level                 Int      @default(0)
+  // for sorting 
 
   @@unique([userId, season])
-  // for sorting
-  @@unique([id, level, season])
+  @@unique([id, level]) // for sorting by level
+  @@unique([pointsEarnedAsScout, nftsPurchased, id]) // for sorting by pointsEarnedAsScout
   @@index([userId])
 }
 
@@ -3177,8 +3177,8 @@ model BuilderNft {
   @@unique([contractAddress, tokenId, chainId])
   // Only 1 builder token per season
   @@unique([builderId, season, nftType])
-  @@unique([currentPrice, createdAt, season, nftType]) // for sorting by price
-  @@unique([estimatedPayout, createdAt, season, nftType]) // for sorting by est payout
+  @@unique([currentPrice, createdAt]) // for sorting by price
+  @@unique([estimatedPayout, createdAt]) // for sorting by est payout
   @@index([builderId])
   @@index([season, nftType])
 }
