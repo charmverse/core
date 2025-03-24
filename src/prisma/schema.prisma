@@ -3132,7 +3132,6 @@ model UserSeasonStats {
   nftsSold              Int?     @default(0)
   nftsPurchased         Int      @default(0)
   level                 Int      @default(0)
-  // for sorting 
 
   @@unique([userId, season])
   @@unique([id, level]) // for sorting by level
