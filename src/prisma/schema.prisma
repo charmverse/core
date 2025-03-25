@@ -2814,7 +2814,8 @@ model Scout {
   sendTransactionEmails            Boolean                      @default(true)
   agreedToTermsAt                  DateTime?
   onboardedAt                      DateTime?
-  currentBalance                   Int                          @default(0)
+  currentBalance                   Int?                         @default(0)
+  currentBalanceDevToken           String?                      @default("0")
   hasMoxieProfile                  Boolean                      @default(false)
   utmCampaign                      String?
   framesNotificationToken          String?
@@ -3155,22 +3156,23 @@ enum BuilderNftType {
 }
 
 model BuilderNft {
-  id                       String             @id @default(uuid()) @db.Uuid
-  createdAt                DateTime           @default(now())
-  builderId                String             @db.Uuid
-  builder                  Scout              @relation(fields: [builderId], references: [id], onDelete: Cascade)
-  chainId                  Int
-  season                   String
-  nftType                  BuilderNftType     @default(default)
-  currentPrice             BigInt
-  currentPriceInScoutToken String?
-  contractAddress          String
-  tokenId                  Int
-  imageUrl                 String
-  congratsImageUrl         String?
-  estimatedPayout          Int                @default(0)
-  nftSoldEvents            NFTPurchaseEvent[]
-  nftOwners                ScoutNft[]
+  id                      String             @id @default(uuid()) @db.Uuid
+  createdAt               DateTime           @default(now())
+  builderId               String             @db.Uuid
+  builder                 Scout              @relation(fields: [builderId], references: [id], onDelete: Cascade)
+  chainId                 Int
+  season                  String
+  nftType                 BuilderNftType     @default(default)
+  currentPrice            BigInt?
+  currentPriceDevToken    String?
+  contractAddress         String
+  tokenId                 Int
+  imageUrl                String
+  congratsImageUrl        String?
+  estimatedPayout         Int?               @default(0)
+  estimatedPayoutDevToken String?
+  nftSoldEvents           NFTPurchaseEvent[]
+  nftOwners               ScoutNft[]
 
   // Don't allow registering the same token id twice
   @@unique([contractAddress, tokenId, chainId])
@@ -3309,21 +3311,22 @@ model ScoutWallet {
 }
 
 model WeeklyClaims {
-  id             String         @id @default(uuid()) @db.Uuid
-  createdAt      DateTime       @default(now())
-  season         String
-  week           String         @unique
-  merkleTreeRoot String
-  totalClaimable Int
-  claims         Json
-  proofsMap      Json
-  builderEvents  BuilderEvent[]
+  id                     String         @id @default(uuid()) @db.Uuid
+  createdAt              DateTime       @default(now())
+  season                 String
+  week                   String         @unique
+  merkleTreeRoot         String
+  totalClaimable         Int?
+  totalClaimableDevToken String?
+  claims                 Json
+  proofsMap              Json
+  builderEvents          BuilderEvent[]
 }
 
 model TokensReceipt {
   id                     String              @id @default(uuid()) @db.Uuid
   createdAt              DateTime            @default(now())
-  value                  Int
+  value                  String // Amount in wei (18 decimals)
   claimedAt              DateTime?
   claimTxHash            String?
   eventId                String              @db.Uuid
