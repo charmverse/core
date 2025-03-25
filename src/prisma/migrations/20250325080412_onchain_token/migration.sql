@@ -19,5 +19,5 @@ ALTER COLUMN "currentBalance" DROP NOT NULL;
 ALTER TABLE "TokensReceipt" ALTER COLUMN "value" SET DATA TYPE TEXT;
 
 -- AlterTable
-ALTER TABLE "WeeklyClaims" ADD COLUMN     "totalClaimableInDevToken" TEXT,
+ALTER TABLE "WeeklyClaims" ADD COLUMN     "totalClaimableDevToken" TEXT,
 ALTER COLUMN "totalClaimable" DROP NOT NULL;
