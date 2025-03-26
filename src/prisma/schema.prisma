@@ -2851,6 +2851,8 @@ model Scout {
   scoutFarcasterNotifications      ScoutFarcasterNotification[]
   scoutEmailNotifications          ScoutEmailNotification[]
   scoutAppNotifications            ScoutAppNotification[]
+  draftSeasonOffers                DraftSeasonOffer[]           @relation("maker")
+  draftSeasonOffersReceived        DraftSeasonOffer[]           @relation("developer")
 
   @@index([path])
   @@index([farcasterId])
@@ -3791,4 +3793,32 @@ model ScoutAppNotification {
 
   @@index([userId])
   @@index([read])
+}
+
+enum DecentTxStatus {
+  initial // waiting for user signature
+  pending
+  success
+  failed
+}
+
+model DraftSeasonOffer {
+  id           String         @id @default(uuid()) @db.Uuid
+  season       String
+  value        String // Dev Tokens
+  developerId  String         @db.Uuid // link to a builder, not an NFT, in case we havent minted them yet
+  developer    Scout          @relation("developer", fields: [developerId], references: [id], onDelete: Cascade)
+  createdAt    DateTime       @default(now())
+  createdBy    String         @db.Uuid
+  maker        Scout          @relation("maker", fields: [createdBy], references: [id], onDelete: Cascade)
+  status       DecentTxStatus
+  decentError  Json?
+  decentTxHash String?
+  txHash       String?
+  chainId      Int
+
+  @@index([season])
+  @@index([developerId])
+  @@index([status])
+  @@index([createdBy])
 }
