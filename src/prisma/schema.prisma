@@ -2851,8 +2851,7 @@ model Scout {
   scoutFarcasterNotifications      ScoutFarcasterNotification[]
   scoutEmailNotifications          ScoutEmailNotification[]
   scoutAppNotifications            ScoutAppNotification[]
-  draftSeasonOffers                DraftSeasonOffer[]           @relation("maker")
-  draftSeasonOffersReceived        DraftSeasonOffer[]           @relation("developer")
+  draftSeasonOffersReceived        DraftSeasonOffer[]
 
   @@index([path])
   @@index([farcasterId])
@@ -3306,6 +3305,7 @@ model ScoutWallet {
   tokensReceived        TokensReceipt[]       @relation("tokenReceiptRecipient")
   tokensSent            TokensReceipt[]       @relation("tokenReceiptSender")
   partnerRewardPayouts  PartnerRewardPayout[]
+  draftSeasonOffers     DraftSeasonOffer[]
 
   @@index([address])
   @@index([scoutId])
@@ -3803,20 +3803,21 @@ enum DecentTxStatus {
 }
 
 model DraftSeasonOffer {
-  id            String         @id @default(uuid()) @db.Uuid
-  season        String
-  value         String // Dev Tokens
-  developerId   String         @db.Uuid // link to a builder, not an NFT, in case we havent minted them yet
-  developer     Scout          @relation("developer", fields: [developerId], references: [id], onDelete: Cascade)
-  createdAt     DateTime       @default(now())
-  createdBy     String         @db.Uuid
-  maker         Scout          @relation("maker", fields: [createdBy], references: [id], onDelete: Cascade)
-  status        DecentTxStatus
-  decentError   Json?
-  decentTxHash  String?
-  txHash        String?
-  chainId       Int
-  decentPayload Json
+  id                 String         @id @default(uuid()) @db.Uuid
+  season             String
+  value              String // Dev Tokens
+  developerId        String         @db.Uuid // link to a builder, not an NFT, in case we havent minted them yet
+  developer          Scout          @relation(fields: [developerId], references: [id], onDelete: Cascade)
+  createdAt          DateTime       @default(now())
+  createdBy          String         @db.Uuid
+  makerWalletAddress String
+  makerWallet        ScoutWallet    @relation(fields: [makerWalletAddress], references: [address], onDelete: Cascade)
+  status             DecentTxStatus
+  decentError        Json?
+  decentTxHash       String?
+  txHash             String?
+  chainId            Int
+  decentPayload      Json
 
   @@index([season])
   @@index([developerId])
