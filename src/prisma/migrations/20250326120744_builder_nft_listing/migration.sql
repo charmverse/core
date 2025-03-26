@@ -12,6 +12,8 @@ CREATE TABLE "BuilderNftListing" (
     "cancelledAt" TIMESTAMP(3),
     "buyerWallet" TEXT,
     "scoutWalletAddress" TEXT,
+    "orderHash" TEXT,
+    "order" JSONB,
 
     CONSTRAINT "BuilderNftListing_pkey" PRIMARY KEY ("id")
 );

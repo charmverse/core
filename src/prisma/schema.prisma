@@ -3814,6 +3814,8 @@ model BuilderNftListing {
   buyer              ScoutWallet? @relation("buyerWallet", fields: [buyerWallet], references: [address], onDelete: SetNull)
   ScoutWallet        ScoutWallet? @relation(fields: [scoutWalletAddress], references: [address])
   scoutWalletAddress String?
+  orderHash          String?
+  order              Json?
 
   @@index([builderNftId])
   @@index([sellerWallet])
