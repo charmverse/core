@@ -17,7 +17,7 @@ CREATE TABLE "ScoutMatchUp" (
 CREATE TABLE "ScoutMatchUpSelection" (
     "id" UUID NOT NULL,
     "matchUpId" UUID NOT NULL,
-    "builderId" UUID NOT NULL,
+    "developerId" UUID NOT NULL,
     "gemsEarned" INTEGER NOT NULL DEFAULT 0,
 
     CONSTRAINT "ScoutMatchUpSelection_pkey" PRIMARY KEY ("id")
@@ -36,10 +36,10 @@ CREATE UNIQUE INDEX "ScoutMatchUp_scoutId_week_key" ON "ScoutMatchUp"("scoutId",
 CREATE INDEX "ScoutMatchUpSelection_matchUpId_idx" ON "ScoutMatchUpSelection"("matchUpId");
 
 -- CreateIndex
-CREATE INDEX "ScoutMatchUpSelection_builderId_idx" ON "ScoutMatchUpSelection"("builderId");
+CREATE INDEX "ScoutMatchUpSelection_developerId_idx" ON "ScoutMatchUpSelection"("developerId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "ScoutMatchUpSelection_matchUpId_builderId_key" ON "ScoutMatchUpSelection"("matchUpId", "builderId");
+CREATE UNIQUE INDEX "ScoutMatchUpSelection_matchUpId_developerId_key" ON "ScoutMatchUpSelection"("matchUpId", "developerId");
 
 -- AddForeignKey
 ALTER TABLE "ScoutMatchUp" ADD CONSTRAINT "ScoutMatchUp_scoutId_fkey" FOREIGN KEY ("scoutId") REFERENCES "Scout"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -48,4 +48,4 @@ ALTER TABLE "ScoutMatchUp" ADD CONSTRAINT "ScoutMatchUp_scoutId_fkey" FOREIGN KE
 ALTER TABLE "ScoutMatchUpSelection" ADD CONSTRAINT "ScoutMatchUpSelection_matchUpId_fkey" FOREIGN KEY ("matchUpId") REFERENCES "ScoutMatchUp"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "ScoutMatchUpSelection" ADD CONSTRAINT "ScoutMatchUpSelection_builderId_fkey" FOREIGN KEY ("builderId") REFERENCES "Scout"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "ScoutMatchUpSelection" ADD CONSTRAINT "ScoutMatchUpSelection_developerId_fkey" FOREIGN KEY ("developerId") REFERENCES "Scout"("id") ON DELETE CASCADE ON UPDATE CASCADE;

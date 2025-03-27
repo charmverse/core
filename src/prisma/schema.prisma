@@ -2810,11 +2810,13 @@ model Scout {
   avatar                           String?
   bio                              String?
   builderStatus                    BuilderStatus?
+  reappliedAt                      DateTime?
   sendMarketing                    Boolean                      @default(false)
   sendTransactionEmails            Boolean                      @default(true)
   agreedToTermsAt                  DateTime?
   onboardedAt                      DateTime?
-  currentBalance                   Int                          @default(0)
+  currentBalance                   Int?                         @default(0)
+  currentBalanceDevToken           String?                      @default("0")
   hasMoxieProfile                  Boolean                      @default(false)
   utmCampaign                      String?
   framesNotificationToken          String?
@@ -2849,8 +2851,9 @@ model Scout {
   scoutProjectMembers              ScoutProjectMember[]
   scoutFarcasterNotifications      ScoutFarcasterNotification[]
   scoutEmailNotifications          ScoutEmailNotification[]
-  ScoutMatchUp                     ScoutMatchUp[]
-  ScoutMatchUpSelection            ScoutMatchUpSelection[]
+  matchUps                         ScoutMatchUp[]
+  matchUpSelections                ScoutMatchUpSelection[]
+  scoutAppNotifications            ScoutAppNotification[]
 
   @@index([path])
   @@index([farcasterId])
@@ -3107,6 +3110,7 @@ model GemsReceipt {
 }
 
 model UserWeeklyStats {
+  id            Int      @id @default(autoincrement())
   lastUpdated   DateTime @default(now())
   userId        String   @db.Uuid
   user          Scout    @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -3116,10 +3120,12 @@ model UserWeeklyStats {
   rank          Int?
 
   @@unique([userId, week])
+  @@unique([id, gemsCollected]) // for sorting by gems
   @@index([userId])
 }
 
 model UserSeasonStats {
+  id                    Int      @id @default(autoincrement())
   lastUpdated           DateTime @default(now())
   userId                String   @db.Uuid
   user                  Scout    @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -3133,6 +3139,8 @@ model UserSeasonStats {
   level                 Int      @default(0)
 
   @@unique([userId, season])
+  @@unique([id, level]) // for sorting by level
+  @@unique([pointsEarnedAsScout, nftsPurchased, id]) // for sorting by pointsEarnedAsScout
   @@index([userId])
 }
 
@@ -3152,27 +3160,30 @@ enum BuilderNftType {
 }
 
 model BuilderNft {
-  id                       String             @id @default(uuid()) @db.Uuid
-  createdAt                DateTime           @default(now())
-  builderId                String             @db.Uuid
-  builder                  Scout              @relation(fields: [builderId], references: [id], onDelete: Cascade)
-  chainId                  Int
-  season                   String
-  nftType                  BuilderNftType     @default(default)
-  currentPrice             BigInt
-  currentPriceInScoutToken String?
-  contractAddress          String
-  tokenId                  Int
-  imageUrl                 String
-  congratsImageUrl         String?
-  estimatedPayout          Int                @default(0)
-  nftSoldEvents            NFTPurchaseEvent[]
-  nftOwners                ScoutNft[]
+  id                      String             @id @default(uuid()) @db.Uuid
+  createdAt               DateTime           @default(now())
+  builderId               String             @db.Uuid
+  builder                 Scout              @relation(fields: [builderId], references: [id], onDelete: Cascade)
+  chainId                 Int
+  season                  String
+  nftType                 BuilderNftType     @default(default)
+  currentPrice            BigInt?
+  currentPriceDevToken    String?
+  contractAddress         String
+  tokenId                 Int
+  imageUrl                String
+  congratsImageUrl        String?
+  estimatedPayout         Int?               @default(0)
+  estimatedPayoutDevToken String?
+  nftSoldEvents           NFTPurchaseEvent[]
+  nftOwners               ScoutNft[]
 
   // Don't allow registering the same token id twice
   @@unique([contractAddress, tokenId, chainId])
   // Only 1 builder token per season
   @@unique([builderId, season, nftType])
+  @@unique([currentPrice, createdAt]) // for sorting by price
+  @@unique([estimatedPayout, createdAt]) // for sorting by est payout
   @@index([builderId])
   @@index([season, nftType])
 }
@@ -3284,17 +3295,19 @@ model BuilderCardActivity {
 }
 
 model ScoutWallet {
-  createdAt            DateTime              @default(now())
-  address              String                @unique
-  scoutId              String                @db.Uuid
-  primary              Boolean               @default(false)
-  scout                Scout                 @relation(fields: [scoutId], references: [id], onDelete: Cascade)
-  purchaseEvents       NFTPurchaseEvent[]    @relation("nftRecipientWallet")
-  saleEvents           NFTPurchaseEvent[]    @relation("nftSenderWallet")
-  scoutedNfts          ScoutNft[]
-  tokensReceived       TokensReceipt[]       @relation("tokenReceiptRecipient")
-  tokensSent           TokensReceipt[]       @relation("tokenReceiptSender")
-  partnerRewardPayouts PartnerRewardPayout[]
+  createdAt             DateTime              @default(now())
+  address               String                @unique
+  scoutId               String                @db.Uuid
+  primary               Boolean               @default(false)
+  isSanctioned          Boolean               @default(false)
+  lastSanctionCheckedAt DateTime?
+  scout                 Scout                 @relation(fields: [scoutId], references: [id], onDelete: Cascade)
+  purchaseEvents        NFTPurchaseEvent[]    @relation("nftRecipientWallet")
+  saleEvents            NFTPurchaseEvent[]    @relation("nftSenderWallet")
+  scoutedNfts           ScoutNft[]
+  tokensReceived        TokensReceipt[]       @relation("tokenReceiptRecipient")
+  tokensSent            TokensReceipt[]       @relation("tokenReceiptSender")
+  partnerRewardPayouts  PartnerRewardPayout[]
 
   @@index([address])
   @@index([scoutId])
@@ -3302,21 +3315,22 @@ model ScoutWallet {
 }
 
 model WeeklyClaims {
-  id             String         @id @default(uuid()) @db.Uuid
-  createdAt      DateTime       @default(now())
-  season         String
-  week           String         @unique
-  merkleTreeRoot String
-  totalClaimable Int
-  claims         Json
-  proofsMap      Json
-  builderEvents  BuilderEvent[]
+  id                     String         @id @default(uuid()) @db.Uuid
+  createdAt              DateTime       @default(now())
+  season                 String
+  week                   String         @unique
+  merkleTreeRoot         String
+  totalClaimable         Int?
+  totalClaimableDevToken String?
+  claims                 Json
+  proofsMap              Json
+  builderEvents          BuilderEvent[]
 }
 
 model TokensReceipt {
   id                     String              @id @default(uuid()) @db.Uuid
   createdAt              DateTime            @default(now())
-  value                  Int
+  value                  String // Amount in wei (18 decimals)
   claimedAt              DateTime?
   claimTxHash            String?
   eventId                String              @db.Uuid
@@ -3754,6 +3768,8 @@ model ScoutFarcasterNotification {
   notificationType  String
   templateVariables Json     @default("{}")
   createdAt         DateTime @default(now())
+
+  @@index([userId])
 }
 
 model ScoutEmailNotification {
@@ -3764,6 +3780,21 @@ model ScoutEmailNotification {
   user              Scout    @relation(fields: [userId], references: [id], onDelete: Cascade)
   notificationType  String
   createdAt         DateTime @default(now())
+
+  @@index([userId])
+}
+
+model ScoutAppNotification {
+  id                String   @id @default(uuid()) @db.Uuid
+  userId            String   @db.Uuid
+  user              Scout    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  notificationType  String
+  read              Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  templateVariables Json
+
+  @@index([userId])
+  @@index([read])
 }
 
 model ScoutMatchUp {
@@ -3782,14 +3813,14 @@ model ScoutMatchUp {
 }
 
 model ScoutMatchUpSelection {
-  id         String       @id @default(uuid()) @db.Uuid
-  matchUpId  String       @db.Uuid
-  matchUp    ScoutMatchUp @relation(fields: [matchUpId], references: [id], onDelete: Cascade)
-  builderId  String       @db.Uuid
-  builder    Scout        @relation(fields: [builderId], references: [id], onDelete: Cascade)
-  gemsEarned Int          @default(0)
+  id          String       @id @default(uuid()) @db.Uuid
+  matchUpId   String       @db.Uuid
+  matchUp     ScoutMatchUp @relation(fields: [matchUpId], references: [id], onDelete: Cascade)
+  developerId String       @db.Uuid
+  developer   Scout        @relation(fields: [developerId], references: [id], onDelete: Cascade)
+  gemsEarned  Int          @default(0)
 
-  @@unique([matchUpId, builderId])
+  @@unique([matchUpId, developerId])
   @@index([matchUpId])
-  @@index([builderId])
+  @@index([developerId])
 }
