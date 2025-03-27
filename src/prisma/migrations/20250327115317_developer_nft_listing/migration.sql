@@ -6,7 +6,7 @@ CREATE TABLE "DeveloperNftListing" (
     "builderNftId" UUID NOT NULL,
     "sellerWallet" TEXT NOT NULL,
     "buyerWallet" TEXT,
-    "price" INTEGER,
+    "price" BIGINT,
     "priceDevToken" TEXT,
     "amount" INTEGER NOT NULL,
     "signature" TEXT NOT NULL,

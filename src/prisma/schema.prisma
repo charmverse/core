@@ -3806,7 +3806,7 @@ model DeveloperNftListing {
   seller        ScoutWallet  @relation("sellerWallet", fields: [sellerWallet], references: [address], onDelete: Cascade)
   buyerWallet   String?
   buyer         ScoutWallet? @relation("buyerWallet", fields: [buyerWallet], references: [address], onDelete: SetNull)
-  price         Int?
+  price         BigInt?
   priceDevToken String?
   amount        Int
   signature     String
