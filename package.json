@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.120.1-rc-feat-builder-nf.2",
+  "version": "0.120.1-rc-feat-builder-nf.3",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
