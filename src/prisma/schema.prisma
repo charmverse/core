@@ -3156,24 +3156,24 @@ enum BuilderNftType {
 }
 
 model BuilderNft {
-  id                      String              @id @default(uuid()) @db.Uuid
-  createdAt               DateTime            @default(now())
-  builderId               String              @db.Uuid
-  builder                 Scout               @relation(fields: [builderId], references: [id], onDelete: Cascade)
+  id                      String                @id @default(uuid()) @db.Uuid
+  createdAt               DateTime              @default(now())
+  builderId               String                @db.Uuid
+  builder                 Scout                 @relation(fields: [builderId], references: [id], onDelete: Cascade)
   chainId                 Int
   season                  String
-  nftType                 BuilderNftType      @default(default)
+  nftType                 BuilderNftType        @default(default)
   currentPrice            BigInt?
   currentPriceDevToken    String?
   contractAddress         String
   tokenId                 Int
   imageUrl                String
   congratsImageUrl        String?
-  estimatedPayout         Int?                @default(0)
+  estimatedPayout         Int?                  @default(0)
   estimatedPayoutDevToken String?
   nftSoldEvents           NFTPurchaseEvent[]
   nftOwners               ScoutNft[]
-  BuilderNftListing       BuilderNftListing[]
+  listings                DeveloperNftListing[]
 
   // Don't allow registering the same token id twice
   @@unique([contractAddress, tokenId, chainId])
@@ -3305,9 +3305,8 @@ model ScoutWallet {
   tokensReceived        TokensReceipt[]       @relation("tokenReceiptRecipient")
   tokensSent            TokensReceipt[]       @relation("tokenReceiptSender")
   partnerRewardPayouts  PartnerRewardPayout[]
-  builderNftListings    BuilderNftListing[]
-  buyerNftListings      BuilderNftListing[]   @relation("buyerWallet")
-  sellerNftListings     BuilderNftListing[]   @relation("sellerWallet")
+  buyerNftListings      DeveloperNftListing[] @relation("buyerWallet")
+  sellerNftListings     DeveloperNftListing[] @relation("sellerWallet")
 
   @@index([address])
   @@index([scoutId])
@@ -3797,25 +3796,24 @@ model ScoutAppNotification {
   @@index([read])
 }
 
-model BuilderNftListing {
-  id                 String       @id @default(uuid()) @db.Uuid
-  createdAt          DateTime     @default(now())
-  updatedAt          DateTime     @updatedAt
-  builderNftId       String       @db.Uuid
-  builderNft         BuilderNft   @relation(fields: [builderNftId], references: [id], onDelete: Cascade)
-  sellerWallet       String
-  seller             ScoutWallet  @relation("sellerWallet", fields: [sellerWallet], references: [address], onDelete: Cascade)
-  price              BigInt
-  amount             Int
-  signature          String
-  completedAt        DateTime?
-  cancelledAt        DateTime?
-  buyerWallet        String?
-  buyer              ScoutWallet? @relation("buyerWallet", fields: [buyerWallet], references: [address], onDelete: SetNull)
-  ScoutWallet        ScoutWallet? @relation(fields: [scoutWalletAddress], references: [address])
-  scoutWalletAddress String?
-  orderHash          String?
-  order              Json?
+model DeveloperNftListing {
+  id            String       @id @default(uuid()) @db.Uuid
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  builderNftId  String       @db.Uuid
+  builderNft    BuilderNft   @relation(fields: [builderNftId], references: [id], onDelete: Cascade)
+  sellerWallet  String
+  seller        ScoutWallet  @relation("sellerWallet", fields: [sellerWallet], references: [address], onDelete: Cascade)
+  buyerWallet   String?
+  buyer         ScoutWallet? @relation("buyerWallet", fields: [buyerWallet], references: [address], onDelete: SetNull)
+  price         Int
+  priceDevToken String
+  amount        Int
+  signature     String
+  hash          String?
+  completedAt   DateTime?
+  cancelledAt   DateTime?
+  order         Json?
 
   @@index([builderNftId])
   @@index([sellerWallet])
