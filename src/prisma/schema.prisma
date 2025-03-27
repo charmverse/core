@@ -2810,6 +2810,7 @@ model Scout {
   avatar                           String?
   bio                              String?
   builderStatus                    BuilderStatus?
+  reappliedAt                      DateTime?
   sendMarketing                    Boolean                      @default(false)
   sendTransactionEmails            Boolean                      @default(true)
   agreedToTermsAt                  DateTime?
