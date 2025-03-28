@@ -3813,12 +3813,10 @@ model DeveloperNftListing {
   signature     String
   hash          String?
   completedAt   DateTime?
-  cancelledAt   DateTime?
   order         Json?
 
   @@index([builderNftId])
   @@index([sellerWallet])
   @@index([completedAt])
-  @@index([cancelledAt])
   @@index([buyerWallet])
 }

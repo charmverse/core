@@ -12,7 +12,6 @@ CREATE TABLE "DeveloperNftListing" (
     "signature" TEXT NOT NULL,
     "hash" TEXT,
     "completedAt" TIMESTAMP(3),
-    "cancelledAt" TIMESTAMP(3),
     "order" JSONB,
 
     CONSTRAINT "DeveloperNftListing_pkey" PRIMARY KEY ("id")
@@ -26,9 +25,6 @@ CREATE INDEX "DeveloperNftListing_sellerWallet_idx" ON "DeveloperNftListing"("se
 
 -- CreateIndex
 CREATE INDEX "DeveloperNftListing_completedAt_idx" ON "DeveloperNftListing"("completedAt");
-
--- CreateIndex
-CREATE INDEX "DeveloperNftListing_cancelledAt_idx" ON "DeveloperNftListing"("cancelledAt");
 
 -- CreateIndex
 CREATE INDEX "DeveloperNftListing_buyerWallet_idx" ON "DeveloperNftListing"("buyerWallet");
