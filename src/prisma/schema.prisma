@@ -2851,8 +2851,8 @@ model Scout {
   scoutProjectMembers              ScoutProjectMember[]
   scoutFarcasterNotifications      ScoutFarcasterNotification[]
   scoutEmailNotifications          ScoutEmailNotification[]
-  matchUps                         ScoutMatchUp[]
-  matchUpSelections                ScoutMatchUpSelection[]
+  matchups                         ScoutMatchup[]
+  matchupSelections                ScoutMatchupSelection[]
   scoutAppNotifications            ScoutAppNotification[]
 
   @@index([path])
@@ -3800,25 +3800,26 @@ model ScoutAppNotification {
   @@index([read])
 }
 
-model ScoutMatchUp {
-  id         String                  @id @default(uuid()) @db.Uuid
-  scoutId    String                  @db.Uuid
-  scout      Scout                   @relation(fields: [scoutId], references: [id], onDelete: Cascade)
-  week       String
-  totalScore Int                     @default(0)
-  createdAt  DateTime                @default(now())
-  selections ScoutMatchUpSelection[]
-  rank       Int?
+model ScoutMatchup {
+  id          String                  @id @default(uuid()) @db.Uuid
+  week        String
+  totalScore  Int                     @default(0)
+  createdAt   DateTime                @default(now())
+  createdBy   String                  @db.Uuid
+  scout       Scout                   @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  submittedAt DateTime?
+  selections  ScoutMatchupSelection[]
+  rank        Int?
 
-  @@unique([scoutId, week])
-  @@index([scoutId])
-  @@index([week])
+  @@unique([createdBy, week])
+  @@index([createdBy])
+  @@index([week, submittedAt])
 }
 
-model ScoutMatchUpSelection {
+model ScoutMatchupSelection {
   id          String       @id @default(uuid()) @db.Uuid
   matchUpId   String       @db.Uuid
-  matchUp     ScoutMatchUp @relation(fields: [matchUpId], references: [id], onDelete: Cascade)
+  matchUp     ScoutMatchup @relation(fields: [matchUpId], references: [id], onDelete: Cascade)
   developerId String       @db.Uuid
   developer   Scout        @relation(fields: [developerId], references: [id], onDelete: Cascade)
   gemsEarned  Int          @default(0)
