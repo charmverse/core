@@ -20,6 +20,7 @@ CREATE TABLE "ScoutMatchupSelection" (
     "matchUpId" UUID NOT NULL,
     "developerId" UUID NOT NULL,
     "gemsEarned" INTEGER NOT NULL DEFAULT 0,
+    "creditsValue" INTEGER NOT NULL DEFAULT 0,
 
     CONSTRAINT "ScoutMatchupSelection_pkey" PRIMARY KEY ("id")
 );
