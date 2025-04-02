@@ -3818,15 +3818,15 @@ model ScoutMatchup {
 
 model ScoutMatchupSelection {
   id           String       @id @default(uuid()) @db.Uuid
-  matchUpId    String       @db.Uuid
-  matchUp      ScoutMatchup @relation(fields: [matchUpId], references: [id], onDelete: Cascade)
+  matchupId    String       @db.Uuid
+  matchup      ScoutMatchup @relation(fields: [matchupId], references: [id], onDelete: Cascade)
   developerId  String       @db.Uuid
   developer    Scout        @relation(fields: [developerId], references: [id], onDelete: Cascade)
   gemsEarned   Int          @default(0)
   creditsValue Int          @default(0)
 
-  @@unique([matchUpId, developerId])
-  @@index([matchUpId])
+  @@unique([matchupId, developerId])
+  @@index([matchupId])
   @@index([developerId])
 }
 
