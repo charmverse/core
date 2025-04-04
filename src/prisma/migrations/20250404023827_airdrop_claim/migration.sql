@@ -1,6 +1,3 @@
--- AlterTable
-ALTER TABLE "PartnerRewardPayout" ADD COLUMN     "airdropClaimId" UUID;
-
 -- CreateTable
 CREATE TABLE "AirdropClaim" (
     "id" UUID NOT NULL,
@@ -36,9 +33,6 @@ CREATE INDEX "AirdropClaimPayout_txHash_idx" ON "AirdropClaimPayout"("txHash");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "AirdropClaimPayout_airdropClaimId_walletAddress_key" ON "AirdropClaimPayout"("airdropClaimId", "walletAddress");
-
--- AddForeignKey
-ALTER TABLE "PartnerRewardPayout" ADD CONSTRAINT "PartnerRewardPayout_airdropClaimId_fkey" FOREIGN KEY ("airdropClaimId") REFERENCES "AirdropClaim"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "AirdropClaimPayout" ADD CONSTRAINT "AirdropClaimPayout_airdropClaimId_fkey" FOREIGN KEY ("airdropClaimId") REFERENCES "AirdropClaim"("id") ON DELETE CASCADE ON UPDATE CASCADE;

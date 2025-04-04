@@ -3661,8 +3661,6 @@ model PartnerRewardPayout {
   payoutContract   PartnerRewardPayoutContract @relation(fields: [payoutContractId], references: [id], onDelete: Cascade)
   meta             Json?
   deletedAt        DateTime?
-  AirdropClaim     AirdropClaim?               @relation(fields: [airdropClaimId], references: [id])
-  airdropClaimId   String?                     @db.Uuid
 
   @@index([walletAddress])
   @@index([payoutContractId])
@@ -3858,16 +3856,15 @@ model DeveloperNftListing {
 }
 
 model AirdropClaim {
-  id                 String                @id @default(uuid()) @db.Uuid
-  season             String
-  createdAt          DateTime              @default(now())
-  contractAddress    String
-  chainId            Int
-  deployTxHash       String
-  ipfsCid            String
-  merkleTreeJson     Json
-  rewardPayouts      PartnerRewardPayout[]
-  AirdropClaimPayout AirdropClaimPayout[]
+  id              String               @id @default(uuid()) @db.Uuid
+  season          String
+  createdAt       DateTime             @default(now())
+  contractAddress String
+  chainId         Int
+  deployTxHash    String
+  ipfsCid         String
+  merkleTreeJson  Json
+  claimPayouts    AirdropClaimPayout[]
 }
 
 model AirdropClaimPayout {
