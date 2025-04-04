@@ -3308,7 +3308,7 @@ model ScoutWallet {
   partnerRewardPayouts  PartnerRewardPayout[]
   buyerNftListings      DeveloperNftListing[] @relation("buyerWallet")
   sellerNftListings     DeveloperNftListing[] @relation("sellerWallet")
-  airdropTokenClaims    AirdropTokenClaim[]
+  airdropClaimPayouts   AirdropClaimPayout[]
 
   @@index([address])
   @@index([scoutId])
@@ -3658,6 +3658,8 @@ model PartnerRewardPayout {
   payoutContract   PartnerRewardPayoutContract @relation(fields: [payoutContractId], references: [id], onDelete: Cascade)
   meta             Json?
   deletedAt        DateTime?
+  AirdropClaim     AirdropClaim?               @relation(fields: [airdropClaimId], references: [id])
+  airdropClaimId   String?                     @db.Uuid
 
   @@index([walletAddress])
   @@index([payoutContractId])
@@ -3822,16 +3824,31 @@ model DeveloperNftListing {
   @@index([buyerWallet])
 }
 
-model AirdropTokenClaim {
-  address        String
-  scoutWallet    ScoutWallet @relation(fields: [address], references: [address], onDelete: Cascade)
-  tokenAddress   String
+model AirdropClaim {
+  id                 String                @id @default(uuid()) @db.Uuid
+  season             String
+  createdAt          DateTime              @default(now())
+  contractAddress    String
+  chainId            Int
+  deployTxHash       String
+  ipfsCid            String
+  merkleTreeJson     Json
+  rewardPayouts      PartnerRewardPayout[]
+  AirdropClaimPayout AirdropClaimPayout[]
+}
+
+model AirdropClaimPayout {
+  id             String       @id @default(uuid()) @db.Uuid
+  airdropClaimId String       @db.Uuid
+  airdropClaim   AirdropClaim @relation(fields: [airdropClaimId], references: [id], onDelete: Cascade)
   amount         String
-  txHash         String
-  season         String
   donationAmount String
+  txHash         String
+  walletAddress  String
+  wallet         ScoutWallet  @relation(fields: [walletAddress], references: [address], onDelete: Cascade)
   claimedAt      DateTime?
 
-  @@unique([season, address])
-  @@index([address])
+  @@unique([airdropClaimId, walletAddress])
+  @@index([airdropClaimId])
+  @@index([txHash])
 }
