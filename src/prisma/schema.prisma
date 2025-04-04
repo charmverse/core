@@ -3823,15 +3823,17 @@ model ScoutMatchupSelection {
   matchup        ScoutMatchup @relation(fields: [matchupId], references: [id], onDelete: Cascade)
   developerId    String?      @db.Uuid
   developer      Scout?       @relation(fields: [developerId], references: [id], onDelete: Cascade)
-  developerNftId String       @db.Uuid
-  developerNft   BuilderNft   @relation(fields: [developerNftId], references: [id], onDelete: Cascade)
+  developerNftId String?      @db.Uuid
+  developerNft   BuilderNft?  @relation(fields: [developerNftId], references: [id], onDelete: Cascade)
 
   gemsEarned   Int @default(0)
   creditsValue Int @default(0)
 
   @@unique([matchupId, developerId])
+  @@unique([matchupId, developerNftId])
   @@index([matchupId])
   @@index([developerId])
+  @@index([developerNftId])
 }
 
 model DeveloperNftListing {
