@@ -20,7 +20,7 @@ CREATE TABLE "AirdropClaimPayout" (
     "donationAmount" TEXT NOT NULL,
     "txHash" TEXT NOT NULL,
     "walletAddress" TEXT NOT NULL,
-    "claimedAt" TIMESTAMP(3),
+    "claimedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "AirdropClaimPayout_pkey" PRIMARY KEY ("id")
 );

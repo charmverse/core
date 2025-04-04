@@ -3876,7 +3876,7 @@ model AirdropClaimPayout {
   txHash         String
   walletAddress  String
   wallet         ScoutWallet  @relation(fields: [walletAddress], references: [address], onDelete: Cascade)
-  claimedAt      DateTime?
+  claimedAt      DateTime     @default(now())
 
   @@unique([airdropClaimId, walletAddress])
   @@index([airdropClaimId])
