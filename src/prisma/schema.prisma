@@ -3308,6 +3308,7 @@ model ScoutWallet {
   partnerRewardPayouts  PartnerRewardPayout[]
   buyerNftListings      DeveloperNftListing[] @relation("buyerWallet")
   sellerNftListings     DeveloperNftListing[] @relation("sellerWallet")
+  airdropTokenClaims    AirdropTokenClaim[]
 
   @@index([address])
   @@index([scoutId])
@@ -3819,4 +3820,18 @@ model DeveloperNftListing {
   @@index([sellerWallet])
   @@index([completedAt])
   @@index([buyerWallet])
+}
+
+model AirdropTokenClaim {
+  address        String
+  scoutWallet    ScoutWallet @relation(fields: [address], references: [address], onDelete: Cascade)
+  tokenAddress   String
+  amount         String
+  txHash         String
+  season         String
+  donationAmount String
+  claimedAt      DateTime?
+
+  @@unique([season, address])
+  @@index([address])
 }
