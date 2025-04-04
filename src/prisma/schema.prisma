@@ -3160,24 +3160,25 @@ enum BuilderNftType {
 }
 
 model BuilderNft {
-  id                      String                @id @default(uuid()) @db.Uuid
-  createdAt               DateTime              @default(now())
-  builderId               String                @db.Uuid
-  builder                 Scout                 @relation(fields: [builderId], references: [id], onDelete: Cascade)
+  id                      String                  @id @default(uuid()) @db.Uuid
+  createdAt               DateTime                @default(now())
+  builderId               String                  @db.Uuid
+  builder                 Scout                   @relation(fields: [builderId], references: [id], onDelete: Cascade)
   chainId                 Int
   season                  String
-  nftType                 BuilderNftType        @default(default)
+  nftType                 BuilderNftType          @default(default)
   currentPrice            BigInt?
   currentPriceDevToken    String?
   contractAddress         String
   tokenId                 Int
   imageUrl                String
   congratsImageUrl        String?
-  estimatedPayout         Int?                  @default(0)
+  estimatedPayout         Int?                    @default(0)
   estimatedPayoutDevToken String?
   nftSoldEvents           NFTPurchaseEvent[]
   nftOwners               ScoutNft[]
   listings                DeveloperNftListing[]
+  ScoutMatchupSelection   ScoutMatchupSelection[]
 
   // Don't allow registering the same token id twice
   @@unique([contractAddress, tokenId, chainId])
@@ -3817,17 +3818,22 @@ model ScoutMatchup {
 }
 
 model ScoutMatchupSelection {
-  id           String       @id @default(uuid()) @db.Uuid
-  matchupId    String       @db.Uuid
-  matchup      ScoutMatchup @relation(fields: [matchupId], references: [id], onDelete: Cascade)
-  developerId  String       @db.Uuid
-  developer    Scout        @relation(fields: [developerId], references: [id], onDelete: Cascade)
-  gemsEarned   Int          @default(0)
-  creditsValue Int          @default(0)
+  id             String       @id @default(uuid()) @db.Uuid
+  matchupId      String       @db.Uuid
+  matchup        ScoutMatchup @relation(fields: [matchupId], references: [id], onDelete: Cascade)
+  developerId    String?      @db.Uuid
+  developer      Scout?       @relation(fields: [developerId], references: [id], onDelete: Cascade)
+  developerNftId String?      @db.Uuid
+  developerNft   BuilderNft?  @relation(fields: [developerNftId], references: [id], onDelete: Cascade)
+
+  gemsEarned   Int @default(0)
+  creditsValue Int @default(0)
 
   @@unique([matchupId, developerId])
+  @@unique([matchupId, developerNftId])
   @@index([matchupId])
   @@index([developerId])
+  @@index([developerNftId])
 }
 
 model DeveloperNftListing {
