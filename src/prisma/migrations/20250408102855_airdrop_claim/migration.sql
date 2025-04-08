@@ -6,8 +6,8 @@ CREATE TABLE "AirdropClaim" (
     "contractAddress" TEXT NOT NULL,
     "chainId" INTEGER NOT NULL,
     "deployTxHash" TEXT NOT NULL,
-    "ipfsCid" TEXT NOT NULL,
-    "merkleTreeJson" JSONB NOT NULL,
+    "donationTxHash" TEXT,
+    "merkleTreeUrl" JSONB NOT NULL,
 
     CONSTRAINT "AirdropClaim_pkey" PRIMARY KEY ("id")
 );

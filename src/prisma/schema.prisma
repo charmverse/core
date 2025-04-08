@@ -3863,8 +3863,8 @@ model AirdropClaim {
   contractAddress String
   chainId         Int
   deployTxHash    String
-  ipfsCid         String
-  merkleTreeJson  Json
+  donationTxHash  String?
+  merkleTreeUrl   Json
   claimPayouts    AirdropClaimPayout[]
 }
 
