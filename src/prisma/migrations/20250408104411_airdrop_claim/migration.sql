@@ -6,8 +6,7 @@ CREATE TABLE "AirdropClaim" (
     "contractAddress" TEXT NOT NULL,
     "chainId" INTEGER NOT NULL,
     "deployTxHash" TEXT NOT NULL,
-    "donationTxHash" TEXT,
-    "merkleTreeUrl" JSONB NOT NULL,
+    "merkleTreeUrl" TEXT NOT NULL,
 
     CONSTRAINT "AirdropClaim_pkey" PRIMARY KEY ("id")
 );
@@ -16,9 +15,10 @@ CREATE TABLE "AirdropClaim" (
 CREATE TABLE "AirdropClaimPayout" (
     "id" UUID NOT NULL,
     "airdropClaimId" UUID NOT NULL,
-    "amount" TEXT NOT NULL,
+    "claimAmount" TEXT NOT NULL,
     "donationAmount" TEXT NOT NULL,
-    "txHash" TEXT NOT NULL,
+    "claimTxHash" TEXT NOT NULL,
+    "donationTxHash" TEXT,
     "walletAddress" TEXT NOT NULL,
     "claimedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -29,7 +29,7 @@ CREATE TABLE "AirdropClaimPayout" (
 CREATE INDEX "AirdropClaimPayout_airdropClaimId_idx" ON "AirdropClaimPayout"("airdropClaimId");
 
 -- CreateIndex
-CREATE INDEX "AirdropClaimPayout_txHash_idx" ON "AirdropClaimPayout"("txHash");
+CREATE INDEX "AirdropClaimPayout_claimTxHash_idx" ON "AirdropClaimPayout"("claimTxHash");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "AirdropClaimPayout_airdropClaimId_walletAddress_key" ON "AirdropClaimPayout"("airdropClaimId", "walletAddress");

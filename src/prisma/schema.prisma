@@ -3863,8 +3863,7 @@ model AirdropClaim {
   contractAddress String
   chainId         Int
   deployTxHash    String
-  donationTxHash  String?
-  merkleTreeUrl   Json
+  merkleTreeUrl   String
   claimPayouts    AirdropClaimPayout[]
 }
 
@@ -3872,14 +3871,15 @@ model AirdropClaimPayout {
   id             String       @id @default(uuid()) @db.Uuid
   airdropClaimId String       @db.Uuid
   airdropClaim   AirdropClaim @relation(fields: [airdropClaimId], references: [id], onDelete: Cascade)
-  amount         String
+  claimAmount    String
   donationAmount String
-  txHash         String
+  claimTxHash    String
+  donationTxHash String?
   walletAddress  String
   wallet         ScoutWallet  @relation(fields: [walletAddress], references: [address], onDelete: Cascade)
   claimedAt      DateTime     @default(now())
 
   @@unique([airdropClaimId, walletAddress])
   @@index([airdropClaimId])
-  @@index([txHash])
+  @@index([claimTxHash])
 }
