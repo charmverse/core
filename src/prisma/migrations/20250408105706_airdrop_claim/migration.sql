@@ -4,6 +4,7 @@ CREATE TABLE "AirdropClaim" (
     "season" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "contractAddress" TEXT NOT NULL,
+    "blockNumber" BIGINT NOT NULL,
     "chainId" INTEGER NOT NULL,
     "deployTxHash" TEXT NOT NULL,
     "merkleTreeUrl" TEXT NOT NULL,

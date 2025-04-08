@@ -3861,6 +3861,7 @@ model AirdropClaim {
   season          String
   createdAt       DateTime             @default(now())
   contractAddress String
+  blockNumber     BigInt
   chainId         Int
   deployTxHash    String
   merkleTreeUrl   String
