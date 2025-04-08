@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.121.5-rc-feat-airdrop.1",
+  "version": "0.121.5-rc-feat-airdrop.2",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
