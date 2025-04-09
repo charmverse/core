@@ -3124,18 +3124,20 @@ model UserWeeklyStats {
 }
 
 model UserSeasonStats {
-  id                    Int      @id @default(autoincrement())
-  lastUpdated           DateTime @default(now())
-  userId                String   @db.Uuid
-  user                  Scout    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  pointsEarnedAsBuilder Int      @default(0)
-  pointsEarnedAsScout   Int      @default(0)
-  season                String
+  id                      Int      @id @default(autoincrement())
+  lastUpdated             DateTime @default(now())
+  userId                  String   @db.Uuid
+  user                    Scout    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pointsEarnedAsBuilder   Int      @default(0)
+  pointsEarnedAsScout     Int      @default(0)
+  tokensEarnedAsDeveloper String?
+  tokensEarnedAsScout     String?
+  season                  String
   // Optional int as not all users have a builder nft to sell
-  nftOwners             Int?     @default(0)
-  nftsSold              Int?     @default(0)
-  nftsPurchased         Int      @default(0)
-  level                 Int      @default(0)
+  nftOwners               Int?     @default(0)
+  nftsSold                Int?     @default(0)
+  nftsPurchased           Int      @default(0)
+  level                   Int      @default(0)
 
   @@unique([userId, season])
   @@unique([id, level]) // for sorting by level
@@ -3144,11 +3146,13 @@ model UserSeasonStats {
 }
 
 model UserAllTimeStats {
-  lastUpdated           DateTime @default(now())
-  userId                String   @unique @db.Uuid
-  user                  Scout    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  pointsEarnedAsBuilder Int      @default(0)
-  pointsEarnedAsScout   Int      @default(0)
+  lastUpdated             DateTime @default(now())
+  userId                  String   @unique @db.Uuid
+  user                    Scout    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pointsEarnedAsBuilder   Int      @default(0)
+  pointsEarnedAsScout     Int      @default(0)
+  tokensEarnedAsDeveloper String?
+  tokensEarnedAsScout     String?
 
   @@index([userId])
 }
@@ -3686,7 +3690,7 @@ model PartnerRewardPayoutContract {
   ipfsCid         String
   merkleTreeJson  Json
   provider        PartnerRewardPayoutContractProvider @default(sablier)
-  blockNumber     BigInt                              @default(0)
+  blockNumber     BigInt
   rewardPayouts   PartnerRewardPayout[]
 }
 
