@@ -3313,6 +3313,7 @@ model ScoutWallet {
   buyerNftListings      DeveloperNftListing[] @relation("buyerWallet")
   sellerNftListings     DeveloperNftListing[] @relation("sellerWallet")
   draftSeasonOffers     DraftSeasonOffer[]
+  airdropClaimPayouts   AirdropClaimPayout[]
 
   @@index([address])
   @@index([scoutId])
@@ -3667,11 +3668,16 @@ model PartnerRewardPayout {
   @@index([payoutContractId])
 }
 
+enum PartnerRewardPayoutContractProvider {
+  thirdweb
+  sablier
+}
+
 model PartnerRewardPayoutContract {
-  id              String                @id @default(uuid()) @db.Uuid
+  id              String                              @id @default(uuid()) @db.Uuid
   season          String
   week            String
-  createdAt       DateTime              @default(now())
+  createdAt       DateTime                            @default(now())
   contractAddress String
   chainId         Int
   tokenAddress    String
@@ -3681,6 +3687,8 @@ model PartnerRewardPayoutContract {
   deployTxHash    String
   ipfsCid         String
   merkleTreeJson  Json
+  provider        PartnerRewardPayoutContractProvider @default(sablier)
+  blockNumber     BigInt                              @default(0)
   rewardPayouts   PartnerRewardPayout[]
 }
 
@@ -3855,6 +3863,35 @@ model DeveloperNftListing {
   @@index([sellerWallet])
   @@index([completedAt])
   @@index([buyerWallet])
+}
+
+model AirdropClaim {
+  id              String               @id @default(uuid()) @db.Uuid
+  season          String
+  createdAt       DateTime             @default(now())
+  contractAddress String
+  blockNumber     BigInt
+  chainId         Int
+  deployTxHash    String
+  merkleTreeUrl   String
+  claimPayouts    AirdropClaimPayout[]
+}
+
+model AirdropClaimPayout {
+  id             String       @id @default(uuid()) @db.Uuid
+  airdropClaimId String       @db.Uuid
+  airdropClaim   AirdropClaim @relation(fields: [airdropClaimId], references: [id], onDelete: Cascade)
+  claimAmount    String
+  donationAmount String
+  claimTxHash    String
+  donationTxHash String?
+  walletAddress  String
+  wallet         ScoutWallet  @relation(fields: [walletAddress], references: [address], onDelete: Cascade)
+  claimedAt      DateTime     @default(now())
+
+  @@unique([airdropClaimId, walletAddress])
+  @@index([airdropClaimId])
+  @@index([claimTxHash])
 }
 
 enum DecentTxStatus {
