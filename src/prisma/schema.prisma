@@ -3915,6 +3915,8 @@ model DraftSeasonOffer {
   decentError        Json?
   decentTxHash       String?
   txHash             String?
+  completedAt        DateTime?
+  bidRejected        Boolean        @default(false)
   chainId            Int
   decentPayload      Json
 

@@ -14,6 +14,8 @@ CREATE TABLE "DraftSeasonOffer" (
     "decentError" JSONB,
     "decentTxHash" TEXT,
     "txHash" TEXT,
+    "completedAt" TIMESTAMP(3),
+    "bidRejected" BOOLEAN NOT NULL DEFAULT false,
     "chainId" INTEGER NOT NULL,
     "decentPayload" JSONB NOT NULL,
 
