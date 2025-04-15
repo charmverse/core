@@ -3685,7 +3685,7 @@ model PartnerRewardPayoutContract {
   deployTxHash    String
   ipfsCid         String
   merkleTreeJson  Json
-  provider        PartnerRewardPayoutContractProvider @default(sablier)
+  provider        PartnerRewardPayoutContractProvider
   blockNumber     BigInt                              @default(0)
   rewardPayouts   PartnerRewardPayout[]
 }
