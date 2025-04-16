@@ -2853,6 +2853,7 @@ model Scout {
   scoutEmailNotifications          ScoutEmailNotification[]
   matchups                         ScoutMatchup[]
   scoutAppNotifications            ScoutAppNotification[]
+  draftSeasonOffersReceived        DraftSeasonOffer[]
 
   @@index([path])
   @@index([farcasterId])
@@ -3311,6 +3312,7 @@ model ScoutWallet {
   partnerRewardPayouts  PartnerRewardPayout[]
   buyerNftListings      DeveloperNftListing[] @relation("buyerWallet")
   sellerNftListings     DeveloperNftListing[] @relation("sellerWallet")
+  draftSeasonOffers     DraftSeasonOffer[]
   airdropClaimPayouts   AirdropClaimPayout[]
 
   @@index([address])
@@ -3890,4 +3892,36 @@ model AirdropClaimPayout {
   @@unique([airdropClaimId, walletAddress])
   @@index([airdropClaimId])
   @@index([claimTxHash])
+}
+
+enum DecentTxStatus {
+  initial // waiting for user signature
+  pending
+  success
+  failed
+}
+
+model DraftSeasonOffer {
+  id                 String         @id @default(uuid()) @db.Uuid
+  season             String
+  value              String // Dev Tokens
+  developerId        String         @db.Uuid // link to a builder, not an NFT, in case we havent minted them yet
+  developer          Scout          @relation(fields: [developerId], references: [id], onDelete: Cascade)
+  createdAt          DateTime       @default(now())
+  createdBy          String         @db.Uuid
+  makerWalletAddress String
+  makerWallet        ScoutWallet    @relation(fields: [makerWalletAddress], references: [address], onDelete: Cascade)
+  status             DecentTxStatus
+  decentError        Json?
+  decentTxHash       String?
+  sourceChainId      Int?
+  txHash             String?
+  chainId            Int?
+  completedAt        DateTime?
+  decentPayload      Json
+
+  @@index([season])
+  @@index([developerId])
+  @@index([status])
+  @@index([createdBy])
 }
