@@ -3914,10 +3914,10 @@ model DraftSeasonOffer {
   status             DecentTxStatus
   decentError        Json?
   decentTxHash       String?
+  sourceChainId      Int?
   txHash             String?
+  chainId            Int?
   completedAt        DateTime?
-  bidRejected        Boolean        @default(false)
-  chainId            Int
   decentPayload      Json
 
   @@index([season])
