@@ -2,6 +2,7 @@
   Warnings:
 
   - A unique constraint covering the columns `[registrationTxId]` on the table `ScoutMatchup` will be added. If there are existing duplicate values, this will fail.
+  - A unique constraint covering the columns `[decentRegistrationTxId]` on the table `ScoutMatchup` will be added. If there are existing duplicate values, this will fail.
 
 */
 -- AlterTable
@@ -27,6 +28,9 @@ CREATE UNIQUE INDEX "BlockchainTransaction_txHash_chainId_key" ON "BlockchainTra
 
 -- CreateIndex
 CREATE UNIQUE INDEX "ScoutMatchup_registrationTxId_key" ON "ScoutMatchup"("registrationTxId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "ScoutMatchup_decentRegistrationTxId_key" ON "ScoutMatchup"("decentRegistrationTxId");
 
 -- AddForeignKey
 ALTER TABLE "ScoutMatchup" ADD CONSTRAINT "ScoutMatchup_decentRegistrationTxId_fkey" FOREIGN KEY ("decentRegistrationTxId") REFERENCES "BlockchainTransaction"("id") ON DELETE SET NULL ON UPDATE CASCADE;

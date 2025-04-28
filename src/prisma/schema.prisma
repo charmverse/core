@@ -3827,6 +3827,7 @@ model ScoutMatchup {
 
   @@unique([createdBy, week])
   @@unique([registrationTxId])
+  @@unique([decentRegistrationTxId])
   @@index([createdBy])
   @@index([week, submittedAt])
 }
