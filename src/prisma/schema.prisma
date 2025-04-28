@@ -3825,7 +3825,6 @@ model ScoutMatchup {
   onchainTransactionId String?                 @db.Uuid
 
   @@unique([createdBy, week])
-  @@unique([createdBy, week, registrationTxId])
   @@unique([registrationTxId])
   @@index([createdBy])
   @@index([week, submittedAt])
