@@ -3811,18 +3811,17 @@ model ScoutAppNotification {
 }
 
 model ScoutMatchup {
-  id                   String                  @id @default(uuid()) @db.Uuid
-  week                 String
-  totalScore           Int                     @default(0)
-  createdAt            DateTime                @default(now())
-  createdBy            String                  @db.Uuid
-  scout                Scout                   @relation(fields: [createdBy], references: [id], onDelete: Cascade)
-  submittedAt          DateTime?
-  selections           ScoutMatchupSelection[]
-  rank                 Int?
-  registrationTxId     String?                 @db.Uuid
-  registrationTx       BlockchainTransaction?  @relation(fields: [registrationTxId], references: [id])
-  onchainTransactionId String?                 @db.Uuid
+  id               String                  @id @default(uuid()) @db.Uuid
+  week             String
+  totalScore       Int                     @default(0)
+  createdAt        DateTime                @default(now())
+  createdBy        String                  @db.Uuid
+  scout            Scout                   @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  submittedAt      DateTime?
+  selections       ScoutMatchupSelection[]
+  rank             Int?
+  registrationTxId String?                 @db.Uuid
+  registrationTx   BlockchainTransaction?  @relation(fields: [registrationTxId], references: [id])
 
   @@unique([createdBy, week])
   @@unique([registrationTxId])

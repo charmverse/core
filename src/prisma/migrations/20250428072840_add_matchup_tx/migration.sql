@@ -5,8 +5,7 @@
 
 */
 -- AlterTable
-ALTER TABLE "ScoutMatchup" ADD COLUMN     "onchainTransactionId" UUID,
-ADD COLUMN     "registrationTxId" UUID;
+ALTER TABLE "ScoutMatchup" ADD COLUMN     "registrationTxId" UUID;
 
 -- CreateTable
 CREATE TABLE "BlockchainTransaction" (
