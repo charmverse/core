@@ -3835,15 +3835,15 @@ model ScoutMatchup {
 // For tracking transactions on multiple chains, with and without Decent.xyz
 model BlockchainTransaction {
   id                   String         @id @default(uuid()) @db.Uuid
-  txHash               String
+  hash                 String
   chainId              Int
   status               DecentTxStatus
   error                Json?
   weeklyMatchups       ScoutMatchup[] @relation("decentTransactions")
   weeklyMatchupsDecent ScoutMatchup[] @relation("registrationTransactions")
 
-  @@unique([txHash, chainId])
-  @@index([txHash])
+  @@unique([hash, chainId])
+  @@index([hash])
 }
 
 model ScoutMatchupSelection {

@@ -12,7 +12,7 @@ ADD COLUMN     "registrationTxId" UUID;
 -- CreateTable
 CREATE TABLE "BlockchainTransaction" (
     "id" UUID NOT NULL,
-    "txHash" TEXT NOT NULL,
+    "hash" TEXT NOT NULL,
     "chainId" INTEGER NOT NULL,
     "status" "DecentTxStatus" NOT NULL,
     "error" JSONB,
@@ -21,10 +21,10 @@ CREATE TABLE "BlockchainTransaction" (
 );
 
 -- CreateIndex
-CREATE INDEX "BlockchainTransaction_txHash_idx" ON "BlockchainTransaction"("txHash");
+CREATE INDEX "BlockchainTransaction_hash_idx" ON "BlockchainTransaction"("hash");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "BlockchainTransaction_txHash_chainId_key" ON "BlockchainTransaction"("txHash", "chainId");
+CREATE UNIQUE INDEX "BlockchainTransaction_hash_chainId_key" ON "BlockchainTransaction"("hash", "chainId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "ScoutMatchup_registrationTxId_key" ON "ScoutMatchup"("registrationTxId");
