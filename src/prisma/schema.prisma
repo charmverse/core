@@ -3334,18 +3334,20 @@ model WeeklyClaims {
 }
 
 model TokensReceipt {
-  id                     String              @id @default(uuid()) @db.Uuid
-  createdAt              DateTime            @default(now())
-  value                  String // Amount in wei (18 decimals)
-  claimedAt              DateTime?
-  claimTxHash            String?
-  eventId                String              @db.Uuid
-  event                  BuilderEvent        @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  recipientWalletAddress String?
-  recipientWallet        ScoutWallet?        @relation(fields: [recipientWalletAddress], references: [address], onDelete: Cascade, name: "tokenReceiptRecipient")
-  senderWalletAddress    String?
-  senderWallet           ScoutWallet?        @relation(fields: [senderWalletAddress], references: [address], onDelete: Cascade, name: "tokenReceiptSender")
-  activities             ScoutGameActivity[]
+  id                      String              @id @default(uuid()) @db.Uuid
+  createdAt               DateTime            @default(now())
+  value                   String // Amount in wei (18 decimals)
+  claimedAt               DateTime?
+  claimTxHash             String?
+  eventId                 String              @db.Uuid
+  event                   BuilderEvent        @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  recipientWalletAddress  String?
+  recipientWallet         ScoutWallet?        @relation(fields: [recipientWalletAddress], references: [address], onDelete: Cascade, name: "tokenReceiptRecipient")
+  senderWalletAddress     String?
+  senderWallet            ScoutWallet?        @relation(fields: [senderWalletAddress], references: [address], onDelete: Cascade, name: "tokenReceiptSender")
+  tokensEarnedAsDeveloper String?
+  tokensEarnedAsScout     String?
+  activities              ScoutGameActivity[]
 
   @@index([recipientWalletAddress])
   @@index([senderWalletAddress])
