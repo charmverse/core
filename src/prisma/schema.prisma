@@ -3831,6 +3831,7 @@ model ScoutMatchup {
   @@unique([decentRegistrationTxId])
   @@index([createdBy])
   @@index([week, submittedAt])
+  @@index([freeRegistration])
 }
 
 // For tracking transactions on multiple chains, with and without Decent.xyz
