@@ -3820,6 +3820,7 @@ model ScoutMatchup {
   submittedAt            DateTime?
   selections             ScoutMatchupSelection[]
   rank                   Int?
+  freeRegistration       Boolean                 @default(false)
   decentRegistrationTxId String?                 @db.Uuid
   decentRegistrationTx   BlockchainTransaction?  @relation("decentTransactions", fields: [decentRegistrationTxId], references: [id])
   registrationTxId       String?                 @db.Uuid
