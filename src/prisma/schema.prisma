@@ -386,6 +386,7 @@ model Space {
   documentsToSign             DocumentToSign[]
   docusignAllowedRoleOrUsers  DocusignAllowedRoleOrUser[]
   proposalMyTaskColumns       ProposalMyWorkColumn[]
+  subscriptions               SpaceSubscription[]
 
   @@index([createdBy])
 }
@@ -400,6 +401,25 @@ model StripeSubscription {
   deletedAt      DateTime?
 
   @@index([spaceId])
+}
+
+model SpaceSubscription {
+  id          String                     @id @default(uuid()) @db.Uuid
+  createdAt   DateTime                   @default(now())
+  spaceId     String                     @db.Uuid
+  space       Space                      @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  balance     String
+  txHash      String
+  cancelledAt DateTime?
+  receipts    SpaceSubscriptionReceipt[]
+}
+
+model SpaceSubscriptionReceipt {
+  id                  String            @id @default(uuid()) @db.Uuid
+  createdAt           DateTime          @default(now())
+  spaceSubscriptionId String            @db.Uuid
+  spaceSubscription   SpaceSubscription @relation(fields: [spaceSubscriptionId], references: [id], onDelete: Cascade)
+  deducedAmount       String
 }
 
 model SpaceApiToken {
