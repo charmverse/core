@@ -392,7 +392,7 @@ model Space {
   documentsToSign             DocumentToSign[]
   docusignAllowedRoleOrUsers  DocusignAllowedRoleOrUser[]
   proposalMyTaskColumns       ProposalMyWorkColumn[]
-  subscriptions               SpaceSubscription[]
+  subscriptionPayments        SpaceSubscriptionPayment[]
 
   @@index([createdBy])
 }
@@ -409,7 +409,7 @@ model StripeSubscription {
   @@index([spaceId])
 }
 
-model SpaceSubscription {
+model SpaceSubscriptionPayment {
   id            String                     @id @default(uuid()) @db.Uuid
   createdAt     DateTime                   @default(now())
   tier          SubscriptionTier
@@ -427,11 +427,11 @@ model SpaceSubscription {
 }
 
 model SpaceSubscriptionReceipt {
-  id                  String            @id @default(uuid()) @db.Uuid
-  createdAt           DateTime          @default(now())
-  spaceSubscriptionId String            @db.Uuid
-  spaceSubscription   SpaceSubscription @relation(fields: [spaceSubscriptionId], references: [id], onDelete: Cascade)
-  deducedAmount       String
+  id            String                   @id @default(uuid()) @db.Uuid
+  createdAt     DateTime                 @default(now())
+  paymentId     String                   @db.Uuid
+  payment       SpaceSubscriptionPayment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  deducedAmount String
 }
 
 model SpaceApiToken {

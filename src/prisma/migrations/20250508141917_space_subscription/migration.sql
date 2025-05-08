@@ -15,7 +15,7 @@ ALTER TYPE "SubscriptionTier" ADD VALUE 'grants';
 ALTER TABLE "Space" ADD COLUMN     "subscriptionBalance" TEXT;
 
 -- CreateTable
-CREATE TABLE "SpaceSubscription" (
+CREATE TABLE "SpaceSubscriptionPayment" (
     "id" UUID NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "tier" "SubscriptionTier" NOT NULL,
@@ -29,21 +29,21 @@ CREATE TABLE "SpaceSubscription" (
     "decentPayload" JSONB NOT NULL,
     "cancelledAt" TIMESTAMP(3),
 
-    CONSTRAINT "SpaceSubscription_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "SpaceSubscriptionPayment_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "SpaceSubscriptionReceipt" (
     "id" UUID NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "spaceSubscriptionId" UUID NOT NULL,
+    "paymentId" UUID NOT NULL,
     "deducedAmount" TEXT NOT NULL,
 
     CONSTRAINT "SpaceSubscriptionReceipt_pkey" PRIMARY KEY ("id")
 );
 
 -- AddForeignKey
-ALTER TABLE "SpaceSubscription" ADD CONSTRAINT "SpaceSubscription_spaceId_fkey" FOREIGN KEY ("spaceId") REFERENCES "Space"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "SpaceSubscriptionPayment" ADD CONSTRAINT "SpaceSubscriptionPayment_spaceId_fkey" FOREIGN KEY ("spaceId") REFERENCES "Space"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "SpaceSubscriptionReceipt" ADD CONSTRAINT "SpaceSubscriptionReceipt_spaceSubscriptionId_fkey" FOREIGN KEY ("spaceSubscriptionId") REFERENCES "SpaceSubscription"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "SpaceSubscriptionReceipt" ADD CONSTRAINT "SpaceSubscriptionReceipt_paymentId_fkey" FOREIGN KEY ("paymentId") REFERENCES "SpaceSubscriptionPayment"("id") ON DELETE CASCADE ON UPDATE CASCADE;
