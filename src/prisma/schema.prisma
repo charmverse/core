@@ -249,11 +249,15 @@ enum SubscriptionTier {
   community
   enterprise
   cancelled
+}
 
+enum SpaceSubscriptionTier {
+  readonly
+  free
   bronze
   silver
   gold
-  grants
+  grant
 }
 
 enum SubscriptionPeriod {
@@ -303,6 +307,7 @@ model Space {
   customDomain                   String?                           @unique
   isCustomDomainVerified         Boolean?
   paidTier                       SubscriptionTier                  @default(community)
+  subscriptionTier               SpaceSubscriptionTier?
   discordServerId                String?
   defaultVotingDuration          Int?
   enableTestnets                 Boolean?                          @default(false)
