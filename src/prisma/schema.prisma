@@ -307,7 +307,7 @@ model Space {
   customDomain                   String?                           @unique
   isCustomDomainVerified         Boolean?
   paidTier                       SubscriptionTier                  @default(community)
-  subscriptionTier               SpaceSubscriptionTier?
+  subscriptionTier               SpaceSubscriptionTier?            @default(readonly)
   discordServerId                String?
   defaultVotingDuration          Int?
   enableTestnets                 Boolean?                          @default(false)
@@ -416,29 +416,33 @@ model StripeSubscription {
 }
 
 model SpaceSubscriptionPayment {
-  id              String   @id @default(uuid()) @db.Uuid
-  paidTokenAmount String
-  spaceId         String?  @db.Uuid
-  space           Space?   @relation(fields: [spaceId], references: [id], onDelete: SetNull)
-  createdAt       DateTime @default(now())
+  id                      String                @id @default(uuid()) @db.Uuid
+  paidTokenAmount         String
+  subscriptionTier        SpaceSubscriptionTier
+  subscriptionPrice       String
+  subscriptionPeriodStart DateTime
+  spaceId                 String?               @db.Uuid
+  space                   Space?                @relation(fields: [spaceId], references: [id], onDelete: SetNull)
+  createdAt               DateTime              @default(now())
 }
 
 model SpaceSubscriptionContribution {
-  id              String         @id @default(uuid()) @db.Uuid
-  spaceId         String?        @db.Uuid
-  space           Space?         @relation(fields: [spaceId], references: [id], onDelete: SetNull)
-  userId          String?        @db.Uuid
-  user            User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
-  walletAddress   String
-  paidTokenAmount String
-  decentStatus    DecentTxStatus
-  decentError     Json?
-  decentTxHash    String?
-  decentChainId   Int?
-  decentPayload   Json
-  txHash          String?
-  chainId         Int?
-  createdAt       DateTime       @default(now())
+  id             String          @id @default(uuid()) @db.Uuid
+  spaceId        String?         @db.Uuid
+  space          Space?          @relation(fields: [spaceId], references: [id], onDelete: SetNull)
+  userId         String?         @db.Uuid
+  user           User?           @relation(fields: [userId], references: [id], onDelete: SetNull)
+  walletAddress  String
+  devTokenAmount String
+  decentStatus   DecentTxStatus?
+  decentError    Json?
+  decentTxHash   String?
+  decentChainId  Int?
+  decentPayload  Json
+  txHash         String?
+  chainId        Int?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
 }
 
 model SpaceApiToken {
