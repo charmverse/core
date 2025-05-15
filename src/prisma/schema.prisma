@@ -252,6 +252,7 @@ enum SubscriptionTier {
 }
 
 enum SpaceSubscriptionTier {
+  cancelled
   readonly
   free
   bronze
