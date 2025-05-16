@@ -308,7 +308,8 @@ model Space {
   isCustomDomainVerified       Boolean?
   paidTier                     SubscriptionTier                   @default(community)
   subscriptionTier             SpaceSubscriptionTier?             @default(readonly)
-  subscriptionTierCancelledAt  DateTime?
+  subscriptionCancelledAt      DateTime?
+  subscriptionCancelledBy      String?                            @db.Uuid
   discordServerId              String?
   defaultVotingDuration        Int?
   enableTestnets               Boolean?                           @default(false)

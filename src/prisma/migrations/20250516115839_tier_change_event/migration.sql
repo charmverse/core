@@ -1,5 +1,6 @@
 -- AlterTable
-ALTER TABLE "Space" ADD COLUMN     "subscriptionTierCancelledAt" TIMESTAMP(3);
+ALTER TABLE "Space" ADD COLUMN     "subscriptionCancelledAt" TIMESTAMP(3),
+ADD COLUMN     "subscriptionCancelledBy" UUID;
 
 -- CreateTable
 CREATE TABLE "SpaceSubscriptionTierChangeEvent" (
