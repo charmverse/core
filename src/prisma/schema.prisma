@@ -435,7 +435,7 @@ model SpaceSubscriptionContribution {
   space          Space?          @relation(fields: [spaceId], references: [id], onDelete: SetNull)
   userId         String?         @db.Uuid
   user           User?           @relation(fields: [userId], references: [id], onDelete: SetNull)
-  walletAddress  String
+  walletAddress  String?
   devTokenAmount String
   decentStatus   DecentTxStatus?
   decentError    Json?
@@ -451,8 +451,10 @@ model SpaceSubscriptionContribution {
 model SpaceSubscriptionTierChangeEvent {
   id           String                @id @default(uuid()) @db.Uuid
   createdAt    DateTime              @default(now())
-  spaceId      String                @db.Uuid
-  space        Space                 @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  spaceId      String?               @db.Uuid
+  space        Space?                @relation(fields: [spaceId], references: [id], onDelete: SetNull)
+  userId       String?               @db.Uuid
+  user         User?                 @relation(fields: [userId], references: [id], onDelete: SetNull)
   previousTier SpaceSubscriptionTier
   newTier      SpaceSubscriptionTier
 }
@@ -706,106 +708,107 @@ model Vote {
 }
 
 model User {
-  id                              String                           @id @default(uuid()) @db.Uuid
-  createdAt                       DateTime                         @default(now())
-  updatedAt                       DateTime                         @default(now())
-  deletedAt                       DateTime?
-  avatar                          String?
-  avatarContract                  String?
-  avatarTokenId                   String?
-  avatarChain                     Int?
-  username                        String
-  isBot                           Boolean?                         @default(false)
-  path                            String                           @unique
-  identityType                    IdentityType?
-  email                           String?
-  emailNotifications              Boolean?                         @default(true)
-  emailNewsletter                 Boolean?                         @default(false)
-  xpsEngineId                     String?                          @unique
-  publishToLensDefault            Boolean?                         @default(false)
-  connectOnboarded                Boolean?                         @default(false)
-  primaryWalletId                 String?                          @db.Uuid
-  primaryWallet                   UserWallet?                      @relation(fields: [primaryWalletId], references: [id], onDelete: SetNull, name: "primaryUserWallet")
-  applications                    Application[]
-  blocks                          Block[]
-  bounties                        Bounty[]
-  bountyPermissions               BountyPermission[]
-  comments                        Comment[]
-  discordUser                     DiscordUser?
-  favorites                       FavoritePage[]
-  inviteLinks                     InviteLink[]
-  posts                           Post[]
-  pages                           Page[]
-  permissions                     PagePermission[]
-  poaps                           Poap[]
-  spacesCreated                   Space[]
-  spacePermissions                SpacePermission[]
-  spaceRoles                      SpaceRole[]
-  spacesOrder                     String[]
-  telegramUser                    TelegramUser?
-  threads                         Thread[]
-  profile                         UserDetails?
-  gnosisSafes                     UserGnosisSafe[]
-  userNotifications               UserNotification[]
-  notificationState               UserNotificationState?
-  userVotes                       UserVote[]
-  initiatedVotes                  Vote[]
-  profileItems                    ProfileItem[]
-  proposalsAuthored               ProposalAuthor[]
-  proposalsReviewed               ProposalReviewer[]
-  reviewedProposals               Proposal[]
-  workspaceEvents                 WorkspaceEvent[]
-  wallets                         UserWallet[]                     @relation("userWallet")
-  memberPropertyValues            MemberPropertyValue[]
-  spaceNotificationSettings       UserSpaceNotificationSettings[]
-  userTokenGates                  UserTokenGate[]
-  unstoppableDomains              UnstoppableDomain[]
-  postComments                    PostComment[]
-  googleAccounts                  GoogleAccount[]
-  GoogleCredential                GoogleCredential[]
-  PageComment                     PageComment[]
-  verifiedEmails                  VerifiedEmail[]
-  apiPageKeys                     ApiPageKey[]
-  spaceActions                    UserSpaceAction[]
-  proposalBlocks                  ProposalBlock[]
-  rewardBlocks                    RewardBlock[]
-  authorNotifications             UserNotificationMetadata[]       @relation("author")
-  targetNotifications             UserNotificationMetadata[]       @relation("target")
-  ApplicationComment              ApplicationComment[]
-  blacklistedSpaceUsers           BlacklistedSpaceUser[]
-  blacklistedUser                 BlacklistedUser[]
-  proposalEvaluationPermissions   ProposalEvaluationPermission[]
-  decidedProposalEvaluations      ProposalEvaluation[]             @relation("decidedBy")
-  appealedByProposalEvaluations   ProposalEvaluation[]             @relation("appealedBy")
-  receivedCredentials             IssuedCredential[]
-  otp                             Otp?
-  charmWallet                     CharmWallet?
-  favoriteCredentials             FavoriteCredential[]
-  referralCodes                   ReferralCode[]
-  referredUserEvents              ReferralCodeUseEvent[]           @relation("referrer")
-  referredByUserEvents            ReferralCodeUseEvent[]           @relation("referee")
-  projectMembers                  ProjectMember[]
-  projects                        Project[]
-  claimed                         Boolean?
-  spaceGithubConnections          SpaceGithubConnection[]
-  rewardsGithubRepo               RewardsGithubRepo[]
-  synapsUserKyc                   SynapsUserKyc?
-  personaUserKyc                  PersonaUserKyc?
-  docusignCredentials             DocusignCredential[]
-  documentSignatures              DocumentSigner[]
-  reviews                         ProposalEvaluationReview[]
-  proposalAppealReviewers         ProposalAppealReviewer[]
-  appealReviews                   ProposalEvaluationAppealReview[]
-  farcasterUser                   FarcasterUser?
-  proposalRubricCriteriaAnswers   ProposalRubricCriteriaAnswer[]
-  docusignAllowedRoleOrUsers      DocusignAllowedRoleOrUser[]
-  charmCredentials                CharmUserCredential[]
-  charmQualifyingEventCredentials CharmQualifyingEventCredential[]
-  charmProjectCredentials         CharmProjectCredential[]
-  pushNotificationSubscription    PushNotificationSubscription[]
-  proposalEvaluationApprovers     ProposalEvaluationApprover[]
-  productUpdatesFarcasterFrames   ProductUpdatesFarcasterFrame[]
-  spaceSubscriptionContributions  SpaceSubscriptionContribution[]
+  id                                String                             @id @default(uuid()) @db.Uuid
+  createdAt                         DateTime                           @default(now())
+  updatedAt                         DateTime                           @default(now())
+  deletedAt                         DateTime?
+  avatar                            String?
+  avatarContract                    String?
+  avatarTokenId                     String?
+  avatarChain                       Int?
+  username                          String
+  isBot                             Boolean?                           @default(false)
+  path                              String                             @unique
+  identityType                      IdentityType?
+  email                             String?
+  emailNotifications                Boolean?                           @default(true)
+  emailNewsletter                   Boolean?                           @default(false)
+  xpsEngineId                       String?                            @unique
+  publishToLensDefault              Boolean?                           @default(false)
+  connectOnboarded                  Boolean?                           @default(false)
+  primaryWalletId                   String?                            @db.Uuid
+  primaryWallet                     UserWallet?                        @relation(fields: [primaryWalletId], references: [id], onDelete: SetNull, name: "primaryUserWallet")
+  applications                      Application[]
+  blocks                            Block[]
+  bounties                          Bounty[]
+  bountyPermissions                 BountyPermission[]
+  comments                          Comment[]
+  discordUser                       DiscordUser?
+  favorites                         FavoritePage[]
+  inviteLinks                       InviteLink[]
+  posts                             Post[]
+  pages                             Page[]
+  permissions                       PagePermission[]
+  poaps                             Poap[]
+  spacesCreated                     Space[]
+  spacePermissions                  SpacePermission[]
+  spaceRoles                        SpaceRole[]
+  spacesOrder                       String[]
+  telegramUser                      TelegramUser?
+  threads                           Thread[]
+  profile                           UserDetails?
+  gnosisSafes                       UserGnosisSafe[]
+  userNotifications                 UserNotification[]
+  notificationState                 UserNotificationState?
+  userVotes                         UserVote[]
+  initiatedVotes                    Vote[]
+  profileItems                      ProfileItem[]
+  proposalsAuthored                 ProposalAuthor[]
+  proposalsReviewed                 ProposalReviewer[]
+  reviewedProposals                 Proposal[]
+  workspaceEvents                   WorkspaceEvent[]
+  wallets                           UserWallet[]                       @relation("userWallet")
+  memberPropertyValues              MemberPropertyValue[]
+  spaceNotificationSettings         UserSpaceNotificationSettings[]
+  userTokenGates                    UserTokenGate[]
+  unstoppableDomains                UnstoppableDomain[]
+  postComments                      PostComment[]
+  googleAccounts                    GoogleAccount[]
+  GoogleCredential                  GoogleCredential[]
+  PageComment                       PageComment[]
+  verifiedEmails                    VerifiedEmail[]
+  apiPageKeys                       ApiPageKey[]
+  spaceActions                      UserSpaceAction[]
+  proposalBlocks                    ProposalBlock[]
+  rewardBlocks                      RewardBlock[]
+  authorNotifications               UserNotificationMetadata[]         @relation("author")
+  targetNotifications               UserNotificationMetadata[]         @relation("target")
+  ApplicationComment                ApplicationComment[]
+  blacklistedSpaceUsers             BlacklistedSpaceUser[]
+  blacklistedUser                   BlacklistedUser[]
+  proposalEvaluationPermissions     ProposalEvaluationPermission[]
+  decidedProposalEvaluations        ProposalEvaluation[]               @relation("decidedBy")
+  appealedByProposalEvaluations     ProposalEvaluation[]               @relation("appealedBy")
+  receivedCredentials               IssuedCredential[]
+  otp                               Otp?
+  charmWallet                       CharmWallet?
+  favoriteCredentials               FavoriteCredential[]
+  referralCodes                     ReferralCode[]
+  referredUserEvents                ReferralCodeUseEvent[]             @relation("referrer")
+  referredByUserEvents              ReferralCodeUseEvent[]             @relation("referee")
+  projectMembers                    ProjectMember[]
+  projects                          Project[]
+  claimed                           Boolean?
+  spaceGithubConnections            SpaceGithubConnection[]
+  rewardsGithubRepo                 RewardsGithubRepo[]
+  synapsUserKyc                     SynapsUserKyc?
+  personaUserKyc                    PersonaUserKyc?
+  docusignCredentials               DocusignCredential[]
+  documentSignatures                DocumentSigner[]
+  reviews                           ProposalEvaluationReview[]
+  proposalAppealReviewers           ProposalAppealReviewer[]
+  appealReviews                     ProposalEvaluationAppealReview[]
+  farcasterUser                     FarcasterUser?
+  proposalRubricCriteriaAnswers     ProposalRubricCriteriaAnswer[]
+  docusignAllowedRoleOrUsers        DocusignAllowedRoleOrUser[]
+  charmCredentials                  CharmUserCredential[]
+  charmQualifyingEventCredentials   CharmQualifyingEventCredential[]
+  charmProjectCredentials           CharmProjectCredential[]
+  pushNotificationSubscription      PushNotificationSubscription[]
+  proposalEvaluationApprovers       ProposalEvaluationApprover[]
+  productUpdatesFarcasterFrames     ProductUpdatesFarcasterFrame[]
+  spaceSubscriptionContributions    SpaceSubscriptionContribution[]
+  spaceSubscriptionTierChangeEvents SpaceSubscriptionTierChangeEvent[]
 
   @@index([createdAt(sort: Asc)])
 }
