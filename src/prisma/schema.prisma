@@ -4006,3 +4006,34 @@ model DraftSeasonOffer {
   @@index([status])
   @@index([createdBy])
 }
+
+model BlockchainLogsContract {
+  id               String          @id @default(uuid()) @db.Uuid
+  contractAddress  String
+  chainId          Int
+  firstBlockNumber BigInt
+  firstBlockDate   DateTime
+  lastBlockNumber  BigInt
+  lastBlockDate    DateTime
+  logs             BlockchainLog[]
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  @@unique([contractAddress, chainId])
+  @@index([contractAddress])
+  @@index([chainId])
+}
+
+model BlockchainLog {
+  logIndex    Int
+  logData     Json
+  blockNumber BigInt
+  blockDate   DateTime
+  eventName   String
+  contractId  String                 @db.Uuid
+  contract    BlockchainLogsContract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@unique([contractId, blockNumber, logIndex])
+  @@index([contractId])
+  @@index([eventName])
+}
