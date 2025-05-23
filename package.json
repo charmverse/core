@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.124.1-rc-cache-jobs.3",
+  "version": "0.124.1-rc-cache-jobs.4",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
