@@ -18,45 +18,48 @@ function generatePagesQuery({
   includeDeletedPages,
   fullPage,
   pageIds,
-  spaceId
+  spaceId,
+  findManyArgs
 }: {
   includeDeletedPages?: boolean;
   fullPage?: boolean;
   pageIds?: string[];
   spaceId?: string;
+  findManyArgs?: Prisma.PageFindManyArgs;
 }) {
   if (!pageIds && !spaceId) {
     throw new InvalidInputError(`1 of spaceId or pageIds is required`);
   }
 
-  const pageQueryContent: Partial<Prisma.PageFindManyArgs> = fullPage
-    ? {
-        include: {
-          permissions: {
-            include: {
-              sourcePermission: true
+  const pageQueryContent: Partial<Prisma.PageFindManyArgs> =
+    findManyArgs || fullPage
+      ? {
+          include: {
+            permissions: {
+              include: {
+                sourcePermission: true
+              }
             }
           }
         }
-      }
-    : {
-        select: {
-          id: true,
-          parentId: true,
-          boardId: true,
-          cardId: true,
-          index: true,
-          type: true,
-          createdAt: true,
-          deletedAt: true,
-          spaceId: true,
-          permissions: {
-            include: {
-              sourcePermission: true
+      : {
+          select: {
+            id: true,
+            parentId: true,
+            boardId: true,
+            cardId: true,
+            index: true,
+            type: true,
+            createdAt: true,
+            deletedAt: true,
+            spaceId: true,
+            permissions: {
+              include: {
+                sourcePermission: true
+              }
             }
           }
-        }
-      };
+        };
 
   return {
     where: {
@@ -83,6 +86,7 @@ function generatePagesQuery({
 export async function resolvePageTree({
   pageId,
   flattenChildren,
+  findManyArgs,
   fullPage
 }: PageTreeResolveInput & {
   flattenChildren?: undefined | false;
@@ -91,30 +95,33 @@ export async function resolvePageTree({
 export async function resolvePageTree({
   pageId,
   flattenChildren,
+  findManyArgs,
   fullPage
-}: PageTreeResolveInput & { flattenChildren: true; fullPage?: false | undefined } & OptionalPrismaTransaction): Promise<
-  TargetPageTreeWithFlatChildren<PageNodeWithPermissions>
->;
+}: PageTreeResolveInput & {
+  flattenChildren: true;
+  fullPage?: false | undefined;
+} & OptionalPrismaTransaction): Promise<TargetPageTreeWithFlatChildren<PageNodeWithPermissions>>;
 // Full pages
 export async function resolvePageTree({
   pageId,
   flattenChildren,
-  fullPage
+  fullPage,
+  findManyArgs
 }: PageTreeResolveInput & { flattenChildren?: undefined | false; fullPage: true } & OptionalPrismaTransaction): Promise<
   TargetPageTree<PageWithPermissions>
 >;
 export async function resolvePageTree({
   pageId,
   flattenChildren,
+  findManyArgs,
   fullPage
-}: PageTreeResolveInput & { flattenChildren: true; fullPage: true } & OptionalPrismaTransaction): Promise<
-  TargetPageTreeWithFlatChildren<PageWithPermissions>
->;
+}: PageTreeResolveInput & OptionalPrismaTransaction): Promise<TargetPageTreeWithFlatChildren<PageWithPermissions>>;
 export async function resolvePageTree({
   pageId,
   flattenChildren = false,
   includeDeletedPages = false,
   fullPage,
+  findManyArgs,
   tx = prisma
 }: PageTreeResolveInput & OptionalPrismaTransaction): Promise<
   TargetPageTree<PageNodeWithPermissions> | TargetPageTreeWithFlatChildren<PageNodeWithPermissions>
@@ -162,7 +169,8 @@ export async function resolvePageTree({
     generatePagesQuery({
       includeDeletedPages,
       pageIds: pagesTreeIds?.map((p) => p.id) ?? [],
-      fullPage
+      fullPage,
+      findManyArgs
     })
   )) as PageNodeWithPermissions[] | PageWithPermissions[];
   const { parents, targetPage } = mapTargetPageTree({
@@ -194,7 +202,7 @@ export async function resolvePageTree({
 
 export type MultiPageTreeResolveInput<F extends boolean | undefined = boolean> = Pick<
   PageTreeResolveInput,
-  'includeDeletedPages' | 'fullPage'
+  'includeDeletedPages' | 'fullPage' | 'findManyArgs'
 > & { pageIds: string[]; flattenChildren?: F };
 
 /**
@@ -211,7 +219,8 @@ export async function multiResolvePageTree({
   pageIds,
   includeDeletedPages,
   flattenChildren,
-  fullPage
+  fullPage,
+  findManyArgs
 }: MultiPageTreeResolveInput<false | undefined>): Promise<MultiPageTreeResolveOutput<false | undefined>>;
 export async function multiResolvePageTree({
   pageIds,
@@ -224,6 +233,7 @@ export async function multiResolvePageTree<F extends boolean | undefined>({
   includeDeletedPages,
   flattenChildren,
   fullPage,
+  findManyArgs,
   tx = prisma
 }: MultiPageTreeResolveInput<F> & OptionalPrismaTransaction): Promise<MultiPageTreeResolveOutput<F>> {
   const pagesWithSpaceIds = (
@@ -279,7 +289,8 @@ export async function multiResolvePageTree<F extends boolean | undefined>({
     generatePagesQuery({
       includeDeletedPages,
       pageIds: pagesTreeIds.map((p) => p.id),
-      fullPage
+      fullPage,
+      findManyArgs
     })
   )) as PageNodeWithPermissions[] | PageWithPermissions[];
 
