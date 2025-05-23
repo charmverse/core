@@ -32,7 +32,8 @@ function generatePagesQuery({
   }
 
   const pageQueryContent: Partial<Prisma.PageFindManyArgs> =
-    findManyArgs || fullPage
+    findManyArgs ||
+    (fullPage
       ? {
           include: {
             permissions: {
@@ -59,7 +60,7 @@ function generatePagesQuery({
               }
             }
           }
-        };
+        });
 
   return {
     where: {
