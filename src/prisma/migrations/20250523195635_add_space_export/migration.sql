@@ -9,6 +9,7 @@ CREATE TABLE "SpaceExportJob" (
     "emailToNotify" TEXT,
     "spaceId" UUID NOT NULL,
     "status" "SpaceExportJobStatus" NOT NULL,
+    "metrics" JSONB NOT NULL DEFAULT '{}',
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "downloadLink" TEXT,
     "error" JSONB,
