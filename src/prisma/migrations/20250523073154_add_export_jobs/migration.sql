@@ -6,6 +6,7 @@ CREATE TABLE "SpaceExportJob" (
     "id" UUID NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "createdBy" UUID NOT NULL,
+    "emailToNotify" TEXT,
     "spaceId" UUID NOT NULL,
     "status" "SpaceExportJobStatus" NOT NULL,
     "updatedAt" TIMESTAMP(3) NOT NULL,
