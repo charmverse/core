@@ -402,7 +402,32 @@ model Space {
   subscriptionPayments         SpaceSubscriptionPayment[]
   subscriptionContributions    SpaceSubscriptionContribution[]
   subscriptionTierChangeEvents SpaceSubscriptionTierChangeEvent[]
+  spaceExportJobs              SpaceExportJob[]
 
+  @@index([createdBy])
+}
+
+enum SpaceExportJobStatus {
+  pending
+  completed
+  failed
+}
+
+model SpaceExportJob {
+  id            String               @id @default(uuid()) @db.Uuid
+  createdAt     DateTime             @default(now())
+  createdBy     String               @db.Uuid
+  author        User                 @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  emailToNotify String?
+  spaceId       String               @db.Uuid
+  space         Space                @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  status        SpaceExportJobStatus
+  metrics       Json                 @default("{}")
+  updatedAt     DateTime             @updatedAt
+  downloadLink  String?
+  error         Json?
+
+  @@index([spaceId, status])
   @@index([createdBy])
 }
 
@@ -809,6 +834,7 @@ model User {
   productUpdatesFarcasterFrames     ProductUpdatesFarcasterFrame[]
   spaceSubscriptionContributions    SpaceSubscriptionContribution[]
   spaceSubscriptionTierChangeEvents SpaceSubscriptionTierChangeEvent[]
+  spaceExportJob                    SpaceExportJob[]
 
   @@index([createdAt(sort: Asc)])
 }
