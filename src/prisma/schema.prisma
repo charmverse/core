@@ -308,6 +308,7 @@ model Space {
   isCustomDomainVerified       Boolean?
   paidTier                     SubscriptionTier                   @default(community)
   subscriptionTier             SpaceSubscriptionTier?             @default(readonly)
+  subscriptionMonthlyPrice     Int?
   subscriptionCancelledAt      DateTime?
   subscriptionCancelledBy      String?                            @db.Uuid
   discordServerId              String?
