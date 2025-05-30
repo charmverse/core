@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.124.1-rc-logs-schema.0",
+  "version": "0.125.1",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
@@ -152,7 +152,7 @@
     "luxon": "^3.5.0",
     "merkletreejs": "^0.4.0",
     "prisma": "^5.7.1",
-    "undici": "^7.3.0",
+    "undici": "^7.10.0",
     "utf-8-validate": "^5.0.10",
     "uuid": "^11.0.5",
     "viem": "^2.22.17"

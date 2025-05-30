@@ -1,7 +1,7 @@
 // These 2 types are used for reducing a list of pages to a tree
 // Generic type A is optional, we can mount additional properties on basic node definitions
 
-import type { Page, PagePermission, PageType } from '@prisma/client';
+import type { Prisma, Page, PagePermission, PageType } from '@prisma/client';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type PageNode<A = {}> = Pick<
@@ -38,6 +38,7 @@ export interface PageTreeResolveInput {
   flattenChildren?: boolean;
   includeDeletedPages?: boolean;
   fullPage?: boolean;
+  findManyArgs?: Prisma.PageFindManyArgs;
   pageNodes?: PageNodeWithPermissions[];
 }
 
