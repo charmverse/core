@@ -4040,7 +4040,7 @@ model BlockchainLogsContract {
   chainId          Int
   firstBlockNumber BigInt
   lastBlockNumber  BigInt?
-  eventName        String          @default("")
+  eventName        String?
   logs             BlockchainLog[]
   createdAt        DateTime        @default(now())
   updatedAt        DateTime        @updatedAt

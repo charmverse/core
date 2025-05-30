@@ -8,7 +8,7 @@
 DROP INDEX "BlockchainLogsContract_contractAddress_chainId_key";
 
 -- AlterTable
-ALTER TABLE "BlockchainLogsContract" ADD COLUMN     "eventName" TEXT NOT NULL DEFAULT '';
+ALTER TABLE "BlockchainLogsContract" ADD COLUMN     "eventName" TEXT;
 
 -- CreateIndex
 CREATE INDEX "BlockchainLogsContract_eventName_idx" ON "BlockchainLogsContract"("eventName");
