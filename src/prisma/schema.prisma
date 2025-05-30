@@ -4040,13 +4040,15 @@ model BlockchainLogsContract {
   chainId          Int
   firstBlockNumber BigInt
   lastBlockNumber  BigInt?
+  eventName        String          @default("")
   logs             BlockchainLog[]
   createdAt        DateTime        @default(now())
   updatedAt        DateTime        @updatedAt
 
-  @@unique([contractAddress, chainId])
+  @@unique([contractAddress, chainId, eventName])
   @@index([contractAddress])
   @@index([chainId])
+  @@index([eventName])
 }
 
 model BlockchainLog {
