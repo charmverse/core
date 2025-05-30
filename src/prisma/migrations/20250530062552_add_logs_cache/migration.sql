@@ -4,9 +4,7 @@ CREATE TABLE "BlockchainLogsContract" (
     "contractAddress" TEXT NOT NULL,
     "chainId" INTEGER NOT NULL,
     "firstBlockNumber" BIGINT NOT NULL,
-    "firstBlockDate" TIMESTAMP(3) NOT NULL,
-    "lastBlockNumber" BIGINT NOT NULL,
-    "lastBlockDate" TIMESTAMP(3) NOT NULL,
+    "lastBlockNumber" BIGINT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -16,9 +14,9 @@ CREATE TABLE "BlockchainLogsContract" (
 -- CreateTable
 CREATE TABLE "BlockchainLog" (
     "logIndex" INTEGER NOT NULL,
-    "logData" JSONB NOT NULL,
+    "args" JSONB NOT NULL,
+    "transactionHash" TEXT NOT NULL,
     "blockNumber" BIGINT NOT NULL,
-    "blockDate" TIMESTAMP(3) NOT NULL,
     "eventName" TEXT NOT NULL,
     "contractId" UUID NOT NULL
 );

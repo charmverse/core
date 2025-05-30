@@ -4039,9 +4039,7 @@ model BlockchainLogsContract {
   contractAddress  String
   chainId          Int
   firstBlockNumber BigInt
-  firstBlockDate   DateTime
-  lastBlockNumber  BigInt
-  lastBlockDate    DateTime
+  lastBlockNumber  BigInt?
   logs             BlockchainLog[]
   createdAt        DateTime        @default(now())
   updatedAt        DateTime        @updatedAt
@@ -4052,13 +4050,13 @@ model BlockchainLogsContract {
 }
 
 model BlockchainLog {
-  logIndex    Int
-  logData     Json
-  blockNumber BigInt
-  blockDate   DateTime
-  eventName   String
-  contractId  String                 @db.Uuid
-  contract    BlockchainLogsContract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  logIndex        Int
+  args            Json
+  transactionHash String
+  blockNumber     BigInt
+  eventName       String
+  contractId      String                 @db.Uuid
+  contract        BlockchainLogsContract @relation(fields: [contractId], references: [id], onDelete: Cascade)
 
   @@unique([contractId, blockNumber, logIndex])
   @@index([contractId])
