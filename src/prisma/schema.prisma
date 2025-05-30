@@ -1143,6 +1143,7 @@ model TokenGate {
   accessTypes      String[]          @default([])
   type             TokenGateType     @default(lit)
   space            Space             @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  archived         Boolean           @default(false)
   tokenGateToRoles TokenGateToRole[]
   userTokenGates   UserTokenGate[]
   spaceRoles       SpaceRole[]
@@ -1194,6 +1195,7 @@ model Role {
   source                        RoleSource?
   sourceId                      String?
   space                         Space                          @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  archived                      Boolean                        @default(false)
   bountyPermissions             BountyPermission[]
   permissions                   PagePermission[]
   spacePermissions              SpacePermission[]
@@ -1406,6 +1408,7 @@ model ProposalWorkflow {
   space              Space      @relation(fields: [spaceId], references: [id], onDelete: Cascade)
   index              Int
   title              String
+  archived           Boolean    @default(false)
   draftReminder      Boolean?   @default(false)
   privateEvaluations Boolean?   @default(false)
   evaluations        Json[] // mirrors the ProposalEvaluation schema
