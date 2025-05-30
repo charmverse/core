@@ -15,7 +15,7 @@ CREATE TABLE "BlockchainLogsContract" (
 CREATE TABLE "BlockchainLog" (
     "logIndex" INTEGER NOT NULL,
     "args" JSONB NOT NULL,
-    "transactionHash" TEXT NOT NULL,
+    "txHash" TEXT NOT NULL,
     "blockNumber" BIGINT NOT NULL,
     "eventName" TEXT NOT NULL,
     "contractId" UUID NOT NULL
