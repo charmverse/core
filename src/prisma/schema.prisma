@@ -468,7 +468,7 @@ model SpaceSubscriptionContribution {
   decentTxHash   String?
   decentChainId  Int?
   decentPayload  Json
-  txHash         String?
+  txHash         String?         @unique
   chainId        Int?
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
