@@ -3083,6 +3083,7 @@ model GithubRepo {
   createdAt     DateTime            @default(now())
   deletedAt     DateTime?
   bonusPartner  String?
+  issues        GithubIssue[]
 
   @@unique([owner, name])
   @@index([id])
@@ -3111,6 +3112,7 @@ model GithubEvent {
   githubUser         GithubUser      @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   strike             BuilderStrike?
   builderEvent       BuilderEvent?
+  issues             GithubIssue[]
 
   @@unique([pullRequestNumber, repoId, createdBy, type], name: "unique_github_event")
   @@index([repoId])
@@ -4066,4 +4068,20 @@ model BlockchainLog {
   @@unique([contractId, blockNumber, logIndex])
   @@index([contractId])
   @@index([eventName])
+}
+
+model GithubIssue {
+  id            String      @id @default(uuid()) @db.Uuid
+  pullRequestId String
+  githubEventId String      @db.Uuid
+  githubEvent   GithubEvent @relation(fields: [githubEventId], references: [id], onDelete: Cascade)
+  repoId        Int
+  repo          GithubRepo  @relation(fields: [repoId], references: [id], onDelete: Cascade)
+  issueNumber   Int
+  tags          Json        @default("[]")
+  createdAt     DateTime    @default(now())
+
+  @@unique([pullRequestId, repoId])
+  @@index([repoId])
+  @@index([githubEventId])
 }
