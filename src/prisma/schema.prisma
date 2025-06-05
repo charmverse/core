@@ -4071,17 +4071,16 @@ model BlockchainLog {
 }
 
 model GithubIssue {
-  id            String      @id @default(uuid()) @db.Uuid
-  pullRequestId String
-  githubEventId String      @db.Uuid
-  githubEvent   GithubEvent @relation(fields: [githubEventId], references: [id], onDelete: Cascade)
-  repoId        Int
-  repo          GithubRepo  @relation(fields: [repoId], references: [id], onDelete: Cascade)
-  issueNumber   Int
-  tags          Json        @default("[]")
-  createdAt     DateTime    @default(now())
+  pullRequestNumber Int
+  githubEventId     String      @db.Uuid
+  githubEvent       GithubEvent @relation(fields: [githubEventId], references: [id], onDelete: Cascade)
+  repoId            Int
+  repo              GithubRepo  @relation(fields: [repoId], references: [id], onDelete: Cascade)
+  issueNumber       Int
+  tags              String[]    @default([])
+  createdAt         DateTime    @default(now())
 
-  @@unique([pullRequestId, repoId])
+  @@unique([issueNumber, repoId])
   @@index([repoId])
   @@index([githubEventId])
 }
