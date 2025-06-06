@@ -13,6 +13,7 @@ let memberUser: User;
 let guestUser: User;
 
 let outsideUser: User;
+
 beforeAll(async () => {
   const generated = await generateUserAndSpace({ isAdmin: true });
   space = generated.space;
@@ -57,15 +58,14 @@ describe('hasAccessToSpace', () => {
     expect(isAdmin).toBe(true);
     expect(spaceRole).toMatchObject<SpaceRole>(
       expect.objectContaining({
-        createdAt: expect.any(Date),
         id: expect.any(String),
         isAdmin: true,
         isGuest: false,
-        joinedViaLink: null,
-        onboarded: expect.any(Boolean),
         spaceId: space.id,
-        tokenGateId: null,
-        userId: adminUser.id
+        userId: adminUser.id,
+        space: {
+          subscriptionTier: space.subscriptionTier
+        }
       })
     );
   });
@@ -78,14 +78,10 @@ describe('hasAccessToSpace', () => {
     expect(isAdmin).toBe(false);
     expect(spaceRole).toMatchObject<SpaceRole>(
       expect.objectContaining({
-        createdAt: expect.any(Date),
         id: expect.any(String),
         isAdmin: false,
         isGuest: false,
-        joinedViaLink: null,
-        onboarded: expect.any(Boolean),
         spaceId: space.id,
-        tokenGateId: null,
         userId: memberUser.id
       })
     );
@@ -98,17 +94,16 @@ describe('hasAccessToSpace', () => {
     });
 
     expect(isAdmin).toBe(false);
-    expect(spaceRole).toMatchObject<SpaceRole>(
+    expect(spaceRole).toMatchObject(
       expect.objectContaining({
-        createdAt: expect.any(Date),
         id: expect.any(String),
         isAdmin: false,
         isGuest: true,
-        joinedViaLink: null,
-        onboarded: expect.any(Boolean),
         spaceId: space.id,
-        tokenGateId: null,
-        userId: guestUser.id
+        userId: guestUser.id,
+        space: {
+          subscriptionTier: space.subscriptionTier
+        }
       })
     );
   });
@@ -129,6 +124,13 @@ describe('hasAccessToSpace', () => {
         spaceUser: {
           userId: adminUser.id,
           spaceId: space.id
+        }
+      },
+      include: {
+        space: {
+          select: {
+            subscriptionTier: true
+          }
         }
       }
     });
@@ -178,7 +180,10 @@ describe('hasAccessToSpace', () => {
       isGuest: true,
       onboarded: true,
       spaceId: uuid(),
-      userId: uuid()
+      userId: uuid(),
+      space: {
+        subscriptionTier: 'gold' as const
+      }
     };
     await expect(
       hasAccessToSpace({
@@ -213,5 +218,27 @@ describe('hasAccessToSpace', () => {
         }
       })
     ).rejects.toBeInstanceOf(InvalidInputError);
+  });
+
+  it('should return a readonly space if the space is readonly', async () => {
+    const { user, space: testSpace } = await generateUserAndSpace({
+      subscriptionTier: 'readonly'
+    });
+    const { isReadonlySpace } = await hasAccessToSpace({
+      spaceId: testSpace.id,
+      userId: user.id
+    });
+    expect(isReadonlySpace).toBe(true);
+  });
+
+  it('should not return a readonly space if the space is gold tier', async () => {
+    const { user, space: testSpace } = await generateUserAndSpace({
+      subscriptionTier: 'gold'
+    });
+    const { isReadonlySpace } = await hasAccessToSpace({
+      spaceId: testSpace.id,
+      userId: user.id
+    });
+    expect(isReadonlySpace).toBe(false);
   });
 });

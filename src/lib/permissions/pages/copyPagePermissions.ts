@@ -25,7 +25,7 @@ export function copyPagePermission({
     throw new InvalidPermissionGranteeError();
   }
 
-  const inheritanceValue = inheritFrom ? pagePermission.inheritedFromPermission ?? pagePermission.id : undefined;
+  const inheritanceValue = inheritFrom ? (pagePermission.inheritedFromPermission ?? pagePermission.id) : undefined;
 
   return {
     page: {
