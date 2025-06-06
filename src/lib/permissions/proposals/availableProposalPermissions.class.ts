@@ -8,7 +8,7 @@ const readonlyOperations: ProposalOperation[] = ['view', 'view_notes', 'view_pri
 
 export class AvailableProposalPermissions extends BasePermissions<ProposalOperation> {
   constructor({ isReadonlySpace }: { isReadonlySpace: boolean }) {
-    const allowedOperations = isReadonlySpace ? readonlyOperations : proposalOperations;
+    const allowedOperations = (isReadonlySpace ? readonlyOperations : proposalOperations).slice();
     super({ allowedOperations });
   }
 }
