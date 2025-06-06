@@ -9,7 +9,7 @@ export async function policyDraftPost({ resource, flags, userId }: PostPolicyInp
   }
 
   const newPermissions = {
-    ...new AvailablePostPermissions().empty,
+    ...new AvailablePostPermissions({ isReadonlySpace: false }).empty,
     edit_post: resource.createdBy === userId,
     view_post: resource.createdBy === userId,
     delete_post: resource.createdBy === userId

@@ -14,8 +14,8 @@ describe('policyConvertedToProposal', () => {
   let member: User;
   let post: Post;
   let postConvertedToProposal: Post;
-  const fullPermissionFlags = new AvailablePostPermissions().full;
-  const emptyPermissionFlags = new AvailablePostPermissions().empty;
+  const fullPermissionFlags = new AvailablePostPermissions({ isReadonlySpace: false }).full;
+  const emptyPermissionFlags = new AvailablePostPermissions({ isReadonlySpace: false }).empty;
 
   beforeAll(async () => {
     const generated = await generateUserAndSpace({
