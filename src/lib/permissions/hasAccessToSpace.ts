@@ -52,7 +52,7 @@ export async function hasAccessToSpace({ userId, spaceId, preComputedSpaceRole }
           }
         });
   if (!evaluatedSpaceRole) {
-    return { spaceRole: null, isReadonlySpace: true };
+    return { spaceRole: null, isReadonlySpace: false };
   }
   return {
     isAdmin: evaluatedSpaceRole.isAdmin,
