@@ -73,7 +73,7 @@ export function buildComputePermissionsWithPermissionFilteringPolicies<
       throw new DataNotFoundError(`Could not find resource with ID ${request.resourceId}`);
     }
     // If the resource has a spaceId, we can auto resolve admin status
-    let spaceRole: SpaceRoleFields | undefined | null;
+    let spaceRole: PreComputedSpaceRole['preComputedSpaceRole'];
     let preComputedSpacePermissionFlags = request.preComputedSpacePermissionFlags;
     const spaceId = (resource as any as ResourceWithSpaceId).spaceId;
 

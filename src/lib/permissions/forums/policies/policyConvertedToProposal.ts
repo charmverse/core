@@ -13,7 +13,7 @@ export async function policyConvertedToProposal({
     return flags;
   }
 
-  const emptyPermissions = new AvailablePostPermissions().empty;
+  const emptyPermissions = new AvailablePostPermissions({ isReadonlySpace: false }).empty;
 
   if (userId === resource.createdBy) {
     return {

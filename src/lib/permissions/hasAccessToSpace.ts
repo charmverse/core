@@ -15,6 +15,7 @@ type Input = {
 
 interface Result {
   isAdmin?: boolean;
+  isReadonlySpace: boolean;
   spaceRole: PreComputedSpaceRole['preComputedSpaceRole'] | null;
 }
 
@@ -27,7 +28,7 @@ export async function hasAccessToSpace({ userId, spaceId, preComputedSpaceRole }
   ) {
     throw new InvalidInputError(`SpaceRole userId and spaceId do not match the provided userId and spaceId`);
   } else if (!userId) {
-    return { spaceRole: null };
+    return { spaceRole: null, isReadonlySpace: false };
   }
   const evaluatedSpaceRole =
     preComputedSpaceRole || preComputedSpaceRole === null
@@ -36,10 +37,26 @@ export async function hasAccessToSpace({ userId, spaceId, preComputedSpaceRole }
           where: {
             spaceId,
             userId
+          },
+          select: {
+            id: true,
+            isAdmin: true,
+            isGuest: true,
+            userId: true,
+            spaceId: true,
+            space: {
+              select: {
+                subscriptionTier: true
+              }
+            }
           }
         });
   if (!evaluatedSpaceRole) {
-    return { spaceRole: null };
+    return { spaceRole: null, isReadonlySpace: false };
   }
-  return { isAdmin: evaluatedSpaceRole.isAdmin, spaceRole: evaluatedSpaceRole };
+  return {
+    isAdmin: evaluatedSpaceRole.isAdmin,
+    isReadonlySpace: evaluatedSpaceRole.space.subscriptionTier === 'readonly',
+    spaceRole: evaluatedSpaceRole
+  };
 }

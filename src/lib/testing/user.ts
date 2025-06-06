@@ -1,4 +1,4 @@
-import type { SubscriptionTier, User } from '@prisma/client';
+import type { SpaceSubscriptionTier, SubscriptionTier, User } from '@prisma/client';
 import { v4 as uuid } from 'uuid';
 
 import { prisma } from '../../prisma-client';
@@ -61,6 +61,7 @@ type CreateUserAndSpaceInput = {
   publicProposals?: boolean;
   publicProposalTemplates?: boolean;
   spacePaidTier?: SubscriptionTier;
+  subscriptionTier?: SpaceSubscriptionTier;
   customProposalProperties?: IPropertyTemplate[];
   wallet?: string;
 };
@@ -76,6 +77,7 @@ export async function generateUserAndSpace({
   publicProposals = false,
   publicProposalTemplates = false,
   spacePaidTier = 'community',
+  subscriptionTier = 'gold',
   customProposalProperties,
   wallet
 }: CreateUserAndSpaceInput = {}) {
@@ -98,6 +100,7 @@ export async function generateUserAndSpace({
                 }
               },
               paidTier: spacePaidTier,
+              subscriptionTier,
               updatedBy: userId,
               name: spaceName,
               // Adding prefix avoids this being evaluated as uuid

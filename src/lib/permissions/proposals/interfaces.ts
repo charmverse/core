@@ -3,7 +3,7 @@ import { ProposalOperation } from '@prisma/client';
 import { typedKeys } from '../../utilities/objects';
 import type { UserPermissionFlags } from '../core/interfaces';
 
-export const proposalOperations = [...typedKeys(ProposalOperation)] as const;
+export const proposalOperations = typedKeys(ProposalOperation);
 
 export type ProposalPermissionFlags = UserPermissionFlags<ProposalOperation>;
 
