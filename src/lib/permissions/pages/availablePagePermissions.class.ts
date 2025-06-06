@@ -11,7 +11,7 @@ const readonlyOperations: PageOperations[] = ['read'];
  * Permissions can be added, but not removed.
  */
 export class AvailablePagePermissions extends BasePermissions<PageOperations> {
-  constructor({ isReadonlySpace }: { isReadonlySpace?: boolean } = {}) {
+  constructor({ isReadonlySpace }: { isReadonlySpace: boolean }) {
     const allowedOperations = isReadonlySpace ? readonlyOperations : typedKeys(PageOperations);
     super({ allowedOperations });
   }
