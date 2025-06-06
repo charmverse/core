@@ -1,4 +1,4 @@
-import type { SpaceOperation, SpaceRole, SpaceRoleToRole } from '@prisma/client';
+import type { SpaceOperation, SpaceRole, SpaceRoleToRole, SpaceSubscriptionTier } from '@prisma/client';
 
 export type Resource = {
   resourceId: string;
@@ -35,7 +35,7 @@ export type SpaceRoleFields = Pick<SpaceRole, 'id' | 'userId' | 'spaceId' | 'isA
  * Null means we already computed space role, and the target user does not belong to this space
  */
 export type PreComputedSpaceRole = {
-  preComputedSpaceRole?: SpaceRoleFields | null;
+  preComputedSpaceRole?: (SpaceRoleFields & { space: { subscriptionTier: SpaceSubscriptionTier | null } }) | null;
 };
 
 export type PreComputedSpacePermissionFlags = {
