@@ -3,8 +3,11 @@ import { PostOperation } from '@prisma/client';
 import { typedKeys } from '../../utilities/objects';
 import { BasePermissions } from '../core/basePermissions.class';
 
+const readonlyOperations: PostOperation[] = ['view_post'];
+
 export class AvailablePostPermissions extends BasePermissions<PostOperation> {
-  constructor() {
-    super({ allowedOperations: typedKeys(PostOperation) });
+  constructor({ isReadonlySpace }: { isReadonlySpace?: boolean } = {}) {
+    const allowedOperations = isReadonlySpace ? readonlyOperations : typedKeys(PostOperation);
+    super({ allowedOperations });
   }
 }
