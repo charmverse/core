@@ -28,7 +28,7 @@ export async function hasAccessToSpace({ userId, spaceId, preComputedSpaceRole }
   ) {
     throw new InvalidInputError(`SpaceRole userId and spaceId do not match the provided userId and spaceId`);
   } else if (!userId) {
-    return { spaceRole: null, isReadonlySpace: true };
+    return { spaceRole: null, isReadonlySpace: false };
   }
   const evaluatedSpaceRole =
     preComputedSpaceRole || preComputedSpaceRole === null
