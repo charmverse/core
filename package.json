@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.125.10-rc-space-id-indice.0",
+  "version": "0.125.9",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
