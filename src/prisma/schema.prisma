@@ -406,6 +406,11 @@ model Space {
   spaceExportJobs              SpaceExportJob[]
 
   @@index([createdBy])
+  @@index([homePageId])
+  @@index([defaultPostCategoryId])
+  @@index([domain])
+  @@index([customDomain])
+  @@index([name])
 }
 
 enum SpaceExportJobStatus {
@@ -610,6 +615,8 @@ model UserSpaceAction {
 
   @@index([createdBy, action])
   @@index([spaceId, action])
+  @@index([pageId])
+  @@index([postId])
 }
 
 model PageComment {
@@ -1406,6 +1413,11 @@ model Proposal {
 
   @@index([spaceId])
   @@index([reviewedBy])
+  @@index([workflowId])
+  @@index([projectId])
+  @@index([formId])
+  @@index([archived])
+  @@index([status])
 }
 
 model ProposalWorkflow {
@@ -1821,6 +1833,8 @@ model Post {
   @@index([path])
   @@index([spaceId, deletedAt]) // space feed
   @@index([spaceId, deletedAt, categoryId]) // category feed
+  @@index([createdBy])
+  @@index([proposalId])
 }
 
 model PostToPostTag {
@@ -2065,6 +2079,10 @@ model UserNotificationMetadata {
   proposalNotifications ProposalNotification[]
   voteNotifications     VoteNotification[]
   customNotifications   CustomNotification[]
+
+  @@index([spaceId])
+  @@index([createdBy])
+  @@index([userId])
 }
 
 model BountyNotification {
