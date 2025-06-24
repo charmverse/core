@@ -4186,11 +4186,18 @@ model GithubIssue {
   @@index([githubEventId])
 }
 
+enum ScoutPartnerStatus {
+  active
+  paused
+  completed
+}
+
 model ScoutPartner {
-  id                        String         @id
+  id                        String             @id
   icon                      String
   bannerImage               String
   name                      String
+  status                    ScoutPartnerStatus @default(active)
   tokenAmountPerPullRequest Int?
   tokenAddress              String?
   tokenChain                Int?

@@ -1,3 +1,6 @@
+-- CreateEnum
+CREATE TYPE "ScoutPartnerStatus" AS ENUM ('active', 'paused', 'completed');
+
 -- AlterTable
 ALTER TABLE "BuilderEvent" ADD COLUMN     "scoutPartnerId" TEXT;
 
@@ -7,6 +10,7 @@ CREATE TABLE "ScoutPartner" (
     "icon" TEXT NOT NULL,
     "bannerImage" TEXT NOT NULL,
     "name" TEXT NOT NULL,
+    "status" "ScoutPartnerStatus" NOT NULL DEFAULT 'active',
     "tokenAmountPerPullRequest" INTEGER,
     "tokenAddress" TEXT,
     "tokenChain" INTEGER,
