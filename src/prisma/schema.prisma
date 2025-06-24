@@ -3172,19 +3172,21 @@ enum GithubRepoOwnerType {
 }
 
 model GithubRepo {
-  id            Int                 @id
-  owner         String
-  ownerType     GithubRepoOwnerType
-  handPicked    Boolean             @default(false)
-  fork          Boolean             @default(false)
-  name          String
-  avatar        String?
-  defaultBranch String
-  events        GithubEvent[]
-  createdAt     DateTime            @default(now())
-  deletedAt     DateTime?
-  bonusPartner  String?
-  issues        GithubIssue[]
+  id             Int                 @id
+  owner          String
+  ownerType      GithubRepoOwnerType
+  handPicked     Boolean             @default(false)
+  fork           Boolean             @default(false)
+  name           String
+  avatar         String?
+  defaultBranch  String
+  events         GithubEvent[]
+  createdAt      DateTime            @default(now())
+  deletedAt      DateTime?
+  bonusPartner   String?
+  scoutPartnerId String?
+  scoutPartner   ScoutPartner?       @relation(fields: [scoutPartnerId], references: [id], onDelete: SetNull)
+  issues         GithubIssue[]
 
   @@unique([owner, name])
   @@index([id])
@@ -4202,4 +4204,5 @@ model ScoutPartner {
   tokenAddress              String?
   tokenChain                Int?
   builderEvents             BuilderEvent[]
+  repos                     GithubRepo[]
 }
