@@ -3116,6 +3116,8 @@ model BuilderEvent {
   createdAt               DateTime                        @default(now())
   description             String? // for misc_event type
   bonusPartner            String?
+  scoutPartnerId          String?
+  scoutPartner            ScoutPartner?                   @relation(fields: [scoutPartnerId], references: [id], onDelete: SetNull)
   githubEventId           String?                         @unique @db.Uuid
   githubEvent             GithubEvent?                    @relation(fields: [githubEventId], references: [id], onDelete: SetNull)
   gemsPayoutEventId       String?                         @unique @db.Uuid
@@ -4182,4 +4184,15 @@ model GithubIssue {
   @@unique([issueNumber, repoId])
   @@index([repoId])
   @@index([githubEventId])
+}
+
+model ScoutPartner {
+  id                        String         @id
+  icon                      String
+  bannerImage               String
+  name                      String
+  tokenAmountPerPullRequest Int?
+  tokenAddress              String?
+  tokenChain                Int?
+  builderEvents             BuilderEvent[]
 }

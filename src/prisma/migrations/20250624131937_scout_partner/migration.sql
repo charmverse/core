@@ -1,0 +1,18 @@
+-- AlterTable
+ALTER TABLE "BuilderEvent" ADD COLUMN     "scoutPartnerId" TEXT;
+
+-- CreateTable
+CREATE TABLE "ScoutPartner" (
+    "id" TEXT NOT NULL,
+    "icon" TEXT NOT NULL,
+    "bannerImage" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "tokenAmountPerPullRequest" INTEGER,
+    "tokenAddress" TEXT,
+    "tokenChain" INTEGER,
+
+    CONSTRAINT "ScoutPartner_pkey" PRIMARY KEY ("id")
+);
+
+-- AddForeignKey
+ALTER TABLE "BuilderEvent" ADD CONSTRAINT "BuilderEvent_scoutPartnerId_fkey" FOREIGN KEY ("scoutPartnerId") REFERENCES "ScoutPartner"("id") ON DELETE SET NULL ON UPDATE CASCADE;
