@@ -3636,13 +3636,15 @@ model TalentProfile {
 }
 
 model PartnerRewardEvent {
-  createdAt DateTime @default(now())
-  week      String
-  season    String
-  userId    String   @db.Uuid
-  user      Scout    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  partner   String
-  reward    Json
+  createdAt      DateTime      @default(now())
+  week           String
+  season         String
+  userId         String        @db.Uuid
+  user           Scout         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  partner        String
+  reward         Json
+  scoutPartnerId String?
+  scoutPartner   ScoutPartner? @relation(fields: [scoutPartnerId], references: [id], onDelete: SetNull)
 
   @@unique([userId, partner, week, season])
   @@index([userId])
@@ -3878,6 +3880,8 @@ model PartnerRewardPayoutContract {
   tokenDecimals   Int
   tokenSymbol     String
   partner         String
+  scoutPartnerId  String?
+  scoutPartner    ScoutPartner?                       @relation(fields: [scoutPartnerId], references: [id], onDelete: SetNull)
   deployTxHash    String
   ipfsCid         String
   merkleTreeJson  Json
@@ -4195,14 +4199,16 @@ enum ScoutPartnerStatus {
 }
 
 model ScoutPartner {
-  id                        String             @id
+  id                        String                        @id
   icon                      String
   bannerImage               String
   name                      String
-  status                    ScoutPartnerStatus @default(active)
+  status                    ScoutPartnerStatus            @default(active)
   tokenAmountPerPullRequest Int?
   tokenAddress              String?
   tokenChain                Int?
   builderEvents             BuilderEvent[]
   repos                     GithubRepo[]
+  payoutContracts           PartnerRewardPayoutContract[]
+  rewardEvents              PartnerRewardEvent[]
 }

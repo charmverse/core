@@ -7,6 +7,12 @@ ALTER TABLE "BuilderEvent" ADD COLUMN     "scoutPartnerId" TEXT;
 -- AlterTable
 ALTER TABLE "GithubRepo" ADD COLUMN     "scoutPartnerId" TEXT;
 
+-- AlterTable
+ALTER TABLE "PartnerRewardEvent" ADD COLUMN     "scoutPartnerId" TEXT;
+
+-- AlterTable
+ALTER TABLE "PartnerRewardPayoutContract" ADD COLUMN     "scoutPartnerId" TEXT;
+
 -- CreateTable
 CREATE TABLE "ScoutPartner" (
     "id" TEXT NOT NULL,
@@ -26,3 +32,9 @@ ALTER TABLE "BuilderEvent" ADD CONSTRAINT "BuilderEvent_scoutPartnerId_fkey" FOR
 
 -- AddForeignKey
 ALTER TABLE "GithubRepo" ADD CONSTRAINT "GithubRepo_scoutPartnerId_fkey" FOREIGN KEY ("scoutPartnerId") REFERENCES "ScoutPartner"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "PartnerRewardEvent" ADD CONSTRAINT "PartnerRewardEvent_scoutPartnerId_fkey" FOREIGN KEY ("scoutPartnerId") REFERENCES "ScoutPartner"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "PartnerRewardPayoutContract" ADD CONSTRAINT "PartnerRewardPayoutContract_scoutPartnerId_fkey" FOREIGN KEY ("scoutPartnerId") REFERENCES "ScoutPartner"("id") ON DELETE SET NULL ON UPDATE CASCADE;
