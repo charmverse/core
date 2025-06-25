@@ -18,11 +18,16 @@ CREATE TABLE "ScoutPartner" (
     "id" TEXT NOT NULL,
     "icon" TEXT NOT NULL,
     "bannerImage" TEXT NOT NULL,
+    "infoPageImage" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "status" "ScoutPartnerStatus" NOT NULL DEFAULT 'active',
     "tokenAmountPerPullRequest" INTEGER,
     "tokenAddress" TEXT,
     "tokenChain" INTEGER,
+    "tokenSymbol" TEXT,
+    "tokenDecimals" INTEGER,
+    "tokenImage" TEXT,
+    "issueTagTokenAmounts" JSONB DEFAULT '{}',
 
     CONSTRAINT "ScoutPartner_pkey" PRIMARY KEY ("id")
 );

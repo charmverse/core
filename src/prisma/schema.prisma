@@ -4202,11 +4202,16 @@ model ScoutPartner {
   id                        String                        @id
   icon                      String
   bannerImage               String
+  infoPageImage             String
   name                      String
   status                    ScoutPartnerStatus            @default(active)
   tokenAmountPerPullRequest Int?
   tokenAddress              String?
   tokenChain                Int?
+  tokenSymbol               String?
+  tokenDecimals             Int?
+  tokenImage                String?
+  issueTagTokenAmounts      Json?                         @default("{}") // Stores mapping of issue tags to token amounts
   builderEvents             BuilderEvent[]
   repos                     GithubRepo[]
   payoutContracts           PartnerRewardPayoutContract[]
