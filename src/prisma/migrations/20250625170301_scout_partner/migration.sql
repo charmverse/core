@@ -32,6 +32,18 @@ CREATE TABLE "ScoutPartner" (
     CONSTRAINT "ScoutPartner_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateIndex
+CREATE INDEX "BuilderEvent_scoutPartnerId_idx" ON "BuilderEvent"("scoutPartnerId");
+
+-- CreateIndex
+CREATE INDEX "GithubRepo_scoutPartnerId_idx" ON "GithubRepo"("scoutPartnerId");
+
+-- CreateIndex
+CREATE INDEX "PartnerRewardEvent_scoutPartnerId_idx" ON "PartnerRewardEvent"("scoutPartnerId");
+
+-- CreateIndex
+CREATE INDEX "PartnerRewardPayoutContract_scoutPartnerId_idx" ON "PartnerRewardPayoutContract"("scoutPartnerId");
+
 -- AddForeignKey
 ALTER TABLE "BuilderEvent" ADD CONSTRAINT "BuilderEvent_scoutPartnerId_fkey" FOREIGN KEY ("scoutPartnerId") REFERENCES "ScoutPartner"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 

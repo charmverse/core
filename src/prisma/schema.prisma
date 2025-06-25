@@ -3151,6 +3151,7 @@ model BuilderEvent {
   @@index([weeklyClaimId])
   @@index([week, season])
   @@index([createdAt])
+  @@index([scoutPartnerId])
 }
 
 model GithubUser {
@@ -3191,6 +3192,7 @@ model GithubRepo {
   @@unique([owner, name])
   @@index([id])
   @@index([bonusPartner])
+  @@index([scoutPartnerId])
 }
 
 enum GithubEventType {
@@ -3648,6 +3650,7 @@ model PartnerRewardEvent {
 
   @@unique([userId, partner, week, season])
   @@index([userId])
+  @@index([scoutPartnerId])
 }
 
 enum MessageSender {
@@ -3888,6 +3891,8 @@ model PartnerRewardPayoutContract {
   provider        PartnerRewardPayoutContractProvider
   blockNumber     BigInt                              @default(0)
   rewardPayouts   PartnerRewardPayout[]
+
+  @@index([scoutPartnerId])
 }
 
 // the raw data, not intended to be used in production processes
