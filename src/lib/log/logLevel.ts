@@ -1,20 +1,14 @@
 import { datadogLogs } from '@datadog/browser-logs';
-import { RateLimit } from 'async-sema';
 import type { Logger, LogLevelDesc } from 'loglevel';
 import _log from 'loglevel';
 
 import { isNodeEnv, isProdEnv, isStagingEnv } from '../../config/constants';
 
 import { formatLog } from './logUtils';
+import { sendToDatadog } from './sendToDatadog';
 
-const ERRORS_WEBHOOK =
-  'https://discord.com/api/webhooks/898365255703470182/HqS3KqH_7-_dj0KYR6EzNqWhkH0yX6kvV_P32sZ3gnvB8M4AyMoy7W9bbjIul3Hmyu98';
 const originalFactory = _log.methodFactory;
-const enableDiscordAlerts = isProdEnv && isNodeEnv;
 const enableDatadogLogs = isProdEnv && !isNodeEnv;
-
-// requests per second = 35, timeUnit = 1sec
-const discordRateLimiter = RateLimit(30);
 
 /**
  * Enable formatting special logs for Datadog in production
@@ -45,17 +39,22 @@ export function apply(log: Logger, logPrefix: string = '') {
         });
         originalMethod.apply(null, args);
 
-        // post errors to Discord
-        if (isProdEnv && methodName === 'error' && enableDiscordAlerts) {
-          sendErrorToDiscord(ERRORS_WEBHOOK, message, opt).catch((error) => {
-            logErrorPlain('Error posting to discord', { originalMessage: message, error });
+        if (isProdEnv) {
+          const args2 = formatLog(message, opt, {
+            formatLogsForDocker: false,
+            isNodeEnv: false,
+            logPrefix,
+            methodName
           });
+          sendToDatadog(methodName, args2[0], args2[1]);
         }
       };
     };
 
     log.setLevel(log.getLevel()); // Be sure to call setLevel method in order to apply plugin
-  } else if (enableDatadogLogs) {
+  }
+  // send logs to Datadog in production from browser clients
+  else if (enableDatadogLogs) {
     log.methodFactory = (methodName, logLevel, loggerName) => {
       const originalMethod = originalFactory(methodName, logLevel, loggerName);
       return (message, ...args) => {
@@ -81,33 +80,4 @@ function logErrorPlain(message: string, opts: any) {
       methodName: 'error'
     })
   );
-}
-
-async function sendErrorToDiscord(webhook: string, message: any, opt: any) {
-  const fields: { name: string; value?: string }[] = [];
-  // eslint-disable-next-line global-require, @typescript-eslint/no-var-requires
-  // const http = require('../http');
-  // if (opt instanceof Error) {
-  //   fields = [
-  //     { name: 'Error', value: opt.message },
-  //     { name: 'Stacktrace', value: opt.stack?.slice(0, 500) }
-  //   ];
-  // } else if (opt) {
-  //   fields = Object.entries<any>(opt)
-  //     .map(([name, _value]) => {
-  //       const value = typeof _value === 'string' ? _value.slice(0, 500) : JSON.stringify(_value || {});
-  //       return { name, value };
-  //     })
-  //     .slice(0, 5); // add a sane max # of fields just in case
-  // }
-  // await discordRateLimiter();
-  // return http.POST(webhook, {
-  //   embeds: [
-  //     {
-  //       color: 14362664, // #db2828
-  //       description: message,
-  //       fields
-  //     }
-  //   ]
-  // });
 }
