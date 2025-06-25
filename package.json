@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.126.2",
+  "version": "0.126.3-rc-feat-nft-listin.0",
   "description": "Core API for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
