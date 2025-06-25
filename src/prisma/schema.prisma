@@ -3116,6 +3116,8 @@ model BuilderEvent {
   createdAt               DateTime                        @default(now())
   description             String? // for misc_event type
   bonusPartner            String?
+  scoutPartnerId          String?
+  scoutPartner            ScoutPartner?                   @relation(fields: [scoutPartnerId], references: [id], onDelete: SetNull)
   githubEventId           String?                         @unique @db.Uuid
   githubEvent             GithubEvent?                    @relation(fields: [githubEventId], references: [id], onDelete: SetNull)
   gemsPayoutEventId       String?                         @unique @db.Uuid
@@ -3149,6 +3151,7 @@ model BuilderEvent {
   @@index([weeklyClaimId])
   @@index([week, season])
   @@index([createdAt])
+  @@index([scoutPartnerId])
 }
 
 model GithubUser {
@@ -3170,23 +3173,26 @@ enum GithubRepoOwnerType {
 }
 
 model GithubRepo {
-  id            Int                 @id
-  owner         String
-  ownerType     GithubRepoOwnerType
-  handPicked    Boolean             @default(false)
-  fork          Boolean             @default(false)
-  name          String
-  avatar        String?
-  defaultBranch String
-  events        GithubEvent[]
-  createdAt     DateTime            @default(now())
-  deletedAt     DateTime?
-  bonusPartner  String?
-  issues        GithubIssue[]
+  id             Int                 @id
+  owner          String
+  ownerType      GithubRepoOwnerType
+  handPicked     Boolean             @default(false)
+  fork           Boolean             @default(false)
+  name           String
+  avatar         String?
+  defaultBranch  String
+  events         GithubEvent[]
+  createdAt      DateTime            @default(now())
+  deletedAt      DateTime?
+  bonusPartner   String?
+  scoutPartnerId String?
+  scoutPartner   ScoutPartner?       @relation(fields: [scoutPartnerId], references: [id], onDelete: SetNull)
+  issues         GithubIssue[]
 
   @@unique([owner, name])
   @@index([id])
   @@index([bonusPartner])
+  @@index([scoutPartnerId])
 }
 
 enum GithubEventType {
@@ -3632,16 +3638,19 @@ model TalentProfile {
 }
 
 model PartnerRewardEvent {
-  createdAt DateTime @default(now())
-  week      String
-  season    String
-  userId    String   @db.Uuid
-  user      Scout    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  partner   String
-  reward    Json
+  createdAt      DateTime      @default(now())
+  week           String
+  season         String
+  userId         String        @db.Uuid
+  user           Scout         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  partner        String
+  reward         Json
+  scoutPartnerId String?
+  scoutPartner   ScoutPartner? @relation(fields: [scoutPartnerId], references: [id], onDelete: SetNull)
 
   @@unique([userId, partner, week, season])
   @@index([userId])
+  @@index([scoutPartnerId])
 }
 
 enum MessageSender {
@@ -3874,12 +3883,16 @@ model PartnerRewardPayoutContract {
   tokenDecimals   Int
   tokenSymbol     String
   partner         String
+  scoutPartnerId  String?
+  scoutPartner    ScoutPartner?                       @relation(fields: [scoutPartnerId], references: [id], onDelete: SetNull)
   deployTxHash    String
   ipfsCid         String
   merkleTreeJson  Json
   provider        PartnerRewardPayoutContractProvider
   blockNumber     BigInt                              @default(0)
   rewardPayouts   PartnerRewardPayout[]
+
+  @@index([scoutPartnerId])
 }
 
 // the raw data, not intended to be used in production processes
@@ -4182,4 +4195,30 @@ model GithubIssue {
   @@unique([issueNumber, repoId])
   @@index([repoId])
   @@index([githubEventId])
+}
+
+enum ScoutPartnerStatus {
+  active
+  paused
+  completed
+}
+
+model ScoutPartner {
+  id                        String                        @id
+  icon                      String
+  bannerImage               String
+  infoPageImage             String
+  name                      String
+  status                    ScoutPartnerStatus            @default(active)
+  tokenAmountPerPullRequest Int?
+  tokenAddress              String?
+  tokenChain                Int?
+  tokenSymbol               String?
+  tokenDecimals             Int?
+  tokenImage                String?
+  issueTagTokenAmounts      Json?                         @default("{}") // Stores mapping of issue tags to token amounts
+  builderEvents             BuilderEvent[]
+  repos                     GithubRepo[]
+  payoutContracts           PartnerRewardPayoutContract[]
+  rewardEvents              PartnerRewardEvent[]
 }
