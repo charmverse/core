@@ -3365,6 +3365,7 @@ model BuilderNft {
   nftType                 BuilderNftType          @default(default)
   currentPrice            BigInt?
   currentPriceDevToken    String?
+  currentListingPrice     BigInt?
   contractAddress         String
   tokenId                 Int
   imageUrl                String
