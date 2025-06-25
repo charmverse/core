@@ -2,7 +2,7 @@ import { DateTime } from 'luxon';
 
 export const TIMESTAMP_FORMAT = 'yyyy-LL-dd HH:mm:ss';
 
-type LogMeta = {
+export type LogMeta = {
   data?: any;
   error?: { message: string; code?: number; stack?: string };
 };
@@ -66,7 +66,7 @@ export function formatTime(date: DateTime) {
 }
 
 // Check if value is primitive value
-function _isPrimitiveValue(value: unknown): boolean {
+export function _isPrimitiveValue(value: unknown): boolean {
   return (
     typeof value === 'symbol' ||
     typeof value === 'string' ||

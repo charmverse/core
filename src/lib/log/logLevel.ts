@@ -41,8 +41,8 @@ export function apply(log: Logger, logPrefix: string = '') {
 
         if (isProdEnv) {
           const args2 = formatLog(message, opt, {
-            formatLogsForDocker: false, // this option stringifies the log, which is not what we want
-            isNodeEnv,
+            formatLogsForDocker: false,
+            isNodeEnv: false,
             logPrefix,
             methodName
           });
