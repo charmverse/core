@@ -13,7 +13,7 @@ type DatadogLogPayload = {
 };
 
 const env = process.env.REACT_APP_APP_ENV || process.env.NODE_ENV || 'unknown';
-const service = process.env.DD_SERVICE || 'unknown';
+const service = process.env.SERVICE_NAME || 'unknown';
 
 const ddtags = `env:${env}`;
 
