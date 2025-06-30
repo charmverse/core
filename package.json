@@ -34,17 +34,9 @@
       "import": "./dist/esm/pages.js",
       "require": "./dist/cjs/pages.js"
     },
-    "./pages/utilities": {
-      "import": "./dist/esm/pages-utilities.js",
-      "require": "./dist/cjs/pages-utilities.js"
-    },
     "./proposals": {
       "import": "./dist/esm/proposals.js",
       "require": "./dist/cjs/proposals.js"
-    },
-    "./bounties": {
-      "import": "./dist/esm/bounties.js",
-      "require": "./dist/cjs/bounties.js"
     },
     "./permissions": {
       "import": "./dist/esm/permissions.js",
