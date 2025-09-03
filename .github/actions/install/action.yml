@@ -5,8 +5,8 @@ runs:
   steps:
     - uses: actions/setup-node@v4
       with:
-        node-version: 18
-        registry-url: 'https://npm.pkg.github.com'
+        node-version: 20
+        registry-url: "https://npm.pkg.github.com"
 
     - name: Create .env.test.local file
       shell: bash
