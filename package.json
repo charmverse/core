@@ -1,6 +1,6 @@
 {
   "name": "@charmverse/core",
-  "version": "0.126.7-rc-feat-redeploy-p.0",
+  "version": "0.126.7-rc-feat-redeploy-p.1",
   "description": "Core package for Charmverse",
   "type": "commonjs",
   "types": "./dist/cjs/index.d.ts",
