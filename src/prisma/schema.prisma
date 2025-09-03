@@ -3199,10 +3199,10 @@ model GithubRepo {
 model BlacklistedScoutPartnerDeveloper {
   scoutPartnerId String
   scoutPartner   ScoutPartner @relation(fields: [scoutPartnerId], references: [id], onDelete: Cascade)
-  scoutId        String       @db.Uuid
-  scout          Scout        @relation(fields: [scoutId], references: [id], onDelete: Cascade)
+  developerId    String       @db.Uuid
+  developer      Scout        @relation(fields: [developerId], references: [id], onDelete: Cascade)
 
-  @@unique([scoutPartnerId, scoutId])
+  @@unique([scoutPartnerId, developerId])
 }
 
 enum GithubEventType {
